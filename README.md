@@ -7,7 +7,6 @@ The wrapper provides a 'TypeScript' flavor to JSXGraph syntax. It replaces the s
 
 This approach is different from providing descriptions with a d.ts file. The wrapper adds a thin layer on top of JSXGraph, typically 2-3 lines per call.
 
-Happily, you can use the wrapper in plain HTML script tags.
 
 The design goals were
 1) to maximize navigation, scaffolding, syntax checking, and discovery using VSCode
@@ -18,6 +17,8 @@ The design goals were
 JSXGraph is both a graphics engine and a storehouse of numerical algorithms. This wrapper is focused on graphics. I've started to add some of the Math methods, but it is a work in progress.  Also still lots of cleaning in the GeometryElement attributes and methods.
 
 For now, I have mostly followed the traditional JSXGraph structure, only moving a few methods into collections of Conics and Transforms.
+
+Happily, you can use the wrapper in plain HTML script tags.
 
 
 ![](test.png)
