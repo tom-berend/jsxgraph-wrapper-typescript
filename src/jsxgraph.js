@@ -19,7 +19,7 @@
 //    DEALINGS IN THE SOFTWARE.
 //
 /////////////////////////////////////////////////////////////////////////////
-//   Generated on February 24, 2024, 6:55 pm 
+//   Generated on February 25, 2024, 5:33 pm 
 export var TSX;
 (function (TSX) {
     // utility function for determining whether an object is a JSX object (or part of this wrapper)
@@ -551,6 +551,11 @@ export var TSX;
             let newObject = this.board.create('Cardinalspline', this.dereference([data, funct, splineType,]), JSXGraph.defaultAttributes(`Cardinalspline`, attributes));
             return new Curve(newObject);
         }
+        /**   This element is used to provide a constructor for special texts containing a form checkbox element. For this element, the attribute ”display” has to have the value 'html' (which is the default). The underlying HTML checkbox element can be accessed through the sub-object 'rendNodeCheck', e.g. to add event listeners.*/
+        checkbox(x, y, label, attributes = {}) {
+            let newObject = this.board.create('Checkbox', this.dereference([x, y, label,]), JSXGraph.defaultAttributes(`Checkbox`, attributes));
+            return new Checkbox(newObject);
+        }
         /** Creates a Point at the center of a circle defined by 3 points  Constructs the midpoint of a Circumcircle. Like the circumcircle the circumcenter is constructed by providing three points.*/
         circumcenter(p1, p2, p3, attributes = {}) {
             let newObject = this.board.create('Circumcenter', this.dereference([p1, p2, p3,]), JSXGraph.defaultAttributes(`Circumcenter`, attributes));
@@ -590,6 +595,10 @@ export var TSX;
         curveUnion(curve1, curve2, attributes = {}) {
             let newObject = this.board.create('CurveUnion', this.dereference([curve1, curve2,]), JSXGraph.defaultAttributes(`CurveUnion`, attributes));
             return new CurveUnion(newObject);
+        }
+        derivative(curve, attributes = {}) {
+            let newObject = this.board.create('Derivative', this.dereference([curve,]), JSXGraph.defaultAttributes(`Derivative`, attributes));
+            return new Derivative(newObject);
         }
         /** Two Points and Radius  This element is used to provide a constructor for an ellipse. An ellipse is given by two points (the foci) and a third point on the ellipse or the length of the major axis.*/
         ellipse(p1, pointO, radius, attributes = {}) {
@@ -667,6 +676,11 @@ export var TSX;
         input(x, y, prompt, initial, attributes = {}) {
             let newObject = this.board.create('Input', this.dereference([x, y, prompt, initial,]), JSXGraph.defaultAttributes(`Input`, attributes));
             return new Input(newObject);
+        }
+        /**   This element is used to visualize the integral of a given curve over a given interval.*/
+        integral(range, curve, attributes = {}) {
+            let newObject = this.board.create('Integral', this.dereference([range, curve,]), JSXGraph.defaultAttributes(`Integral`, attributes));
+            return new Integral(newObject);
         }
         /**   An intersection point is a point which lives on two JSXGraph elements, i.e. it is one point of the set consisting of the intersection points of the two elements. The following element types can be (mutually) intersected: line, circle, curve, polygon, polygonal chain.*/
         intersection(element1, element2, positiveNegativeRoot = 0, attributes = {}) {
