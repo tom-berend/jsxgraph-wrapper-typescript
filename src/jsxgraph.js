@@ -19,7 +19,7 @@
 //    DEALINGS IN THE SOFTWARE.
 //
 /////////////////////////////////////////////////////////////////////////////
-//   Generated on February 25, 2024, 5:33 pm 
+//   Generated on February 29, 2024, 8:17 pm 
 export var TSX;
 (function (TSX) {
     // utility function for determining whether an object is a JSX object (or part of this wrapper)
@@ -55,19 +55,22 @@ export var TSX;
     class JSXGraph {
         initBoard(html, attributes) {
             const newBoard = new JSXBoard();
-            newBoard.board = window.JXG.JSXGraph.initBoard(html, JSXGraph.defaultAttributes('Board', attributes));
+            newBoard.board = window.JXG.JSXGraph.initBoard(html, attributes);
             Math.board = newBoard.board; // make a copy for Math and its decendents
             return newBoard;
         }
-        /** allows setting default attributes by class or across the board */
-        static defaultAttributes(jClass, attrs = {}) {
-            if (jClass == 'Point' || jClass == 'Glider' || jClass == 'Midpoint') {
-                if (!('name' in attrs)) {
-                    attrs.name = '';
-                }
-            }
-            return attrs;
-        }
+        // /** allows setting default attributes by class or across the board */
+        // static defaultAttributes(jClass:string, attrs:Object={}):Object{
+        //     // if(jClass=='Point' || jClass=='Glider' || jClass=='Midpoint'){
+        //         if(!('name' in attrs)){
+        //             (attrs as any).name = ''
+        //         }
+        //         if(!('showInfobox' in attrs)){
+        //             (attrs as any).showInfobox = false
+        //         }
+        //     // }
+        //     return attrs
+        //  }
         /** Version of underlying JSX library */
         get version() {
             return window.JXG.version;
@@ -92,6 +95,7 @@ export var TSX;
     class JSXBoard {
         board;
         printLineNumber = 0; // added a print() function, this tracks the line#
+        defaultAttrs = {}; // hold defaults from setDefaultAttributes()
         get defaultAxes() {
             return this.board.defaultAxes;
         }
@@ -100,6 +104,19 @@ export var TSX;
         }
         get canvasHeight() {
             return this.board.canvasHeight;
+        }
+        /** allows setting default attributes by class or across the board */
+        setDefaultAttributes(attrs) {
+            this.defaultAttrs = attrs;
+        }
+        // add in any default attributes
+        defaultAttributes(attrs) {
+            for (const property in this.defaultAttrs) {
+                if (!attrs.hasOwnProperty(property)) { // if the user has not specified a value for this property
+                    attrs[property] = this.defaultAttrs[property];
+                }
+            }
+            return attrs;
         }
         /** get a 2D canvas context (warning: cannot mix SVG and canvas) */
         getCanvasCTX() {
@@ -233,27 +250,27 @@ export var TSX;
                 z_ignore: {},
                 /** Line defined by solution to a*z + b*y +c*y== 0 */
                 line(a, b, c, attributes = {}) {
-                    let newObject = this.z_ignore.board.create('line', this.z_ignore.dereference([a, b, c]), attributes);
+                    let newObject = this.z_ignore.board.create('line', this.z_ignore.dereference([a, b, c]), this.z_ignore.defaultAttributes(attributes));
                     return new Line(newObject);
                 },
                 /** Just as two (distinct) points determine a line, five points (no three collinear) determine a conic. */
                 fivePoints(A, B, C, D, E, attributes = {}) {
-                    let newObject = this.z_ignore.board.create('Conic', this.z_ignore.dereference([A, B, C, D, E,]), JSXGraph.defaultAttributes(`Conic`, attributes));
+                    let newObject = this.z_ignore.board.create('Conic', this.z_ignore.dereference([A, B, C, D, E,]), this.z_ignore.defaultAttributes(attributes));
                     return new Conic(newObject);
                 },
                 /** Build a plane algebraic curve from six numbers that satisfies Ax^2 + Bxy + Cy^2 + Dx + Ey + F = 0, and A,B,C not all zero.  This might be a circle, ellipse, parabola, or hyperbola. */
                 sixNumbers(A, B, C, D, E, F, attributes = {}) {
-                    let newObject = this.z_ignore.board.create('Conic', this.z_ignore.dereference([A, B, C, D, E, F,]), JSXGraph.defaultAttributes(`Conic`, attributes));
+                    let newObject = this.z_ignore.board.create('Conic', this.z_ignore.dereference([A, B, C, D, E, F,]), this.z_ignore.defaultAttributes(attributes));
                     return new Conic(newObject);
                 },
                 /** An Ellipse from 3 points */
                 threePoints(focalPoint1, focalPoint2, outerPoint, attributes = {}) {
-                    let newObject = this.z_ignore.board.create('ellipse', this.z_ignore.dereference([focalPoint1, focalPoint2, outerPoint]), attributes);
+                    let newObject = this.z_ignore.board.create('ellipse', this.z_ignore.dereference([focalPoint1, focalPoint2, outerPoint]), this.z_ignore.defaultAttributes(attributes));
                     return new Ellipse(newObject);
                 },
                 /** Three Points, plus start and end. */
                 ellipseArc(focalPoint1, focalPoint2, outerPoint, startAngle, endAngle, attributes = {}) {
-                    let newObject = this.z_ignore.board.create('ellipse', this.z_ignore.dereference([focalPoint1, focalPoint2, outerPoint, startAngle, endAngle]), attributes);
+                    let newObject = this.z_ignore.board.create('ellipse', this.z_ignore.dereference([focalPoint1, focalPoint2, outerPoint, startAngle, endAngle]), this.z_ignore.defaultAttributes(attributes));
                     return new Conic(newObject);
                 },
             };
@@ -263,32 +280,32 @@ export var TSX;
                 z_ignore: {},
                 /** Move a distance from a point */
                 translate(x, y, attributes = {}) {
-                    let newObject = this.z_ignore.board.create('Transform', this.z_ignore.dereference([x, y,]), JSXGraph.defaultAttributes(`Transform`, { type: 'translate' }));
+                    let newObject = this.z_ignore.board.create('Transform', this.z_ignore.dereference([x, y,]), this.z_ignore.defaultAttributes({ type: 'translate' }));
                     return new Transform(newObject);
                 },
                 /** Increase distance from a point by a factor */
                 scale(x, y, attributes = {}) {
-                    let newObject = this.z_ignore.board.create('Transform', this.z_ignore.dereference([x, y,]), JSXGraph.defaultAttributes(`Transform`, { type: 'scale' }));
+                    let newObject = this.z_ignore.board.create('Transform', this.z_ignore.dereference([x, y,]), this.z_ignore.defaultAttributes({ type: 'scale' }));
                     return new Transform(newObject);
                 },
                 /** Rotate by angle around a point */
                 rotate(angle, point = [0, 0], attributes = {}) {
-                    let newObject = this.z_ignore.board.create('Transform', this.z_ignore.dereference([angle, point,]), JSXGraph.defaultAttributes(`Transform`, { type: 'rotate' }));
+                    let newObject = this.z_ignore.board.create('Transform', this.z_ignore.dereference([angle, point,]), this.z_ignore.defaultAttributes({ type: 'rotate' }));
                     return new Transform(newObject);
                 },
                 /** Reflect around a line */
                 reflect(x, y, attributes = {}) {
-                    let newObject = this.z_ignore.board.create('Transform', this.z_ignore.dereference([x, y,]), JSXGraph.defaultAttributes(`Transform`, { type: 'reflect' }));
+                    let newObject = this.z_ignore.board.create('Transform', this.z_ignore.dereference([x, y,]), this.z_ignore.defaultAttributes({ type: 'reflect' }));
                     return new Transform(newObject);
                 },
                 /** Move proportionally to distance */
                 shear(x, y, attributes = {}) {
-                    let newObject = this.z_ignore.board.create('Transform', this.z_ignore.dereference([x, y,]), JSXGraph.defaultAttributes(`Transform`, { type: 'shear' }));
+                    let newObject = this.z_ignore.board.create('Transform', this.z_ignore.dereference([x, y,]), this.z_ignore.defaultAttributes({ type: 'shear' }));
                     return new Transform(newObject);
                 },
                 /** Transform using a MAT3 */
                 generic(a, b, c, d, e, f, g, h, i, attributes = {}) {
-                    let newObject = this.z_ignore.board.create('Transform', this.z_ignore.dereference([a, b, c, d, e, f, g, h, i,]), JSXGraph.defaultAttributes(`Transform`, { type: 'generic' }));
+                    let newObject = this.z_ignore.board.create('Transform', this.z_ignore.dereference([a, b, c, d, e, f, g, h, i,]), this.z_ignore.defaultAttributes({ type: 'generic' }));
                     return new Transform(newObject);
                 },
                 /** A new Point from a Point and Transform */
@@ -338,33 +355,33 @@ export var TSX;
         }
         /** create a chart  Constructor for a chart.*/
         chart(f, attributes = {}) {
-            let newObject = this.board.create('Chart', this.dereference([f,]), JSXGraph.defaultAttributes(`Chart`, attributes));
+            let newObject = this.board.create('Chart', this.dereference([f,]), this.defaultAttributes(attributes));
             return new Chart(newObject);
         }
         /**   This element is used to provide a constructor for a circle.*/
         circle(centerPoint, remotePoint, attributes = {}) {
             let newObject; // special case for circle with immediate segment eg:  circle(point,[[1,2],[3,4]]  )
             if (Array.isArray(remotePoint) && Array.isArray(remotePoint[0]) && Array.isArray(remotePoint[1])) {
-                newObject = this.board.create(`circle`, this.dereference([centerPoint, remotePoint[0], remotePoint[1]]), attributes);
+                newObject = this.board.create(`circle`, this.dereference([centerPoint, remotePoint[0], remotePoint[1]]), this.defaultAttributes(attributes));
             }
             else {
-                newObject = this.board.create(`circle`, this.dereference([centerPoint, remotePoint]), attributes);
+                newObject = this.board.create(`circle`, this.dereference([centerPoint, remotePoint]), this.defaultAttributes(attributes));
             }
             return new Circle(newObject);
         }
         /**   This element is used to provide a constructor for curve, which is just a wrapper for element Curve. A curve is a mapping from R to R^2. t mapsto (x(t),y(t)). The graph is drawn for t in the interval [a,b]. The following types of curves can be plotted: parametric curves: t mapsto (x(t),y(t)), where x() and y() are univariate functions. polar curves: curves commonly written with polar equations like spirals and cardioids. data plots: plot line segments through a given list of coordinates.*/
         curve(xArray, yArray, left = -5, right = 5, attributes = {}) {
-            let newObject = this.board.create('Curve', this.dereference([xArray, yArray, left, right,]), JSXGraph.defaultAttributes(`Curve`, attributes));
+            let newObject = this.board.create('Curve', this.dereference([xArray, yArray, left, right,]), this.defaultAttributes(attributes));
             return new Curve(newObject);
         }
         /** Array of Points  This element combines a given set of JXG.Point elements to a group. The elements of the group and dependent elements can be translated, rotated and scaled by dragging one of the group elements.*/
         group(pointArray, attributes = {}) {
-            let newObject = this.board.create('Group', this.dereference([pointArray,].flat()), JSXGraph.defaultAttributes(`Group`, attributes));
+            let newObject = this.board.create('Group', this.dereference([pointArray,].flat()), this.defaultAttributes(attributes));
             return new Group(newObject);
         }
         /**   Displays an image.*/
         image(url, lowerLeft, widthHeight, attributes = {}) {
-            let newObject = this.board.create('Image', this.dereference([url, lowerLeft, widthHeight,]), JSXGraph.defaultAttributes(`Image`, attributes));
+            let newObject = this.board.create('Image', this.dereference([url, lowerLeft, widthHeight,]), this.defaultAttributes(attributes));
             return new Image(newObject);
         }
         // implementation of signature,  hidden from user
@@ -373,60 +390,71 @@ export var TSX;
             if (arguments.length == 1) {
                 // if((typeof (arguments[0])) == 'object' && !Array.isArray(arguments[0]) && !('elValue' in arguments[0]) && !('elType' in arguments[2])) {   // arguments counts from zero
                 if (isJSXAttribute(a)) {
-                    newObject = this.board.create('implicitcurve', this.dereference([]), JSXGraph.defaultAttributes('Implicitcurve', a)); // as unknown as Implicitcurve
+                    newObject = this.board.create('implicitcurve', this.dereference([]), this.defaultAttributes(a)); // as unknown as Implicitcurve
                 }
                 else {
-                    newObject = this.board.create('implicitcurve', this.dereference([a,]), JSXGraph.defaultAttributes('Implicitcurve')); // as Implicitcurve
+                    newObject = this.board.create('implicitcurve', this.dereference([a,]), this.defaultAttributes({})); // as Implicitcurve
                 }
             }
             if (arguments.length == 2) {
                 // if((typeof (arguments[1])) == 'object' && !Array.isArray(arguments[1]) && !('elValue' in arguments[1]) && !('elType' in arguments[2])) {   // arguments counts from zero
                 if (isJSXAttribute(b)) {
-                    newObject = this.board.create('implicitcurve', this.dereference([a,]), JSXGraph.defaultAttributes('Implicitcurve', b)); // as unknown as Implicitcurve
+                    newObject = this.board.create('implicitcurve', this.dereference([a,]), this.defaultAttributes(b)); // as unknown as Implicitcurve
                 }
                 else {
-                    newObject = this.board.create('implicitcurve', this.dereference([a, b,]), JSXGraph.defaultAttributes('Implicitcurve')); // as Implicitcurve
+                    newObject = this.board.create('implicitcurve', this.dereference([a, b,]), this.defaultAttributes({})); // as Implicitcurve
                 }
             }
             if (arguments.length == 3) {
                 // if((typeof (arguments[2])) == 'object' && !Array.isArray(arguments[2]) && !('elValue' in arguments[2]) && !('elType' in arguments[2])) {   // arguments counts from zero
                 if (isJSXAttribute(c)) {
-                    newObject = this.board.create('implicitcurve', this.dereference([a, b,]), JSXGraph.defaultAttributes('Implicitcurve', c)); // as unknown as Implicitcurve
+                    newObject = this.board.create('implicitcurve', this.dereference([a, b,]), this.defaultAttributes(c)); // as unknown as Implicitcurve
                 }
                 else {
-                    newObject = this.board.create('implicitcurve', this.dereference([a, b, c,]), JSXGraph.defaultAttributes('Implicitcurve')); // as Implicitcurve
+                    newObject = this.board.create('implicitcurve', this.dereference([a, b, c,]), this.defaultAttributes({})); // as Implicitcurve
                 }
             }
             return new Implicitcurve(newObject);
         }
         /**   This element is used to provide a constructor for a general line. A general line is given by two points. By setting additional properties a line can be used as an arrow and/or axis.  Look at .conic.line() for a line defined by the equation 'az +bx +cy = 0'*/
         line(p1, p2, attributes = {}) {
-            let newObject = this.board.create('Line', this.dereference([p1, p2,]), JSXGraph.defaultAttributes(`Line`, attributes));
+            let newObject = this.board.create('Line', this.dereference([p1, p2,]), this.defaultAttributes(attributes));
             return new Line(newObject);
         }
-        /**   This element is used to provide a constructor for a general point. A free point is created if the given parent elements are all numbers and the property fixed is not set or set to false. If one or more parent elements is not a number but a string containing a GEONExT constraint or a function the point will be considered as constrained). That means that the user won't be able to change the point's position directly.*/
+        /**   Create a point. If any parent elements
+                           are functions or the attribute 'fixed' is true
+                           then point will be constrained.
+                           
+        JSX.point([3,2], {strokeColor:'blue',strokeWidth:5, strokeOpacity:.5})
+                           
+        JSX.point([3,3]), {fixed:true, showInfobox:true}
+                           
+        JSX.point([()=>p1.X()+2,()=>p1.Y()+2]) // 2 up 2 right from p1
+                           
+        also create points with Intersection, Midpoint, Transform.Point, Circumcenter, Glider, and others.
+                           .*/
         point(position, attributes = {}) {
-            let newObject = this.board.create('Point', position, JSXGraph.defaultAttributes('Point', attributes));
+            let newObject = this.board.create('Point', position, this.defaultAttributes(attributes));
             return new Point(newObject);
         }
         /** Array of Points  A polygon is an area enclosed by a set of border lines which are determined by a list of points or a list of coordinate arrays or a function returning a list of coordinate arrays. Each two consecutive points of the list define a line.*/
         polygon(pointArray, attributes = {}) {
-            let newObject = this.board.create('Polygon', this.dereference([pointArray,].flat()), JSXGraph.defaultAttributes(`Polygon`, attributes));
+            let newObject = this.board.create('Polygon', this.dereference([pointArray,].flat()), this.defaultAttributes(attributes));
             return new Polygon(newObject);
         }
         /**   Construct and handle texts. The coordinates can either be abslute (i.e. respective to the coordinate system of the board) or be relative to the coordinates of an element given in Text#anchor. HTML, MathJaX, KaTeX and GEONExT syntax can be handled. There are two ways to display texts: using the text element of the renderer (canvas or svg). In most cases this is the suitable approach if speed matters. However, advanced rendering like MathJax, KaTeX or HTML/CSS are not possible. using HTML <div>. This is the most flexible approach. The drawback is that HTML can only be display ”above” the geometry elements. If HTML should be displayed in an inbetween layer, conder to use an element of type ForeignObject (available in svg renderer, only).*/
         text(x, y, string, attributes = {}) {
-            let newObject = this.board.create('Text', this.dereference([x, y, string,]), JSXGraph.defaultAttributes(`Text`, attributes));
+            let newObject = this.board.create('Text', this.dereference([x, y, string,]), this.defaultAttributes(attributes));
             return new Text(newObject);
         }
         /**   A circular sector is a subarea of the area enclosed by a circle. It is enclosed by two radii and an arc.*/
         sector(P1, P2, P3, attributes = {}) {
-            let newObject = this.board.create('Sector', this.dereference([P1, P2, P3,]), JSXGraph.defaultAttributes(`Sector`, attributes));
+            let newObject = this.board.create('Sector', this.dereference([P1, P2, P3,]), this.defaultAttributes(attributes));
             return new Sector(newObject);
         }
         /**   Vector field. Plot a vector field either given by two functions f1(x, y) and f2(x,y) or by a function f(x, y) returning an array of size 2.*/
         vectorfield(fxfy, horizontalMesh = [-6, 25, 6], verticalMesh = [-6, 25, 6], attributes = {}) {
-            let newObject = this.board.create('Vectorfield', this.dereference([fxfy, horizontalMesh, verticalMesh,]), JSXGraph.defaultAttributes(`Vectorfield`, attributes));
+            let newObject = this.board.create('Vectorfield', this.dereference([fxfy, horizontalMesh, verticalMesh,]), this.defaultAttributes(attributes));
             return new Vectorfield(newObject);
         }
         // implementation of signature,  hidden from user
@@ -435,49 +463,49 @@ export var TSX;
             if (arguments.length == 2) {
                 // if((typeof (arguments[1])) == 'object' && !Array.isArray(arguments[1]) && !('elValue' in arguments[1]) && !('elType' in arguments[2])) {   // arguments counts from zero
                 if (isJSXAttribute(b)) {
-                    newObject = this.board.create('angle', this.dereference([a,]), JSXGraph.defaultAttributes('Angle', b)); // as unknown as Angle
+                    newObject = this.board.create('angle', this.dereference([a,]), this.defaultAttributes(b)); // as unknown as Angle
                 }
                 else {
-                    newObject = this.board.create('angle', this.dereference([a, b,]), JSXGraph.defaultAttributes('Angle')); // as Angle
+                    newObject = this.board.create('angle', this.dereference([a, b,]), this.defaultAttributes({})); // as Angle
                 }
             }
             if (arguments.length == 3) {
                 // if((typeof (arguments[2])) == 'object' && !Array.isArray(arguments[2]) && !('elValue' in arguments[2]) && !('elType' in arguments[2])) {   // arguments counts from zero
                 if (isJSXAttribute(c)) {
-                    newObject = this.board.create('angle', this.dereference([a, b,]), JSXGraph.defaultAttributes('Angle', c)); // as unknown as Angle
+                    newObject = this.board.create('angle', this.dereference([a, b,]), this.defaultAttributes(c)); // as unknown as Angle
                 }
                 else {
-                    newObject = this.board.create('angle', this.dereference([a, b, c,]), JSXGraph.defaultAttributes('Angle')); // as Angle
+                    newObject = this.board.create('angle', this.dereference([a, b, c,]), this.defaultAttributes({})); // as Angle
                 }
             }
             if (arguments.length == 4) {
                 // if((typeof (arguments[3])) == 'object' && !Array.isArray(arguments[3]) && !('elValue' in arguments[3]) && !('elType' in arguments[2])) {   // arguments counts from zero
                 if (isJSXAttribute(d)) {
-                    newObject = this.board.create('angle', this.dereference([a, b, c,]), JSXGraph.defaultAttributes('Angle', d)); // as unknown as Angle
+                    newObject = this.board.create('angle', this.dereference([a, b, c,]), this.defaultAttributes(d)); // as unknown as Angle
                 }
                 else {
-                    newObject = this.board.create('angle', this.dereference([a, b, c, d,]), JSXGraph.defaultAttributes('Angle')); // as Angle
+                    newObject = this.board.create('angle', this.dereference([a, b, c, d,]), this.defaultAttributes({})); // as Angle
                 }
             }
             if (arguments.length == 5) {
                 // if((typeof (arguments[4])) == 'object' && !Array.isArray(arguments[4]) && !('elValue' in arguments[4]) && !('elType' in arguments[2])) {   // arguments counts from zero
                 if (isJSXAttribute(e)) {
-                    newObject = this.board.create('angle', this.dereference([a, b, c, d,]), JSXGraph.defaultAttributes('Angle', e)); // as unknown as Angle
+                    newObject = this.board.create('angle', this.dereference([a, b, c, d,]), this.defaultAttributes(e)); // as unknown as Angle
                 }
                 else {
-                    newObject = this.board.create('angle', this.dereference([a, b, c, d, e,]), JSXGraph.defaultAttributes('Angle')); // as Angle
+                    newObject = this.board.create('angle', this.dereference([a, b, c, d, e,]), this.defaultAttributes({})); // as Angle
                 }
             }
             return new Angle(newObject);
         }
         /** Create an Arc with three points  An arc is a segment of the circumference of a circle. It is defined by a center, one point that defines the radius, and a third point that defines the angle of the arc.*/
         arc(p1, p2, p3, attributes = {}) {
-            let newObject = this.board.create('Arc', this.dereference([p1, p2, p3,]), JSXGraph.defaultAttributes(`Arc`, attributes));
+            let newObject = this.board.create('Arc', this.dereference([p1, p2, p3,]), this.defaultAttributes(attributes));
             return new Arc(newObject);
         }
         /** Arrow defined by two points (like a Segment) with arrow at P2  This element is used to provide a constructor for arrow, which is just a wrapper for element Line with Line#straightFirst and Line#straightLast properties set to false and Line#lastArrow set to true.*/
         arrow(p1, p2, attributes = {}) {
-            let newObject = this.board.create('Arrow', this.dereference([p1, p2,]), JSXGraph.defaultAttributes(`Arrow`, attributes));
+            let newObject = this.board.create('Arrow', this.dereference([p1, p2,]), this.defaultAttributes(attributes));
             return new Arrow(newObject);
         }
         // implementation of signature,  hidden from user
@@ -486,128 +514,128 @@ export var TSX;
             if (arguments.length == 2) {
                 // if((typeof (arguments[1])) == 'object' && !Array.isArray(arguments[1]) && !('elValue' in arguments[1]) && !('elType' in arguments[2])) {   // arguments counts from zero
                 if (isJSXAttribute(b)) {
-                    newObject = this.board.create('parallel', this.dereference([a,]), JSXGraph.defaultAttributes('Parallel', b)); // as unknown as Parallel
+                    newObject = this.board.create('parallel', this.dereference([a,]), this.defaultAttributes(b)); // as unknown as Parallel
                 }
                 else {
-                    newObject = this.board.create('parallel', this.dereference([a, b,]), JSXGraph.defaultAttributes('Parallel')); // as Parallel
+                    newObject = this.board.create('parallel', this.dereference([a, b,]), this.defaultAttributes({})); // as Parallel
                 }
             }
             if (arguments.length == 3) {
                 // if((typeof (arguments[2])) == 'object' && !Array.isArray(arguments[2]) && !('elValue' in arguments[2]) && !('elType' in arguments[2])) {   // arguments counts from zero
                 if (isJSXAttribute(c)) {
-                    newObject = this.board.create('parallel', this.dereference([a, b,]), JSXGraph.defaultAttributes('Parallel', c)); // as unknown as Parallel
+                    newObject = this.board.create('parallel', this.dereference([a, b,]), this.defaultAttributes(c)); // as unknown as Parallel
                 }
                 else {
-                    newObject = this.board.create('parallel', this.dereference([a, b, c,]), JSXGraph.defaultAttributes('Parallel')); // as Parallel
+                    newObject = this.board.create('parallel', this.dereference([a, b, c,]), this.defaultAttributes({})); // as Parallel
                 }
             }
             if (arguments.length == 4) {
                 // if((typeof (arguments[3])) == 'object' && !Array.isArray(arguments[3]) && !('elValue' in arguments[3]) && !('elType' in arguments[2])) {   // arguments counts from zero
                 if (isJSXAttribute(d)) {
-                    newObject = this.board.create('parallel', this.dereference([a, b, c,]), JSXGraph.defaultAttributes('Parallel', d)); // as unknown as Parallel
+                    newObject = this.board.create('parallel', this.dereference([a, b, c,]), this.defaultAttributes(d)); // as unknown as Parallel
                 }
                 else {
-                    newObject = this.board.create('parallel', this.dereference([a, b, c, d,]), JSXGraph.defaultAttributes('Parallel')); // as Parallel
+                    newObject = this.board.create('parallel', this.dereference([a, b, c, d,]), this.defaultAttributes({})); // as Parallel
                 }
             }
             if (arguments.length == 5) {
                 // if((typeof (arguments[4])) == 'object' && !Array.isArray(arguments[4]) && !('elValue' in arguments[4]) && !('elType' in arguments[2])) {   // arguments counts from zero
                 if (isJSXAttribute(e)) {
-                    newObject = this.board.create('parallel', this.dereference([a, b, c, d,]), JSXGraph.defaultAttributes('Parallel', e)); // as unknown as Parallel
+                    newObject = this.board.create('parallel', this.dereference([a, b, c, d,]), this.defaultAttributes(e)); // as unknown as Parallel
                 }
                 else {
-                    newObject = this.board.create('parallel', this.dereference([a, b, c, d, e,]), JSXGraph.defaultAttributes('Parallel')); // as Parallel
+                    newObject = this.board.create('parallel', this.dereference([a, b, c, d, e,]), this.defaultAttributes({})); // as Parallel
                 }
             }
             return new Parallel(newObject);
         }
         /** Create an Arrow parallel to a segment. The constructed arrow contains p3 and has the same slope as the line through p1 and p2.  An arrow parallel is a segment with an arrow attached which is parallel through a given segment, given by its defining two points, through a given point.*/
         arrowparallel(p1, p2, p3, attributes = {}) {
-            let newObject = this.board.create('Arrowparallel', this.dereference([p1, p2, p3,]), JSXGraph.defaultAttributes(`Arrowparallel`, attributes));
+            let newObject = this.board.create('Arrowparallel', this.dereference([p1, p2, p3,]), this.defaultAttributes(attributes));
             return new Arrowparallel(newObject);
         }
         /** Create an Axis with two points (like a Line)  This element is used to provide a constructor for an axis. It's strictly spoken just a wrapper for element Line with Line#straightFirst and Line#straightLast properties set to true. Additionally Line#lastArrow is set to true and default Ticks will be created.*/
         axis(p1, p2, attributes = {}) {
-            let newObject = this.board.create('Axis', this.dereference([p1, p2,]), JSXGraph.defaultAttributes(`Axis`, attributes));
+            let newObject = this.board.create('Axis', this.dereference([p1, p2,]), this.defaultAttributes(attributes));
             return new Axis(newObject);
         }
         /** Bisect an Angle defined with three points  A bisector is a line which divides an angle into two equal angles. It is given by three points A, B, and C and divides the angle ABC into two equal sized parts.*/
         bisector(p1, p2, p3, attributes = {}) {
-            let newObject = this.board.create('Bisector', this.dereference([p1, p2, p3,]), JSXGraph.defaultAttributes(`Bisector`, attributes));
+            let newObject = this.board.create('Bisector', this.dereference([p1, p2, p3,]), this.defaultAttributes(attributes));
             return new Bisector(newObject);
         }
         /** Bisect a Line defined with two points  Bisector lines are similar to Bisector but take two lines as parent elements. The resulting element is a composition of two lines.*/
         bisectorlines(l1, l2, attributes = {}) {
-            let newObject = this.board.create('Bisectorlines', this.dereference([l1, l2,]), JSXGraph.defaultAttributes(`Bisectorlines`, attributes));
+            let newObject = this.board.create('Bisectorlines', this.dereference([l1, l2,]), this.defaultAttributes(attributes));
             return new Bisectorlines(newObject);
         }
         /** create a button  This element is used to provide a constructor for special texts containing a form button element. For this element, the attribute ”display” has to have the value 'html' (which is the default). The underlying HTML button element can be accessed through the sub-object 'rendNodeButton', e.g. to add event listeners.*/
         button(x, y, label, handler, attributes = {}) {
-            let newObject = this.board.create('button', [x, y, label], attributes);
+            let newObject = this.board.create('button', [x, y, label], this.defaultAttributes(attributes));
             return new Button(newObject);
         }
         /**   This element is used to provide a constructor for cardinal spline curves. Create a dynamic cardinal spline interpolated curve given by sample points p_1 to p_n.*/
         cardinalspline(data, funct, splineType, attributes = {}) {
-            let newObject = this.board.create('Cardinalspline', this.dereference([data, funct, splineType,]), JSXGraph.defaultAttributes(`Cardinalspline`, attributes));
+            let newObject = this.board.create('Cardinalspline', this.dereference([data, funct, splineType,]), this.defaultAttributes(attributes));
             return new Curve(newObject);
         }
         /**   This element is used to provide a constructor for special texts containing a form checkbox element. For this element, the attribute ”display” has to have the value 'html' (which is the default). The underlying HTML checkbox element can be accessed through the sub-object 'rendNodeCheck', e.g. to add event listeners.*/
         checkbox(x, y, label, attributes = {}) {
-            let newObject = this.board.create('Checkbox', this.dereference([x, y, label,]), JSXGraph.defaultAttributes(`Checkbox`, attributes));
+            let newObject = this.board.create('Checkbox', this.dereference([x, y, label,]), this.defaultAttributes(attributes));
             return new Checkbox(newObject);
         }
         /** Creates a Point at the center of a circle defined by 3 points  Constructs the midpoint of a Circumcircle. Like the circumcircle the circumcenter is constructed by providing three points.*/
         circumcenter(p1, p2, p3, attributes = {}) {
-            let newObject = this.board.create('Circumcenter', this.dereference([p1, p2, p3,]), JSXGraph.defaultAttributes(`Circumcenter`, attributes));
+            let newObject = this.board.create('Circumcenter', this.dereference([p1, p2, p3,]), this.defaultAttributes(attributes));
             return new Circumcenter(newObject);
         }
         /** Draw a circle defined by 3 points  A circumcircle is given by three points which are all lying on the circle.*/
         circumcircle(p1, p2, p3, attributes = {}) {
-            let newObject = this.board.create('Circumcircle', this.dereference([p1, p2, p3,]), JSXGraph.defaultAttributes(`Circumcircle`, attributes));
+            let newObject = this.board.create('Circumcircle', this.dereference([p1, p2, p3,]), this.defaultAttributes(attributes));
             return new Circumcircle(newObject);
         }
         /** Draw an arc from P1 to P3 (missing P3 to P1) defined by 3 points  A circumcircle arc is an Arc defined by three points. All three points lie on the arc.*/
         circumcircleArc(p1, p2, p3, attributes = {}) {
-            let newObject = this.board.create('CircumcircleArc', this.dereference([p1, p2, p3,]), JSXGraph.defaultAttributes(`CircumcircleArc`, attributes));
+            let newObject = this.board.create('CircumcircleArc', this.dereference([p1, p2, p3,]), this.defaultAttributes(attributes));
             return new CircumcircleArc(newObject);
         }
         /** Creates a CircumCenter and draws a sector from P1 to P3 (missing P3 to P1) defined by 3 points  A circumcircle sector is different from a Sector mostly in the way the parent elements are interpreted. At first, the circum centre is determined from the three given points. Then the sector is drawn from p1 through p2 to p3.*/
         circumcircleSector(p1, p2, p3, attributes = {}) {
-            let newObject = this.board.create('CircumcircleSector', this.dereference([p1, p2, p3,]), JSXGraph.defaultAttributes(`CircumcircleSector`, attributes));
+            let newObject = this.board.create('CircumcircleSector', this.dereference([p1, p2, p3,]), this.defaultAttributes(attributes));
             return new CircumcircleSector(newObject);
         }
         /**   A comb to display domains of inequalities.*/
         comb(p1, p2, attributes = {}) {
-            let newObject = this.board.create('Comb', this.dereference([p1, p2,]), JSXGraph.defaultAttributes(`Comb`, attributes));
+            let newObject = this.board.create('Comb', this.dereference([p1, p2,]), this.defaultAttributes(attributes));
             return new Comb(newObject);
         }
         /**   Difference of two closed path elements. The elements may be of type curve, circle, polygon, inequality. If one element is a curve, it has to be closed. The resulting element is of type curve.*/
         curveDifference(curve1, curve2, attributes = {}) {
-            let newObject = this.board.create('CurveDifference', this.dereference([curve1, curve2,]), JSXGraph.defaultAttributes(`CurveDifference`, attributes));
+            let newObject = this.board.create('CurveDifference', this.dereference([curve1, curve2,]), this.defaultAttributes(attributes));
             return new CurveDifference(newObject);
         }
         /**   Intersection of two closed path elements. The elements may be of type curve, circle, polygon, inequality. If one element is a curve, it has to be closed. The resulting element is of type curve.*/
         curveIntersection(curve1, curve2, attributes = {}) {
-            let newObject = this.board.create('CurveIntersection', this.dereference([curve1, curve2,]), JSXGraph.defaultAttributes(`CurveIntersection`, attributes));
+            let newObject = this.board.create('CurveIntersection', this.dereference([curve1, curve2,]), this.defaultAttributes(attributes));
             return new CurveIntersection(newObject);
         }
         /**   Union of two closed path elements. The elements may be of type curve, circle, polygon, inequality. If one element is a curve, it has to be closed. The resulting element is of type curve.*/
         curveUnion(curve1, curve2, attributes = {}) {
-            let newObject = this.board.create('CurveUnion', this.dereference([curve1, curve2,]), JSXGraph.defaultAttributes(`CurveUnion`, attributes));
+            let newObject = this.board.create('CurveUnion', this.dereference([curve1, curve2,]), this.defaultAttributes(attributes));
             return new CurveUnion(newObject);
         }
         derivative(curve, attributes = {}) {
-            let newObject = this.board.create('Derivative', this.dereference([curve,]), JSXGraph.defaultAttributes(`Derivative`, attributes));
+            let newObject = this.board.create('Derivative', this.dereference([curve,]), this.defaultAttributes(attributes));
             return new Derivative(newObject);
         }
         /** Two Points and Radius  This element is used to provide a constructor for an ellipse. An ellipse is given by two points (the foci) and a third point on the ellipse or the length of the major axis.*/
         ellipse(p1, pointO, radius, attributes = {}) {
-            let newObject = this.board.create('Ellipse', this.dereference([p1, pointO, radius,]), JSXGraph.defaultAttributes(`Ellipse`, attributes));
+            let newObject = this.board.create('Ellipse', this.dereference([p1, pointO, radius,]), this.defaultAttributes(attributes));
             return new Ellipse(newObject);
         }
         /**   This element is used to provide a constructor for functiongraph, which is just a wrapper for element Curve with JXG.Curve#X() set to x. The graph is drawn for x in the interval [a,b].*/
         functiongraph(funct, leftBorder, rightBorder, attributes = {}) {
-            let newObject = this.board.create('Functiongraph', this.dereference([funct, leftBorder, rightBorder,]), JSXGraph.defaultAttributes(`Functiongraph`, attributes));
+            let newObject = this.board.create('Functiongraph', this.dereference([funct, leftBorder, rightBorder,]), this.defaultAttributes(attributes));
             return new Functiongraph(newObject);
         }
         // implementation of signature,  hidden from user
@@ -616,85 +644,85 @@ export var TSX;
             if (arguments.length == 1) {
                 // if((typeof (arguments[0])) == 'object' && !Array.isArray(arguments[0]) && !('elValue' in arguments[0]) && !('elType' in arguments[2])) {   // arguments counts from zero
                 if (isJSXAttribute(a)) {
-                    newObject = this.board.create('glider', this.dereference([]), JSXGraph.defaultAttributes('Glider', a)); // as unknown as Glider
+                    newObject = this.board.create('glider', this.dereference([]), this.defaultAttributes(a)); // as unknown as Glider
                 }
                 else {
-                    newObject = this.board.create('glider', this.dereference([a,]), JSXGraph.defaultAttributes('Glider')); // as Glider
+                    newObject = this.board.create('glider', this.dereference([a,]), this.defaultAttributes({})); // as Glider
                 }
             }
             if (arguments.length == 2) {
                 // if((typeof (arguments[1])) == 'object' && !Array.isArray(arguments[1]) && !('elValue' in arguments[1]) && !('elType' in arguments[2])) {   // arguments counts from zero
                 if (isJSXAttribute(b)) {
-                    newObject = this.board.create('glider', this.dereference([a,]), JSXGraph.defaultAttributes('Glider', b)); // as unknown as Glider
+                    newObject = this.board.create('glider', this.dereference([a,]), this.defaultAttributes(b)); // as unknown as Glider
                 }
                 else {
-                    newObject = this.board.create('glider', this.dereference([a, b,]), JSXGraph.defaultAttributes('Glider')); // as Glider
+                    newObject = this.board.create('glider', this.dereference([a, b,]), this.defaultAttributes({})); // as Glider
                 }
             }
             if (arguments.length == 3) {
                 // if((typeof (arguments[2])) == 'object' && !Array.isArray(arguments[2]) && !('elValue' in arguments[2]) && !('elType' in arguments[2])) {   // arguments counts from zero
                 if (isJSXAttribute(c)) {
-                    newObject = this.board.create('glider', this.dereference([a, b,]), JSXGraph.defaultAttributes('Glider', c)); // as unknown as Glider
+                    newObject = this.board.create('glider', this.dereference([a, b,]), this.defaultAttributes(c)); // as unknown as Glider
                 }
                 else {
-                    newObject = this.board.create('glider', this.dereference([a, b, c,]), JSXGraph.defaultAttributes('Glider')); // as Glider
+                    newObject = this.board.create('glider', this.dereference([a, b, c,]), this.defaultAttributes({})); // as Glider
                 }
             }
             return new Glider(newObject);
         }
         /**   Creates a grid to support the user with element placement.*/
         grid(showGrid = true, attributes = {}) {
-            let newObject = this.board.create('Grid', this.dereference([showGrid,]), JSXGraph.defaultAttributes(`Grid`, attributes));
+            let newObject = this.board.create('Grid', this.dereference([showGrid,]), this.defaultAttributes(attributes));
             return new Grid(newObject);
         }
         /**   Hatches can be used to mark congruent lines or curves.*/
         hatch(line, numberHatches, attributes = {}) {
-            let newObject = this.board.create('Hatch', this.dereference([line, numberHatches,]), JSXGraph.defaultAttributes(`Hatch`, attributes));
+            let newObject = this.board.create('Hatch', this.dereference([line, numberHatches,]), this.defaultAttributes(attributes));
             return new Hatch(newObject);
         }
         /**   This element is used to provide a constructor for an hyperbola. An hyperbola is given by two points (the foci) and a third point on the hyperbola or the length of the major axis.*/
         hyperbola(point1, point2, point3, start = -3.14, end = 3.14, attributes = {}) {
-            let newObject = this.board.create('Hyperbola', this.dereference([point1, point2, point3, start, end,]), JSXGraph.defaultAttributes(`Hyperbola`, attributes));
+            let newObject = this.board.create('Hyperbola', this.dereference([point1, point2, point3, start, end,]), this.defaultAttributes(attributes));
             return new Hyperbola(newObject);
         }
         /**   Constructs the incenter of the triangle described by the three given points. https://mathworld.wolfram.com/Incenter.html*/
         incenter(p1, p2, p3, attributes = {}) {
-            let newObject = this.board.create('Incenter', this.dereference([p1, p2, p3,]), JSXGraph.defaultAttributes(`Incenter`, attributes));
+            let newObject = this.board.create('Incenter', this.dereference([p1, p2, p3,]), this.defaultAttributes(attributes));
             return new Incenter(newObject);
         }
         /**   An incircle is given by three points.*/
         incircle(p1, p2, p3, attributes = {}) {
-            let newObject = this.board.create('Incircle', this.dereference([p1, p2, p3,]), JSXGraph.defaultAttributes(`Incircle`, attributes));
+            let newObject = this.board.create('Incircle', this.dereference([p1, p2, p3,]), this.defaultAttributes(attributes));
             return new Incircle(newObject);
         }
         /**   Creates an area indicating the solution of a linear inequality or an inequality of a function graph, i.e. an inequality of type y*/
         inequality(boundaryLine, attributes = {}) {
-            let newObject = this.board.create('Inequality', this.dereference([boundaryLine,]), JSXGraph.defaultAttributes(`Inequality`, attributes));
+            let newObject = this.board.create('Inequality', this.dereference([boundaryLine,]), this.defaultAttributes(attributes));
             return new Inequality(newObject);
         }
         /**   This element is used to provide a constructor for special texts containing a HTML form input element. If the width of element is set with the attribute ”cssStyle”, the width of the label must be added. For this element, the attribute ”display” has to have the value 'html' (which is the default). The underlying HTML input field can be accessed through the sub-object 'rendNodeInput', e.g. to add event listeners.*/
         input(x, y, prompt, initial, attributes = {}) {
-            let newObject = this.board.create('Input', this.dereference([x, y, prompt, initial,]), JSXGraph.defaultAttributes(`Input`, attributes));
+            let newObject = this.board.create('Input', this.dereference([x, y, prompt, initial,]), this.defaultAttributes(attributes));
             return new Input(newObject);
         }
         /**   This element is used to visualize the integral of a given curve over a given interval.*/
         integral(range, curve, attributes = {}) {
-            let newObject = this.board.create('Integral', this.dereference([range, curve,]), JSXGraph.defaultAttributes(`Integral`, attributes));
+            let newObject = this.board.create('Integral', this.dereference([range, curve,]), this.defaultAttributes(attributes));
             return new Integral(newObject);
         }
         /**   An intersection point is a point which lives on two JSXGraph elements, i.e. it is one point of the set consisting of the intersection points of the two elements. The following element types can be (mutually) intersected: line, circle, curve, polygon, polygonal chain.*/
-        intersection(element1, element2, positiveNegativeRoot = 0, attributes = {}) {
-            let newObject = this.board.create('intersection', this.dereference([element1, element2, positiveNegativeRoot]), attributes);
+        intersection(element1, element2, attributes = {}) {
+            let newObject = this.board.create('intersection', this.dereference([element1, element2, 0]), this.defaultAttributes(attributes));
             return new Point(newObject);
         }
         /**   A major arc is a segment of the circumference of a circle having measure greater than or equal to 180 degrees (pi radians). It is defined by a center, one point that defines the radius, and a third point that defines the angle of the arc.*/
         majorArc(p1, p2, p3, attributes = {}) {
-            let newObject = this.board.create('MajorArc', this.dereference([p1, p2, p3,]), JSXGraph.defaultAttributes(`MajorArc`, attributes));
+            let newObject = this.board.create('MajorArc', this.dereference([p1, p2, p3,]), this.defaultAttributes(attributes));
             return new MajorArc(newObject);
         }
         /**   A major sector is a sector of a circle having measure greater than or equal to 180 degrees (pi radians). It is defined by a center, one point that defines the radius, and a third point that defines the angle of the sector.*/
         majorSector(p1, p2, p3, attributes = {}) {
-            let newObject = this.board.create('MajorSector', this.dereference([p1, p2, p3,]), JSXGraph.defaultAttributes(`MajorSector`, attributes));
+            let newObject = this.board.create('MajorSector', this.dereference([p1, p2, p3,]), this.defaultAttributes(attributes));
             return new MajorSector(newObject);
         }
         // implementation of signature,  hidden from user
@@ -703,50 +731,55 @@ export var TSX;
             if (arguments.length == 1) {
                 // if((typeof (arguments[0])) == 'object' && !Array.isArray(arguments[0]) && !('elValue' in arguments[0]) && !('elType' in arguments[2])) {   // arguments counts from zero
                 if (isJSXAttribute(a)) {
-                    newObject = this.board.create('midpoint', this.dereference([]), JSXGraph.defaultAttributes('Midpoint', a)); // as unknown as Midpoint
+                    newObject = this.board.create('midpoint', this.dereference([]), this.defaultAttributes(a)); // as unknown as Midpoint
                 }
                 else {
-                    newObject = this.board.create('midpoint', this.dereference([a,]), JSXGraph.defaultAttributes('Midpoint')); // as Midpoint
+                    newObject = this.board.create('midpoint', this.dereference([a,]), this.defaultAttributes({})); // as Midpoint
                 }
             }
             if (arguments.length == 2) {
                 // if((typeof (arguments[1])) == 'object' && !Array.isArray(arguments[1]) && !('elValue' in arguments[1]) && !('elType' in arguments[2])) {   // arguments counts from zero
                 if (isJSXAttribute(b)) {
-                    newObject = this.board.create('midpoint', this.dereference([a,]), JSXGraph.defaultAttributes('Midpoint', b)); // as unknown as Midpoint
+                    newObject = this.board.create('midpoint', this.dereference([a,]), this.defaultAttributes(b)); // as unknown as Midpoint
                 }
                 else {
-                    newObject = this.board.create('midpoint', this.dereference([a, b,]), JSXGraph.defaultAttributes('Midpoint')); // as Midpoint
+                    newObject = this.board.create('midpoint', this.dereference([a, b,]), this.defaultAttributes({})); // as Midpoint
                 }
             }
             if (arguments.length == 3) {
                 // if((typeof (arguments[2])) == 'object' && !Array.isArray(arguments[2]) && !('elValue' in arguments[2]) && !('elType' in arguments[2])) {   // arguments counts from zero
                 if (isJSXAttribute(c)) {
-                    newObject = this.board.create('midpoint', this.dereference([a, b,]), JSXGraph.defaultAttributes('Midpoint', c)); // as unknown as Midpoint
+                    newObject = this.board.create('midpoint', this.dereference([a, b,]), this.defaultAttributes(c)); // as unknown as Midpoint
                 }
                 else {
-                    newObject = this.board.create('midpoint', this.dereference([a, b, c,]), JSXGraph.defaultAttributes('Midpoint')); // as Midpoint
+                    newObject = this.board.create('midpoint', this.dereference([a, b, c,]), this.defaultAttributes({})); // as Midpoint
                 }
             }
             return new Midpoint(newObject);
         }
         /**   A minor arc is a segment of the circumference of a circle having measure less than or equal to 180 degrees (pi radians). It is defined by a center, one point that defines the radius, and a third point that defines the angle of the arc.*/
         minorArc(p1, p2, p3, attributes = {}) {
-            let newObject = this.board.create('MinorArc', this.dereference([p1, p2, p3,]), JSXGraph.defaultAttributes(`MinorArc`, attributes));
+            let newObject = this.board.create('MinorArc', this.dereference([p1, p2, p3,]), this.defaultAttributes(attributes));
             return new MinorArc(newObject);
         }
         /**   A minor sector is a sector of a circle having measure less than or equal to 180 degrees (pi radians). It is defined by a center, one point that defines the radius, and a third point that defines the angle of the sector.*/
         minorSector(p1, p2, p3, attributes = {}) {
-            let newObject = this.board.create('MinorSector', this.dereference([p1, p2, p3,]), JSXGraph.defaultAttributes(`MinorSector`, attributes));
+            let newObject = this.board.create('MinorSector', this.dereference([p1, p2, p3,]), this.defaultAttributes(attributes));
             return new MinorSector(newObject);
         }
         /**   A mirror element of a point, line, circle, curve, polygon will be constructed.*/
         mirrorelement(element, acrossPoint, attributes = {}) {
-            let newObject = this.board.create('mirrorelement', this.dereference([element, acrossPoint,]), JSXGraph.defaultAttributes(`mirrorelement`, attributes));
+            let newObject = this.board.create('mirrorelement', this.dereference([element, acrossPoint,]), this.defaultAttributes(attributes));
             return new mirrorelement(newObject);
+        }
+        /**   A mirror point will be constructed.*/
+        mirrorpoint(p1, p2, attributes = {}) {
+            let newObject = this.board.create('Mirrorpoint', this.dereference([p1, p2,]), this.defaultAttributes(attributes));
+            return new Mirrorpoint(newObject);
         }
         /**   A non-reflex angle is the acute or obtuse instance of an angle. It is defined by a center, one point that defines the radius, and a third point that defines the angle of the sector.*/
         nonReflexAngle(point1, point2, point3, attributes = {}) {
-            let newObject = this.board.create('NonReflexAngle', this.dereference([point1, point2, point3,]), JSXGraph.defaultAttributes(`NonReflexAngle`, attributes));
+            let newObject = this.board.create('NonReflexAngle', this.dereference([point1, point2, point3,]), this.defaultAttributes(attributes));
             return new NonReflexAngle(newObject);
         }
         // implementation of signature,  hidden from user
@@ -755,80 +788,85 @@ export var TSX;
             if (arguments.length == 1) {
                 // if((typeof (arguments[0])) == 'object' && !Array.isArray(arguments[0]) && !('elValue' in arguments[0]) && !('elType' in arguments[2])) {   // arguments counts from zero
                 if (isJSXAttribute(a)) {
-                    newObject = this.board.create('normal', this.dereference([]), JSXGraph.defaultAttributes('Normal', a)); // as unknown as Normal
+                    newObject = this.board.create('normal', this.dereference([]), this.defaultAttributes(a)); // as unknown as Normal
                 }
                 else {
-                    newObject = this.board.create('normal', this.dereference([a,]), JSXGraph.defaultAttributes('Normal')); // as Normal
+                    newObject = this.board.create('normal', this.dereference([a,]), this.defaultAttributes({})); // as Normal
                 }
             }
             if (arguments.length == 2) {
                 // if((typeof (arguments[1])) == 'object' && !Array.isArray(arguments[1]) && !('elValue' in arguments[1]) && !('elType' in arguments[2])) {   // arguments counts from zero
                 if (isJSXAttribute(b)) {
-                    newObject = this.board.create('normal', this.dereference([a,]), JSXGraph.defaultAttributes('Normal', b)); // as unknown as Normal
+                    newObject = this.board.create('normal', this.dereference([a,]), this.defaultAttributes(b)); // as unknown as Normal
                 }
                 else {
-                    newObject = this.board.create('normal', this.dereference([a, b,]), JSXGraph.defaultAttributes('Normal')); // as Normal
+                    newObject = this.board.create('normal', this.dereference([a, b,]), this.defaultAttributes({})); // as Normal
                 }
             }
             if (arguments.length == 3) {
                 // if((typeof (arguments[2])) == 'object' && !Array.isArray(arguments[2]) && !('elValue' in arguments[2]) && !('elType' in arguments[2])) {   // arguments counts from zero
                 if (isJSXAttribute(c)) {
-                    newObject = this.board.create('normal', this.dereference([a, b,]), JSXGraph.defaultAttributes('Normal', c)); // as unknown as Normal
+                    newObject = this.board.create('normal', this.dereference([a, b,]), this.defaultAttributes(c)); // as unknown as Normal
                 }
                 else {
-                    newObject = this.board.create('normal', this.dereference([a, b, c,]), JSXGraph.defaultAttributes('Normal')); // as Normal
+                    newObject = this.board.create('normal', this.dereference([a, b, c,]), this.defaultAttributes({})); // as Normal
                 }
             }
             return new Normal(newObject);
         }
         /**   This is used to construct a point that is the orthogonal projection of a point to a line.*/
         orthogonalprojection(point, line, attributes = {}) {
-            let newObject = this.board.create('Orthogonalprojection', this.dereference([point, line,]), JSXGraph.defaultAttributes(`Orthogonalprojection`, attributes));
+            let newObject = this.board.create('Orthogonalprojection', this.dereference([point, line,]), this.defaultAttributes(attributes));
             return new Orthogonalprojection(newObject);
+        }
+        /**   This element is used to provide a constructor for the ”other” intersection point.*/
+        otherIntersection(element1, element2, firstIntersection, attributes = {}) {
+            let newObject = this.board.create('otherintersection', this.dereference([element1, element2, firstIntersection]), attributes);
+            return new Point(newObject);
         }
         /**   This element is used to provide a constructor for a parabola. A parabola is given by one point (the focus) and a line (the directrix).*/
         parabola(focalPoint, line, attributes = {}) {
-            let newObject = this.board.create('Parabola', this.dereference([focalPoint, line,]), JSXGraph.defaultAttributes(`Parabola`, attributes));
+            let newObject = this.board.create('Parabola', this.dereference([focalPoint, line,]), this.defaultAttributes(attributes));
             return new Parabola(newObject);
         }
         /**   This element is used to provide a constructor for a segment. It's strictly spoken just a wrapper for element Line with Line#straightFirst and Line#straightLast properties set to false. If there is a third variable then the segment has a fixed length (which may be a function, too).*/
         segment(P1, P2, attributes = {}) {
-            let newObject = this.board.create('Segment', this.dereference([P1, P2,]), JSXGraph.defaultAttributes(`Segment`, attributes));
+            let newObject = this.board.create('Segment', this.dereference([P1, P2,]), this.defaultAttributes(attributes));
             return new Segment(newObject);
         }
         /**   */
         parallelogram(p1, p2, p3, attributes = {}) {
-            let newObject = this.board.create('Parallelogram', this.dereference([p1, p2, p3,]), JSXGraph.defaultAttributes(`Parallelogram`, attributes));
+            let newObject = this.board.create('Parallelogram', this.dereference([p1, p2, p3,]), this.defaultAttributes(attributes));
             return new Parallelogram(newObject);
         }
         /**   This element is used to provide a constructor for a perpendicular.*/
         perpendicular(line, point, attributes = {}) {
-            let newObject = this.board.create('Perpendicular', this.dereference([line, point,]), JSXGraph.defaultAttributes(`Perpendicular`, attributes));
+            let newObject = this.board.create('Perpendicular', this.dereference([line, point,]), this.defaultAttributes(attributes));
             return new Perpendicular(newObject);
         }
         /**   This element is used to provide a constructor for the polar line of a point with respect to a conic or a circle.*/
         polarLine(conic, point, attributes = {}) {
-            let newObject = this.board.create('PolarLine', this.dereference([conic, point,]), JSXGraph.defaultAttributes(`PolarLine`, attributes));
+            let newObject = this.board.create('PolarLine', this.dereference([conic, point,]), this.defaultAttributes(attributes));
             return new PolarLine(newObject);
         }
         /**   This element is used to provide a constructor for the pole point of a line with respect to a conic or a circle.*/
         polePoint(conic, line, attributes = {}) {
-            let newObject = this.board.create('PolePoint', this.dereference([conic, line,]), JSXGraph.defaultAttributes(`PolePoint`, attributes));
+            let newObject = this.board.create('PolePoint', this.dereference([conic, line,]), this.defaultAttributes(attributes));
             return new PolePoint(newObject);
         }
         /**   A reflex angle is the neither acute nor obtuse instance of an angle. It is defined by a center, one point that defines the radius, and a third point that defines the angle of the sector.*/
         reflexAngle(point1, point2, point3, attributes = {}) {
-            let newObject = this.board.create('ReflexAngle', this.dereference([point1, point2, point3,]), JSXGraph.defaultAttributes(`ReflexAngle`, attributes));
+            let newObject = this.board.create('ReflexAngle', this.dereference([point1, point2, point3,]), this.defaultAttributes(attributes));
             return new ReflexAngle(newObject);
         }
         /**   Constructs a regular polygon. It needs two points which define the base line and the number of vertices.*/
         regularPolygon(P1, P2, nVertices, attributes = {}) {
-            let newObject = this.board.create('RegularPolygon', this.dereference([P1, P2, nVertices,]), JSXGraph.defaultAttributes(`RegularPolygon`, attributes));
+            let newObject = this.board.create('RegularPolygon', this.dereference([P1, P2, nVertices,]), this.defaultAttributes(attributes));
             return new RegularPolygon(newObject);
         }
         /**   A slider can be used to choose values from a given range of numbers.*/
         slider(StartPoint, EndPoint, minimum_initial_maximum, attributes = {}) {
-            let newObject = this.board.create('Slider', this.dereference([StartPoint, EndPoint, minimum_initial_maximum,]), JSXGraph.defaultAttributes(`Slider`, attributes));
+            let newObject = this.board.create('Slider', this.dereference([StartPoint, EndPoint, minimum_initial_maximum,]), this.defaultAttributes(attributes));
             return new Slider(newObject);
         }
         // implementation of signature,  hidden from user
@@ -837,45 +875,45 @@ export var TSX;
             if (arguments.length == 1) {
                 // if((typeof (arguments[0])) == 'object' && !Array.isArray(arguments[0]) && !('elValue' in arguments[0]) && !('elType' in arguments[2])) {   // arguments counts from zero
                 if (isJSXAttribute(a)) {
-                    newObject = this.board.create('slopetriangle', this.dereference([]), JSXGraph.defaultAttributes('Slopetriangle', a)); // as unknown as Slopetriangle
+                    newObject = this.board.create('slopetriangle', this.dereference([]), this.defaultAttributes(a)); // as unknown as Slopetriangle
                 }
                 else {
-                    newObject = this.board.create('slopetriangle', this.dereference([a,]), JSXGraph.defaultAttributes('Slopetriangle')); // as Slopetriangle
+                    newObject = this.board.create('slopetriangle', this.dereference([a,]), this.defaultAttributes({})); // as Slopetriangle
                 }
             }
             if (arguments.length == 2) {
                 // if((typeof (arguments[1])) == 'object' && !Array.isArray(arguments[1]) && !('elValue' in arguments[1]) && !('elType' in arguments[2])) {   // arguments counts from zero
                 if (isJSXAttribute(b)) {
-                    newObject = this.board.create('slopetriangle', this.dereference([a,]), JSXGraph.defaultAttributes('Slopetriangle', b)); // as unknown as Slopetriangle
+                    newObject = this.board.create('slopetriangle', this.dereference([a,]), this.defaultAttributes(b)); // as unknown as Slopetriangle
                 }
                 else {
-                    newObject = this.board.create('slopetriangle', this.dereference([a, b,]), JSXGraph.defaultAttributes('Slopetriangle')); // as Slopetriangle
+                    newObject = this.board.create('slopetriangle', this.dereference([a, b,]), this.defaultAttributes({})); // as Slopetriangle
                 }
             }
             if (arguments.length == 3) {
                 // if((typeof (arguments[2])) == 'object' && !Array.isArray(arguments[2]) && !('elValue' in arguments[2]) && !('elType' in arguments[2])) {   // arguments counts from zero
                 if (isJSXAttribute(c)) {
-                    newObject = this.board.create('slopetriangle', this.dereference([a, b,]), JSXGraph.defaultAttributes('Slopetriangle', c)); // as unknown as Slopetriangle
+                    newObject = this.board.create('slopetriangle', this.dereference([a, b,]), this.defaultAttributes(c)); // as unknown as Slopetriangle
                 }
                 else {
-                    newObject = this.board.create('slopetriangle', this.dereference([a, b, c,]), JSXGraph.defaultAttributes('Slopetriangle')); // as Slopetriangle
+                    newObject = this.board.create('slopetriangle', this.dereference([a, b, c,]), this.defaultAttributes({})); // as Slopetriangle
                 }
             }
             return new Slopetriangle(newObject);
         }
         /**   With the element tangent the slope of a line, circle, or curve in a certain point can be visualized. A tangent is always constructed by a glider on a line, circle, or curve and describes the tangent in the glider point on that line, circle, or curve.*/
         tangent(glider, attributes = {}) {
-            let newObject = this.board.create('Tangent', this.dereference([glider,]), JSXGraph.defaultAttributes(`Tangent`, attributes));
+            let newObject = this.board.create('Tangent', this.dereference([glider,]), this.defaultAttributes(attributes));
             return new Tangent(newObject);
         }
         /**   A tape measure can be used to measure distances between points.*/
         tapemeasure(P1, P2, attributes = {}) {
-            let newObject = this.board.create('Tapemeasure', this.dereference([P1, P2,]), JSXGraph.defaultAttributes(`Tapemeasure`, attributes));
+            let newObject = this.board.create('Tapemeasure', this.dereference([P1, P2,]), this.defaultAttributes(attributes));
             return new Tapemeasure(newObject);
         }
         /**   This element is used to provide a constructor for trace curve (simple locus curve), which is realized as a special curve.*/
         tracecurve(glider, point, attributes = {}) {
-            let newObject = this.board.create('Tracecurve', this.dereference([glider, point,]), JSXGraph.defaultAttributes(`Tracecurve`, attributes));
+            let newObject = this.board.create('Tracecurve', this.dereference([glider, point,]), this.defaultAttributes(attributes));
             return new Tracecurve(newObject);
         }
         /** Here, lower is an array of the form [x, y] and dim is an array of the form [w, h]. The arrays [x, y] and [w, h] define the 2D frame into which the 3D cube is (roughly) projected. If the view azimuth=0 and elevation=0, the 3D view will cover a rectangle with lower left corner [x,y] and side lengths [w, h] of the board. The 'cube' is of the form [[x1, x2], [y1, y2], [z1, z2]] which determines the coordinate ranges of the 3D cube.   This element creates a 3D view.*/
@@ -2559,7 +2597,7 @@ export var TSX;
         }
     }
     TSX.Parabola = Parabola;
-    class Parallelpoint extends GeometryElement {
+    class Parallelpoint extends Point {
         constructor(elValues) {
             super(elValues);
         }

@@ -10,7 +10,9 @@ const JSXGraph = new TSX.JSXGraph();
     b.text(-4.5, 2.6, new Date().toLocaleTimeString())
 
     let p = b.point([0, 0], { name: 'label' })
-    let t = b.text(-4, 4, '', { fontSize: 15 })
+    let t = b.text(-4, 1, '', { fontSize: 15 })
+    let c = b.checkbox(-4, 0, 'Checkbox')
+    let bt = b.button(-4, -1, 'Button', () => alert('hi'))
 
 
 
@@ -32,6 +34,63 @@ const JSXGraph = new TSX.JSXGraph();
     b.on('keydown', event);    // ONLY keydown works
 
 }
+{
+    // https://jsxgraph.uni-bayreuth.de/wiki/index.php?title=Oscillator
+
+    //     var board = JXG.JSXGraph.initBoard('jxgbox', {boundingbox: [-10, 10, 10, -10], keepaspectratio: true, axis: true, grid: false}),
+    //     line = board.create('line', [[0,8], [0,-10]], {visible: false, straightFirst: false, straightLast: false}),
+    //     point = board.create('glider', [-8, -7, line], {name: 'Weight'}),
+    //     isInDragMode = false,
+    //     springHangup = board.create('point', [0, 9], {color: 'black', name: 'Spring', fixed: true}),
+    //     i, numberOfSpringRings = 10, springRings = [];
+
+    // for(i=0; i<numberOfSpringRings; i++) {
+    //     springRings[i] = board.create('point', [0.5-i%2, function(i) { return function() { return springHangup.Y()-(i+1)*Math.abs((springHangup.Y() - point.Y())/(numberOfSpringRings+1))}; }(i)], {withLabel: false, color: 'black', size: 1});
+    //     if(i>0)
+    //         board.create('segment', [springRings[i-1], springRings[i]], {color: 'black', strokeWidth: 1});
+    // }
+    // board.create('segment', [springHangup, springRings[0]], {color: 'black', strokeWidth: 1});
+    // board.create('segment', [springRings[numberOfSpringRings-1], point], {color: 'black', strokeWidth: 1});
+
+    // function startAnimation(startY) {
+    //     point.moveAlong(function() {
+    //         var f = function(t, x) {
+    //                 var c = 0.1, k = 0.5, m = 1;
+    //                 return [x[1], -c / m * x[1] - k / m * x[0]];
+    //             },
+    //             area = [0, 200],
+    //             numberOfEvaluations = (area[1] - area[0]) * 100,
+    //             data = JXG.Math.Numerics.rungeKutta('heun', [startY, 0], area, numberOfEvaluations, f),
+    //             duration = 20 * 1e3;
+
+    //         return function(t) {
+    //             if (t >= duration)
+    //                 return NaN;
+
+    //             return [0, data[Math.floor(t / duration * numberOfEvaluations)][0]];
+    //         }
+    //     }());
+    // }
+
+    // function hook() {
+    //     if(!isInDragMode) {
+    //         if(board.mode === board.BOARD_MODE_DRAG) {
+    //             board.stopAllAnimation();
+    //             isInDragMode = true;
+    //         }
+    //     }
+
+    //     if(isInDragMode) {'Point
+    //         if(board.mode !== board.BOARD_MODE_DRAG) {
+    //             isInDragMode = false;
+    //             startAnimation(point.Y());
+    //         }
+    //     }
+    // }
+    // board.addHook(hook);
+    // startAnimation(-5);
+
+}
 
 {
     const b = JSXGraph.initBoard('html01', { boundingbox: [-10, 10, 10, -10] })
@@ -43,6 +102,7 @@ const JSXGraph = new TSX.JSXGraph();
     let p4 = b.point([-1.0, 7.0])
 
 
+
     let poly = b.polygon([p1, p2, p3, p4], { hasInnerPoints: true })
 
     let pol, g;
@@ -50,27 +110,35 @@ const JSXGraph = new TSX.JSXGraph();
     let fill = 'red';
     let p = []
 
-    p.push(b.point([-2, -1], { size: 5, strokeColor: col, fillColor: fill, face: 'cross' }));
-    p.push(b.point([2, -1], { size: 5, strokeColor: col, fillColor: fill, showInfobox: false }));
-    p.push(b.point([2, 1], { size: 5, strokeColor: col, fillColor: fill }));
-    p.push(b.point([-2, 1], { size: 5, strokeColor: col, fillColor: fill }));
+    p.push(b.point([-2, -1], { strokeWidth: 5, strokeColor: col, fillColor: fill, face: 'cross' }));
+    p.push(b.point([2, -1], { strokeWidth: 5, strokeColor: col, fillColor: fill, showInfobox: false }));
+    p.push(b.point([2, 1], { strokeWidth: 5, strokeColor: col, fillColor: fill }));
+    p.push(b.point([-2, 1], { strokeWidth: 5, strokeColor: col, fillColor: fill }));
 
     pol = b.polygon(p, { hasInnerPoints: true })
     g = b.group(p)
 
-    // let rp = b.regularPolygon([-5,-7],[-5,-4],5,{hasInnerPoints:true})
-    // let test = b.point.at([-1,-5])
-    // b.text(-5,0,()=>(rp.hasPoint(test.X(),test.Y())?'true':'false') + Date().toString() )
 
     let d1 = b.point([-8, -8])
     let d2 = b.point([-3, -3])
-    let d3 = b.point([() => d1.X(), () => d2.Y()], { color: 'blue' })
-    let d4 = b.point([() => d2.X(), () => d1.Y()], { color: 'blue' })
+    let d3 = b.point([() => d1.X(), () => d2.Y()], { strokeColor: 'blue' })
+    let d4 = b.point([() => d2.X(), () => d1.Y()], { strokeColor: 'blue' })
     b.polygon([d1, d3, d2, d4], { hasInnerPoints: true });
 
     d3.isDraggable = true;
     d4.isDraggable = true;
 
+
+
+
+    // let f1 = b.point(5, -9)
+    // let f2 = b.point(9, -5)
+    // let pm = b.midpoint(f1, f2, { visible: false })
+    // let circ = b.circle(pm, f1, { visible: false })
+    // let f3 = b.glider(circ, 5, -5, { color: 'green' })
+    // let t = b.transform.rotate(Math.PI, pm)
+    // let f4 = b.transform.point(f3, t, '', { color: 'blue' })
+    // b.polygon([f1, f3, f2, f4], { hasInnerPoints: false })
 
 
 }
@@ -92,7 +160,7 @@ const JSXGraph = new TSX.JSXGraph();
     // and a line that doesn't always intersect
     let p4 = b.point([7, -9]) // outside
     let l2 = b.line(p2, p4)
-    let i2 = b.intersection(c1, l2, 0, { name: 'intpoint' });
+    let i2 = b.intersection(c1, l2, { name: 'intpoint' });
 
 
 }
@@ -110,7 +178,7 @@ const JSXGraph = new TSX.JSXGraph();
     let c1 = board.circle(a, b)
     let c2 = board.circle(b, a)
 
-    let c = board.intersection(c1, c2, 1)
+    let c = board.intersection(c1, c2)
     board.segment(a, c)
     board.segment(b, c)
 
@@ -122,10 +190,12 @@ const JSXGraph = new TSX.JSXGraph();
     const board = JSXGraph.initBoard('html04',)
     board.text(-4.5, 4.5, 'Euclid 2nd Prop', { fontSize: 15 })
 
+    // board.setDefaultAttributes({name:''})
+
     // problems
-    let a = board.point([2, 2], { name: 'A' })
-    let b = board.point([0, 0], { name: 'B' })
-    let c = board.point([-2, 0], { name: 'C' })
+    let a = board.point([2, 2])
+    let b = board.point([0, 0])
+    let c = board.point([-2, 0])
     board.segment(b, c)
 
     // solution
@@ -134,20 +204,22 @@ const JSXGraph = new TSX.JSXGraph();
     // create the equlaterial triangle from Prop 1
     let c1 = board.circle(a, b, { visible: false })
     let c2 = board.circle(b, a, { visible: false })
-    let d = board.intersection(c1, c2, 0)
+    let d = board.intersection(c1, c2)
 
     // draw line b-d and create the intersection point e
     let l1 = board.line(b, d)
-    let e = board.intersection(l1, c0, 1)
+    let e = board.intersection(l1, c0)
 
     let c3 = board.circle(d, e)
 
     // extend the line from D-A to F
     let l2 = board.line(d, a,)
-    let f = board.intersection(l2, c3, 0)
+    let f = board.intersection(l2, c3)
     board.segment(a, f, { color: 'red' })
 
 }
+
+
 {
     let B = JSXGraph.initBoard('html05', { boundingbox: [-1, 10, 11, -2], axis: true, showCopyright: false, showNavigation: false });
     let x = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10];
@@ -177,9 +249,9 @@ const JSXGraph = new TSX.JSXGraph();
     let brd = JSXGraph.initBoard('html07', { boundingbox: [-2, 5, 5, -2] });
     let urlImg = "src/uccellino.jpg";
 
-    let p0 = brd.point([0, 0], { name: 'offset', size: 8, opacity: 0.3 });
+    let p0 = brd.point([0, 0], { name: 'offset', strokeWidth: 8, strokeOpacity: 0.3 });
 
-    let p1 = brd.point([3, 0], { name: 'rotate+scale', size: 8, opacity: 0.3 });
+    let p1 = brd.point([3, 0], { name: 'rotate+scale', strokeWidth: 8, opacity: 0.3 });
     let im = brd.image(urlImg, [0, 0], [3, 3]);
     let li = brd.segment(p0, p1, { dash: 2 });           // Just for illustration
 
@@ -222,7 +294,7 @@ const JSXGraph = new TSX.JSXGraph();
     let s = brd.slider([10, 70], [100, 70], [0, 1, 3], { name: 'scale' });
     let pointlist: TSX.Point[] = [];
     for (let i = 0; i < 30; i++) {
-        pointlist.push(brd.point([() => 200 * Math.random(), () => s.Value() * 30 * Math.random() + 20], { name: '', style: 4, strokeColor: "#0000a0" }));
+        pointlist.push(brd.point([() => 200 * Math.random(), () => s.Value() * 30 * Math.random() + 20], { name: '', strokeWidth: 4, strokeColor: "#0000a0" }));
     }
     brd.unsuspendUpdate();
 
@@ -696,7 +768,6 @@ const JSXGraph = new TSX.JSXGraph();
     B.print('cirq radius', cirq.Radius())
     B.print('cirq perimeter', cirq.Perimeter())
 
-    // cirq.hasPoint()
 
 }
 
@@ -1181,13 +1252,13 @@ const JSXGraph = new TSX.JSXGraph();
     let median_b = board.line(B, M_b, { dash: 4, color: "gray", strokeOpacity: 0.3 })
     let median_c = board.line(C, M_c, { dash: 4, color: "gray", strokeOpacity: 0.3 })
 
-    let centroid = board.intersection(median_a, median_b, 1, { name: "centroid" })
+    let centroid = board.intersection(median_a, median_b, { name: "centroid" })
 
     let p_a = board.perpendicular(side_a, A, { dash: 1, color: "gray", strokeOpacity: 0.3 })
     let p_b = board.perpendicular(side_b, B, { dash: 1, color: "gray", strokeOpacity: 0.3 })
     let p_c = board.perpendicular(side_c, C, { dash: 1, color: "gray", strokeOpacity: 0.3 })
 
-    let orthocenter = board.intersection(p_a, p_b, 1, { name: "orthocenter" })
+    let orthocenter = board.intersection(p_a, p_b, { name: "orthocenter" })
 
     let euler_line = board.line(orthocenter, centroid);
 
@@ -1305,7 +1376,7 @@ const JSXGraph = new TSX.JSXGraph();
 
 {
     const board = JSXGraph.initBoard('html48', { boundingbox: [-5, 10, 5, -1] })
-    board.print('cardinal spline')
+    board.print('cardinal spline and derivative')
 
     //create a cardinal spline out of an array of JXG points with adjustable tension
     //create array of points
@@ -1316,10 +1387,18 @@ const JSXGraph = new TSX.JSXGraph();
     let p5 = board.point([3, 0])
     let p = [p1, p2, p3, p4, p5]
 
-    // tension
+
+
+    // // tension
     let tau = board.slider([-4, 8], [2, 8], [0.001, 0.5, 1], { name: 'tau' });
+
+
+
+    // this works
     let cardinal = board.NumericsMath.CardinalSpline(p, () => tau.Value())  //returns [fn, fn, fn#Points-3]
     let c = board.curve(cardinal[0], cardinal[1], -5, 5, { strokeWidth: 3 })
+    // this doesn't work
+    // let c = board.cardinalspline(p,()=>tau.Value(),'uniform')
 
     let t = board.transform.translate(-2, -2);
     let c2 = board.transform.curve(c, t, { strokeColor: 'green' });
@@ -1328,6 +1407,7 @@ const JSXGraph = new TSX.JSXGraph();
     // note that the transform circle also changes size with the original ciricle (as it should)
     let cl1 = board.circle([-3, 3], [-2, 2], { strokeColor: 'black', center: { visible: true } });
     let cl2 = board.transform.circle(cl1, t, { strokeColor: 'black' });
+
 
 
 }
@@ -1461,9 +1541,71 @@ const JSXGraph = new TSX.JSXGraph();
 
 }
 
+{
+    const board = JSXGraph.initBoard('html54', { axis: true })
+    board.print('Derivative and Integral')
+    board.print('d(x^2) is 2x')
+    board.print
+
+    let fxy = (x: number, y: number) => Math.pow(x, 2)
+    let cu = board.functiongraph(fxy)
+    let d = board.derivative(cu, { dash: 2 })
+    let i1 = board.integral([0, 2], d)
+
+    let z1 = board.functiongraph((t: number) => (Math.cos(t) * t) - 3);
+    let z2 = board.integral([-2.0, 2.0], z1, { fillColor: 'pink' });
+
+}
+
+{
+    const board = JSXGraph.initBoard('html55')
+    board.print('Mirrorpoint')
+
+    board.setBoundingBox(-10, 10, 10, -10)
+    let ap1 = board.point([3.0, 3.0]);
+    let ap2 = board.point([6.0, 1.0]);
+    let mp1 = board.mirrorpoint(ap1, ap2);
+
+    ///////////////////////
+
+    // Create an intersection point of circle and line
+    var p1 = board.point([2.0, 2.0]);
+    var c1 = board.circle(p1, 4.0);
+
+    var p2 = board.point([2.0, 2.0]);
+    var p3 = board.point([2.0, 2.0]);
+    var l1 = board.line(p2, p3);
+
+    var i = board.intersection(c1, l1);
+    var j = board.otherIntersection(c1, l1, i);
+
+}
+
+{
+    const JSX = JSXGraph.initBoard('html56')
+    JSX.print('point')
+
+    JSX.point([3, 2], { strokeColor: 'blue', strokeWidth: 5, strokeOpacity: .5 })
+
+    let q = [3, 3]
+    JSX.point(q, { showInfobox: false })
+
+
+    let p1 = JSX.point([-1,0])
+    let p2 = JSX.point([1,0])
+    JSX.line(p1,p2)
+
+    let c1 = JSX.circle(p1,p2)
+    let c2 = JSX.circle(p2,p1)
+
+    JSX.intersection(c1,c2,{color:'red'})
+    JSX.intersection(c2,c1,{color:'blue'})
+
+}
 
 
 
+/////////////// last ///////////////////
 {
 
 

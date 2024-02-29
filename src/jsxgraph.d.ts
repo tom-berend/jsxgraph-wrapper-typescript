@@ -4,10 +4,6 @@ export declare namespace TSX {
         color?: String;
         /** Opacity of the element (between 0 and 1). */
         opacity?: Number;
-        /** Creates a grid to support the user with element placement. */
-        grid?: Boolean;
-        /**  ???. */
-        axis?: Boolean;
         /** The fill color of this geometry element. */
         fillColor?: String;
         /** Opacity for fill color. */
@@ -158,8 +154,6 @@ export declare namespace TSX {
         face?: String;
         /** If true, the infobox is shown on mouse/pen over, if false not. If the value is 'inherit', the value of JXG.Board#showInfobox is taken. true | false | 'inherit' */
         showInfobox?: Boolean | String;
-        /** Size of a point, either in pixel or user coordinates. Means radius resp. half the width of a point (depending on the face). */
-        size?: Number;
         /** This attribute was used to determined the point layout. It was derived from GEONExT and was replaced by Point#face and Point#size. */
         style?: Number;
     }
@@ -499,6 +493,8 @@ export declare namespace TSX {
         /** Type of transformation. Possible values are 'Euclidean', 'projective'.If the value is 'Euclidean', the mirror element of a circle is again a circle, otherwise it is a conic section. */
         type?: String;
     }
+    interface MirrorpointAttributes extends PointAttributes {
+    }
     interface NonReflexAngleAttributes extends AngleAttributes {
     }
     interface NormalAttributes extends LineAttributes {
@@ -507,9 +503,11 @@ export declare namespace TSX {
     }
     interface OrthogonalprojectionAttributes extends PointAttributes {
     }
+    interface OtherIntersectionAttributes extends PointAttributes {
+    }
     interface ParabolaAttributes extends ConicAttributes {
     }
-    interface ParallelpointAttributes {
+    interface ParallelpointAttributes extends PointAttributes {
     }
     interface SegmentAttributes extends LineAttributes {
     }
@@ -745,8 +743,6 @@ export declare namespace TSX {
     /** Initialize a new board. */
     export class JSXGraph {
         initBoard(html: string, attributes?: InitBoardAttributes): JSXBoard;
-        /** allows setting default attributes by class or across the board */
-        static defaultAttributes(jClass: string, attrs?: Object): Object;
         /** Version of underlying JSX library */
         get version(): String;
         /** Delete a board and all its contents. */
@@ -817,9 +813,13 @@ export declare namespace TSX {
     export class JSXBoard {
         board: JSXBoard | null;
         private printLineNumber;
+        private defaultAttrs;
         get defaultAxes(): GeometryElement;
         get canvasWidth(): number;
         get canvasHeight(): number;
+        /** allows setting default attributes by class or across the board */
+        setDefaultAttributes(attrs: Object): void;
+        private defaultAttributes;
         /** get a 2D canvas context (warning: cannot mix SVG and canvas) */
         getCanvasCTX(): CanvasRenderingContext2D;
         setBoundingBox(left: Number, top: Number, right: Number, bottom: Number): JSXBoard;
@@ -859,8 +859,19 @@ export declare namespace TSX {
         implicitcurve(f: Function | String, dfx: Function | String, dfy: Function | String, attributes?: ImplicitcurveAttributes): Implicitcurve;
         /**   This element is used to provide a constructor for a general line. A general line is given by two points. By setting additional properties a line can be used as an arrow and/or axis.  Look at .conic.line() for a line defined by the equation 'az +bx +cy = 0'*/
         line(p1: Point | point, p2: Point | point, attributes?: LineAttributes): Line;
-        /**   This element is used to provide a constructor for a general point. A free point is created if the given parent elements are all numbers and the property fixed is not set or set to false. If one or more parent elements is not a number but a string containing a GEONExT constraint or a function the point will be considered as constrained). That means that the user won't be able to change the point's position directly.*/
-        point(position: NumberFunction[] | point, attributes?: PointAttributes): Point;
+        /**   Create a point. If any parent elements
+                           are functions or the attribute 'fixed' is true
+                           then point will be constrained.
+                           
+        JSX.point([3,2], {strokeColor:'blue',strokeWidth:5, strokeOpacity:.5})
+                           
+        JSX.point([3,3]), {fixed:true, showInfobox:true}
+                           
+        JSX.point([()=>p1.X()+2,()=>p1.Y()+2]) // 2 up 2 right from p1
+                           
+        also create points with Intersection, Midpoint, Transform.Point, Circumcenter, Glider, and others.
+                           .*/
+        point(position: [Number, Number] | NumberFunction[], attributes?: PointAttributes): Point;
         /** Array of Points  A polygon is an area enclosed by a set of border lines which are determined by a list of points or a list of coordinate arrays or a function returning a list of coordinate arrays. Each two consecutive points of the list define a line.*/
         polygon(pointArray: Pointpoint[], attributes?: PolygonAttributes): Polygon;
         /**   Construct and handle texts. The coordinates can either be abslute (i.e. respective to the coordinate system of the board) or be relative to the coordinates of an element given in Text#anchor. HTML, MathJaX, KaTeX and GEONExT syntax can be handled. There are two ways to display texts: using the text element of the renderer (canvas or svg). In most cases this is the suitable approach if speed matters. However, advanced rendering like MathJax, KaTeX or HTML/CSS are not possible. using HTML <div>. This is the most flexible approach. The drawback is that HTML can only be display ”above” the geometry elements. If HTML should be displayed in an inbetween layer, conder to use an element of type ForeignObject (available in svg renderer, only).*/
@@ -944,7 +955,7 @@ export declare namespace TSX {
         /**   This element is used to visualize the integral of a given curve over a given interval.*/
         integral(range: Number[], curve: Curve, attributes?: IntegralAttributes): Integral;
         /**   An intersection point is a point which lives on two JSXGraph elements, i.e. it is one point of the set consisting of the intersection points of the two elements. The following element types can be (mutually) intersected: line, circle, curve, polygon, polygonal chain.*/
-        intersection(element1: Line | Circle, element2: Line | Circle, positiveNegativeRoot?: Number, attributes?: IntersectionAttributes): Point;
+        intersection(element1: Line | Circle, element2: Line | Circle, attributes?: IntersectionAttributes): Point;
         /**   A major arc is a segment of the circumference of a circle having measure greater than or equal to 180 degrees (pi radians). It is defined by a center, one point that defines the radius, and a third point that defines the angle of the arc.*/
         majorArc(p1: Point | point, p2: Point | point, p3: Point | point, attributes?: MajorArcAttributes): MajorArc;
         /**   A major sector is a sector of a circle having measure greater than or equal to 180 degrees (pi radians). It is defined by a center, one point that defines the radius, and a third point that defines the angle of the sector.*/
@@ -958,6 +969,8 @@ export declare namespace TSX {
         minorSector(p1: Point | point, p2: Point | point, p3: Point | point, attributes?: MinorSectorAttributes): MinorSector;
         /**   A mirror element of a point, line, circle, curve, polygon will be constructed.*/
         mirrorelement(element: Point | Line | Circle | Curve | Polygon, acrossPoint: Point | point, attributes?: mirrorelementAttributes): mirrorelement;
+        /**   A mirror point will be constructed.*/
+        mirrorpoint(p1: Point, p2: Point, attributes?: MirrorpointAttributes): Mirrorpoint;
         /**   A non-reflex angle is the acute or obtuse instance of an angle. It is defined by a center, one point that defines the radius, and a third point that defines the angle of the sector.*/
         nonReflexAngle(point1: Point, point2: Point, point3: Point, attributes?: NonReflexAngleAttributes): NonReflexAngle;
         /** A line through a given point on an element of type line, circle, curve, or turtle and orthogonal (at right angle) to that object. */
@@ -965,6 +978,8 @@ export declare namespace TSX {
         normal(glider: Glider, attributes?: NormalAttributes): Normal;
         /**   This is used to construct a point that is the orthogonal projection of a point to a line.*/
         orthogonalprojection(point: Point | point, line: Line | line, attributes?: OrthogonalprojectionAttributes): Orthogonalprojection;
+        /**   This element is used to provide a constructor for the ”other” intersection point.*/
+        otherIntersection(element1: Line | Circle, element2: Line | Circle, firstIntersection: Point, attributes?: OtherIntersectionAttributes): Point;
         /**   This element is used to provide a constructor for a parabola. A parabola is given by one point (the focus) and a line (the directrix).*/
         parabola(focalPoint: Point | point, line: Line | line, attributes?: ParabolaAttributes): Parabola;
         /**   This element is used to provide a constructor for a segment. It's strictly spoken just a wrapper for element Line with Line#straightFirst and Line#straightLast properties set to false. If there is a third variable then the segment has a fixed length (which may be a function, too).*/
@@ -1829,8 +1844,8 @@ export declare namespace TSX {
     export class Parabola extends Conic {
         constructor(elValues: Conic);
     }
-    export class Parallelpoint extends GeometryElement {
-        constructor(elValues: GeometryElement);
+    export class Parallelpoint extends Point {
+        constructor(elValues: Point);
     }
     export class Segment extends Line {
         constructor(elValues: Line);

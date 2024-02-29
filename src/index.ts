@@ -8,7 +8,7 @@ board.print('Three triangle centers lie on a line')
 
 
 
-let p =[-2, -2]                             
+let p =[-2, -2]
 let A = board.point(p, { name: 'A' });
 let B = board.point([2, -2], { name: 'B' });
 let C = board.point([1, 2], { name: 'C' });
@@ -30,13 +30,13 @@ let median_a = board.line(A, M_a, { dash: 4, color: "gray", strokeOpacity: 0.3 }
 let median_b = board.line(B, M_b, { dash: 4, color: "gray", strokeOpacity: 0.3 })
 let median_c = board.line(C, M_c, { dash: 4, color: "gray", strokeOpacity: 0.3 })
 
-let centroid = board.intersection(median_a, median_b, 1, { name: "centroid" })
+let centroid = board.intersection(median_a, median_b, { name: "centroid" })
 
 let p_a = board.perpendicular(side_a, A, { dash: 1, color: "gray", strokeOpacity: 0.3 })
 let p_b = board.perpendicular(side_b, B, { dash: 1, color: "gray", strokeOpacity: 0.3 })
 let p_c = board.perpendicular(side_c, C, { dash: 1, color: "gray", strokeOpacity: 0.3 })
 
-let orthocenter = board.intersection(p_a, p_b, 1, { name: "orthocenter" })
+let orthocenter = board.intersection(p_a, p_b, { name: "orthocenter" })
 
 let euler_line = board.line(orthocenter, centroid);
 
