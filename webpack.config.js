@@ -1,7 +1,7 @@
 const path = require('path');
 
 module.exports = {
-    entry: './src/index.ts',
+    entry: './index.ts',
     output: {
         path: path.resolve(__dirname, 'dist/'),
         filename: 'bundle.js',
@@ -29,9 +29,13 @@ module.exports = {
         extensions: ['.ts', '.js'],
     },
     devServer: {
-        static: path.join(__dirname, './'),
+        static: path.join(__dirname, '/'),
         compress: true,
         port: 9000,
-        watchFiles: ['./src/**/*.ts'],
+        watchFiles: ['./**/*.ts'],
+        headers: {
+            "Access-Control-Allow-Origin": "*",
+            "Access-Control-Allow-Methods": "GET, POST, PUT, DELETE, PATCH, OPTIONS",
+            "Access-Control-Allow-Headers": "X-Requested-With, content-type, Authorization"          }
     }
 }

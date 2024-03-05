@@ -7,11 +7,11 @@
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0">
 
-    <link rel="stylesheet" href="http://localhost/TSXGraph/lib/katex.min.css" />
-    <script type="text/javascript" src="http://localhost/TSXGraph/lib/katex.min.js"></script>
+    <link rel="stylesheet" href="lib/katex.min.css" />
+    <script type="text/javascript" src="lib/katex.min.js"></script>
 
-    <link rel="stylesheet" type="text/css" href="http://localhost/TSXGraph/lib/jsxgraph.css" />
-    <script type="text/javascript" src="http://localhost/TSXGraph/lib/jsxgraphcore.js"></script>
+    <link rel="stylesheet" type="text/css" href="lib/jsxgraph.css" />
+    <script type="text/javascript" src="lib/jsxgraphcore.js"></script>
 
 </head>
 
@@ -26,35 +26,10 @@
             },
         };
     </script>
-    <script defer src="http://localhost/TSXGraph/lib/webfontloader.js"></script>
+    <script defer src="lib/webfontloader.js"></script>
 
 
-    <p>This wrapper construction was prepared with TypeScript and Webpack - see src/index.ts</p>
+    <p>This wrapper construction was prepared with TypeScript and Webpack - see src/threeCenters.ts</p>
     <div id="jxgbox" class="jxgbox" style="width:600px; height:600px;"></div>
 
-
-
-
-
-    <br><br>
-    <p>This wrapper construction is just plain javascript in the html file - see src/index.html</p>
-    <div id="jxgbox2" class="jxgbox" style="width:600px; height:600px;"></div>
-    <script type="module" defer>
-        import { TSX } from "./src/jsxgraph.js";
-        const JSXGraph = new TSX.JSXGraph()
-        {
-            let b = JSXGraph.initBoard('jxgbox2');
-            b.angle(b.point([0, 0]), b.point([0, 2]), b.point([2, 2.5]), { type: 'sector', radius: 2, useKatex: true })
-            b.angle(b.point([-3, 0]), b.point([-3, 2]), b.point([-1, 2.5]), { type: 'square', radius: 2, useKatex: true })
-
-        }
-    </script>
-
-
-    <!-- this is the webpack output  -->
-    <script type="text/javascript" src="dist/bundle.js"></script>
-
-
-</body>
-
-</html>
+    <script defer src="dist/bundle.js"></script>

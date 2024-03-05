@@ -1,0 +1,35 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<!-- this loads both JSXGraph and Katex -->
+
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0">
+
+    <link rel="stylesheet" type="text/css" href="http://localhost/TSXGraph/lib/jsxgraph.css" />
+    <script type="text/javascript" src="http://localhost/TSXGraph/lib/jsxgraphcore.js"></script>
+
+</head>
+
+<body>
+
+    <br><br>
+    <p>This wrapper construction is just plain javascript in the html file - see simple.html</p>
+    <div id="jxgbox2" class="jxgbox" style="width:600px; height:600px;"></div>
+    <script type="module" defer>
+        import { TSX } from "./src/jsxgraph.js";
+        const JSXGraph = new TSX.JSXGraph()
+        {
+            let b = JSXGraph.initBoard('jxgbox2');
+            b.angle(b.point([0, 0]), b.point([0, 2]), b.point([2, 2.5]), { type: 'sector', radius: 2, useKatex: true })
+            b.angle(b.point([-3, 0]), b.point([-3, 2]), b.point([-1, 2.5]), { type: 'square', radius: 2, useKatex: true })
+
+        }
+    </script>
+
+
+
+</body>
+
+</html>
