@@ -15,19 +15,10 @@
 <body>
 
     <br><br>
-    <p>This wrapper construction is just plain javascript in the html file - see simple.html</p>
+    <p>This construction is just plain javascript in the html file - see simple.js and simple.html</p>
     <div id="jxgbox2" class="jxgbox" style="width:600px; height:600px;"></div>
-    <script type="module" defer>
-        import { TSX } from "./src/jsxgraph.js";
-        const JSXGraph = new TSX.JSXGraph()
-        {
-            let b = JSXGraph.initBoard('jxgbox2');
-            b.angle(b.point([0, 0]), b.point([0, 2]), b.point([2, 2.5]), { type: 'sector', radius: 2, useKatex: true })
-            b.angle(b.point([-3, 0]), b.point([-3, 2]), b.point([-1, 2.5]), { type: 'square', radius: 2, useKatex: true })
 
-        }
-    </script>
-
+    <script type="module" src="simple.js" defer></script>
 
 
 </body>

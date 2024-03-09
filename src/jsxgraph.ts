@@ -21,7 +21,7 @@
 //
 /////////////////////////////////////////////////////////////////////////////
 
-//   Generated on February 29, 2024, 8:17 pm
+//   Generated on March 9, 2024, 3:41 am
 
 
 export namespace TSX {
@@ -55,6 +55,16 @@ export namespace TSX {
         shadow?: Object
         /** If true, KaTeX will be used to render the input string. */
         useKatex?: Boolean
+        /** Snaps the element or its parents to the grid. Currently only relevant for points, circles, and lines. Points are snapped to grid directly, on circles and lines it's only the parent points that are snapped */
+        snapToGrid?: Boolean
+        /** Draw label for this Element? */
+        drawLabels?: Boolean
+        /** Size in pixels */
+        size?: Number
+        /** Tick face for major ticks of finite length.By default (face: '|') this is a straight line. Possible other values are ''. These faces are used in JXG.Hatch for hatch marking parallel lines. */
+        face?: String
+        /** Include the the zero line in the grid */
+        drawZero?: Boolean
         /** Set display name  */
         name?: String
     }
@@ -203,9 +213,9 @@ export namespace TSX {
         /** This number (pixel value) controls where infinite lines end at the canvas border. If zero, the line ends exactly at the border, if negative there is a margin to the inside, if positive the line ends outside of the canvas (which is invisible). */
         margin?: Number
         /** Attributes for first defining point of the line. */
-        point1?: Point
+        point1?: PointAttributes
         /** Attributes for second defining point of the line. */
-        point2?: Point
+        point2?: PointAttributes
         /** Defines together with Point#snapSizeY the grid the point snaps on to. The point will only snap on integer multiples to snapSizeX in x and snapSizeY in y direction. If this value is equal to or less than 0, it will use the grid displayed by the major ticks of the default ticks of the default x axes of the board. */
         snapSizeX?: Number
         /** Defines together with Point#snapSizeX the grid the point snaps on to. The point will only snap on integer multiples to snapSizeX in x and snapSizeY in y direction. If this value is equal to or less than 0, it will use the grid displayed by the major ticks of the default ticks of the default y axes of the board. */
@@ -352,8 +362,6 @@ export namespace TSX {
         minorTicks?: Number
         /** Minimum distance in pixel of equidistant ticks in case insertTicks==true. */
         minTicksDistance?: Number
-        /** If a label exceeds Ticks#maxLabelLength this determines the precision used to shorten the tick label. Deprecated! Replaced by the attribute digits. */
-        precision?: Number
         /** Scale the ticks but not the tick labels. */
         scale?: Number
         /** A string that is appended to every tick, used to represent the scale factor given in Ticks#scale. */
@@ -444,11 +452,11 @@ export namespace TSX {
         /** Attributes for the axis label. */
         label?: LabelAttributes
         /** Attributes for first point the axis. */
-        point1?: Point
+        point1?: LineAttributes
         /** Attributes for second point the axis. */
-        point2?: Point
+        point2?: LineAttributes
         /** Attributes for ticks of the axis. */
-        ticks?: Ticks
+        ticks?: TicksAttributes
     }
 
     interface BisectorAttributes extends LineAttributes {
@@ -489,7 +497,7 @@ export namespace TSX {
 
     interface CircumcircleAttributes extends CircleAttributes {
         /** Attributes for center point. */
-        center?: Point
+        center?: GeometryElementAttributes
     }
 
     interface CircumcircleArcAttributes extends ArcAttributes {
@@ -506,9 +514,9 @@ export namespace TSX {
         /** Frequency of comb elements. */
         frequency?: Number
         /** Attributes for first defining point of the comb. */
-        point1?: Point
+        point1?: LineAttributes
         /** Attributes for second defining point of the comb. */
-        point2?: Point
+        point2?: LineAttributes
         /** Should the comb go right to left instead of left to right. */
         reverse?: Boolean
         /** Width of the comb. */
@@ -558,6 +566,16 @@ export namespace TSX {
     }
 
     interface GridAttributes extends CurveAttributes {
+        /** Include the the zero line in the grid */
+        drawZero?: Boolean
+        /** Include the the boundary lines in the grid */
+        includeBoundaries?: Boolean
+        /** Attributes for Major Grid Elements */
+        major?: GeometryElementAttributes
+        /** Attributes for Minor Grid Elements */
+        minor?: GeometryElementAttributes
+        /** Number of elements in minor grid between elements of the major grid. */
+        minorElements?: Number | 'auto'
         /**  */
         snapSizeX?: Boolean
         /**  */
@@ -577,7 +595,7 @@ export namespace TSX {
 
     interface IncircleAttributes extends CircleAttributes {
         /** Attributes of circle center. */
-        center?: Point
+        center?: GeometryElementAttributes
     }
 
     interface InequalityAttributes extends CurveAttributes {
@@ -732,11 +750,11 @@ export namespace TSX {
         /** If the difference between the slider value and one of the elements of snapValues is less than this number (in user coordinate units), the slider will snap to that value. */
         stepWidth?: Number
         /** Attributes for the base line of the slider. */
-        baseline?: Line
+        baseline?: GeometryElementAttributes
+        /** Attributes for the highlighting line of the slider. */
+        highline?: GeometryElementAttributes
         /** The number of digits of the slider value displayed in the optional text. */
         digits?: Number
-        /** Attributes for the highlighting line of the slider. */
-        highline?: Line
         /** Internationalization support for slider labels. */
         intl?: object
         /** Attributes for the slider label. */
@@ -744,13 +762,11 @@ export namespace TSX {
         /** If true, 'up' events on the baseline will trigger slider moves. */
         moveOnUp?: Boolean
         /** Attributes for first (left) helper point defining the slider position. */
-        point1?: Point
+        point1?: LineAttributes
         /** Attributes for second (right) helper point defining the slider position. */
-        point2?: Point
+        point2?: LineAttributes
         /** If not null, this is appended to the value and to unitLabel in the slider label. Possible types: string, number or function. */
         postLabel?: String
-        /** The precision of the slider value displayed in the optional text. Replaced by the attribute ”digits”. */
-        precision?: Number
         /** Size of slider point. */
         size?: Number
         /** If the difference between the slider value and one of the elements of snapValues is less than this number (in user coordinate units), the slider will snap to that value. */
@@ -762,7 +778,7 @@ export namespace TSX {
         /** If not null, this replaces the part ”name = ” in the slider label. Possible types: string, number or function. */
         suffixLabel?: String
         /** Attributes for the ticks of the base line of the slider. */
-        ticks?: Ticks
+        ticks?: TicksAttributes
         /** If not null, this is appended to the value in the slider label. Possible types: string, number or function. */
         unitLabel?: String
         /** Show slider label. */
@@ -825,9 +841,9 @@ export namespace TSX {
         /** Attributes for the tape measure label. */
         label?: LabelAttributes
         /** Attributes for first helper point defining the tape measure position. */
-        point1?: Point
+        point1?: LineAttributes
         /** Attributes for second helper point defining the tape measure position. */
-        point2?: Point
+        point2?: LineAttributes
         /** The precision of the tape measure value displayed in the optional text. Replaced by the attribute digits */
         precision?: Number
         /** Text rotation in degrees. */
@@ -941,6 +957,12 @@ export namespace TSX {
         face?: String
     }
 
+
+    interface PanAttributes {
+        enabled?: Boolean
+        needTwoFingers?: Boolean
+    }
+
     // utility function for determining whether an object is a JSX object (or part of this wrapper)
     function isJSXAttribute(maybe: any): Boolean {
         return (typeof (maybe) == 'object' && !Array.isArray(maybe) && !('elValue' in maybe) && !('elType' in maybe))
@@ -969,8 +991,11 @@ export namespace TSX {
         boundingbox?: [Number, Number, Number, Number]
         /** Enable browser scrolling on touch interfaces if the user double taps into an empty region of the board. */
         browserPan?: Boolean
-        //    /** Attributes for the default axes in case of the attribute axis:true in JXG.JSXGraph#initBoard. */
-        //    defaultAxes?: Object
+        /** Attributes for the default axes in case of the attribute axis:true in JXG.JSXGraph#initBoard. */
+        defaultAxes?: { x?: AxisAttributes, y?: AxisAttributes }
+        /** if grid true, then draw the zeroGrid? */
+        drawZero?: Boolean
+
         //    /** Description string for the board. */
         //    description?: String
         //    /** Supply the document object. */
@@ -1003,8 +1028,8 @@ export namespace TSX {
         //    offsetX?: Number
         //    /** A number that will be added to the absolute position of the board used in mouse coordinate calculations in JXG.Board#getCoordsTopLeftCorner. */
         //    offsetY?: Number
-        //    /** Control the possibilities for panning interaction (i.e. */
-        //    pan?: Object
+        /** Control the possibilities for panning interaction (i.e. */
+        pan?: PanAttributes
         /** Allow user interaction by registering mouse, pointer, keyboard or touch events. */
         registerEvents?: Object
         /** Listen to fullscreen event. */
@@ -1012,7 +1037,7 @@ export namespace TSX {
         /** Listen to resize events, i.e. */
         registerResizeEvent?: Boolean
         /** Control if JSXGraph reacts to resizing of the JSXGraph container element by the user / browser. */
-        resize?: Boolean
+        resize?: PanAttributes
         //    /** Attributes to control the screenshot function. */
         //    screenshot?: Object
         //    /** Control the possibilities for a selection rectangle. */
@@ -1023,8 +1048,8 @@ export namespace TSX {
         showCopyright?: Boolean
         /** Show a button in the navigation bar to start fullscreen mode. */
         showFullscreen?: Boolean
-        //    /** If true, the infobox is shown on mouse/pen over for all points which have set their attribute showInfobox to 'inherit'. */
-        //    showInfobox?: Boolean
+        /** If true, the infobox is shown on mouse/pen over for all points which have set their attribute showInfobox to 'inherit'. */
+        showInfobox?: Boolean
         /** Display of navigation arrows and zoom buttons in the navigation bar. */
         showNavigation?: Boolean
         /** Show a button in the navigation bar to force reload of a construction. */
@@ -1041,8 +1066,8 @@ export namespace TSX {
         //    takeSizeFromFile?: Number
         //    /** Title string for the board. */
         //    title?: String
-        //    /** Control the possibilities for zoom interaction. */
-        //    zoom?: Object
+        /** Control the possibilities for zoom interaction. */
+        zoom?: PanAttributes
         //    /** Zoom factor in horizontal direction. */
         //    zoomX?: Number
         //    /** Zoom factor in vertical direction. */
@@ -1071,8 +1096,11 @@ export namespace TSX {
 
     export class JSXGraph {
 
-        initBoard(html: string, attributes?: InitBoardAttributes): JSXBoard {
+        initBoard(html: string, attributes: InitBoardAttributes = {}): JSXBoard {
             const newBoard = new JSXBoard()
+            //    if(typeof attributes == 'object' && !('axis' in attributes)) {   // if axis missing then defaultaxis causes error
+            //         attributes['axis'] = false;
+            //    }
             newBoard.board = (window as any).JXG.JSXGraph.initBoard(html, attributes) as unknown as JSXBoard
             Math.board = newBoard.board  // make a copy for Math and its decendents
             return newBoard
@@ -1268,6 +1296,10 @@ export namespace TSX {
             (this.board as any).update()
         }
 
+        /** run through the board and call update() on each element */
+        updateElements(): void {
+            (this.board as any).updateElements()
+        }
 
         on(event: string, handler: (e: Event) => void, context?: unknown): void {
             // JSXGraph doesn't share keyboard events, but I want them
@@ -1490,14 +1522,14 @@ export namespace TSX {
 
         }
 
-        /** create a chart  Constructor for a chart.*/
+        /** create a chart */
         chart(f: Number[], attributes: ChartAttributes = {}): Chart {
             let newObject = (this.board as any).create('Chart', this.dereference([f,]), this.defaultAttributes(attributes))
             return new Chart(newObject as Chart)
         }
 
 
-        /**   This element is used to provide a constructor for a circle.*/
+        /** This element is used to provide a constructor for a circle. */
         circle(centerPoint: Point | point, remotePoint: Point | point | Line | line | Number | Function | Circle, attributes: CircleAttributes = {}): Circle {
             let newObject: any  // special case for circle with immediate segment eg:  circle(point,[[1,2],[3,4]]  )
             if (Array.isArray(remotePoint) && Array.isArray(remotePoint[0]) && Array.isArray(remotePoint[1])) {
@@ -1509,21 +1541,21 @@ export namespace TSX {
         }
 
 
-        /**   This element is used to provide a constructor for curve, which is just a wrapper for element Curve. A curve is a mapping from R to R^2. t mapsto (x(t),y(t)). The graph is drawn for t in the interval [a,b]. The following types of curves can be plotted: parametric curves: t mapsto (x(t),y(t)), where x() and y() are univariate functions. polar curves: curves commonly written with polar equations like spirals and cardioids. data plots: plot line segments through a given list of coordinates.*/
+        /** This element is used to provide a constructor for curve, which is just a wrapper for element Curve. A curve is a mapping from R to R^2. t mapsto (x(t),y(t)). The graph is drawn for t in the interval [a,b]. The following types of curves can be plotted: parametric curves: t mapsto (x(t),y(t)), where x() and y() are univariate functions. polar curves: curves commonly written with polar equations like spirals and cardioids. data plots: plot line segments through a given list of coordinates. */
         curve(xArray: Number[] | Function, yArray: Number[] | Function, left: NumberFunction = -5, right: NumberFunction = 5, attributes: CurveAttributes = {}): Curve {
             let newObject = (this.board as any).create('Curve', this.dereference([xArray, yArray, left, right,]), this.defaultAttributes(attributes))
             return new Curve(newObject as Curve)
         }
 
 
-        /** Array of Points  This element combines a given set of JXG.Point elements to a group. The elements of the group and dependent elements can be translated, rotated and scaled by dragging one of the group elements.*/
+        /** Array of Points */
         group(pointArray: Point[], attributes: GroupAttributes = {}): Group {
             let newObject = (this.board as any).create('Group', this.dereference([pointArray,].flat()), this.defaultAttributes(attributes))
             return new Group(newObject as Group)
         }
 
 
-        /**   Displays an image.*/
+        /** Displays an image. */
         image(url: String, lowerLeft: point, widthHeight: [Number, Number], attributes: ImageAttributes = {}): Image {
             let newObject = (this.board as any).create('Image', this.dereference([url, lowerLeft, widthHeight,]), this.defaultAttributes(attributes))
             return new Image(newObject as Image)
@@ -1537,8 +1569,6 @@ export namespace TSX {
         implicitcurve(a?: any, b?: any, c?: any, d?: any, e?: any, f?: any, g?: any, h?: any, i?: any): Implicitcurve {
             let newObject: Implicitcurve = {} as Implicitcurve // just so it is initialized
             if (arguments.length == 1) {
-
-                // if((typeof (arguments[0])) == 'object' && !Array.isArray(arguments[0]) && !('elValue' in arguments[0]) && !('elType' in arguments[2])) {   // arguments counts from zero
                 if (isJSXAttribute(a)) {
                     newObject = (this.board as any).create('implicitcurve', this.dereference([]), this.defaultAttributes(a)) // as unknown as Implicitcurve
                 } else {
@@ -1546,8 +1576,6 @@ export namespace TSX {
                 }
             }
             if (arguments.length == 2) {
-
-                // if((typeof (arguments[1])) == 'object' && !Array.isArray(arguments[1]) && !('elValue' in arguments[1]) && !('elType' in arguments[2])) {   // arguments counts from zero
                 if (isJSXAttribute(b)) {
                     newObject = (this.board as any).create('implicitcurve', this.dereference([a,]), this.defaultAttributes(b)) // as unknown as Implicitcurve
                 } else {
@@ -1555,8 +1583,6 @@ export namespace TSX {
                 }
             }
             if (arguments.length == 3) {
-
-                // if((typeof (arguments[2])) == 'object' && !Array.isArray(arguments[2]) && !('elValue' in arguments[2]) && !('elType' in arguments[2])) {   // arguments counts from zero
                 if (isJSXAttribute(c)) {
                     newObject = (this.board as any).create('implicitcurve', this.dereference([a, b,]), this.defaultAttributes(c)) // as unknown as Implicitcurve
                 } else {
@@ -1566,53 +1592,64 @@ export namespace TSX {
             return new Implicitcurve(newObject as Implicitcurve)
         }
 
-        /**   This element is used to provide a constructor for a general line. A general line is given by two points. By setting additional properties a line can be used as an arrow and/or axis.  Look at .conic.line() for a line defined by the equation 'az +bx +cy = 0'*/
+        /** This element is used to provide a constructor for a general line given by two points.
+                                       By setting additional properties a line can be used as an arrow and/or axis.
+
+       *```js
+                                       JSX.line([3,2],[3,3], {strokeColor:'blue',strokeWidth:5, strokeOpacity:.5})
+                                       let P1 = JSX.point([3,2])
+                                       JSX.line(p1,[3,3])
+
+       *```
+
+        also create lines with Segment, Arrow, Transform.Point, Circumcenter, Glider, and others.
+                                       Look at .conic.line() for a line defined by the equation 'az +bx +cy = 0'
+                           */
         line(p1: Point | point, p2: Point | point, attributes: LineAttributes = {}): Line {
             let newObject = (this.board as any).create('Line', this.dereference([p1, p2,]), this.defaultAttributes(attributes))
             return new Line(newObject as Line)
         }
 
 
-        /**   Create a point. If any parent elements
-                           are functions or the attribute 'fixed' is true
-                           then point will be constrained.
+        /** Create a point. If any parent elements are functions or the attribute 'fixed' is true then point will be constrained.
 
-        JSX.point([3,2], {strokeColor:'blue',strokeWidth:5, strokeOpacity:.5})
+       *```js
+                    JSX.point([3,2], {strokeColor:'blue',strokeWidth:5, strokeOpacity:.5})
+                    JSX.point([3,3]), {fixed:true, showInfobox:true}
+                    JSX.point([()=>p1.X()+2,()=>p1.Y()+2]) // 2 up 2 right from p1
+                    JSX.point([1,2,2])  // three axis definition - [z,x,y]
 
-        JSX.point([3,3]), {fixed:true, showInfobox:true}
+       *```
 
-        JSX.point([()=>p1.X()+2,()=>p1.Y()+2]) // 2 up 2 right from p1
-
-        also create points with Intersection, Midpoint, Transform.Point, Circumcenter, Glider, and others.
-                           .*/
-        point(position: [Number, Number] | NumberFunction[], attributes: PointAttributes = {}): Point {
+        also create points with Intersection, Midpoint, Transform.Point, Circumcenter, Glider, and others. */
+        point(position: NumberFunction[], attributes: PointAttributes = {}): Point {
             let newObject = (this.board as any).create('Point', position, this.defaultAttributes(attributes))
             return new Point(newObject as Point)
         }
 
 
-        /** Array of Points  A polygon is an area enclosed by a set of border lines which are determined by a list of points or a list of coordinate arrays or a function returning a list of coordinate arrays. Each two consecutive points of the list define a line.*/
+        /** Array of Points */
         polygon(pointArray: Pointpoint[], attributes: PolygonAttributes = {}): Polygon {
             let newObject = (this.board as any).create('Polygon', this.dereference([pointArray,].flat()), this.defaultAttributes(attributes))
             return new Polygon(newObject as Polygon)
         }
 
 
-        /**   Construct and handle texts. The coordinates can either be abslute (i.e. respective to the coordinate system of the board) or be relative to the coordinates of an element given in Text#anchor. HTML, MathJaX, KaTeX and GEONExT syntax can be handled. There are two ways to display texts: using the text element of the renderer (canvas or svg). In most cases this is the suitable approach if speed matters. However, advanced rendering like MathJax, KaTeX or HTML/CSS are not possible. using HTML <div>. This is the most flexible approach. The drawback is that HTML can only be display ”above” the geometry elements. If HTML should be displayed in an inbetween layer, conder to use an element of type ForeignObject (available in svg renderer, only).*/
+        /** Construct and handle texts. The coordinates can either be abslute (i.e. respective to the coordinate system of the board) or be relative to the coordinates of an element given in Text#anchor. HTML, MathJaX, KaTeX and GEONExT syntax can be handled. There are two ways to display texts: using the text element of the renderer (canvas or svg). In most cases this is the suitable approach if speed matters. However, advanced rendering like MathJax, KaTeX or HTML/CSS are not possible. using HTML <div>. This is the most flexible approach. The drawback is that HTML can only be display ”above” the geometry elements. If HTML should be displayed in an inbetween layer, conder to use an element of type ForeignObject (available in svg renderer, only). */
         text(x: Number | Function, y: Number | Function, string: String | Function, attributes: TextAttributes = {}): Text {
             let newObject = (this.board as any).create('Text', this.dereference([x, y, string,]), this.defaultAttributes(attributes))
             return new Text(newObject as Text)
         }
 
 
-        /**   A circular sector is a subarea of the area enclosed by a circle. It is enclosed by two radii and an arc.*/
+        /** A circular sector is a subarea of the area enclosed by a circle. It is enclosed by two radii and an arc. */
         sector(P1: Point | point, P2: Point | point, P3: Point | point, attributes: SectorAttributes = {}): Sector {
             let newObject = (this.board as any).create('Sector', this.dereference([P1, P2, P3,]), this.defaultAttributes(attributes))
             return new Sector(newObject as Sector)
         }
 
 
-        /**   Vector field. Plot a vector field either given by two functions f1(x, y) and f2(x,y) or by a function f(x, y) returning an array of size 2.*/
+        /** Vector field. Plot a vector field either given by two functions f1(x, y) and f2(x,y) or by a function f(x, y) returning an array of size 2. */
         vectorfield(fxfy: Function[], horizontalMesh: Number[] = [-6, 25, 6], verticalMesh: Number[] = [-6, 25, 6], attributes: VectorfieldAttributes = {}): Vectorfield {
             let newObject = (this.board as any).create('Vectorfield', this.dereference([fxfy, horizontalMesh, verticalMesh,]), this.defaultAttributes(attributes))
             return new Vectorfield(newObject as Vectorfield)
@@ -1636,8 +1673,6 @@ export namespace TSX {
         angle(a?: any, b?: any, c?: any, d?: any, e?: any, f?: any, g?: any, h?: any, i?: any): Angle {
             let newObject: Angle = {} as Angle // just so it is initialized
             if (arguments.length == 2) {
-
-                // if((typeof (arguments[1])) == 'object' && !Array.isArray(arguments[1]) && !('elValue' in arguments[1]) && !('elType' in arguments[2])) {   // arguments counts from zero
                 if (isJSXAttribute(b)) {
                     newObject = (this.board as any).create('angle', this.dereference([a,]), this.defaultAttributes(b)) // as unknown as Angle
                 } else {
@@ -1645,8 +1680,6 @@ export namespace TSX {
                 }
             }
             if (arguments.length == 3) {
-
-                // if((typeof (arguments[2])) == 'object' && !Array.isArray(arguments[2]) && !('elValue' in arguments[2]) && !('elType' in arguments[2])) {   // arguments counts from zero
                 if (isJSXAttribute(c)) {
                     newObject = (this.board as any).create('angle', this.dereference([a, b,]), this.defaultAttributes(c)) // as unknown as Angle
                 } else {
@@ -1654,8 +1687,6 @@ export namespace TSX {
                 }
             }
             if (arguments.length == 4) {
-
-                // if((typeof (arguments[3])) == 'object' && !Array.isArray(arguments[3]) && !('elValue' in arguments[3]) && !('elType' in arguments[2])) {   // arguments counts from zero
                 if (isJSXAttribute(d)) {
                     newObject = (this.board as any).create('angle', this.dereference([a, b, c,]), this.defaultAttributes(d)) // as unknown as Angle
                 } else {
@@ -1663,8 +1694,6 @@ export namespace TSX {
                 }
             }
             if (arguments.length == 5) {
-
-                // if((typeof (arguments[4])) == 'object' && !Array.isArray(arguments[4]) && !('elValue' in arguments[4]) && !('elType' in arguments[2])) {   // arguments counts from zero
                 if (isJSXAttribute(e)) {
                     newObject = (this.board as any).create('angle', this.dereference([a, b, c, d,]), this.defaultAttributes(e)) // as unknown as Angle
                 } else {
@@ -1674,14 +1703,14 @@ export namespace TSX {
             return new Angle(newObject as Angle)
         }
 
-        /** Create an Arc with three points  An arc is a segment of the circumference of a circle. It is defined by a center, one point that defines the radius, and a third point that defines the angle of the arc.*/
+        /** Create an Arc with three points */
         arc(p1: Point | point, p2: Point | point, p3: Point | point, attributes: ArcAttributes = {}): Arc {
             let newObject = (this.board as any).create('Arc', this.dereference([p1, p2, p3,]), this.defaultAttributes(attributes))
             return new Arc(newObject as Arc)
         }
 
 
-        /** Arrow defined by two points (like a Segment) with arrow at P2  This element is used to provide a constructor for arrow, which is just a wrapper for element Line with Line#straightFirst and Line#straightLast properties set to false and Line#lastArrow set to true.*/
+        /** Arrow defined by two points (like a Segment) with arrow at P2 */
         arrow(p1: Point | point, p2: Point | point, attributes: ArrowAttributes = {}): Arrow {
             let newObject = (this.board as any).create('Arrow', this.dereference([p1, p2,]), this.defaultAttributes(attributes))
             return new Arrow(newObject as Arrow)
@@ -1695,8 +1724,6 @@ export namespace TSX {
         parallel(a?: any, b?: any, c?: any, d?: any, e?: any, f?: any, g?: any, h?: any, i?: any): Parallel {
             let newObject: Parallel = {} as Parallel // just so it is initialized
             if (arguments.length == 2) {
-
-                // if((typeof (arguments[1])) == 'object' && !Array.isArray(arguments[1]) && !('elValue' in arguments[1]) && !('elType' in arguments[2])) {   // arguments counts from zero
                 if (isJSXAttribute(b)) {
                     newObject = (this.board as any).create('parallel', this.dereference([a,]), this.defaultAttributes(b)) // as unknown as Parallel
                 } else {
@@ -1704,8 +1731,6 @@ export namespace TSX {
                 }
             }
             if (arguments.length == 3) {
-
-                // if((typeof (arguments[2])) == 'object' && !Array.isArray(arguments[2]) && !('elValue' in arguments[2]) && !('elType' in arguments[2])) {   // arguments counts from zero
                 if (isJSXAttribute(c)) {
                     newObject = (this.board as any).create('parallel', this.dereference([a, b,]), this.defaultAttributes(c)) // as unknown as Parallel
                 } else {
@@ -1713,8 +1738,6 @@ export namespace TSX {
                 }
             }
             if (arguments.length == 4) {
-
-                // if((typeof (arguments[3])) == 'object' && !Array.isArray(arguments[3]) && !('elValue' in arguments[3]) && !('elType' in arguments[2])) {   // arguments counts from zero
                 if (isJSXAttribute(d)) {
                     newObject = (this.board as any).create('parallel', this.dereference([a, b, c,]), this.defaultAttributes(d)) // as unknown as Parallel
                 } else {
@@ -1722,8 +1745,6 @@ export namespace TSX {
                 }
             }
             if (arguments.length == 5) {
-
-                // if((typeof (arguments[4])) == 'object' && !Array.isArray(arguments[4]) && !('elValue' in arguments[4]) && !('elType' in arguments[2])) {   // arguments counts from zero
                 if (isJSXAttribute(e)) {
                     newObject = (this.board as any).create('parallel', this.dereference([a, b, c, d,]), this.defaultAttributes(e)) // as unknown as Parallel
                 } else {
@@ -1733,124 +1754,126 @@ export namespace TSX {
             return new Parallel(newObject as Parallel)
         }
 
-        /** Create an Arrow parallel to a segment. The constructed arrow contains p3 and has the same slope as the line through p1 and p2.  An arrow parallel is a segment with an arrow attached which is parallel through a given segment, given by its defining two points, through a given point.*/
+        /** Create an Arrow parallel to a segment. The constructed arrow contains p3 and has the same slope as the line through p1 and p2. */
         arrowparallel(p1: Point | point, p2: Point | point, p3: Point | point, attributes: ArrowparallelAttributes = {}): Arrowparallel {
             let newObject = (this.board as any).create('Arrowparallel', this.dereference([p1, p2, p3,]), this.defaultAttributes(attributes))
             return new Arrowparallel(newObject as Arrowparallel)
         }
 
 
-        /** Create an Axis with two points (like a Line)  This element is used to provide a constructor for an axis. It's strictly spoken just a wrapper for element Line with Line#straightFirst and Line#straightLast properties set to true. Additionally Line#lastArrow is set to true and default Ticks will be created.*/
+        /** Create an Axis with two points (like a Line) */
         axis(p1: Point | point, p2: Point | point, attributes: AxisAttributes = {}): Axis {
             let newObject = (this.board as any).create('Axis', this.dereference([p1, p2,]), this.defaultAttributes(attributes))
             return new Axis(newObject as Axis)
         }
 
 
-        /** Bisect an Angle defined with three points  A bisector is a line which divides an angle into two equal angles. It is given by three points A, B, and C and divides the angle ABC into two equal sized parts.*/
+        /** Bisect an Angle defined with three points */
         bisector(p1: Point, p2: Point, p3: Point, attributes: BisectorAttributes = {}): Bisector {
             let newObject = (this.board as any).create('Bisector', this.dereference([p1, p2, p3,]), this.defaultAttributes(attributes))
             return new Bisector(newObject as Bisector)
         }
 
 
-        /** Bisect a Line defined with two points  Bisector lines are similar to Bisector but take two lines as parent elements. The resulting element is a composition of two lines.*/
+        /** Bisect a Line defined with two points */
         bisectorlines(l1: Line, l2: Line, attributes: BisectorlinesAttributes = {}): Bisectorlines {
             let newObject = (this.board as any).create('Bisectorlines', this.dereference([l1, l2,]), this.defaultAttributes(attributes))
             return new Bisectorlines(newObject as Bisectorlines)
         }
 
 
-        /** create a button  This element is used to provide a constructor for special texts containing a form button element. For this element, the attribute ”display” has to have the value 'html' (which is the default). The underlying HTML button element can be accessed through the sub-object 'rendNodeButton', e.g. to add event listeners.*/
+        /** create a button */
         button(x: Number | Function, y: Number | Function, label: String, handler: Function, attributes: ButtonAttributes = {}): Button {
             let newObject = (this.board as any).create('button', [x, y, label], this.defaultAttributes(attributes))
             return new Button(newObject as Button)
         }
 
 
-        /**   This element is used to provide a constructor for cardinal spline curves. Create a dynamic cardinal spline interpolated curve given by sample points p_1 to p_n.*/
+        /** This element is used to provide a constructor for cardinal spline curves. Create a dynamic cardinal spline interpolated curve given by sample points p_1 to p_n. */
         cardinalspline(data: Point[] | number[][], funct: Function, splineType: `uniform` | `centripetal`, attributes: CardinalsplineAttributes = {}): Curve {
             let newObject = (this.board as any).create('Cardinalspline', this.dereference([data, funct, splineType,]), this.defaultAttributes(attributes))
             return new Curve(newObject as Curve)
         }
 
 
-        /**   This element is used to provide a constructor for special texts containing a form checkbox element. For this element, the attribute ”display” has to have the value 'html' (which is the default). The underlying HTML checkbox element can be accessed through the sub-object 'rendNodeCheck', e.g. to add event listeners.*/
+        /** This element is used to provide a constructor for special texts containing a form checkbox element. For this element, the attribute ”display” has to have the value 'html' (which is the default). The underlying HTML checkbox element can be accessed through the sub-object 'rendNodeCheck', e.g. to add event listeners. */
         checkbox(x: Number | Function, y: Number | Function, label: String | Function, attributes: CheckboxAttributes = {}): Checkbox {
             let newObject = (this.board as any).create('Checkbox', this.dereference([x, y, label,]), this.defaultAttributes(attributes))
             return new Checkbox(newObject as Checkbox)
         }
 
 
-        /** Creates a Point at the center of a circle defined by 3 points  Constructs the midpoint of a Circumcircle. Like the circumcircle the circumcenter is constructed by providing three points.*/
+        /** Creates a Point at the center of a circle defined by 3 points */
         circumcenter(p1: Point | point, p2: Point | point, p3: Point | point, attributes: CircumcenterAttributes = {}): Circumcenter {
             let newObject = (this.board as any).create('Circumcenter', this.dereference([p1, p2, p3,]), this.defaultAttributes(attributes))
             return new Circumcenter(newObject as Circumcenter)
         }
 
 
-        /** Draw a circle defined by 3 points  A circumcircle is given by three points which are all lying on the circle.*/
+        /** Draw a circle defined by 3 points */
         circumcircle(p1: Point | point, p2: Point | point, p3: Point | point, attributes: CircumcircleAttributes = {}): Circumcircle {
             let newObject = (this.board as any).create('Circumcircle', this.dereference([p1, p2, p3,]), this.defaultAttributes(attributes))
             return new Circumcircle(newObject as Circumcircle)
         }
 
 
-        /** Draw an arc from P1 to P3 (missing P3 to P1) defined by 3 points  A circumcircle arc is an Arc defined by three points. All three points lie on the arc.*/
+        /** Draw an arc from P1 to P3 (missing P3 to P1) defined by 3 points */
         circumcircleArc(p1: Point | point, p2: Point | point, p3: Point | point, attributes: CircumcircleArcAttributes = {}): CircumcircleArc {
             let newObject = (this.board as any).create('CircumcircleArc', this.dereference([p1, p2, p3,]), this.defaultAttributes(attributes))
             return new CircumcircleArc(newObject as CircumcircleArc)
         }
 
 
-        /** Creates a CircumCenter and draws a sector from P1 to P3 (missing P3 to P1) defined by 3 points  A circumcircle sector is different from a Sector mostly in the way the parent elements are interpreted. At first, the circum centre is determined from the three given points. Then the sector is drawn from p1 through p2 to p3.*/
+        /** Creates a CircumCenter and draws a sector from P1 to P3 (missing P3 to P1) defined by 3 points */
         circumcircleSector(p1: Point | point, p2: Point | point, p3: Point | point, attributes: CircumcircleSectorAttributes = {}): CircumcircleSector {
             let newObject = (this.board as any).create('CircumcircleSector', this.dereference([p1, p2, p3,]), this.defaultAttributes(attributes))
             return new CircumcircleSector(newObject as CircumcircleSector)
         }
 
 
-        /**   A comb to display domains of inequalities.*/
+        /** A comb to display domains of inequalities. */
         comb(p1: Point | point, p2: Point | point, attributes: CombAttributes = {}): Comb {
             let newObject = (this.board as any).create('Comb', this.dereference([p1, p2,]), this.defaultAttributes(attributes))
             return new Comb(newObject as Comb)
         }
 
 
-        /**   Difference of two closed path elements. The elements may be of type curve, circle, polygon, inequality. If one element is a curve, it has to be closed. The resulting element is of type curve.*/
+        /** Difference of two closed path elements. The elements may be of type curve, circle, polygon, inequality. If one element is a curve, it has to be closed. The resulting element is of type curve. */
         curveDifference(curve1: GeometryElement, curve2: GeometryElement, attributes: CurveDifferenceAttributes = {}): CurveDifference {
             let newObject = (this.board as any).create('CurveDifference', this.dereference([curve1, curve2,]), this.defaultAttributes(attributes))
             return new CurveDifference(newObject as CurveDifference)
         }
 
 
-        /**   Intersection of two closed path elements. The elements may be of type curve, circle, polygon, inequality. If one element is a curve, it has to be closed. The resulting element is of type curve.*/
+        /** Intersection of two closed path elements. The elements may be of type curve, circle, polygon, inequality. If one element is a curve, it has to be closed. The resulting element is of type curve. */
         curveIntersection(curve1: GeometryElement, curve2: GeometryElement, attributes: CurveIntersectionAttributes = {}): CurveIntersection {
             let newObject = (this.board as any).create('CurveIntersection', this.dereference([curve1, curve2,]), this.defaultAttributes(attributes))
             return new CurveIntersection(newObject as CurveIntersection)
         }
 
 
-        /**   Union of two closed path elements. The elements may be of type curve, circle, polygon, inequality. If one element is a curve, it has to be closed. The resulting element is of type curve.*/
+        /** Union of two closed path elements. The elements may be of type curve, circle, polygon, inequality. If one element is a curve, it has to be closed. The resulting element is of type curve. */
         curveUnion(curve1: GeometryElement, curve2: GeometryElement, attributes: CurveUnionAttributes = {}): CurveUnion {
             let newObject = (this.board as any).create('CurveUnion', this.dereference([curve1, curve2,]), this.defaultAttributes(attributes))
             return new CurveUnion(newObject as CurveUnion)
         }
 
+
+        /** This element is used to provide a constructor for the graph showing the (numerical) derivative of a given curve. */
         derivative(curve: Curve, attributes: DerivativeAttributes = {}): Derivative {
             let newObject = (this.board as any).create('Derivative', this.dereference([curve,]), this.defaultAttributes(attributes))
             return new Derivative(newObject as Derivative)
         }
 
 
-        /** Two Points and Radius  This element is used to provide a constructor for an ellipse. An ellipse is given by two points (the foci) and a third point on the ellipse or the length of the major axis.*/
-        ellipse(p1: Point | point, pointO: Point | point, radius: Number | Function, attributes: EllipseAttributes = {}): Ellipse {
-            let newObject = (this.board as any).create('Ellipse', this.dereference([p1, pointO, radius,]), this.defaultAttributes(attributes))
+        /** Two Points and Radius */
+        ellipse(p1: Point | point, p2: Point | point, radius: Number | Function, attributes: EllipseAttributes = {}): Ellipse {
+            let newObject = (this.board as any).create('Ellipse', this.dereference([p1, p2, radius,]), this.defaultAttributes(attributes))
             return new Ellipse(newObject as Ellipse)
         }
 
 
-        /**   This element is used to provide a constructor for functiongraph, which is just a wrapper for element Curve with JXG.Curve#X() set to x. The graph is drawn for x in the interval [a,b].*/
+        /** This element is used to provide a constructor for functiongraph, which is just a wrapper for element Curve with JXG.Curve#X() set to x. The graph is drawn for x in the interval [a,b]. */
         functiongraph(funct: Function, leftBorder?: Number, rightBorder?: Number, attributes: FunctiongraphAttributes = {}): Functiongraph {
             let newObject = (this.board as any).create('Functiongraph', this.dereference([funct, leftBorder, rightBorder,]), this.defaultAttributes(attributes))
             return new Functiongraph(newObject as Functiongraph)
@@ -1864,8 +1887,6 @@ export namespace TSX {
         glider(a?: any, b?: any, c?: any, d?: any, e?: any, f?: any, g?: any, h?: any, i?: any): Glider {
             let newObject: Glider = {} as Glider // just so it is initialized
             if (arguments.length == 1) {
-
-                // if((typeof (arguments[0])) == 'object' && !Array.isArray(arguments[0]) && !('elValue' in arguments[0]) && !('elType' in arguments[2])) {   // arguments counts from zero
                 if (isJSXAttribute(a)) {
                     newObject = (this.board as any).create('glider', this.dereference([]), this.defaultAttributes(a)) // as unknown as Glider
                 } else {
@@ -1873,8 +1894,6 @@ export namespace TSX {
                 }
             }
             if (arguments.length == 2) {
-
-                // if((typeof (arguments[1])) == 'object' && !Array.isArray(arguments[1]) && !('elValue' in arguments[1]) && !('elType' in arguments[2])) {   // arguments counts from zero
                 if (isJSXAttribute(b)) {
                     newObject = (this.board as any).create('glider', this.dereference([a,]), this.defaultAttributes(b)) // as unknown as Glider
                 } else {
@@ -1882,8 +1901,6 @@ export namespace TSX {
                 }
             }
             if (arguments.length == 3) {
-
-                // if((typeof (arguments[2])) == 'object' && !Array.isArray(arguments[2]) && !('elValue' in arguments[2]) && !('elType' in arguments[2])) {   // arguments counts from zero
                 if (isJSXAttribute(c)) {
                     newObject = (this.board as any).create('glider', this.dereference([a, b,]), this.defaultAttributes(c)) // as unknown as Glider
                 } else {
@@ -1892,78 +1909,115 @@ export namespace TSX {
             }
             return new Glider(newObject as Glider)
         }
+        /** Creates a grid to support the user with element placement or to improve determination of position. */
+        grid(axis1: Axis, axis2: Axis, attributes?: GridAttributes): Grid
+        grid(attributes?: GridAttributes): Grid
 
-        /**   Creates a grid to support the user with element placement.*/
-        grid(showGrid: Boolean = true, attributes: GridAttributes = {}): Grid {
-            let newObject = (this.board as any).create('Grid', this.dereference([showGrid,]), this.defaultAttributes(attributes))
+        // implementation of signature,  hidden from user
+        grid(a?: any, b?: any, c?: any, d?: any, e?: any, f?: any, g?: any, h?: any, i?: any): Grid {
+            let newObject: Grid = {} as Grid // just so it is initialized
+            if (arguments.length == 0) {
+                if (isJSXAttribute(a)) {
+                    newObject = (this.board as any).create('grid', this.dereference([]), this.defaultAttributes(a)) // as unknown as Grid
+                } else {
+                    newObject = (this.board as any).create('grid', this.dereference([]), this.defaultAttributes({})) // as Grid
+                }
+            }
+            if (arguments.length == 1) {
+                if (isJSXAttribute(a)) {
+                    newObject = (this.board as any).create('grid', this.dereference([]), this.defaultAttributes(a)) // as unknown as Grid
+                } else {
+                    newObject = (this.board as any).create('grid', this.dereference([a,]), this.defaultAttributes({})) // as Grid
+                }
+            }
+            if (arguments.length == 2) {
+                if (isJSXAttribute(b)) {
+                    newObject = (this.board as any).create('grid', this.dereference([a,]), this.defaultAttributes(b)) // as unknown as Grid
+                } else {
+                    newObject = (this.board as any).create('grid', this.dereference([a, b,]), this.defaultAttributes({})) // as Grid
+                }
+            }
+            if (arguments.length == 3) {
+                if (isJSXAttribute(c)) {
+                    newObject = (this.board as any).create('grid', this.dereference([a, b,]), this.defaultAttributes(c)) // as unknown as Grid
+                } else {
+                    newObject = (this.board as any).create('grid', this.dereference([a, b, c,]), this.defaultAttributes({})) // as Grid
+                }
+            }
             return new Grid(newObject as Grid)
         }
 
-
-        /**   Hatches can be used to mark congruent lines or curves.*/
+        /** Hatches can be used to mark congruent lines or curves. */
         hatch(line: Line | line, numberHatches: Number, attributes: HatchAttributes = {}): Hatch {
             let newObject = (this.board as any).create('Hatch', this.dereference([line, numberHatches,]), this.defaultAttributes(attributes))
             return new Hatch(newObject as Hatch)
         }
 
 
-        /**   This element is used to provide a constructor for an hyperbola. An hyperbola is given by two points (the foci) and a third point on the hyperbola or the length of the major axis.*/
+        /** This element is used to provide a constructor for an hyperbola. An hyperbola is given by two points (the foci) and a third point on the hyperbola or the length of the major axis. */
         hyperbola(point1: Point | point, point2: Point | point, point3: Point | point | Number, start: Number = -3.14, end: Number = 3.14, attributes: HyperbolaAttributes = {}): Hyperbola {
             let newObject = (this.board as any).create('Hyperbola', this.dereference([point1, point2, point3, start, end,]), this.defaultAttributes(attributes))
             return new Hyperbola(newObject as Hyperbola)
         }
 
 
-        /**   Constructs the incenter of the triangle described by the three given points. https://mathworld.wolfram.com/Incenter.html*/
+        /** Constructs the incenter of the triangle described by the three given points. https://mathworld.wolfram.com/Incenter.html */
         incenter(p1: Point | point, p2: Point | point, p3: Point | point, attributes: IncenterAttributes = {}): Incenter {
             let newObject = (this.board as any).create('Incenter', this.dereference([p1, p2, p3,]), this.defaultAttributes(attributes))
             return new Incenter(newObject as Incenter)
         }
 
 
-        /**   An incircle is given by three points.*/
+        /** An incircle is given by three points. */
         incircle(p1: Point | point, p2: Point | point, p3: Point | point, attributes: IncircleAttributes = {}): Incircle {
             let newObject = (this.board as any).create('Incircle', this.dereference([p1, p2, p3,]), this.defaultAttributes(attributes))
             return new Incircle(newObject as Incircle)
         }
 
 
-        /**   Creates an area indicating the solution of a linear inequality or an inequality of a function graph, i.e. an inequality of type y*/
+        /** Creates an area indicating the solution of a linear inequality or an inequality of a function graph, i.e. an inequality of type y */
         inequality(boundaryLine: Line | line | Curve, attributes: InequalityAttributes = {}): Inequality {
             let newObject = (this.board as any).create('Inequality', this.dereference([boundaryLine,]), this.defaultAttributes(attributes))
             return new Inequality(newObject as Inequality)
         }
 
 
-        /**   This element is used to provide a constructor for special texts containing a HTML form input element. If the width of element is set with the attribute ”cssStyle”, the width of the label must be added. For this element, the attribute ”display” has to have the value 'html' (which is the default). The underlying HTML input field can be accessed through the sub-object 'rendNodeInput', e.g. to add event listeners.*/
+        /** This element is used to provide a constructor for special texts containing a HTML form input element. If the width of element is set with the attribute ”cssStyle”, the width of the label must be added. For this element, the attribute ”display” has to have the value 'html' (which is the default). The underlying HTML input field can be accessed through the sub-object 'rendNodeInput', e.g. to add event listeners. */
         input(x: Number | Function, y: Number | Function, prompt: String, initial: String, attributes: InputAttributes = {}): Input {
             let newObject = (this.board as any).create('Input', this.dereference([x, y, prompt, initial,]), this.defaultAttributes(attributes))
             return new Input(newObject as Input)
         }
 
 
-        /**   This element is used to visualize the integral of a given curve over a given interval.*/
+        /** This element is used to visualize the integral of a given curve over a given interval. */
         integral(range: Number[], curve: Curve, attributes: IntegralAttributes = {}): Integral {
             let newObject = (this.board as any).create('Integral', this.dereference([range, curve,]), this.defaultAttributes(attributes))
             return new Integral(newObject as Integral)
         }
 
 
-        /**   An intersection point is a point which lives on two JSXGraph elements, i.e. it is one point of the set consisting of the intersection points of the two elements. The following element types can be (mutually) intersected: line, circle, curve, polygon, polygonal chain.*/
+        /** An intersection point is a point which lives on two JSXGraph elements, i.e. it is one point of the set consisting of the intersection points of the two elements. The following element types can be (mutually) intersected: line, circle, curve, polygon, polygonal chain. */
         intersection(element1: Line | Circle, element2: Line | Circle, attributes: IntersectionAttributes = {}): Point {
             let newObject = (this.board as any).create('intersection', this.dereference([element1, element2, 0]), this.defaultAttributes(attributes))
             return new Point(newObject as Point)
         }
 
 
-        /**   A major arc is a segment of the circumference of a circle having measure greater than or equal to 180 degrees (pi radians). It is defined by a center, one point that defines the radius, and a third point that defines the angle of the arc.*/
+        /** This element is used to visualize the locus of a given dependent point. */
+        locus(point: Point, attributes: LocusAttributes = {}): Locus {
+            let newObject = (this.board as any).create('Locus', this.dereference([point,]), this.defaultAttributes(attributes))
+            return new Locus(newObject as Locus)
+        }
+
+
+        /** A major arc is a segment of the circumference of a circle having measure greater than or equal to 180 degrees (pi radians). It is defined by a center, one point that defines the radius, and a third point that defines the angle of the arc. */
         majorArc(p1: Point | point, p2: Point | point, p3: Point | point, attributes: MajorArcAttributes = {}): MajorArc {
             let newObject = (this.board as any).create('MajorArc', this.dereference([p1, p2, p3,]), this.defaultAttributes(attributes))
             return new MajorArc(newObject as MajorArc)
         }
 
 
-        /**   A major sector is a sector of a circle having measure greater than or equal to 180 degrees (pi radians). It is defined by a center, one point that defines the radius, and a third point that defines the angle of the sector.*/
+        /** A major sector is a sector of a circle having measure greater than or equal to 180 degrees (pi radians). It is defined by a center, one point that defines the radius, and a third point that defines the angle of the sector. */
         majorSector(p1: Point | point, p2: Point | point, p3: Point | point, attributes: MajorSectorAttributes = {}): MajorSector {
             let newObject = (this.board as any).create('MajorSector', this.dereference([p1, p2, p3,]), this.defaultAttributes(attributes))
             return new MajorSector(newObject as MajorSector)
@@ -1977,8 +2031,6 @@ export namespace TSX {
         midpoint(a?: any, b?: any, c?: any, d?: any, e?: any, f?: any, g?: any, h?: any, i?: any): Midpoint {
             let newObject: Midpoint = {} as Midpoint // just so it is initialized
             if (arguments.length == 1) {
-
-                // if((typeof (arguments[0])) == 'object' && !Array.isArray(arguments[0]) && !('elValue' in arguments[0]) && !('elType' in arguments[2])) {   // arguments counts from zero
                 if (isJSXAttribute(a)) {
                     newObject = (this.board as any).create('midpoint', this.dereference([]), this.defaultAttributes(a)) // as unknown as Midpoint
                 } else {
@@ -1986,8 +2038,6 @@ export namespace TSX {
                 }
             }
             if (arguments.length == 2) {
-
-                // if((typeof (arguments[1])) == 'object' && !Array.isArray(arguments[1]) && !('elValue' in arguments[1]) && !('elType' in arguments[2])) {   // arguments counts from zero
                 if (isJSXAttribute(b)) {
                     newObject = (this.board as any).create('midpoint', this.dereference([a,]), this.defaultAttributes(b)) // as unknown as Midpoint
                 } else {
@@ -1995,8 +2045,6 @@ export namespace TSX {
                 }
             }
             if (arguments.length == 3) {
-
-                // if((typeof (arguments[2])) == 'object' && !Array.isArray(arguments[2]) && !('elValue' in arguments[2]) && !('elType' in arguments[2])) {   // arguments counts from zero
                 if (isJSXAttribute(c)) {
                     newObject = (this.board as any).create('midpoint', this.dereference([a, b,]), this.defaultAttributes(c)) // as unknown as Midpoint
                 } else {
@@ -2006,35 +2054,35 @@ export namespace TSX {
             return new Midpoint(newObject as Midpoint)
         }
 
-        /**   A minor arc is a segment of the circumference of a circle having measure less than or equal to 180 degrees (pi radians). It is defined by a center, one point that defines the radius, and a third point that defines the angle of the arc.*/
+        /** A minor arc is a segment of the circumference of a circle having measure less than or equal to 180 degrees (pi radians). It is defined by a center, one point that defines the radius, and a third point that defines the angle of the arc. */
         minorArc(p1: Point | point, p2: Point | point, p3: Point | point, attributes: MinorArcAttributes = {}): MinorArc {
             let newObject = (this.board as any).create('MinorArc', this.dereference([p1, p2, p3,]), this.defaultAttributes(attributes))
             return new MinorArc(newObject as MinorArc)
         }
 
 
-        /**   A minor sector is a sector of a circle having measure less than or equal to 180 degrees (pi radians). It is defined by a center, one point that defines the radius, and a third point that defines the angle of the sector.*/
+        /** A minor sector is a sector of a circle having measure less than or equal to 180 degrees (pi radians). It is defined by a center, one point that defines the radius, and a third point that defines the angle of the sector. */
         minorSector(p1: Point | point, p2: Point | point, p3: Point | point, attributes: MinorSectorAttributes = {}): MinorSector {
             let newObject = (this.board as any).create('MinorSector', this.dereference([p1, p2, p3,]), this.defaultAttributes(attributes))
             return new MinorSector(newObject as MinorSector)
         }
 
 
-        /**   A mirror element of a point, line, circle, curve, polygon will be constructed.*/
+        /** A mirror element of a point, line, circle, curve, polygon will be constructed. */
         mirrorelement(element: Point | Line | Circle | Curve | Polygon, acrossPoint: Point | point, attributes: mirrorelementAttributes = {}): mirrorelement {
             let newObject = (this.board as any).create('mirrorelement', this.dereference([element, acrossPoint,]), this.defaultAttributes(attributes))
             return new mirrorelement(newObject as mirrorelement)
         }
 
 
-        /**   A mirror point will be constructed.*/
+        /** A mirror point will be constructed. */
         mirrorpoint(p1: Point, p2: Point, attributes: MirrorpointAttributes = {}): Mirrorpoint {
             let newObject = (this.board as any).create('Mirrorpoint', this.dereference([p1, p2,]), this.defaultAttributes(attributes))
             return new Mirrorpoint(newObject as Mirrorpoint)
         }
 
 
-        /**   A non-reflex angle is the acute or obtuse instance of an angle. It is defined by a center, one point that defines the radius, and a third point that defines the angle of the sector.*/
+        /** A non-reflex angle is the acute or obtuse instance of an angle. It is defined by a center, one point that defines the radius, and a third point that defines the angle of the sector. */
         nonReflexAngle(point1: Point, point2: Point, point3: Point, attributes: NonReflexAngleAttributes = {}): NonReflexAngle {
             let newObject = (this.board as any).create('NonReflexAngle', this.dereference([point1, point2, point3,]), this.defaultAttributes(attributes))
             return new NonReflexAngle(newObject as NonReflexAngle)
@@ -2048,8 +2096,6 @@ export namespace TSX {
         normal(a?: any, b?: any, c?: any, d?: any, e?: any, f?: any, g?: any, h?: any, i?: any): Normal {
             let newObject: Normal = {} as Normal // just so it is initialized
             if (arguments.length == 1) {
-
-                // if((typeof (arguments[0])) == 'object' && !Array.isArray(arguments[0]) && !('elValue' in arguments[0]) && !('elType' in arguments[2])) {   // arguments counts from zero
                 if (isJSXAttribute(a)) {
                     newObject = (this.board as any).create('normal', this.dereference([]), this.defaultAttributes(a)) // as unknown as Normal
                 } else {
@@ -2057,8 +2103,6 @@ export namespace TSX {
                 }
             }
             if (arguments.length == 2) {
-
-                // if((typeof (arguments[1])) == 'object' && !Array.isArray(arguments[1]) && !('elValue' in arguments[1]) && !('elType' in arguments[2])) {   // arguments counts from zero
                 if (isJSXAttribute(b)) {
                     newObject = (this.board as any).create('normal', this.dereference([a,]), this.defaultAttributes(b)) // as unknown as Normal
                 } else {
@@ -2066,8 +2110,6 @@ export namespace TSX {
                 }
             }
             if (arguments.length == 3) {
-
-                // if((typeof (arguments[2])) == 'object' && !Array.isArray(arguments[2]) && !('elValue' in arguments[2]) && !('elType' in arguments[2])) {   // arguments counts from zero
                 if (isJSXAttribute(c)) {
                     newObject = (this.board as any).create('normal', this.dereference([a, b,]), this.defaultAttributes(c)) // as unknown as Normal
                 } else {
@@ -2077,77 +2119,100 @@ export namespace TSX {
             return new Normal(newObject as Normal)
         }
 
-        /**   This is used to construct a point that is the orthogonal projection of a point to a line.*/
+        /** This is used to construct a point that is the orthogonal projection of a point to a line. */
         orthogonalprojection(point: Point | point, line: Line | line, attributes: OrthogonalprojectionAttributes = {}): Orthogonalprojection {
             let newObject = (this.board as any).create('Orthogonalprojection', this.dereference([point, line,]), this.defaultAttributes(attributes))
             return new Orthogonalprojection(newObject as Orthogonalprojection)
         }
 
 
-        /**   This element is used to provide a constructor for the ”other” intersection point.*/
+        /** This element is used to provide a constructor for the ”other” intersection point. */
         otherIntersection(element1: Line | Circle, element2: Line | Circle, firstIntersection: Point, attributes: OtherIntersectionAttributes = {}): Point {
             let newObject = (this.board as any).create('otherintersection', this.dereference([element1, element2, firstIntersection]), attributes)
             return new Point(newObject as Point)
         }
 
 
-        /**   This element is used to provide a constructor for a parabola. A parabola is given by one point (the focus) and a line (the directrix).*/
+        /** This element is used to provide a constructor for a parabola. A parabola is given by one point (the focus) and a line (the directrix). */
         parabola(focalPoint: Point | point, line: Line | line, attributes: ParabolaAttributes = {}): Parabola {
             let newObject = (this.board as any).create('Parabola', this.dereference([focalPoint, line,]), this.defaultAttributes(attributes))
             return new Parabola(newObject as Parabola)
         }
 
 
-        /**   This element is used to provide a constructor for a segment. It's strictly spoken just a wrapper for element Line with Line#straightFirst and Line#straightLast properties set to false. If there is a third variable then the segment has a fixed length (which may be a function, too).*/
+        /** This element is used to provide a constructor for a segment. It's strictly spoken just a wrapper for element Line with Line#straightFirst and Line#straightLast properties set to false. If there is a third variable then the segment has a fixed length (which may be a function, too). */
         segment(P1: Point | point, P2: Point | point, attributes: SegmentAttributes = {}): Segment {
             let newObject = (this.board as any).create('Segment', this.dereference([P1, P2,]), this.defaultAttributes(attributes))
             return new Segment(newObject as Segment)
         }
 
 
-        /**   */
+        /**  */
         parallelogram(p1: Point | point, p2: Point | point, p3: Point | point, attributes: ParallelogramAttributes = {}): Parallelogram {
             let newObject = (this.board as any).create('Parallelogram', this.dereference([p1, p2, p3,]), this.defaultAttributes(attributes))
             return new Parallelogram(newObject as Parallelogram)
         }
 
 
-        /**   This element is used to provide a constructor for a perpendicular.*/
+        /** This element is used to provide a constructor for a perpendicular. */
         perpendicular(line: Line | line, point: Point | point, attributes: PerpendicularAttributes = {}): Perpendicular {
             let newObject = (this.board as any).create('Perpendicular', this.dereference([line, point,]), this.defaultAttributes(attributes))
             return new Perpendicular(newObject as Perpendicular)
         }
 
 
-        /**   This element is used to provide a constructor for the polar line of a point with respect to a conic or a circle.*/
+        /** This element is used to provide a constructor for the polar line of a point with respect to a conic or a circle. */
         polarLine(conic: Conic | Circle, point: Point, attributes: PolarLineAttributes = {}): PolarLine {
             let newObject = (this.board as any).create('PolarLine', this.dereference([conic, point,]), this.defaultAttributes(attributes))
             return new PolarLine(newObject as PolarLine)
         }
 
 
-        /**   This element is used to provide a constructor for the pole point of a line with respect to a conic or a circle.*/
+        /** This element is used to provide a constructor for the pole point of a line with respect to a conic or a circle. */
         polePoint(conic: Conic | Circle, line: Line, attributes: PolePointAttributes = {}): PolePoint {
             let newObject = (this.board as any).create('PolePoint', this.dereference([conic, line,]), this.defaultAttributes(attributes))
             return new PolePoint(newObject as PolePoint)
         }
 
 
-        /**   A reflex angle is the neither acute nor obtuse instance of an angle. It is defined by a center, one point that defines the radius, and a third point that defines the angle of the sector.*/
+        /** This element is used to provide a constructor for the radical axis with respect to two circles with distinct centers. The angular bisector of the polar lines of the circle centers with respect to the other circle is always the radical axis. The radical axis passes through the intersection points when the circles intersect. When a circle about the midpoint of circle centers, passing through the circle centers, intersects the circles, the polar lines pass through those intersection points. */
+        radicalAxis(circle1: Circle, circle2: Circle, attributes: RadicalAxisAttributes = {}): RadicalAxis {
+            let newObject = (this.board as any).create('RadicalAxis', this.dereference([circle1, circle2,]), this.defaultAttributes(attributes))
+            return new RadicalAxis(newObject as RadicalAxis)
+        }
+
+
+        /** A reflex angle is the neither acute nor obtuse instance of an angle. It is defined by a center, one point that defines the radius, and a third point that defines the angle of the sector. */
         reflexAngle(point1: Point, point2: Point, point3: Point, attributes: ReflexAngleAttributes = {}): ReflexAngle {
             let newObject = (this.board as any).create('ReflexAngle', this.dereference([point1, point2, point3,]), this.defaultAttributes(attributes))
             return new ReflexAngle(newObject as ReflexAngle)
         }
 
 
-        /**   Constructs a regular polygon. It needs two points which define the base line and the number of vertices.*/
+        /** Constructs a regular polygon. It needs two points which define the base line and the number of vertices. */
         regularPolygon(P1: Point | point, P2: Point | point, nVertices: Number, attributes: RegularPolygonAttributes = {}): RegularPolygon {
             let newObject = (this.board as any).create('RegularPolygon', this.dereference([P1, P2, nVertices,]), this.defaultAttributes(attributes))
             return new RegularPolygon(newObject as RegularPolygon)
         }
 
 
-        /**   A slider can be used to choose values from a given range of numbers.*/
+        /** An input widget for choosing values from a given range of numbers.  Parameters are startpoint, endpoint,
+                       and an array with [minimum, initialValue, maximum].  Query the value with slider.Value().  Set the slider either by
+                       dragging the control or clicking on the line (you can disable clicking with {moveOnUp:false}
+
+       *```js
+                let s = JSX.slider([1, 2], [3, 2], [1, 5, 10])           //  query with s.Value()
+                let s = JSX.slider([1, 2], [3, 2], [1, 5, 10],{snapWidth:1})     //  only values 1,2,3...
+                let s = JSX.slider([1, 2], [3, 2], [1, 5, 10],{withTicks:false}) //  hide the ticks
+                let s = JSX.slider[-3, 1], [1, 1], [-10, 1, 10], {
+                   highline: { strokeColor: 'red'},        // to left of handle
+                   baseline: { strokeColor: 'blue'},       // to right of handle
+                   fillColor: 'red',                       // handle color
+                   label: {fontSize: 16, strokeColor: 'orange'},
+                   suffixLabel: ' x=',         // really a prefix
+                   postLabel: ' meters'        // this is a suffix
+
+       *``` */
         slider(StartPoint: Point | point, EndPoint: Point | point, minimum_initial_maximum: [number, number, number], attributes: SliderAttributes = {}): Slider {
             let newObject = (this.board as any).create('Slider', this.dereference([StartPoint, EndPoint, minimum_initial_maximum,]), this.defaultAttributes(attributes))
             return new Slider(newObject as Slider)
@@ -2161,8 +2226,6 @@ export namespace TSX {
         slopetriangle(a?: any, b?: any, c?: any, d?: any, e?: any, f?: any, g?: any, h?: any, i?: any): Slopetriangle {
             let newObject: Slopetriangle = {} as Slopetriangle // just so it is initialized
             if (arguments.length == 1) {
-
-                // if((typeof (arguments[0])) == 'object' && !Array.isArray(arguments[0]) && !('elValue' in arguments[0]) && !('elType' in arguments[2])) {   // arguments counts from zero
                 if (isJSXAttribute(a)) {
                     newObject = (this.board as any).create('slopetriangle', this.dereference([]), this.defaultAttributes(a)) // as unknown as Slopetriangle
                 } else {
@@ -2170,8 +2233,6 @@ export namespace TSX {
                 }
             }
             if (arguments.length == 2) {
-
-                // if((typeof (arguments[1])) == 'object' && !Array.isArray(arguments[1]) && !('elValue' in arguments[1]) && !('elType' in arguments[2])) {   // arguments counts from zero
                 if (isJSXAttribute(b)) {
                     newObject = (this.board as any).create('slopetriangle', this.dereference([a,]), this.defaultAttributes(b)) // as unknown as Slopetriangle
                 } else {
@@ -2179,8 +2240,6 @@ export namespace TSX {
                 }
             }
             if (arguments.length == 3) {
-
-                // if((typeof (arguments[2])) == 'object' && !Array.isArray(arguments[2]) && !('elValue' in arguments[2]) && !('elType' in arguments[2])) {   // arguments counts from zero
                 if (isJSXAttribute(c)) {
                     newObject = (this.board as any).create('slopetriangle', this.dereference([a, b,]), this.defaultAttributes(c)) // as unknown as Slopetriangle
                 } else {
@@ -2190,28 +2249,28 @@ export namespace TSX {
             return new Slopetriangle(newObject as Slopetriangle)
         }
 
-        /**   With the element tangent the slope of a line, circle, or curve in a certain point can be visualized. A tangent is always constructed by a glider on a line, circle, or curve and describes the tangent in the glider point on that line, circle, or curve.*/
+        /** With the element tangent the slope of a line, circle, or curve in a certain point can be visualized. A tangent is always constructed by a glider on a line, circle, or curve and describes the tangent in the glider point on that line, circle, or curve. */
         tangent(glider: Glider, attributes: TangentAttributes = {}): Tangent {
             let newObject = (this.board as any).create('Tangent', this.dereference([glider,]), this.defaultAttributes(attributes))
             return new Tangent(newObject as Tangent)
         }
 
 
-        /**   A tape measure can be used to measure distances between points.*/
+        /** A tape measure can be used to measure distances between points. */
         tapemeasure(P1: Point | point, P2: Point | point, attributes: TapemeasureAttributes = {}): Tapemeasure {
             let newObject = (this.board as any).create('Tapemeasure', this.dereference([P1, P2,]), this.defaultAttributes(attributes))
             return new Tapemeasure(newObject as Tapemeasure)
         }
 
 
-        /**   This element is used to provide a constructor for trace curve (simple locus curve), which is realized as a special curve.*/
+        /** This element is used to provide a constructor for trace curve (simple locus curve), which is realized as a special curve. */
         tracecurve(glider: Glider, point: Point, attributes: TracecurveAttributes = {}): Tracecurve {
             let newObject = (this.board as any).create('Tracecurve', this.dereference([glider, point,]), this.defaultAttributes(attributes))
             return new Tracecurve(newObject as Tracecurve)
         }
 
 
-        /** Here, lower is an array of the form [x, y] and dim is an array of the form [w, h]. The arrays [x, y] and [w, h] define the 2D frame into which the 3D cube is (roughly) projected. If the view azimuth=0 and elevation=0, the 3D view will cover a rectangle with lower left corner [x,y] and side lengths [w, h] of the board. The 'cube' is of the form [[x1, x2], [y1, y2], [z1, z2]] which determines the coordinate ranges of the 3D cube.   This element creates a 3D view.*/
+        /** Here, lower is an array of the form [x, y] and dim is an array of the form [w, h]. The arrays [x, y] and [w, h] define the 2D frame into which the 3D cube is (roughly) projected. If the view azimuth=0 and elevation=0, the 3D view will cover a rectangle with lower left corner [x,y] and side lengths [w, h] of the board. The 'cube' is of the form [[x1, x2], [y1, y2], [z1, z2]] which determines the coordinate ranges of the 3D cube.  */
         view3D(x: Number = -13, y: Number = -10, w: Number = 20, h: Number = 20, xBounds: Number[] = [-5, 5], yBounds: Number[] = [-5, 5], zBounds: Number[] = [-5, 5], attributes: View3DAttributes = {
             // Main axes
             axesPosition: 'center',
@@ -2265,6 +2324,11 @@ export namespace TSX {
         }
         public set isDraggable(param: Boolean) {
             (this.elValue as any).isDraggable = param
+        }
+
+        /** Removes all ticks from a line or curve. */
+        removeAllTicks(): Object {
+            return (this.elValue as any).console.log(this); (this.elValue as any).removeAllTicks() as Object
         }
 
         /** Add an element as a child to the current element. */
@@ -2390,11 +2454,6 @@ export namespace TSX {
         /** Removes the element from the construction. */
         remove(): Object {
             return (this.elValue as any).remove() as Object
-        }
-
-        /** Removes all ticks from a line or curve. */
-        removeAllTicks(): Object {
-            return (this.elValue as any).removeAllTicks() as Object
         }
 
         /** Remove an element as a child from the current element. */
