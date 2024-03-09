@@ -11,7 +11,7 @@ This approach is different from merely providing descriptions with a d.ts file. 
 
 Instructions for getting started with TypeScript are below.
 
-But you can use the wrapper in plain JavaScript, and VSCode will still provide scaffolding (but not error checking).  There is a sample construction in [simple.js](simple.js), and [simple.html](simple.html) will load it.
+You can use the wrapper in plain JavaScript, and VSCode will still provide scaffolding (but not error checking).  There is a sample construction in [simple.js](simple.js) and [simple.html](simple.html) will load it.  
 
 
 
