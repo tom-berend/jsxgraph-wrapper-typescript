@@ -2,27 +2,30 @@
     "name": "jsxgraph-wrapper-typescript",
     "author": "Tom Berend",
     "email": "tom.berend@cheeseandcrackers.ca",
-    "description": "A thin TypeScript wrapper over JSXGraph.",
-    "version": "0.0.3",
+    "description": "A thin TypeScript wrapper over JSXGraph to maximize scaffolding with VSCode.",
+    "version": "0.0.4",
     "licence": "MIT",
-
+    "main": "scr/jsxgraph.js",
+    "types": "src/jsxgraph.d.ts",
     "scripts": {
         "build": "webpack --mode production",
         "watch": "webpack serve --mode development",
         "test": "webpack --config webpack.test.config --mode development",
-        "comments":"",
-        "comment0": "watch output on http://localhost:9000",
+        "comments": "",
+        "comment0": "npm run watch  - output on http://localhost:9000",
         "comment1": "test output probably at http://localhost/jsxgraph-wrapper-typescript/test/test.html"
     },
-
     "dependencies": {
         "css-loader": "^6.7.1",
         "html-webpack-plugin": "^5.5.0",
+        "jsxgraph": "^1.8.0",
+        "katex": "^0.16.9",
         "style-loader": "^3.3.1",
         "ts-loader": "^9.3.1",
-        "typescript": "^5.3.3",
+        "typescript": "^5.4.3",
         "url-loader": "^4.1.1",
-        "webpack": "^5.90.3",
+        "webfontloader": "^1.6.28",
+        "webpack": "^5.91.0",
         "webpack-cli": "5.1.4",
         "webpack-dev-server": "^5.0.2"
     }

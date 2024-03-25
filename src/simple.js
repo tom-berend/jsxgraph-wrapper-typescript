@@ -1,4 +1,4 @@
-import { TSX } from "./src/jsxgraph.js";
+import { TSX } from "./jsxgraph.js";
 const JSXGraph = new TSX.JSXGraph()
 {
     let b = JSXGraph.initBoard('jxgbox2');
