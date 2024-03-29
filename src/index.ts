@@ -1,12 +1,11 @@
-import { TSX } from "../src/jsxgraph";
-const JSXGraph = new TSX.JSXGraph();
+import { TXG } from './tsxgraph'
+
 
 
 {
     // from  https://jsxgraph.uni-bayreuth.de/wiki/index.php?title=Browser_event_and_coordinates
-    const b = JSXGraph.initBoard('html00')
+    const b = TXG.TSXGraph.initBoard ('html00')
 
-    b.text(-4.5, 3.3, 'Version ' + JSXGraph.version)
     b.text(-4.5, 2.6, new Date().toLocaleTimeString())
 
     let p = b.point([0, 0], { name: 'label' })
@@ -34,10 +33,12 @@ const JSXGraph = new TSX.JSXGraph();
     b.on('keydown', event);    // ONLY keydown works
 
 }
+
+
 {
     // https://jsxgraph.uni-bayreuth.de/wiki/index.php?title=Oscillator
 
-    //     var board = JXG.JSXGraph.initBoard('jxgbox', {boundingbox: [-10, 10, 10, -10], keepaspectratio: true, axis: true, grid: false}),
+    //     var board = JXG.TSXGraph.initBoard('jxgbox', {boundingbox: [-10, 10, 10, -10], keepaspectratio: true, axis: true, grid: false}),
     //     line = board.create('line', [[0,8], [0,-10]], {visible: false, straightFirst: false, straightLast: false}),
     //     point = board.create('glider', [-8, -7, line], {name: 'Weight'}),
     //     isInDragMode = false,
@@ -93,7 +94,7 @@ const JSXGraph = new TSX.JSXGraph();
 }
 
 {
-    const b = JSXGraph.initBoard('html01', { boundingbox: [-10, 10, 10, -10] })
+    const b = TXG.TSXGraph.initBoard('html01', { boundingbox: [-10, 10, 10, -10] })
 
     b.text(-9, 9, 'Points, Polygons, Groups', { fontSize: 12 })
     let p1 = b.point([0.0, 3.0])
@@ -144,7 +145,7 @@ const JSXGraph = new TSX.JSXGraph();
 }
 
 {
-    const b = JSXGraph.initBoard('html02', { boundingbox: [-10, 10, 10, -10] })
+    const b = TXG.TSXGraph.initBoard('html02', { boundingbox: [-10, 10, 10, -10] })
     b.text(-4.5, 4.5, 'Intersections', { fontSize: 15 })
 
     // Create an intersection point of circle and line
@@ -167,7 +168,7 @@ const JSXGraph = new TSX.JSXGraph();
 
 {
 
-    const board = JSXGraph.initBoard('html03',)
+    const board = TXG.TSXGraph.initBoard('html03',)
     board.text(-4.5, 4.5, 'Euclid 1st Prop', { fontSize: 15 })
     // problems
     let a = board.point([-2, 0], { name: 'A' })
@@ -187,7 +188,7 @@ const JSXGraph = new TSX.JSXGraph();
 
 {
 
-    const board = JSXGraph.initBoard('html04',)
+    const board = TXG.TSXGraph.initBoard('html04',)
     board.text(-4.5, 4.5, 'Euclid 2nd Prop', { fontSize: 15 })
 
     // board.setDefaultAttributes({name:''})
@@ -221,7 +222,7 @@ const JSXGraph = new TSX.JSXGraph();
 
 
 {
-    let B = JSXGraph.initBoard('html05', { boundingbox: [-1, 10, 11, -2], axis: true, showCopyright: false, showNavigation: false });
+    let B = TXG.TSXGraph.initBoard('html05', { boundingbox: [-1, 10, 11, -2], axis: true, showCopyright: false, showNavigation: false });
     let x = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10];
     let y = [8.4, 1, 0.1, 9, 3.3, 3.3, 4.5, 8, 9, 4];
     let curve = B.create('curve', [x, y], { curveType: 'plot' });
@@ -232,7 +233,7 @@ const JSXGraph = new TSX.JSXGraph();
 }
 
 {
-    let B = JSXGraph.initBoard('html06', { boundingbox: [-20, 20, 20, -20], axis: true });
+    let B = TXG.TSXGraph.initBoard('html06', { boundingbox: [-20, 20, 20, -20], axis: true });
 
     B.print('This is a test', 5, true)
     B.print('This is a second test')
@@ -246,7 +247,7 @@ const JSXGraph = new TSX.JSXGraph();
 {
 
 
-    let brd = JSXGraph.initBoard('html07', { boundingbox: [-2, 5, 5, -2] });
+    let brd = TXG.TSXGraph.initBoard('html07', { boundingbox: [-2, 5, 5, -2] });
     let urlImg = "src/uccellino.jpg";
 
     let p0 = brd.point([0, 0], { name: 'offset', strokeWidth: 8, strokeOpacity: 0.3 });
@@ -287,12 +288,12 @@ const JSXGraph = new TSX.JSXGraph();
 
 
 {
-    let brd = JSXGraph.initBoard('html08', { boundingbox: [-2, 100, 220, -70], grid: false, axis: true });
+    let brd = TXG.TSXGraph.initBoard('html08', { boundingbox: [-2, 100, 220, -70], grid: false, axis: true });
     brd.suspendUpdate();
 
     let deg = brd.slider([10, 90], [100, 90], [1, 1, 10], { name: 'degree', snapWidth: 1 });
     let s = brd.slider([10, 70], [100, 70], [0, 1, 3], { name: 'scale' });
-    let pointlist: TSX.Point[] = [];
+    let pointlist: TXG.Point[] = [];
     for (let i = 0; i < 30; i++) {
         pointlist.push(brd.point([() => 200 * Math.random(), () => s.Value() * 30 * Math.random() + 20], { name: '', strokeWidth: 4, strokeColor: "#0000a0" }));
     }
@@ -323,7 +324,7 @@ const JSXGraph = new TSX.JSXGraph();
     let maxY = 9.5
     let counter = 10
 
-    let B = JSXGraph.initBoard('html09', { boundingbox: [-maxX, maxY, maxX, -maxY], grid: true, axis: false });
+    let B = TXG.TSXGraph.initBoard('html09', { boundingbox: [-maxX, maxY, maxX, -maxY], grid: true });
 
     B.print('Bounce!')
 
@@ -354,7 +355,7 @@ const JSXGraph = new TSX.JSXGraph();
 
 
 {
-    const B = JSXGraph.initBoard('html10', { boundingbox: [-10, 10, 10, -10] })
+    const B = TXG.TSXGraph.initBoard('html10', { boundingbox: [-10, 10, 10, -10] })
 
 
     B.print('arrow is a vector-like segment')
@@ -378,10 +379,9 @@ const JSXGraph = new TSX.JSXGraph();
 
 
 {
-    const b = JSXGraph.initBoard('html11')
+    const b = TXG.TSXGraph.initBoard('html11')
 
 
-    b.text(-4.5, 4.6, 'Version ' + JSXGraph.version)
     b.text(-4.5, 4, new Date().toLocaleTimeString())
 
     let text1 = b.text(-1, 1, "Hello World", { fontSize: 28, strokeColor: 'green' });
@@ -411,7 +411,7 @@ const JSXGraph = new TSX.JSXGraph();
 
 
 {
-    const b = JSXGraph.initBoard('html12', { boundingbox: [-10, 10, 10, -10], axis: true });
+    const b = TXG.TSXGraph.initBoard('html12', { boundingbox: [-10, 10, 10, -10], axis: true });
 
     b.print('Transforms')
 
@@ -441,7 +441,7 @@ const JSXGraph = new TSX.JSXGraph();
 
 
 {
-    const board = JSXGraph.initBoard('html13', { boundingbox: [-10, 10, 10, -10], axis: true })
+    const board = TXG.TSXGraph.initBoard('html13', { boundingbox: [-10, 10, 10, -10], axis: true })
     board.print('orthogonal projection')
 
     let a = board.point([0.0, 4.0], { name: 'A' })
@@ -455,7 +455,7 @@ const JSXGraph = new TSX.JSXGraph();
 
 
 {
-    const b = JSXGraph.initBoard('html14')
+    const b = TXG.TSXGraph.initBoard('html14')
     b.text(-4.5, -4.5, 'Move point D around')
 
     // Create a glider with user defined coordinates. If the coordinates are not on
@@ -479,7 +479,7 @@ const JSXGraph = new TSX.JSXGraph();
 }
 
 {
-    const b = JSXGraph.initBoard('html15', { boundingbox: [-1, 5, 5, -1], axis: true })
+    const b = TXG.TSXGraph.initBoard('html15', { boundingbox: [-1, 5, 5, -1], axis: true })
 
     let f = [4, 2, -1, 3, 6, 7, 2];
     let chart = b.chart(f,
@@ -497,7 +497,7 @@ const JSXGraph = new TSX.JSXGraph();
 
 {
     // Glider inherits from Point !!!
-    const b = JSXGraph.initBoard('html16', { boundingbox: [-5, 5, 5, -5], axis: true })
+    const b = TXG.TSXGraph.initBoard('html16', { boundingbox: [-5, 5, 5, -5], axis: true })
 
 
     // Create a glider with default coordinates (1,0,0). Same premises as above.
@@ -517,7 +517,7 @@ const JSXGraph = new TSX.JSXGraph();
 
 
 {
-    const b = JSXGraph.initBoard('html17', { boundingbox: [-1, 5, 5, -1], axis: true })
+    const b = TXG.TSXGraph.initBoard('html17', { boundingbox: [-1, 5, 5, -1], axis: true })
 
     b.print('bisector lines against two lines')
     let p1 = b.point([6.0, 4.0])
@@ -535,14 +535,14 @@ const JSXGraph = new TSX.JSXGraph();
 
 {
 
-    const b = JSXGraph.initBoard('html18', { boundingbox: [-15, 10, 10, -15], axis: true })
+    const b = TXG.TSXGraph.initBoard('html18', { boundingbox: [-15, 10, 10, -15], axis: true })
     let view = b.view3D()
 
     // should be b.view3D(xy, wh, bounds, attributes)
 }
 
 {
-    const B = JSXGraph.initBoard('html19')
+    const B = TXG.TSXGraph.initBoard('html19')
 
     B.print('circumcircle from 3 points')
     // B.print('circumcenter from same three points')
@@ -556,7 +556,7 @@ const JSXGraph = new TSX.JSXGraph();
 }
 
 {
-    const Brd = JSXGraph.initBoard('html20')
+    const Brd = TXG.TSXGraph.initBoard('html20')
 
     Brd.print('Conic')
 
@@ -576,7 +576,7 @@ const JSXGraph = new TSX.JSXGraph();
 }
 
 {
-    const B = JSXGraph.initBoard('html21', { axis: true })
+    const B = TXG.TSXGraph.initBoard('html21', { axis: true })
 
     B.print('comb and hatch')
     // B.addAxis()
@@ -610,7 +610,7 @@ const JSXGraph = new TSX.JSXGraph();
 }
 
 {
-    const B = JSXGraph.initBoard('html22', { axis: true })
+    const B = TXG.TSXGraph.initBoard('html22', { axis: true })
 
     B.print('tangent')
     // Create a tangent providing a glider on a function graph
@@ -622,7 +622,7 @@ const JSXGraph = new TSX.JSXGraph();
 
 {
 
-    const B = JSXGraph.initBoard('html23', { boundingbox: [-5, 18, 18, -5] })
+    const B = TXG.TSXGraph.initBoard('html23', { boundingbox: [-5, 18, 18, -5] })
 
     B.print('intersection')
     B.print('union')
@@ -659,7 +659,7 @@ const JSXGraph = new TSX.JSXGraph();
 
 
 {
-    const B = JSXGraph.initBoard('html24')
+    const B = TXG.TSXGraph.initBoard('html24')
 
     B.print('Testing XSS')
 
@@ -674,7 +674,7 @@ const JSXGraph = new TSX.JSXGraph();
 
 }
 {
-    const B = JSXGraph.initBoard('html25', { boundingbox: [-10, 10, 10, -10] })
+    const B = TXG.TSXGraph.initBoard('html25', { boundingbox: [-10, 10, 10, -10] })
     B.print('Ellipse, Parabola, Ellipse-Arc')
 
     // Create a parabola by a point C and a line l.
@@ -709,7 +709,7 @@ const JSXGraph = new TSX.JSXGraph();
 }
 
 {
-    const B = JSXGraph.initBoard('html26', { boundingbox: [-10, 10, 10, -10] })
+    const B = TXG.TSXGraph.initBoard('html26', { boundingbox: [-10, 10, 10, -10] })
     B.print('Circle with Point and Line')
 
     let x = -8
@@ -772,7 +772,7 @@ const JSXGraph = new TSX.JSXGraph();
 }
 
 {
-    const B = JSXGraph.initBoard('html26')
+    const B = TXG.TSXGraph.initBoard('html26')
     // B.setBoundingBox(-10, 10, 10, -10)
     B.addGrid()
     B.removeGrids()
@@ -786,7 +786,7 @@ const JSXGraph = new TSX.JSXGraph();
 }
 
 {
-    const JSX = JSXGraph.initBoard('html27')
+    const JSX = TXG.TSXGraph.initBoard('html27')
 
     let bbox = JSX.getBoundingBox()
     JSX.text(-4, 4, `Before: [${bbox[0]},${bbox[1]}]`)
@@ -815,7 +815,7 @@ const JSXGraph = new TSX.JSXGraph();
 }
 
 {
-    const JSX = JSXGraph.initBoard('html28')
+    const JSX = TXG.TSXGraph.initBoard('html28')
 
     JSX.print('multiple signatures for Midpoint')
     JSX.midpoint(JSX.point([-4, 1]), JSX.point([-1, 1]))
@@ -842,7 +842,7 @@ const JSXGraph = new TSX.JSXGraph();
 }
 
 {
-    const B = JSXGraph.initBoard('html29')
+    const B = TXG.TSXGraph.initBoard('html29')
 
     // Create a normal to a circle.
     let p1 = B.point([1.0, 1.0]);
@@ -862,7 +862,7 @@ const JSXGraph = new TSX.JSXGraph();
 
 
 {
-    const B = JSXGraph.initBoard('html30')
+    const B = TXG.TSXGraph.initBoard('html30')
     B.print('autoposition off for B')
 
     // let p1 = B.point( [-2, 1], {id: 'A'});
@@ -877,7 +877,7 @@ const JSXGraph = new TSX.JSXGraph();
 
 }
 {
-    const B = JSXGraph.initBoard('html31')
+    const B = TXG.TSXGraph.initBoard('html31')
     B.setBoundingBox(-8, 8, 8, -8)
     B.addAxis()
 
@@ -902,7 +902,7 @@ const JSXGraph = new TSX.JSXGraph();
 
 }
 {
-    const B = JSXGraph.initBoard('html32', { boundingbox: [-0.5, 4, 4, -0.5] })
+    const B = TXG.TSXGraph.initBoard('html32', { boundingbox: [-0.5, 4, 4, -0.5] })
     B.print('Incenter and Incircle')
 
     let p = [2.0, 1.0]
@@ -924,7 +924,7 @@ const JSXGraph = new TSX.JSXGraph();
 }
 
 {
-    const B = JSXGraph.initBoard('html33', { boundingbox: [-8, 8, 8, -8] })
+    const B = TXG.TSXGraph.initBoard('html33', { boundingbox: [-8, 8, 8, -8] })
     B.print('Vectorfield')
 
     // Defining functions
@@ -939,7 +939,7 @@ const JSXGraph = new TSX.JSXGraph();
 }
 
 {
-    const B = JSXGraph.initBoard('html34', { boundingbox: [-8, 8, 8, -8] })
+    const B = TXG.TSXGraph.initBoard('html34', { boundingbox: [-8, 8, 8, -8] })
     B.print('MajorArc and MinorArc')
     B.print('MajorSector and MinorSector')
 
@@ -958,7 +958,7 @@ const JSXGraph = new TSX.JSXGraph();
 }
 
 {
-    const B = JSXGraph.initBoard('html35')
+    const B = TXG.TSXGraph.initBoard('html35')
     B.print('parallelogram')
 
     let p1 = B.point([-3, -4]);
@@ -976,7 +976,7 @@ const JSXGraph = new TSX.JSXGraph();
 
 {
 
-    const B = JSXGraph.initBoard('html36')
+    const B = TXG.TSXGraph.initBoard('html36')
     B.print('Transform Fields and Methods')
 
     let p0 = B.point([2, 3], { name: 'A' })
@@ -1001,7 +1001,7 @@ const JSXGraph = new TSX.JSXGraph();
 {
 
 
-    const board = JSXGraph.initBoard('html37', { boundingbox: [-10, 10, 10, -10] });
+    const board = TXG.TSXGraph.initBoard('html37', { boundingbox: [-10, 10, 10, -10] });
 
     let i = board.MatrixMath.identity(3, 3)
     board.print('Matrix Math')
@@ -1048,7 +1048,7 @@ const JSXGraph = new TSX.JSXGraph();
 }
 
 {
-    const board = JSXGraph.initBoard('html38',);
+    const board = TXG.TSXGraph.initBoard('html38',);
     board.setBoundingBox(-12, 12, 12, -12)
     board.addAxis()
 
@@ -1125,7 +1125,7 @@ const JSXGraph = new TSX.JSXGraph();
 }
 
 {
-    const board = JSXGraph.initBoard('html39',);
+    const board = TXG.TSXGraph.initBoard('html39',);
     board.print('Slopetriangle')
 
     // // Create a slopetriangle on a tangent
@@ -1148,7 +1148,7 @@ const JSXGraph = new TSX.JSXGraph();
 }
 
 {
-    const board = JSXGraph.initBoard('html40',);
+    const board = TXG.TSXGraph.initBoard('html40',);
     board.print('Point3D, Line3D, Curve3D')
     board.print(' as VIEW methods')
 
@@ -1171,7 +1171,7 @@ const JSXGraph = new TSX.JSXGraph();
 {
 
 
-    const board = JSXGraph.initBoard('html41');
+    const board = TXG.TSXGraph.initBoard('html41');
     board.setBoundingBox(-8, 8, 8, -8)
     board.print('functiongraph')
 
@@ -1199,7 +1199,7 @@ const JSXGraph = new TSX.JSXGraph();
 }
 
 {
-    const board = JSXGraph.initBoard('html42');
+    const board = TXG.TSXGraph.initBoard('html42');
     board.setBoundingBox(-8, 8, 8, -8)
     board.print('Parametric Surface')
 
@@ -1227,7 +1227,7 @@ const JSXGraph = new TSX.JSXGraph();
 }
 
 {
-    const board = JSXGraph.initBoard('html43');
+    const board = TXG.TSXGraph.initBoard('html43');
     board.print('Three triangle centers lie on a line')
     // https://numbas.mathcentre.ac.uk/question/68491/create-a-jsxgraph-diagram-using-jessiecode-three-triangle-centres-lie-on-a-line/
 
@@ -1264,7 +1264,7 @@ const JSXGraph = new TSX.JSXGraph();
 
 }
 {
-    const brd2 = JSXGraph.initBoard('html44', {
+    const brd2 = TXG.TSXGraph.initBoard('html44', {
         boundingbox: [-5, 8, 3, -3],
         axis: true,
         showFullscreen: true,
@@ -1309,7 +1309,7 @@ const JSXGraph = new TSX.JSXGraph();
     brd2.update();
 }
 {
-    const board = JSXGraph.initBoard('html45', { axis: true });
+    const board = TXG.TSXGraph.initBoard('html45', { axis: true });
 
     // just wanted to see how to draw on the CanvasRenderer.  but
     // doesn't co-exist with JSXGraph SVG.  Need an example.
@@ -1333,7 +1333,7 @@ const JSXGraph = new TSX.JSXGraph();
 
 {
 
-    const board = JSXGraph.initBoard('html46', {
+    const board = TXG.TSXGraph.initBoard('html46', {
         boundingbox: [-4, 6.5, 4, -2],
         keepAspectRatio: true
     });
@@ -1375,7 +1375,7 @@ const JSXGraph = new TSX.JSXGraph();
 
 
 {
-    const board = JSXGraph.initBoard('html48', { boundingbox: [-5, 10, 5, -1] })
+    const board = TXG.TSXGraph.initBoard('html48', { boundingbox: [-5, 10, 5, -1] })
     board.print('cardinal spline and derivative')
 
     //create a cardinal spline out of an array of JXG points with adjustable tension
@@ -1412,7 +1412,7 @@ const JSXGraph = new TSX.JSXGraph();
 
 }
 {
-    const b = JSXGraph.initBoard('html49');  // messes everything that follows
+    const b = TXG.TSXGraph.initBoard('html49');  // messes everything that follows
     b.print('angles')
 
     b.angle(b.point([-3, -4]), b.point([-3, -2]), b.point([-1, -2.5]), { type: 'sector', radius: 2, useKatex: true })
@@ -1433,7 +1433,7 @@ const JSXGraph = new TSX.JSXGraph();
 }
 
 {
-    const board = JSXGraph.initBoard('html50', { boundingbox: [-10, 10, 10, -10] })
+    const board = TXG.TSXGraph.initBoard('html50', { boundingbox: [-10, 10, 10, -10] })
     board.print('mirrorelement')
 
     // point of reflection
@@ -1471,7 +1471,7 @@ const JSXGraph = new TSX.JSXGraph();
 }
 
 {
-    const board = JSXGraph.initBoard('html51')
+    const board = TXG.TSXGraph.initBoard('html51')
     board.print('Parallel')
     // Create a parallel
     let p1 = board.point([0.0, 2.0]);
@@ -1485,7 +1485,7 @@ const JSXGraph = new TSX.JSXGraph();
 
 }
 {
-    const board = JSXGraph.initBoard('html52')
+    const board = TXG.TSXGraph.initBoard('html52')
     board.print('Polar Line')
 
     // Create the polar line of a point with respect to a conic
@@ -1501,7 +1501,7 @@ const JSXGraph = new TSX.JSXGraph();
 
 
 {
-    const board = JSXGraph.initBoard('html53')
+    const board = TXG.TSXGraph.initBoard('html53')
     board.print('Pole Point')
 
     // Create the pole point of a line with respect to a conic
@@ -1519,7 +1519,7 @@ const JSXGraph = new TSX.JSXGraph();
 
 {
 
-    const board = JSXGraph.initBoard('html54')
+    const board = TXG.TSXGraph.initBoard('html54')
     board.print('Reflex and Non-Reflex Angle')
 
     // Create a non-reflex angle out of three free points
@@ -1542,23 +1542,23 @@ const JSXGraph = new TSX.JSXGraph();
 }
 
 {
-    const board = JSXGraph.initBoard('html54', { axis: true })
-    board.print('Derivative and Integral')
-    board.print('d(x^2) is 2x')
-    board.print
+    const JSX = TXG.TSXGraph.initBoard('html54', { axis: true })
+    JSX.print('Derivative and Integral')
+    JSX.print('d(x^2) is 2x')
+    JSX.print
 
     let fxy = (x: number, y: number) => Math.pow(x, 2)
-    let cu = board.functiongraph(fxy)
-    let d = board.derivative(cu, { dash: 2 })
-    let i1 = board.integral([0, 2], d)
+    let cu = JSX.functiongraph(fxy)
+    let d = JSX.derivative(cu, { dash: 2 })
+    let i1 = JSX.integral([0, 2], d)
 
-    let z1 = board.functiongraph((t: number) => (Math.cos(t) * t) - 3);
-    let z2 = board.integral([-2.0, 2.0], z1, { fillColor: 'pink' });
+    let z1 = JSX.functiongraph((t: number) => (Math.cos(t) * t) - 3);
+    let z2 = JSX.integral([-2.0, 2.0], z1, { fillColor: 'pink' });
 
 }
 
 {
-    const board = JSXGraph.initBoard('html55')
+    const board = TXG.TSXGraph.initBoard('html55')
     board.print('Mirrorpoint')
 
     board.setBoundingBox(-10, 10, 10, -10)
@@ -1582,7 +1582,7 @@ const JSXGraph = new TSX.JSXGraph();
 }
 
 {
-    const JSX = JSXGraph.initBoard('html56')
+    const JSX = TXG.TSXGraph.initBoard('html56')
     JSX.print('point')
 
     JSX.point([3, 2], { strokeColor: 'blue', strokeWidth: 5, strokeOpacity: .5 })
@@ -1591,17 +1591,273 @@ const JSXGraph = new TSX.JSXGraph();
     JSX.point(q, { showInfobox: false })
 
 
-    let p1 = JSX.point([-1,0])
-    let p2 = JSX.point([1,0])
-    JSX.line(p1,p2)
+    let p1 = JSX.point([-1, 0])
+    let p2 = JSX.point([1, 0])
+    JSX.line(p1, p2)
 
-    let c1 = JSX.circle(p1,p2)
-    let c2 = JSX.circle(p2,p1)
+    let c1 = JSX.circle(p1, p2)
+    let c2 = JSX.circle(p2, p1)
 
-    JSX.intersection(c1,c2,{color:'red'})
-    JSX.intersection(c2,c1,{color:'blue'})
+    JSX.intersection(c1, c2, { color: 'red' })
+    JSX.intersection(c2, c1, { color: 'blue' })
 
 }
+
+{
+    const JSX = TXG.TSXGraph.initBoard('html57')
+    JSX.print('Click for Scr and Usr coordinates')
+
+
+    let getMouseCoords = function (e: Object, i: any = 0) {
+        var cPos = (JSX.board as any).getCoordsTopLeftCorner(e, i),
+            absPos = ((window as any).JXG as any).getPosition(e, i),
+            dx = absPos[0] - cPos[0],
+            dy = absPos[1] - cPos[1];
+
+        let coords = new ((window as any).JXG as any).Coords(1, [dx, dy], (JSX.board as any));
+        console.log('coords', coords)
+        return coords;  // returns Coords object
+    }
+    let down = function (e: Object) {
+        //    var canCreate = true, i, coords, el;
+        let coords = getMouseCoords(e)
+        JSX.print('scrCoords', coords.scrCoords)
+        JSX.print('usrCoords', coords.usrCoords)
+
+        // if (e[JXG.touchProperty]) {
+        //     // index of the finger that is used to extract the coordinates
+        //     i = 0;
+        // }
+        // coords = getMouseCoords(e, i);
+
+        // for (el in board.objects) {
+        //     if(JXG.isPoint(board.objects[el]) && board.objects[el].hasPoint(coords.scrCoords[1], coords.scrCoords[2])) {
+        //         canCreate = false;
+        //         break;
+        //     }
+        // }
+
+        // if (canCreate) {
+        //     board.create('point', [coords.usrCoords[1], coords.usrCoords[2]]);
+        // }
+    }
+
+    JSX.on('down', down);
+
+}
+
+{
+    const JSX = TXG.TSXGraph.initBoard('html58')
+    JSX.print('checking for whether points can be defined [x,y]')
+
+    JSX.line([-1, 0], [1, 0])          // works, but I can drag the line
+    JSX.circle([0, 0], [1, 0])         // works, but I can drag the circle
+    JSX.ellipse([0, 2], [0, -2], 5)     // cannot drag the ellipse
+
+    let a = JSX.arrow([-3, 0], [-3, -2])     // points are given names
+    JSX.arrowparallel([-3, 0], [-3, -4], [-4, 0])
+
+
+
+
+}
+
+
+{
+    let JSX = TXG.TSXGraph.initBoard('html60', {})
+    JSX.print('grid')
+
+    // let g = JSX.grid([2,3],[3,2],{drawZero:true})
+
+    // // more fancy grid
+    // let g = JSX.grid( {
+    //     major: {
+    //         face: 'plus',
+    //         size: 10,
+    //         strokeColor: '#080050',
+    //         strokeOpacity: 1,
+    //     },
+    //     minor: {
+    //         size: 3
+    //     },
+    //     drawZero: true,
+    //     minorElements: 4,
+    // });
+
+    // extreme fancy grid
+
+    let slide = JSX.slider([-5, 5], [0, 5], [.1, .1, 4])
+    let grid = JSX.create('grid', [], {
+        major: {
+            face: 'regularPolygon',
+            size: 10,
+            strokeColor: 'blue',
+            fillColor: 'orange',
+            strokeOpacity: 1,
+            // drawZero: true,
+        },
+        minor: {
+            face: 'diamond',
+            size: 3,
+            strokeColor: 'green',
+            fillColor: 'grey',
+            drawZero: true,
+        },
+        minorElements: 2,
+        includeBoundaries: false,
+    });
+
+
+}
+
+{
+    let JSX = TXG.TSXGraph.initBoard('html61', {})
+    JSX.print('grid and axis')
+
+    // grid with parent axes
+    let axis1 = JSX.axis([-1, -2.5], [1, -2.5], {
+        ticks: {
+            strokeColor: 'green',
+            strokeWidth: 2,
+            minorTicks: 2,
+            majorHeight: 10,
+            drawZero: true
+        }
+    });
+    let axis2 = JSX.axis([3, 0], [3, 2], {
+        ticks: {
+            strokeColor: 'red',
+            strokeWidth: 2,
+            minorTicks: 2,
+            majorHeight: 10,
+            drawZero: true
+        }
+    });
+    let grid = JSX.grid(axis1, axis2, {
+        major: {
+            face: 'line',
+            drawZero: true
+        },
+        minor: {
+            face: 'point',
+            size: 3
+        },
+        minorElements: 'auto',
+        includeBoundaries: false,
+    });
+}
+
+
+{
+    // let board = JXG.TSXGraph.initBoard('html26')
+    let JSX = TXG.TSXGraph.initBoard('html62', { grid: true, });
+    JSX.print('snapToGrid')
+    let p1 = JSX.point([-2, -2], { snapToGrid: true }),
+        p2 = JSX.point([3, 3], { snapToGrid: true }),
+        p3 = JSX.point([function () { return p1.X() }, function () { return p2.Y() }], { color: 'blue', snapToGrid: true }),
+        p4 = JSX.point([function () { return p2.X() }, function () { return p1.Y() }], { color: 'blue', snapToGrid: true })
+
+    JSX.polygon([p1, p3, p2, p4], { hasInnerPoints: true });
+}
+
+
+{
+
+    // Set colors
+    let JSX = TXG.TSXGraph.initBoard('html63', { boundingbox: [-10, 10, 10, -10], axis: true });
+    let sl = JSX.slider([-9, 1], [0, 1], [-10, 1, 10], {
+        snapWidth: 1,
+        baseline: { strokeColor: 'blue' },
+        highline: { strokeColor: 'red' },
+        fillColor: 'red',
+        label: { fontSize: 12, strokeColor: 'blue' },
+        name: 'xyz', // Not shown, if suffixLabel is set
+        suffixLabel: 'x = ',
+        postLabel: ' meters'
+    });
+
+    let s2 = JSX.slider([-9, 3], [7, 3], [0, 10, 50], { stepWidth: 10 })
+
+}
+{
+    // Create the radical axis line with respect to two circles
+    let JSX = TXG.TSXGraph.initBoard('html64', { boundingbox: [-10, 10, 10, -10] });
+    JSX.print('radicalAxis')
+    let p1 = JSX.point([2, 3]);
+    let p2 = JSX.point([1, 4]);
+    let c1 = JSX.circle(p1, p2);
+    let p3 = JSX.point([6, 5]);
+    let p4 = JSX.point([8, 6]);
+    let c2 = JSX.circle(p3, p4);
+    let r1 = JSX.radicalAxis(c1, c2);
+}
+
+{
+    let JSX = TXG.TSXGraph.initBoard('html65', { boundingbox: [-8, 8, 8, -8] });
+    JSX.print('splines')
+
+    let p: TXG.Point[] = []
+    p[0] = JSX.point([-2, 2], { size: 4, face: 'o' })
+    p[1] = JSX.point([0, -1], { size: 4, face: 'o' })
+    p[2] = JSX.point([2, 0], { size: 4, face: 'o' })
+    p[3] = JSX.point([4, 1], { size: 4, face: 'o' })
+
+    let c = JSX.spline(p, { strokeWidth: 3 });
+
+
+
+}
+
+{
+
+    let JSX = TXG.TSXGraph.initBoard('html66', { boundingbox: [-8, 8, 8, -8] });
+
+    JSX.print('Three triangle centers lie on a line')
+
+    // https://numbas.mathcentre.ac.uk/question/68491/create-a-jsxgraph-diagram-using-jessiecode-three-triangle-centres-lie-on-a-line/
+
+
+    let p = [-4, -5]
+    let A = JSX.point(p, );
+    let B = JSX.point([4, -5], { name: 'B' });
+    let C = JSX.point([1, 3], { name: 'C' });
+
+    let circumcenter = JSX.circumcenter(A, B, C, { name: "circumcenter" })
+    JSX.circumcircle(A, B, C, { strokeOpacity: 0.3 })
+
+    let side_a = JSX.segment(B, C, { visible: false })
+    let side_b = JSX.segment(A, C, { visible: false })
+    let side_c = JSX.segment(B, A, { visible: false })
+
+    JSX.polygon([A, B, C])
+
+    let M_a = JSX.midpoint(B, C, { visible: false })
+    let M_b = JSX.midpoint(A, C, { visible: false })
+    let M_c = JSX.midpoint(B, A, { visible: false })
+
+    let median_a = JSX.line(A, M_a, { dash: 4, color: "gray", strokeOpacity: 0.3 })
+    let median_b = JSX.line(B, M_b, { dash: 4, color: "gray", strokeOpacity: 0.3 })
+    let median_c = JSX.line(C, M_c, { dash: 4, color: "gray", strokeOpacity: 0.3 })
+
+    let centroid = JSX.intersection(median_a, median_b, { name: "centroid" })
+
+    let p_a = JSX.perpendicular(side_a, A, { dash: 1, color: "gray", strokeOpacity: 0.3 })
+    let p_b = JSX.perpendicular(side_b, B, { dash: 1, color: "gray", strokeOpacity: 0.3 })
+    let p_c = JSX.perpendicular(side_c, C, { dash: 1, color: "gray", strokeOpacity: 0.3 })
+
+    let orthocenter = JSX.intersection(p_a, p_b, { name: "orthocenter" })
+
+    let euler_line = JSX.line(orthocenter, centroid);
+
+}
+
+
+
+
+
+
+
+
 
 
 
@@ -1614,7 +1870,7 @@ const JSXGraph = new TSX.JSXGraph();
     // useKatex can only be set ONCE.  unsetting it has no effect
     (window as any).JXG.Options.text.useKatex = true;
 
-    const brd2 = JSXGraph.initBoard('htmlLAST')
+    const brd2 = TXG.TSXGraph.initBoard('htmlLAST')
     brd2.print('testing Katex')
 
     brd2.text(-4, 2, '\\pm\\sqrt{a^2 + b^2}', { useKatex: true })

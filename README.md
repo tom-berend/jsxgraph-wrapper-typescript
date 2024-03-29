@@ -1,6 +1,6 @@
 # jsxgraph-wrapper-typescript
 
-**A thin TypeScript wrapper over JSXGraph to support editing with VSCode.  It is intended for programmers who are new to JSXGraph.**
+**A thin TypeScript wrapper over JSXGraph to maximize VSCode scaffolding.**
 
 The wrapper provides a 'TypeScript' flavor to JSXGraph syntax, providing navigation, scaffolding, syntax checking, and discovery with VSCode.
 

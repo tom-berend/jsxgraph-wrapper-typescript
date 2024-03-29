@@ -9,17 +9,14 @@
     "types": "src/jsxgraph.d.ts",
     "scripts": {
         "build": "webpack --mode production",
-        "watch": "webpack serve --mode development",
-        "test": "webpack --config webpack.test.config --mode development",
-        "comments": "",
-        "comment0": "npm run watch  - output on http://localhost:9000",
-        "comment1": "test output probably at http://localhost/jsxgraph-wrapper-typescript/test/test.html"
+        "watch": "webpack serve --mode development"
     },
     "dependencies": {
         "css-loader": "^6.7.1",
         "html-webpack-plugin": "^5.5.0",
         "jsxgraph": "^1.8.0",
         "katex": "^0.16.9",
+        "raw-loader": "^4.0.2",
         "style-loader": "^3.3.1",
         "ts-loader": "^9.3.1",
         "typescript": "^5.4.3",

@@ -1,4 +1,4 @@
-export declare namespace TSX {
+export declare namespace TXG {
     interface GeometryElementAttributes {
         /** Color of the element. */
         color?: String;
@@ -493,8 +493,6 @@ export declare namespace TSX {
     }
     interface LabelAttributes extends TextAttributes {
     }
-    interface LocusAttributes extends CurveAttributes {
-    }
     interface MajorArcAttributes extends CurveAttributes {
     }
     interface MajorSectorAttributes extends CurveAttributes {
@@ -609,6 +607,8 @@ export declare namespace TSX {
         /** Attributes for the top point. */
         toppoint?: Point;
     }
+    interface SplineAttributes extends CurveAttributes {
+    }
     interface TangentAttributes extends LineAttributes {
     }
     interface TapemeasureAttributes extends SegmentAttributes {
@@ -709,63 +709,6 @@ export declare namespace TSX {
         size?: Number;
         face?: String;
     }
-    interface PanAttributes {
-        enabled?: Boolean;
-        needTwoFingers?: Boolean;
-    }
-    interface InitBoardAttributes {
-        /** Time (in msec) between two animation steps. */
-        animationDelay?: Number;
-        /** Show default axis. */
-        axis?: Boolean;
-        /** Bounding box of the visible area in user coordinates. [left,top,right,bottom] */
-        boundingbox?: [Number, Number, Number, Number];
-        /** Enable browser scrolling on touch interfaces if the user double taps into an empty region of the board. */
-        browserPan?: Boolean;
-        /** Attributes for the default axes in case of the attribute axis:true in JXG.JSXGraph#initBoard. */
-        defaultAxes?: {
-            x?: AxisAttributes;
-            y?: AxisAttributes;
-        };
-        /** if grid true, then draw the zeroGrid? */
-        drawZero?: Boolean;
-        /** Attribute(s) to control the fullscreen icon. */
-        fullscreen?: Object;
-        /** Show grid? */
-        grid?: Boolean;
-        /** If set to true, the ratio between horizontal and vertical unit sizes stays constant - independent of size changes of the hosting HTML div element. */
-        keepAspectRatio?: Boolean;
-        /** Maximum frame rate of the board, i.e. */
-        maxFrameRate?: Number;
-        /** Control the possibilities for panning interaction (i.e. */
-        pan?: PanAttributes;
-        /** Allow user interaction by registering mouse, pointer, keyboard or touch events. */
-        registerEvents?: Object;
-        /** Listen to fullscreen event. */
-        registerFullscreenEvent?: Boolean;
-        /** Listen to resize events, i.e. */
-        registerResizeEvent?: Boolean;
-        /** Control if JSXGraph reacts to resizing of the JSXGraph container element by the user / browser. */
-        resize?: PanAttributes;
-        /** Show copyright string in canvas. */
-        showCopyright?: Boolean;
-        /** Show a button in the navigation bar to start fullscreen mode. */
-        showFullscreen?: Boolean;
-        /** If true, the infobox is shown on mouse/pen over for all points which have set their attribute showInfobox to 'inherit'. */
-        showInfobox?: Boolean;
-        /** Display of navigation arrows and zoom buttons in the navigation bar. */
-        showNavigation?: Boolean;
-        /** Show a button in the navigation bar to force reload of a construction. */
-        showReload?: Boolean;
-        /** Show a button in the navigation bar to enable screenshots. */
-        showScreenshot?: Boolean;
-        /** Display of zoom buttons in the navigation bar. */
-        showZoom?: Boolean;
-        /** set a visual theme for the board */
-        theme?: String;
-        /** Control the possibilities for zoom interaction. */
-        zoom?: PanAttributes;
-    }
     export class Math {
         static board: JSXBoard;
     }
@@ -778,12 +721,9 @@ export declare namespace TSX {
     export class Symbolic {
     }
     /** Initialize a new board. */
-    export class JSXGraph {
-        initBoard(html: string, attributes?: InitBoardAttributes): JSXBoard;
-        /** Version of underlying JSX library */
-        get version(): String;
-        /** Delete a board and all its contents. */
-        freeBoard(board: JSXBoard): void;
+    export class TSXGraph {
+        static initBoard(html: string, attributes?: any): JSXBoard;
+        static freeBoard(board: JSXBoard): void;
         static dereference(params: any | any[]): any[];
     }
     interface ConicIface {
@@ -851,6 +791,8 @@ export declare namespace TSX {
         board: JSXBoard | null;
         private printLineNumber;
         private defaultAttrs;
+        /** Version of underlying JSX library */
+        get version(): String;
         get defaultAxes(): GeometryElement;
         get canvasWidth(): number;
         get canvasHeight(): number;
@@ -1008,8 +950,6 @@ export declare namespace TSX {
         integral(range: Number[], curve: Curve, attributes?: IntegralAttributes): Integral;
         /** An intersection point is a point which lives on two JSXGraph elements, i.e. it is one point of the set consisting of the intersection points of the two elements. The following element types can be (mutually) intersected: line, circle, curve, polygon, polygonal chain. */
         intersection(element1: Line | Circle, element2: Line | Circle, attributes?: IntersectionAttributes): Point;
-        /** This element is used to visualize the locus of a given dependent point. */
-        locus(point: Point, attributes?: LocusAttributes): Locus;
         /** A major arc is a segment of the circumference of a circle having measure greater than or equal to 180 degrees (pi radians). It is defined by a center, one point that defines the radius, and a third point that defines the angle of the arc. */
         majorArc(p1: Point | point, p2: Point | point, p3: Point | point, attributes?: MajorArcAttributes): MajorArc;
         /** A major sector is a sector of a circle having measure greater than or equal to 180 degrees (pi radians). It is defined by a center, one point that defines the radius, and a third point that defines the angle of the sector. */
@@ -1073,6 +1013,8 @@ export declare namespace TSX {
         /** A slope triangle is an imaginary triangle that helps you find the slope of a line or a line segment (use the method '.Value()' ). The hypotenuse of the triangle (the diagonal) is the line you are interested in finding the slope of. The two 'legs' of the triangle are the 'rise' and 'run' used in the slope formula. */
         slopetriangle(tangent: Tangent, attributes?: SlopetriangleAttributes): Slopetriangle;
         slopetriangle(line: Line, point: Point, attributes?: SlopetriangleAttributes): Slopetriangle;
+        /** This element is used to provide a constructor for (natural) cubic spline curves. Create a dynamic spline interpolated curve given by sample points p_1 to p_n. */
+        spline(points: Point[] | number[][], attributes?: SplineAttributes): Curve;
         /** With the element tangent the slope of a line, circle, or curve in a certain point can be visualized. A tangent is always constructed by a glider on a line, circle, or curve and describes the tangent in the glider point on that line, circle, or curve. */
         tangent(glider: Glider, attributes?: TangentAttributes): Tangent;
         /** A tape measure can be used to measure distances between points. */

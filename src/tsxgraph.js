@@ -19,9 +19,9 @@
 //    DEALINGS IN THE SOFTWARE.
 //
 /////////////////////////////////////////////////////////////////////////////
-//   Generated on March 9, 2024, 3:41 am 
-export var TSX;
-(function (TSX) {
+//   Generated on March 29, 2024, 11:31 pm 
+export var TXG;
+(function (TXG) {
     // utility function for determining whether an object is a JSX object (or part of this wrapper)
     function isJSXAttribute(maybe) {
         return (typeof (maybe) == 'object' && !Array.isArray(maybe) && !('elValue' in maybe) && !('elType' in maybe));
@@ -37,49 +37,30 @@ export var TSX;
     class Math {
         static board;
     }
-    TSX.Math = Math;
+    TXG.Math = Math;
     ///// some math classes by hand
     class IntervalArithmetic {
     }
-    TSX.IntervalArithmetic = IntervalArithmetic;
+    TXG.IntervalArithmetic = IntervalArithmetic;
     class PolyMonomial {
     }
-    TSX.PolyMonomial = PolyMonomial;
+    TXG.PolyMonomial = PolyMonomial;
     class PolyPolynomial {
     }
-    TSX.PolyPolynomial = PolyPolynomial;
+    TXG.PolyPolynomial = PolyPolynomial;
     class Symbolic {
     }
-    TSX.Symbolic = Symbolic;
+    TXG.Symbolic = Symbolic;
     /** Initialize a new board. */
-    class JSXGraph {
-        initBoard(html, attributes = {}) {
+    class TSXGraph {
+        static initBoard(html, attributes = {}) {
             const newBoard = new JSXBoard();
-            //    if(typeof attributes == 'object' && !('axis' in attributes)) {   // if axis missing then defaultaxis causes error
-            //         attributes['axis'] = false;
-            //    }
             newBoard.board = window.JXG.JSXGraph.initBoard(html, attributes);
             Math.board = newBoard.board; // make a copy for Math and its decendents
             return newBoard;
         }
-        // /** allows setting default attributes by class or across the board */
-        // static defaultAttributes(jClass:string, attrs:Object={}):Object{
-        //     // if(jClass=='Point' || jClass=='Glider' || jClass=='Midpoint'){
-        //         if(!('name' in attrs)){
-        //             (attrs as any).name = ''
-        //         }
-        //         if(!('showInfobox' in attrs)){
-        //             (attrs as any).showInfobox = false
-        //         }
-        //     // }
-        //     return attrs
-        //  }
-        /** Version of underlying JSX library */
-        get version() {
-            return window.JXG.version;
-        }
-        /** Delete a board and all its contents. */
-        freeBoard(board) {
+        // /** Delete a board and all its contents. */
+        static freeBoard(board) {
             window.JXG.JSXGraph.freeBoard(board);
         }
         // utility to dereference parameter- if they use TSXGraph objects then  use the JSXGraph objects instead
@@ -94,11 +75,15 @@ export var TSX;
             return ret;
         }
     }
-    TSX.JSXGraph = JSXGraph;
+    TXG.TSXGraph = TSXGraph;
     class JSXBoard {
         board;
         printLineNumber = 0; // added a print() function, this tracks the line#
         defaultAttrs = {}; // hold defaults from setDefaultAttributes()
+        /** Version of underlying JSX library */
+        get version() {
+            return window.JXG.JSXGraph.version;
+        }
         get defaultAxes() {
             return this.board.defaultAxes;
         }
@@ -317,17 +302,17 @@ export var TSX;
                 },
                 /** A new Point from a Point and Transform */
                 point(p, t, attributes = {}) {
-                    let newObject = this.z_ignore.board.create('Point', [JSXGraph.dereference(p), JSXGraph.dereference(t),], attributes);
+                    let newObject = this.z_ignore.board.create('Point', [TSXGraph.dereference(p), TSXGraph.dereference(t),], attributes);
                     return new Point(newObject);
                 },
                 /** A new Circle from a Circle and Transform */
                 circle(c, t, attributes = {}) {
-                    let newObject = this.z_ignore.board.create('Circle', JSXGraph.dereference([c, t]), attributes);
+                    let newObject = this.z_ignore.board.create('Circle', TSXGraph.dereference([c, t]), attributes);
                     return new Circle(newObject);
                 },
                 /** A new Curve from a Curve and Transform */
                 curve(c, t, attributes = {}) {
-                    let newObject = this.z_ignore.board.create('Curve', JSXGraph.dereference([c, t]), attributes);
+                    let newObject = this.z_ignore.board.create('Curve', TSXGraph.dereference([c, t]), attributes);
                     return new Curve(newObject);
                 },
             };
@@ -357,7 +342,7 @@ export var TSX;
                 vector(n, init) { return window.JXG.Math.vector(n, init); },
             };
             this.NumericsMath = {
-                CardinalSpline(pointArray, tau) { return window.JXG.Math.Numerics.CardinalSpline(JSXGraph.dereference(pointArray), tau); },
+                CardinalSpline(pointArray, tau) { return window.JXG.Math.Numerics.CardinalSpline(TSXGraph.dereference(pointArray), tau); },
             };
         }
         /** create a chart */
@@ -752,11 +737,6 @@ export var TSX;
             let newObject = this.board.create('intersection', this.dereference([element1, element2, 0]), this.defaultAttributes(attributes));
             return new Point(newObject);
         }
-        /** This element is used to visualize the locus of a given dependent point. */
-        locus(point, attributes = {}) {
-            let newObject = this.board.create('Locus', this.dereference([point,]), this.defaultAttributes(attributes));
-            return new Locus(newObject);
-        }
         /** A major arc is a segment of the circumference of a circle having measure greater than or equal to 180 degrees (pi radians). It is defined by a center, one point that defines the radius, and a third point that defines the angle of the arc. */
         majorArc(p1, p2, p3, attributes = {}) {
             let newObject = this.board.create('MajorArc', this.dereference([p1, p2, p3,]), this.defaultAttributes(attributes));
@@ -955,6 +935,11 @@ export var TSX;
             }
             return new Slopetriangle(newObject);
         }
+        /** This element is used to provide a constructor for (natural) cubic spline curves. Create a dynamic spline interpolated curve given by sample points p_1 to p_n. */
+        spline(points, attributes = {}) {
+            let newObject = this.board.create('spline', TSXGraph.dereference(points), this.defaultAttributes(attributes));
+            return new Curve(newObject);
+        }
         /** With the element tangent the slope of a line, circle, or curve in a certain point can be visualized. A tangent is always constructed by a glider on a line, circle, or curve and describes the tangent in the glider point on that line, circle, or curve. */
         tangent(glider, attributes = {}) {
             let newObject = this.board.create('Tangent', this.dereference([glider,]), this.defaultAttributes(attributes));
@@ -990,7 +975,7 @@ export var TSX;
             return new View3D(newObject);
         }
     }
-    TSX.JSXBoard = JSXBoard;
+    TXG.JSXBoard = JSXBoard;
     class GeometryElement {
         elValue = {};
         constructor(elValue) {
@@ -1189,7 +1174,7 @@ export var TSX;
             return this.elValue.useLocale();
         }
     }
-    TSX.GeometryElement = GeometryElement;
+    TXG.GeometryElement = GeometryElement;
     class GeometryElement3D {
         elValue = {};
         constructor(elValue) {
@@ -1224,21 +1209,21 @@ export var TSX;
             return this.elValue.visible;
         }
     }
-    TSX.GeometryElement3D = GeometryElement3D;
+    TXG.GeometryElement3D = GeometryElement3D;
     class Board {
         elValue = {};
         constructor(elValue) {
             this.elValue = elValue;
         }
     }
-    TSX.Board = Board;
+    TXG.Board = Board;
     class Infobox {
         elValue = {};
         constructor(elValue) {
             this.elValue = elValue;
         }
     }
-    TSX.Infobox = Infobox;
+    TXG.Infobox = Infobox;
     class CA {
         elValue = {};
         constructor(elValue) {
@@ -1253,7 +1238,7 @@ export var TSX;
             return this.elValue.setMath();
         }
     }
-    TSX.CA = CA;
+    TXG.CA = CA;
     class Chart extends GeometryElement {
         constructor(elValues) {
             super(elValues);
@@ -1295,7 +1280,7 @@ export var TSX;
             return this.elValue.updateDataArray();
         }
     }
-    TSX.Chart = Chart;
+    TXG.Chart = Chart;
     class Circle extends GeometryElement {
         constructor(elValues) {
             super(elValues);
@@ -1325,7 +1310,7 @@ export var TSX;
             return this.elValue.Z();
         }
     }
-    TSX.Circle = Circle;
+    TXG.Circle = Circle;
     class Complex {
         elValue = {};
         constructor(elValue) {
@@ -1376,7 +1361,7 @@ export var TSX;
             return this.elValue.toString();
         }
     }
-    TSX.Complex = Complex;
+    TXG.Complex = Complex;
     class Composition {
         elValue = {};
         constructor(elValue) {
@@ -1415,7 +1400,7 @@ export var TSX;
             return this.elValue.updateRenderer();
         }
     }
-    TSX.Composition = Composition;
+    TXG.Composition = Composition;
     class Coords {
         elValue = {};
         constructor(elValue) {
@@ -1446,7 +1431,7 @@ export var TSX;
             return this.elValue.setCoordinates();
         }
     }
-    TSX.Coords = Coords;
+    TXG.Coords = Coords;
     class Curve extends GeometryElement {
         constructor(elValues) {
             super(elValues);
@@ -1522,7 +1507,7 @@ export var TSX;
             return this.elValue.Z();
         }
     }
-    TSX.Curve = Curve;
+    TXG.Curve = Curve;
     class Curve3D extends Curve {
         constructor(elValues) {
             super(elValues);
@@ -1540,7 +1525,7 @@ export var TSX;
             return this.elValue.Z();
         }
     }
-    TSX.Curve3D = Curve3D;
+    TXG.Curve3D = Curve3D;
     class Dump {
         elValue = {};
         constructor(elValue) {
@@ -1587,7 +1572,7 @@ export var TSX;
             return this.elValue.toJessie();
         }
     }
-    TSX.Dump = Dump;
+    TXG.Dump = Dump;
     class ForeignObject {
         elValue = {};
         constructor(elValue) {
@@ -1618,7 +1603,7 @@ export var TSX;
             return this.elValue.W();
         }
     }
-    TSX.ForeignObject = ForeignObject;
+    TXG.ForeignObject = ForeignObject;
     class Group extends GeometryElement {
         constructor(elValues) {
             super(elValues);
@@ -1704,7 +1689,7 @@ export var TSX;
             return this.elValue.ungroup();
         }
     }
-    TSX.Group = Group;
+    TXG.Group = Group;
     class Image extends GeometryElement {
         constructor(elValues) {
             super(elValues);
@@ -1734,13 +1719,13 @@ export var TSX;
             return this.elValue.W();
         }
     }
-    TSX.Image = Image;
+    TXG.Image = Image;
     class Implicitcurve extends GeometryElement {
         constructor(elValues) {
             super(elValues);
         }
     }
-    TSX.Implicitcurve = Implicitcurve;
+    TXG.Implicitcurve = Implicitcurve;
     class Legend {
         elValue = {};
         constructor(elValue) {
@@ -1763,7 +1748,7 @@ export var TSX;
             return this.elValue.style;
         }
     }
-    TSX.Legend = Legend;
+    TXG.Legend = Legend;
     class Line extends GeometryElement {
         constructor(elValues) {
             super(elValues);
@@ -1825,7 +1810,7 @@ export var TSX;
             return this.elValue.Z();
         }
     }
-    TSX.Line = Line;
+    TXG.Line = Line;
     class Line3D extends GeometryElement3D {
         constructor(elValues) {
             super(elValues);
@@ -1851,7 +1836,7 @@ export var TSX;
             return this.elValue.range;
         }
     }
-    TSX.Line3D = Line3D;
+    TXG.Line3D = Line3D;
     class Point extends GeometryElement {
         constructor(elValues) {
             super(elValues);
@@ -1862,7 +1847,7 @@ export var TSX;
         }
         /**  */
         distance(toPoint) {
-            return this.elValue.Dist(JSXGraph.dereference(toPoint));
+            return this.elValue.Dist(TSXGraph.dereference(toPoint));
         }
         /** Set the face of a point element. */
         face(style) {
@@ -1885,7 +1870,7 @@ export var TSX;
             return this.elValue.Z();
         }
     }
-    TSX.Point = Point;
+    TXG.Point = Point;
     class Point3D extends GeometryElement3D {
         constructor(elValues) {
             super(elValues);
@@ -1911,7 +1896,7 @@ export var TSX;
             return this.elValue.Z();
         }
     }
-    TSX.Point3D = Point3D;
+    TXG.Point3D = Point3D;
     class Polygon extends GeometryElement {
         constructor(elValues) {
             super(elValues);
@@ -1929,7 +1914,7 @@ export var TSX;
             return this.elValue.updateRenderer();
         }
     }
-    TSX.Polygon = Polygon;
+    TXG.Polygon = Polygon;
     class Text extends GeometryElement {
         constructor(elValues) {
             super(elValues);
@@ -1995,7 +1980,7 @@ export var TSX;
             return this.elValue.utf8_decode();
         }
     }
-    TSX.Text = Text;
+    TXG.Text = Text;
     class Ticks extends GeometryElement {
         constructor(elValues) {
             super(elValues);
@@ -2049,7 +2034,7 @@ export var TSX;
             return this.elValue.updateRenderer();
         }
     }
-    TSX.Ticks = Ticks;
+    TXG.Ticks = Ticks;
     class Turtle extends GeometryElement {
         constructor(elValues) {
             super(elValues);
@@ -2215,7 +2200,7 @@ export var TSX;
             return this.elValue.Z();
         }
     }
-    TSX.Turtle = Turtle;
+    TXG.Turtle = Turtle;
     class Sector extends Curve {
         constructor(elValues) {
             super(elValues);
@@ -2245,7 +2230,7 @@ export var TSX;
             return this.elValue.Radius();
         }
     }
-    TSX.Sector = Sector;
+    TXG.Sector = Sector;
     class Vectorfield extends Curve {
         constructor(elValues) {
             super(elValues);
@@ -2255,7 +2240,7 @@ export var TSX;
             return this.elValue.setF();
         }
     }
-    TSX.Vectorfield = Vectorfield;
+    TXG.Vectorfield = Vectorfield;
     class Angle extends Sector {
         constructor(elValues) {
             super(elValues);
@@ -2277,7 +2262,7 @@ export var TSX;
             return this.elValue.Value();
         }
     }
-    TSX.Angle = Angle;
+    TXG.Angle = Angle;
     class Arc extends Curve {
         constructor(elValues) {
             super(elValues);
@@ -2307,25 +2292,25 @@ export var TSX;
             return this.elValue.Value();
         }
     }
-    TSX.Arc = Arc;
+    TXG.Arc = Arc;
     class Arrow extends Line {
         constructor(elValues) {
             super(elValues);
         }
     }
-    TSX.Arrow = Arrow;
+    TXG.Arrow = Arrow;
     class Parallel extends Line {
         constructor(elValues) {
             super(elValues);
         }
     }
-    TSX.Parallel = Parallel;
+    TXG.Parallel = Parallel;
     class Arrowparallel extends Parallel {
         constructor(elValues) {
             super(elValues);
         }
     }
-    TSX.Arrowparallel = Arrowparallel;
+    TXG.Arrowparallel = Arrowparallel;
     class Axis extends Line {
         constructor(elValues) {
             super(elValues);
@@ -2335,31 +2320,31 @@ export var TSX;
             return this.elValue.defaultTicks;
         }
     }
-    TSX.Axis = Axis;
+    TXG.Axis = Axis;
     class Bisector extends Line {
         constructor(elValues) {
             super(elValues);
         }
     }
-    TSX.Bisector = Bisector;
+    TXG.Bisector = Bisector;
     class Bisectorlines extends Composition {
         constructor(elValues) {
             super(elValues);
         }
     }
-    TSX.Bisectorlines = Bisectorlines;
+    TXG.Bisectorlines = Bisectorlines;
     class Button extends Text {
         constructor(elValues) {
             super(elValues);
         }
     }
-    TSX.Button = Button;
+    TXG.Button = Button;
     class Cardinalspline extends Curve {
         constructor(elValues) {
             super(elValues);
         }
     }
-    TSX.Cardinalspline = Cardinalspline;
+    TXG.Cardinalspline = Cardinalspline;
     class Checkbox extends Text {
         constructor(elValues) {
             super(elValues);
@@ -2369,25 +2354,25 @@ export var TSX;
             return this.elValue.Value();
         }
     }
-    TSX.Checkbox = Checkbox;
+    TXG.Checkbox = Checkbox;
     class Circumcenter extends Point {
         constructor(elValues) {
             super(elValues);
         }
     }
-    TSX.Circumcenter = Circumcenter;
+    TXG.Circumcenter = Circumcenter;
     class Circumcircle extends Circle {
         constructor(elValues) {
             super(elValues);
         }
     }
-    TSX.Circumcircle = Circumcircle;
+    TXG.Circumcircle = Circumcircle;
     class CircumcircleArc extends Arc {
         constructor(elValues) {
             super(elValues);
         }
     }
-    TSX.CircumcircleArc = CircumcircleArc;
+    TXG.CircumcircleArc = CircumcircleArc;
     class CircumcircleSector extends Sector {
         constructor(elValues) {
             super(elValues);
@@ -2397,67 +2382,67 @@ export var TSX;
             return this.elValue.center;
         }
     }
-    TSX.CircumcircleSector = CircumcircleSector;
+    TXG.CircumcircleSector = CircumcircleSector;
     class Comb extends Curve {
         constructor(elValues) {
             super(elValues);
         }
     }
-    TSX.Comb = Comb;
+    TXG.Comb = Comb;
     class Conic extends Curve {
         constructor(elValues) {
             super(elValues);
         }
     }
-    TSX.Conic = Conic;
+    TXG.Conic = Conic;
     class CurveDifference extends Curve {
         constructor(elValues) {
             super(elValues);
         }
     }
-    TSX.CurveDifference = CurveDifference;
+    TXG.CurveDifference = CurveDifference;
     class CurveIntersection extends Curve {
         constructor(elValues) {
             super(elValues);
         }
     }
-    TSX.CurveIntersection = CurveIntersection;
+    TXG.CurveIntersection = CurveIntersection;
     class CurveUnion extends Curve {
         constructor(elValues) {
             super(elValues);
         }
     }
-    TSX.CurveUnion = CurveUnion;
+    TXG.CurveUnion = CurveUnion;
     class Derivative extends Curve {
         constructor(elValues) {
             super(elValues);
         }
     }
-    TSX.Derivative = Derivative;
+    TXG.Derivative = Derivative;
     class Ellipse extends Conic {
         constructor(elValues) {
             super(elValues);
         }
     }
-    TSX.Ellipse = Ellipse;
+    TXG.Ellipse = Ellipse;
     class ParametricSurface3D extends Curve3D {
         constructor(elValues) {
             super(elValues);
         }
     }
-    TSX.ParametricSurface3D = ParametricSurface3D;
+    TXG.ParametricSurface3D = ParametricSurface3D;
     class Functiongraph extends Curve {
         constructor(elValues) {
             super(elValues);
         }
     }
-    TSX.Functiongraph = Functiongraph;
+    TXG.Functiongraph = Functiongraph;
     class Functiongraph3D extends Curve3D {
         constructor(elValues) {
             super(elValues);
         }
     }
-    TSX.Functiongraph3D = Functiongraph3D;
+    TXG.Functiongraph3D = Functiongraph3D;
     class Glider extends Point {
         constructor(elValues) {
             super(elValues);
@@ -2467,13 +2452,13 @@ export var TSX;
             return this.elValue.startAnimation(direction, stepCount, delayMSec);
         }
     }
-    TSX.Glider = Glider;
+    TXG.Glider = Glider;
     class Grid extends Curve {
         constructor(elValues) {
             super(elValues);
         }
     }
-    TSX.Grid = Grid;
+    TXG.Grid = Grid;
     class Hatch extends Ticks {
         constructor(elValues) {
             super(elValues);
@@ -2483,31 +2468,31 @@ export var TSX;
             return this.elValue.ticksDistance;
         }
     }
-    TSX.Hatch = Hatch;
+    TXG.Hatch = Hatch;
     class Hyperbola extends Conic {
         constructor(elValues) {
             super(elValues);
         }
     }
-    TSX.Hyperbola = Hyperbola;
+    TXG.Hyperbola = Hyperbola;
     class Incenter extends Point {
         constructor(elValues) {
             super(elValues);
         }
     }
-    TSX.Incenter = Incenter;
+    TXG.Incenter = Incenter;
     class Incircle extends Circle {
         constructor(elValues) {
             super(elValues);
         }
     }
-    TSX.Incircle = Incircle;
+    TXG.Incircle = Incircle;
     class Inequality extends Curve {
         constructor(elValues) {
             super(elValues);
         }
     }
-    TSX.Inequality = Inequality;
+    TXG.Inequality = Inequality;
     class Input extends Text {
         constructor(elValues) {
             super(elValues);
@@ -2521,7 +2506,7 @@ export var TSX;
             return this.elValue.Value();
         }
     }
-    TSX.Input = Input;
+    TXG.Input = Input;
     class Integral extends Curve {
         constructor(elValues) {
             super(elValues);
@@ -2547,19 +2532,19 @@ export var TSX;
             return this.elValue.Value();
         }
     }
-    TSX.Integral = Integral;
+    TXG.Integral = Integral;
     class Intersection extends GeometryElement {
         constructor(elValues) {
             super(elValues);
         }
     }
-    TSX.Intersection = Intersection;
+    TXG.Intersection = Intersection;
     class Label extends Text {
         constructor(elValues) {
             super(elValues);
         }
     }
-    TSX.Label = Label;
+    TXG.Label = Label;
     class Locus extends Curve {
         constructor(elValues) {
             super(elValues);
@@ -2573,115 +2558,115 @@ export var TSX;
             return this.elValue.eq;
         }
     }
-    TSX.Locus = Locus;
+    TXG.Locus = Locus;
     class MajorArc extends Curve {
         constructor(elValues) {
             super(elValues);
         }
     }
-    TSX.MajorArc = MajorArc;
+    TXG.MajorArc = MajorArc;
     class MajorSector extends Curve {
         constructor(elValues) {
             super(elValues);
         }
     }
-    TSX.MajorSector = MajorSector;
+    TXG.MajorSector = MajorSector;
     class Metapostspline extends Curve {
         constructor(elValues) {
             super(elValues);
         }
     }
-    TSX.Metapostspline = Metapostspline;
+    TXG.Metapostspline = Metapostspline;
     class Midpoint extends Point {
         constructor(elValues) {
             super(elValues);
         }
     }
-    TSX.Midpoint = Midpoint;
+    TXG.Midpoint = Midpoint;
     class MinorArc extends Curve {
         constructor(elValues) {
             super(elValues);
         }
     }
-    TSX.MinorArc = MinorArc;
+    TXG.MinorArc = MinorArc;
     class MinorSector extends Curve {
         constructor(elValues) {
             super(elValues);
         }
     }
-    TSX.MinorSector = MinorSector;
+    TXG.MinorSector = MinorSector;
     class mirrorelement extends GeometryElement {
         constructor(elValues) {
             super(elValues);
         }
     }
-    TSX.mirrorelement = mirrorelement;
+    TXG.mirrorelement = mirrorelement;
     class Mirrorpoint extends Point {
         constructor(elValues) {
             super(elValues);
         }
     }
-    TSX.Mirrorpoint = Mirrorpoint;
+    TXG.Mirrorpoint = Mirrorpoint;
     class NonReflexAngle extends Angle {
         constructor(elValues) {
             super(elValues);
         }
     }
-    TSX.NonReflexAngle = NonReflexAngle;
+    TXG.NonReflexAngle = NonReflexAngle;
     class Normal extends Line {
         constructor(elValues) {
             super(elValues);
         }
     }
-    TSX.Normal = Normal;
+    TXG.Normal = Normal;
     class Orthogonalprojection extends Point {
         constructor(elValues) {
             super(elValues);
         }
     }
-    TSX.Orthogonalprojection = Orthogonalprojection;
+    TXG.Orthogonalprojection = Orthogonalprojection;
     class OtherIntersection extends Point {
         constructor(elValues) {
             super(elValues);
         }
     }
-    TSX.OtherIntersection = OtherIntersection;
+    TXG.OtherIntersection = OtherIntersection;
     class Parabola extends Conic {
         constructor(elValues) {
             super(elValues);
         }
     }
-    TSX.Parabola = Parabola;
+    TXG.Parabola = Parabola;
     class Parallelpoint extends Point {
         constructor(elValues) {
             super(elValues);
         }
     }
-    TSX.Parallelpoint = Parallelpoint;
+    TXG.Parallelpoint = Parallelpoint;
     class Segment extends Line {
         constructor(elValues) {
             super(elValues);
         }
     }
-    TSX.Segment = Segment;
+    TXG.Segment = Segment;
     class Parallelogram extends Polygon {
         constructor(elValues) {
             super(elValues);
         }
     }
-    TSX.Parallelogram = Parallelogram;
+    TXG.Parallelogram = Parallelogram;
     class Perpendicular extends Segment {
         constructor(elValues) {
             super(elValues);
         }
     }
-    TSX.Perpendicular = Perpendicular;
+    TXG.Perpendicular = Perpendicular;
     class PerpendicularPoint extends Point {
         constructor(elValues) {
             super(elValues);
         }
     }
-    TSX.PerpendicularPoint = PerpendicularPoint;
+    TXG.PerpendicularPoint = PerpendicularPoint;
     class PerpendicularSegment extends Segment {
         constructor(elValues) {
             super(elValues);
@@ -2691,49 +2676,49 @@ export var TSX;
             return this.elValue.point;
         }
     }
-    TSX.PerpendicularSegment = PerpendicularSegment;
+    TXG.PerpendicularSegment = PerpendicularSegment;
     class PolarLine extends Line {
         constructor(elValues) {
             super(elValues);
         }
     }
-    TSX.PolarLine = PolarLine;
+    TXG.PolarLine = PolarLine;
     class PolePoint extends Point {
         constructor(elValues) {
             super(elValues);
         }
     }
-    TSX.PolePoint = PolePoint;
+    TXG.PolePoint = PolePoint;
     class PolygonalChain extends Polygon {
         constructor(elValues) {
             super(elValues);
         }
     }
-    TSX.PolygonalChain = PolygonalChain;
+    TXG.PolygonalChain = PolygonalChain;
     class RadicalAxis extends Line {
         constructor(elValues) {
             super(elValues);
         }
     }
-    TSX.RadicalAxis = RadicalAxis;
+    TXG.RadicalAxis = RadicalAxis;
     class Reflection extends GeometryElement {
         constructor(elValues) {
             super(elValues);
         }
     }
-    TSX.Reflection = Reflection;
+    TXG.Reflection = Reflection;
     class ReflexAngle extends Angle {
         constructor(elValues) {
             super(elValues);
         }
     }
-    TSX.ReflexAngle = ReflexAngle;
+    TXG.ReflexAngle = ReflexAngle;
     class RegularPolygon extends Polygon {
         constructor(elValues) {
             super(elValues);
         }
     }
-    TSX.RegularPolygon = RegularPolygon;
+    TXG.RegularPolygon = RegularPolygon;
     class Riemannsum extends Curve {
         constructor(elValues) {
             super(elValues);
@@ -2743,7 +2728,7 @@ export var TSX;
             return this.elValue.Value();
         }
     }
-    TSX.Riemannsum = Riemannsum;
+    TXG.Riemannsum = Riemannsum;
     class Semicircle extends Arc {
         constructor(elValues) {
             super(elValues);
@@ -2753,7 +2738,7 @@ export var TSX;
             return this.elValue.midpoint;
         }
     }
-    TSX.Semicircle = Semicircle;
+    TXG.Semicircle = Semicircle;
     class Slider extends Glider {
         constructor(elValues) {
             super(elValues);
@@ -2775,7 +2760,7 @@ export var TSX;
             return this.elValue.Value();
         }
     }
-    TSX.Slider = Slider;
+    TXG.Slider = Slider;
     class Slopefield extends Vectorfield {
         constructor(elValues) {
             super(elValues);
@@ -2785,7 +2770,7 @@ export var TSX;
             return this.elValue.setF();
         }
     }
-    TSX.Slopefield = Slopefield;
+    TXG.Slopefield = Slopefield;
     class Slopetriangle extends Line {
         constructor(elValues) {
             super(elValues);
@@ -2795,31 +2780,31 @@ export var TSX;
             return this.elValue.Value();
         }
     }
-    TSX.Slopetriangle = Slopetriangle;
+    TXG.Slopetriangle = Slopetriangle;
     class Smartlabel extends Text {
         constructor(elValues) {
             super(elValues);
         }
     }
-    TSX.Smartlabel = Smartlabel;
+    TXG.Smartlabel = Smartlabel;
     class Spline extends Curve {
         constructor(elValues) {
             super(elValues);
         }
     }
-    TSX.Spline = Spline;
+    TXG.Spline = Spline;
     class Stepfunction extends Curve {
         constructor(elValues) {
             super(elValues);
         }
     }
-    TSX.Stepfunction = Stepfunction;
+    TXG.Stepfunction = Stepfunction;
     class Tangent extends Line {
         constructor(elValues) {
             super(elValues);
         }
     }
-    TSX.Tangent = Tangent;
+    TXG.Tangent = Tangent;
     class Tapemeasure extends Segment {
         constructor(elValues) {
             super(elValues);
@@ -2829,31 +2814,31 @@ export var TSX;
             return this.elValue.Value();
         }
     }
-    TSX.Tapemeasure = Tapemeasure;
+    TXG.Tapemeasure = Tapemeasure;
     class Tracecurve extends Curve {
         constructor(elValues) {
             super(elValues);
         }
     }
-    TSX.Tracecurve = Tracecurve;
+    TXG.Tracecurve = Tracecurve;
     class Transform extends GeometryElement {
         constructor(elValues) {
             super(elValues);
         }
         /**  */
         applyOnce(element) {
-            return this.elValue.applyOnce(JSXGraph.dereference(element));
+            return this.elValue.applyOnce(TSXGraph.dereference(element));
         }
         /**  */
         bindTo(element) {
-            return this.elValue.bindTo(JSXGraph.dereference(element));
+            return this.elValue.bindTo(TSXGraph.dereference(element));
         }
         /**  */
         setMatrix() {
             return this.elValue.setMatrix();
         }
     }
-    TSX.Transform = Transform;
+    TXG.Transform = Transform;
     class View3D extends GeometryElement3D {
         constructor(elValues) {
             super(elValues);
@@ -2868,19 +2853,19 @@ export var TSX;
         }
         /**  */
         line3D(point1, point2, attributes = {}) {
-            return this.elValue.create("line3d", JSXGraph.dereference([point1, point2]), attributes);
+            return this.elValue.create("line3d", TSXGraph.dereference([point1, point2]), attributes);
         }
         /**  */
         curve3D(xFunction, yFunction, zFunction, range, attributes = {}) {
-            return this.elValue.create("curve3d", JSXGraph.dereference([xFunction, yFunction, zFunction, range]), attributes);
+            return this.elValue.create("curve3d", TSXGraph.dereference([xFunction, yFunction, zFunction, range]), attributes);
         }
         /**  */
         functiongraph3D(xyFunction, xRange, yRange, attributes = {}) {
-            return this.elValue.create("functiongraph3d", JSXGraph.dereference([xyFunction, xRange, yRange]), attributes);
+            return this.elValue.create("functiongraph3d", TSXGraph.dereference([xyFunction, xRange, yRange]), attributes);
         }
         /**  */
         parametricsurface3D(xFunction, yFunction, zFunction, xRange, yRange, attributes = {}) {
-            return this.elValue.create("parametricsurface3d", JSXGraph.dereference([xFunction, yFunction, zFunction, xRange, yRange]), attributes);
+            return this.elValue.create("parametricsurface3d", TSXGraph.dereference([xFunction, yFunction, zFunction, xRange, yRange]), attributes);
         }
         /**  */
         animateAzimuth() {
@@ -2927,5 +2912,5 @@ export var TSX;
             return this.elValue.stopAzimuth();
         }
     }
-    TSX.View3D = View3D;
-})(TSX || (TSX = {}));
+    TXG.View3D = View3D;
+})(TXG || (TXG = {}));
