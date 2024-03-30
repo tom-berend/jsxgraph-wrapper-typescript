@@ -4,7 +4,7 @@ import { TXG } from './tsxgraph'
 
 {
     // from  https://jsxgraph.uni-bayreuth.de/wiki/index.php?title=Browser_event_and_coordinates
-    const b = TXG.TSXGraph.initBoard ('html00')
+    const b = TXG.TSXGraph.initBoard('html00')
 
     b.text(-4.5, 2.6, new Date().toLocaleTimeString())
 
@@ -1818,7 +1818,7 @@ import { TXG } from './tsxgraph'
 
 
     let p = [-4, -5]
-    let A = JSX.point(p, );
+    let A = JSX.point(p,);
     let B = JSX.point([4, -5], { name: 'B' });
     let C = JSX.point([1, 3], { name: 'C' });
 
