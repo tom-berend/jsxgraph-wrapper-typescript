@@ -4,14 +4,25 @@
 
 The wrapper provides a 'TypeScript' flavor to JSXGraph syntax, providing navigation, scaffolding, syntax checking, and discovery with VSCode.
 
-This approach is different from merely providing descriptions with a d.ts file. The wrapper adds a thin layer on top of JSXGraph, typically 2-3 lines per call.
+This approach is different from merely providing descriptions with a d.ts file. The wrapper changes the programming interface by adding a thin layer on top of JSXGraph, typically 2-3 lines per call.
 
 
 ## Vanilla JavaScript ?
 
 Instructions for getting started with TypeScript and Webpack are below.
 
-You can use the wrapper in plain JavaScript, and VSCode will still provide scaffolding (but not error checking).  There is a sample construction in [simple.js](simple.js) and [simple.html](simple.html) to load it.  There is no compile step.
+But you can use the wrapper in plain JavaScript, and VSCode will still provide scaffolding (but not error checking).  There is a sample construction in [simple.js](simple.js) and [simple.html](simple.html) to load it.  There is no compile step.
+
+
+
+
+## Already know TypeScript:  Quick Start with NPM
+
+```
+npm i jsxgraph-wrapper-typescript
+```
+![](./npm.png)
+
 
 
 
@@ -35,13 +46,15 @@ The magic happens when using VSCode...
 
 
 
+
 ## Reasons NOT to Use this Wrapper
 
-The wrapper enables about 95% of JSXGraph's capabilities for interactive constructions. Specialized methods and attributes not provided can mostly be accessed with the wrapper 'legacy' constructor `JSX.create(string, array, object)`.  But if you are coding with 'inside baseball' then you should use native JSXGraph.
+The wrapper enables 95% of JSXGraph's capabilities for interactive constructions. Specialized methods and attributes not provided can mostly be accessed with the wrapper 'legacy' constructor `JSX.create(string, array, object)`.  But if you are coding with 'inside baseball' then you should use native JSXGraph.
 
 JSXGraph is both a graphics engine and a storehouse of numerical algorithms. This wrapper is focused on graphics. I've started to add some of the Math methods, but it is a work in progress.  Also still lots of cleaning in the GeometryElement attributes and methods.
 
 JSXGraph is constantly evolving.  This wrapper was built around JSXGraph 1.8.0, and may have fallen behind.
+
 
 
 
@@ -79,9 +92,6 @@ Now compile the test program **index.ts**.
 npm run watch
 ```
 and open your browser to **localhost:9000** to see the results.  If you modify **index.ts** then your browser should update automatically.
-
-
-
 
 
 
