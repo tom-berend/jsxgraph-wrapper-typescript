@@ -21,7 +21,7 @@
 //
 /////////////////////////////////////////////////////////////////////////////
 
-//   Generated on March 29, 2024, 11:31 pm
+//   Generated on April 12, 2024, 10:57 am
 
 
 
@@ -1077,7 +1077,7 @@ export namespace TXG {
 
 
     export class Math {
-        static board: JSXBoard
+        static board: TSXBoard
 
     }
 
@@ -1097,17 +1097,17 @@ export namespace TXG {
 
     export class TSXGraph {
 
-        static initBoard(html: string, attributes: any = {}): JSXBoard {
+        static initBoard(html: string, attributes: any = {}): TSXBoard {
 
-            const newBoard = new JSXBoard()
-            newBoard.board = (window as any).JXG.JSXGraph.initBoard(html, attributes) as unknown as JSXBoard
+            const newBoard = new TSXBoard()
+            newBoard.board = (window as any).JXG.JSXGraph.initBoard(html, attributes) as unknown as TSXBoard
             Math.board = newBoard.board  // make a copy for Math and its decendents
             return newBoard
         }
 
 
         // /** Delete a board and all its contents. */
-        static freeBoard(board: JSXBoard): void {
+        static freeBoard(board: TSXBoard): void {
             (window as any).JXG.JSXGraph.freeBoard(board)
         }
 
@@ -1191,8 +1191,8 @@ export namespace TXG {
 
 
 
-    export class JSXBoard {
-        board: JSXBoard | null
+    export class TSXBoard {
+        board: TSXBoard | null
         private printLineNumber: number = 0   // added a print() function, this tracks the line#
         private defaultAttrs: Object = {}   // hold defaults from setDefaultAttributes()
 
@@ -1241,7 +1241,7 @@ export namespace TXG {
 
 
 
-        setBoundingBox(left: Number, top: Number, right: Number, bottom: Number): JSXBoard {
+        setBoundingBox(left: Number, top: Number, right: Number, bottom: Number): TSXBoard {
             return (this.board! as any).setBoundingBox([left, top, right, bottom])
         }
 
@@ -1249,10 +1249,10 @@ export namespace TXG {
             return (this.board! as any).getBoundingBox()
         }
 
-        addGrid(): JSXBoard {
+        addGrid(): TSXBoard {
             return (this.board! as any).addGrid()
         }
-        removeGrids(): Board {
+        removeGrids(): TSXBoard {
             return (this.board! as any).removeGrids() // Note: remove GRIDS, not GRID
         }
         addAxis(): Board {
@@ -1309,10 +1309,12 @@ export namespace TXG {
             let helper = (stringText: string, item: any): string => {
                 if (typeof item == null) {
                     stringText += 'null, ';
+                } else if (item == undefined) {
+                    stringText += 'undefined';
                 } else if (typeof item == 'string') {
                     stringText += '\'' + item + '\'';
                 } else if (typeof item == 'number') {
-                    stringText += item.toFixed(1);
+                    stringText += Number.isInteger(item) ? item.toString() : item.toFixed(2);
                 } else if (typeof item == 'boolean') {
                     stringText += item ? 'true' : 'false';
                 } else if (Array.isArray(item)) {

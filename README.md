@@ -34,7 +34,7 @@ The vanilla JSXGraph interface offers a a single 'create()' function, with over 
 This wrapper provides a more-typical TypeScript interface, with each geometry element in a separate class for interactive discovery and scaffolding with VSCode.  The syntax remains familiar if you already know JSXGraph.  Here's an example.
 
 ```
-    const JSX = JSXGraph.initBoard('jxgbox')
+    const JSX = TXG.TSXGraph.initBoard('jxgbox')
     let p = [-2, -2]
     let a = JSX.point(p, { name: 'A',strokeColor:'orange' })
     let side_a = JSX.segment(a, [2,-2], { visible: false })

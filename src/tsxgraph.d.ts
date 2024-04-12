@@ -710,7 +710,7 @@ export declare namespace TXG {
         face?: String;
     }
     export class Math {
-        static board: JSXBoard;
+        static board: TSXBoard;
     }
     export class IntervalArithmetic {
     }
@@ -722,8 +722,8 @@ export declare namespace TXG {
     }
     /** Initialize a new board. */
     export class TSXGraph {
-        static initBoard(html: string, attributes?: any): JSXBoard;
-        static freeBoard(board: JSXBoard): void;
+        static initBoard(html: string, attributes?: any): TSXBoard;
+        static freeBoard(board: TSXBoard): void;
         static dereference(params: any | any[]): any[];
     }
     interface ConicIface {
@@ -787,8 +787,8 @@ export declare namespace TXG {
     interface NumericsMathIface {
         CardinalSpline(pointArray: Point[], tau: Function): Function[];
     }
-    export class JSXBoard {
-        board: JSXBoard | null;
+    export class TSXBoard {
+        board: TSXBoard | null;
         private printLineNumber;
         private defaultAttrs;
         /** Version of underlying JSX library */
@@ -801,10 +801,10 @@ export declare namespace TXG {
         private defaultAttributes;
         /** get a 2D canvas context (warning: cannot mix SVG and canvas) */
         getCanvasCTX(): CanvasRenderingContext2D;
-        setBoundingBox(left: Number, top: Number, right: Number, bottom: Number): JSXBoard;
+        setBoundingBox(left: Number, top: Number, right: Number, bottom: Number): TSXBoard;
         getBoundingBox(): [number, number];
-        addGrid(): JSXBoard;
-        removeGrids(): Board;
+        addGrid(): TSXBoard;
+        removeGrids(): TSXBoard;
         addAxis(): Board;
         setAttribute(attrs: object): Board;
         /** Legacy method to create elements. */

@@ -1,4 +1,33 @@
+
+
 import { TXG } from './tsxgraph'
+
+
+
+// let vDist = (a: TXG.Point, b: TXG.Point) =>  Math.sqrt(Math.pow(a.X() - b.X(), 2) + Math.pow(a.Y() - b.Y(), 2));
+
+
+
+/*
+
+{
+
+    // // complex numbers
+    // let x = new JSXGraph.Complex(0, 7)
+    // let y = new JSXGraph.Complex(0, 5)
+    // let z = x.mult(y)
+    // console.assert(z.real == -35, `expected -35, received ${z.real}`)
+    // console.assert(z.imaginary == 0, `expected 0, received ${z.imaginary}`)
+    // console.assert(z.toString() == '-35 + 0i')
+
+    // z = x.add(y)
+    // console.log(z.absval)
+    // let b = new JSXGraph.Complex(2, 2)
+    // let c = b.conj()
+}
+
+
+*/
 
 
 
@@ -6,6 +35,7 @@ import { TXG } from './tsxgraph'
     // from  https://jsxgraph.uni-bayreuth.de/wiki/index.php?title=Browser_event_and_coordinates
     const b = TXG.TSXGraph.initBoard('html00')
 
+    // b.text(-4.5, 3.3, 'Version ' + TSX.TSXGraph.version)
     b.text(-4.5, 2.6, new Date().toLocaleTimeString())
 
     let p = b.point([0, 0], { name: 'label' })
@@ -271,9 +301,11 @@ import { TXG } from './tsxgraph'
     let tOffInv = brd.transform.translate(() => -p0.X(), () => -p0.Y());
     let tScale = brd.transform.scale(() => p0.distance(p1) / 3, () => p0.distance(p1) / 3);
 
+
     brd.print('number', 123, 456)
     brd.print('string', 'hello world')
     brd.print('array', [1, 2, 3])
+    brd.print('undefined', undefined)
 
     // offset the bird towards p0 (the bird starts somewhere else)
     tOffInv.bindTo(im);
@@ -293,7 +325,7 @@ import { TXG } from './tsxgraph'
 
     let deg = brd.slider([10, 90], [100, 90], [1, 1, 10], { name: 'degree', snapWidth: 1 });
     let s = brd.slider([10, 70], [100, 70], [0, 1, 3], { name: 'scale' });
-    let pointlist: TXG.Point[] = [];
+    let pointlist = [];
     for (let i = 0; i < 30; i++) {
         pointlist.push(brd.point([() => 200 * Math.random(), () => s.Value() * 30 * Math.random() + 20], { name: '', strokeWidth: 4, strokeColor: "#0000a0" }));
     }
@@ -382,6 +414,7 @@ import { TXG } from './tsxgraph'
     const b = TXG.TSXGraph.initBoard('html11')
 
 
+    b.text(-4.5, 4.6, 'Version ' + b.version)
     b.text(-4.5, 4, new Date().toLocaleTimeString())
 
     let text1 = b.text(-1, 1, "Hello World", { fontSize: 28, strokeColor: 'green' });
@@ -1796,7 +1829,7 @@ import { TXG } from './tsxgraph'
     let JSX = TXG.TSXGraph.initBoard('html65', { boundingbox: [-8, 8, 8, -8] });
     JSX.print('splines')
 
-    let p: TXG.Point[] = []
+    let p = []
     p[0] = JSX.point([-2, 2], { size: 4, face: 'o' })
     p[1] = JSX.point([0, -1], { size: 4, face: 'o' })
     p[2] = JSX.point([2, 0], { size: 4, face: 'o' })
@@ -1851,6 +1884,44 @@ import { TXG } from './tsxgraph'
 
 }
 
+{
+    // (window as any).JXG.Options.text.useKatex = true;
+
+    const TSX = TXG.TSXGraph.initBoard('html69')
+
+    let B = TSX.point([-2, -1], { name: 'B' })
+    let C = TSX.point([-3, 2], { name: 'C' })
+    let left = TSX.point([-4, -1], { opacity: 0.5, name: '' })  // should be invisible, but...
+    let A = TSX.midpoint(B, left, { name: 'A' })
+    let seg = TSX.segment(B, left)
+
+    // want a point .5 units perpendicular AB
+    let perp = TSX.perpendicular(seg, A, { opacity: 0 })
+    let diameter = TSX.circle(A, 0.4, { opacity: 0 })
+    let offset = TSX.intersection(perp, diameter, { opacity: 0,name:'' })
+
+    let ellipse = TSX.conic.threePoints(B, left, offset)
+    let triangle = TSX.polygon([B, C, left], { fillColor: 'red' })
+    TSX.curveDifference(ellipse, triangle, { fillColor: 'red', opacity: .3 })
+
+
+
+
+    let A2 = TSX.point([1.5, -1], { name: 'A' })
+    let B2 = TSX.point([-1, -2], { name: 'B' })
+    let C2 = TSX.point([3.0, -2], { name: 'C' })
+    let D2 = TSX.point([1, 2], { name: 'D' })
+
+    let midpoint = TSX.midpoint(B2, C2, { name: '', opacity: 0 })
+    let E2 = TSX.midpoint(midpoint, C2, { name: 'E' })
+
+    TSX.polygon([D2, B2, A2], { fillColor: 'grey' })
+    TSX.polygon([B2, A2, C2], { fillColor: 'red' })
+    TSX.polygon([D2, A2, C2], { fillColor: 'green' })
+
+    TSX.segment(A2, E2)
+}
+
 
 
 
@@ -1886,3 +1957,4 @@ import { TXG } from './tsxgraph'
 
 
 }
+
