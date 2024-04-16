@@ -7,23 +7,22 @@ The wrapper provides a 'TypeScript' flavor to JSXGraph syntax, providing navigat
 This approach is different from merely providing descriptions with a d.ts file. The wrapper changes the programming interface by adding a thin layer on top of JSXGraph, typically 2-3 lines per call.
 
 
-## Vanilla JavaScript ?
-
 Instructions for getting started with TypeScript and Webpack are below.
 
-But you can use the wrapper in plain JavaScript, and VSCode will still provide scaffolding (but not error checking).  There is a sample construction in [simple.js](simple.js) and [simple.html](simple.html) to load it.  There is no compile step.
 
-
-
-
-## Already know TypeScript:  Quick Start with NPM
+## Already know TypeScript?  Quick Start with NPM
 
 ```
 npm i jsxgraph-wrapper-typescript
+npm run orbit
 ```
+Start up the index.html in the `/orbit` subdirectory.  The source is in /orbit/orbit.ts.  The HTML looks for the JSXGraph and KATEX libraries in `node_modules`.
+
+
 ![](./npm.png)
 
 
+Or... you can use the wrapper in plain JavaScript, and VSCode will still provide scaffolding (but not error checking).  There is a sample construction in [simple.js](simple.js) and [simple.html](simple.html) to load it.  There is no compile step.
 
 
 

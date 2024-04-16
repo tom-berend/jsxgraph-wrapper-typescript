@@ -18,7 +18,7 @@
     "include": [
         "src/**/*",
         "test/test.ts"
-    ],
+, "simple/simple.js"    ],
     "watchOptions": {
         "watchFile": "useFsEvents",
         "watchDirectory": "useFsEvents",

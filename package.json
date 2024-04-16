@@ -24,6 +24,8 @@
         "webpack-dev-server": "^5.0.2"
     },
     "dependencies": {
-        "jsxgraph-wrapper-typescript": "^1.2.0"
+        "jsxgraph": "^1.8.0",
+        "katex": "^0.16.10",
+        "webfontloader": "^1.6.28"
     }
 }

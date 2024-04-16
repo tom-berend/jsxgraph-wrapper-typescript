@@ -849,28 +849,28 @@ export declare namespace TXG {
         implicitcurve(f: Function | String, dfx: Function | String, dfy: Function | String, attributes?: ImplicitcurveAttributes): Implicitcurve;
         /** This element is used to provide a constructor for a general line given by two points.
                                        By setting additional properties a line can be used as an arrow and/or axis.
-                                       
+
        *```js
                                        TSX.line([3,2],[3,3], {strokeColor:'blue',strokeWidth:5, strokeOpacity:.5})
                                        let P1 = TSX.point([3,2])
                                        TSX.line(p1,[3,3])
-                                       
+
        *```
-                                       
+
         also create lines with Segment, Arrow, Transform.Point, Circumcenter, Glider, and others.
                                        Look at .conic.line() for a line defined by the equation 'az +bx +cy = 0'
                            */
         line(p1: Point | point, p2: Point | point, attributes?: LineAttributes): Line;
         /** Create a point. If any parent elements are functions or the attribute 'fixed' is true then point will be constrained.
-                   
+
        *```js
                     TSX.point([3,2], {strokeColor:'blue',strokeWidth:5, strokeOpacity:.5})
                     TSX.point([3,3]), {fixed:true, showInfobox:true}
                     TSX.point([()=>p1.X()+2,()=>p1.Y()+2]) // 2 up 2 right from p1
                     TSX.point([1,2,2])  // three axis definition - [z,x,y]
-                   
+
        *```
-                   
+
         also create points with Intersection, Midpoint, Transform.Point, Circumcenter, Glider, and others. */
         point(position: NumberFunction[], attributes?: PointAttributes): Point;
         /** Array of Points */
@@ -883,24 +883,24 @@ export declare namespace TXG {
         vectorfield(fxfy: Function[], horizontalMesh?: Number[], verticalMesh?: Number[], attributes?: VectorfieldAttributes): Vectorfield;
         /** The angle element is used to denote an angle defined by three points (from, around,to), or two lines and two directions (either points or plus-or-minus 1 to indicate direction.
                     As opposed to the sector, an angle has two angle points and no radius point.
-                                       
+
         type=='sector': Sector is displayed.
-                                       
+
         type=='square': a parallelogram is displayed.
-                                       
+
         type=='auto':  a square is displayed if the angle is near orthogonal.
-                                       
+
         If no name is provided the angle label is automatically set to a lower greek letter. */
         angle(from: Point | point, around: Point | point, to: Point | point, attributes?: AngleAttributes): Angle;
         angle(line1: Line | line, line2: Line | line, direction1: [Number, Number], direction2: [Number, Number], attributes?: AngleAttributes): Angle;
         angle(line1: Line | line, line2: Line | line, dirPlusMinus1: Number, dirPlusMinus2: Number, attributes?: AngleAttributes): Angle;
         /** Create a circular Arc defined by three points (because a circle can be defined by three points - see circumcircle).
-                                   
+
        *```js
                                    let arc = TSX.arc([-8,5],[-4,5],[-9,9]])
-                                   
+
        *```
-                                   
+
         To create an arc with origin, startpoint, and angle, look at MajorArc/MinorArc. */
         arc(origin: Point | point, from: Point | point, to: Point | point, attributes?: ArcAttributes): Arc;
         /** Arrow defined by two points (like a Segment) with arrow at P2 */
@@ -1013,7 +1013,7 @@ export declare namespace TXG {
         /** An input widget for choosing values from a given range of numbers.  Parameters are startpoint, endpoint,
                        and an array with [minimum, initialValue, maximum].  Query the value with slider.Value().  Set the slider either by
                        dragging the control or clicking on the line (you can disable clicking with {moveOnUp:false}
-               
+
        *```js
                 let s = TSX.slider([1, 2], [3, 2], [1, 5, 10])           //  query with s.Value()
                 let s = TSX.slider([1, 2], [3, 2], [1, 5, 10],{snapWidth:1})     //  only values 1,2,3...
@@ -1025,7 +1025,7 @@ export declare namespace TXG {
                    label: {fontSize: 16, strokeColor: 'orange'},
                    suffixLabel: ' x=',         // really a prefix
                    postLabel: ' meters'        // this is a suffix
-               
+
        *``` */
         slider(StartPoint: Point | point, EndPoint: Point | point, minimum_initial_maximum: [number, number, number], attributes?: SliderAttributes): Slider;
         /** A slope triangle is an imaginary triangle that helps you find the slope of a line or a line segment (use the method '.Value()' ). The hypotenuse of the triangle (the diagonal) is the line you are interested in finding the slope of. The two 'legs' of the triangle are the 'rise' and 'run' used in the slope formula. */
