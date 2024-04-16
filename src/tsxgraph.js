@@ -19,7 +19,7 @@
 //    DEALINGS IN THE SOFTWARE.
 //
 /////////////////////////////////////////////////////////////////////////////
-//   Generated on March 29, 2024, 11:31 pm 
+//   Generated on April 16, 2024, 6:07 pm 
 export var TXG;
 (function (TXG) {
     // utility function for determining whether an object is a JSX object (or part of this wrapper)
@@ -53,8 +53,9 @@ export var TXG;
     TXG.Symbolic = Symbolic;
     /** Initialize a new board. */
     class TSXGraph {
+        static defaultAttrs = {};
         static initBoard(html, attributes = {}) {
-            const newBoard = new JSXBoard();
+            const newBoard = new TSXBoard();
             newBoard.board = window.JXG.JSXGraph.initBoard(html, attributes);
             Math.board = newBoard.board; // make a copy for Math and its decendents
             return newBoard;
@@ -74,9 +75,18 @@ export var TXG;
             }
             return ret;
         }
+        // add in any default attributes
+        static defaultAttributes(attrs) {
+            for (const property in TSXGraph.defaultAttrs) {
+                if (!attrs.hasOwnProperty(property)) { // if the user has not specified a value for this property
+                    attrs[property] = TSXGraph.defaultAttrs[property];
+                }
+            }
+            return attrs;
+        }
     }
     TXG.TSXGraph = TSXGraph;
-    class JSXBoard {
+    class TSXBoard {
         board;
         printLineNumber = 0; // added a print() function, this tracks the line#
         defaultAttrs = {}; // hold defaults from setDefaultAttributes()
@@ -96,15 +106,6 @@ export var TXG;
         /** allows setting default attributes by class or across the board */
         setDefaultAttributes(attrs) {
             this.defaultAttrs = attrs;
-        }
-        // add in any default attributes
-        defaultAttributes(attrs) {
-            for (const property in this.defaultAttrs) {
-                if (!attrs.hasOwnProperty(property)) { // if the user has not specified a value for this property
-                    attrs[property] = this.defaultAttrs[property];
-                }
-            }
-            return attrs;
         }
         /** get a 2D canvas context (warning: cannot mix SVG and canvas) */
         getCanvasCTX() {
@@ -136,9 +137,7 @@ export var TXG;
         // removeObject(object:Board,testForChildren:Boolean=false)
         /** Legacy method to create elements. */
         create(elType, params = [], attributes = {}) {
-            let newObject = this.board.create(elType, params, attributes);
-            let newElement = new GeometryElement(newObject);
-            return newElement;
+            return new GeometryElement(elType, params, attributes);
         }
         /** force board update */
         update() {
@@ -170,11 +169,14 @@ export var TXG;
                 if (typeof item == null) {
                     stringText += 'null, ';
                 }
+                else if (item == undefined) {
+                    stringText += 'undefined';
+                }
                 else if (typeof item == 'string') {
                     stringText += '\'' + item + '\'';
                 }
                 else if (typeof item == 'number') {
-                    stringText += item.toFixed(1);
+                    stringText += Number.isInteger(item) ? item.toString() : item.toFixed(2);
                 }
                 else if (typeof item == 'boolean') {
                     stringText += item ? 'true' : 'false';
@@ -188,6 +190,9 @@ export var TXG;
                     stringText += '{';
                     if ('elType' in item) {
                         stringText += item.elType;
+                    }
+                    else if ('elV2Math' in item) {
+                        stringText += [item.X(), item.Y()];
                     }
                     stringText += '}';
                 }
@@ -242,28 +247,23 @@ export var TXG;
                 z_ignore: {},
                 /** Line defined by solution to a*z + b*y +c*y== 0 */
                 line(a, b, c, attributes = {}) {
-                    let newObject = this.z_ignore.board.create('line', this.z_ignore.dereference([a, b, c]), this.z_ignore.defaultAttributes(attributes));
-                    return new Line(newObject);
+                    return new Line('Line', [a, b, c,], attributes);
                 },
                 /** Just as two (distinct) points determine a line, five points (no three collinear) determine a conic. */
                 fivePoints(A, B, C, D, E, attributes = {}) {
-                    let newObject = this.z_ignore.board.create('Conic', this.z_ignore.dereference([A, B, C, D, E,]), this.z_ignore.defaultAttributes(attributes));
-                    return new Conic(newObject);
+                    return new Conic('Conic', [A, B, C, D, E,], attributes);
                 },
                 /** Build a plane algebraic curve from six numbers that satisfies Ax^2 + Bxy + Cy^2 + Dx + Ey + F = 0, and A,B,C not all zero.  This might be a circle, ellipse, parabola, or hyperbola. */
                 sixNumbers(A, B, C, D, E, F, attributes = {}) {
-                    let newObject = this.z_ignore.board.create('Conic', this.z_ignore.dereference([A, B, C, D, E, F,]), this.z_ignore.defaultAttributes(attributes));
-                    return new Conic(newObject);
+                    return new Conic('Conic', [A, B, C, D, E, F,], attributes);
                 },
                 /** An Ellipse from 3 points */
                 threePoints(focalPoint1, focalPoint2, outerPoint, attributes = {}) {
-                    let newObject = this.z_ignore.board.create('ellipse', this.z_ignore.dereference([focalPoint1, focalPoint2, outerPoint]), this.z_ignore.defaultAttributes(attributes));
-                    return new Ellipse(newObject);
+                    return new Ellipse('Ellipse', [focalPoint1, focalPoint2, outerPoint,], attributes);
                 },
                 /** Three Points, plus start and end. */
                 ellipseArc(focalPoint1, focalPoint2, outerPoint, startAngle, endAngle, attributes = {}) {
-                    let newObject = this.z_ignore.board.create('ellipse', this.z_ignore.dereference([focalPoint1, focalPoint2, outerPoint, startAngle, endAngle]), this.z_ignore.defaultAttributes(attributes));
-                    return new Conic(newObject);
+                    return new Ellipse('Ellipse', [focalPoint1, focalPoint2, outerPoint, startAngle, endAngle,], attributes);
                 },
             };
             this.conic.z_ignore = this;
@@ -272,48 +272,39 @@ export var TXG;
                 z_ignore: {},
                 /** Move a distance from a point */
                 translate(x, y, attributes = {}) {
-                    let newObject = this.z_ignore.board.create('Transform', this.z_ignore.dereference([x, y,]), this.z_ignore.defaultAttributes({ type: 'translate' }));
-                    return new Transform(newObject);
+                    return new Transform('Transform', [x, y,], { type: 'translate' });
                 },
                 /** Increase distance from a point by a factor */
                 scale(x, y, attributes = {}) {
-                    let newObject = this.z_ignore.board.create('Transform', this.z_ignore.dereference([x, y,]), this.z_ignore.defaultAttributes({ type: 'scale' }));
-                    return new Transform(newObject);
+                    return new Transform('Transform', [x, y,], { type: 'scale' });
                 },
                 /** Rotate by angle around a point */
                 rotate(angle, point = [0, 0], attributes = {}) {
-                    let newObject = this.z_ignore.board.create('Transform', this.z_ignore.dereference([angle, point,]), this.z_ignore.defaultAttributes({ type: 'rotate' }));
-                    return new Transform(newObject);
+                    return new Transform('Transform', [angle, point,], { type: 'rotate' });
                 },
                 /** Reflect around a line */
                 reflect(x, y, attributes = {}) {
-                    let newObject = this.z_ignore.board.create('Transform', this.z_ignore.dereference([x, y,]), this.z_ignore.defaultAttributes({ type: 'reflect' }));
-                    return new Transform(newObject);
+                    return new Transform('Transform', [x, y,], { type: 'reflect' });
                 },
                 /** Move proportionally to distance */
                 shear(x, y, attributes = {}) {
-                    let newObject = this.z_ignore.board.create('Transform', this.z_ignore.dereference([x, y,]), this.z_ignore.defaultAttributes({ type: 'shear' }));
-                    return new Transform(newObject);
+                    return new Transform('Transform', [x, y,], { type: 'shear' });
                 },
                 /** Transform using a MAT3 */
                 generic(a, b, c, d, e, f, g, h, i, attributes = {}) {
-                    let newObject = this.z_ignore.board.create('Transform', this.z_ignore.dereference([a, b, c, d, e, f, g, h, i,]), this.z_ignore.defaultAttributes({ type: 'generic' }));
-                    return new Transform(newObject);
+                    return new Transform('Transform', [a, b, c, d, e, f, g, h, i,], { type: 'generic' });
                 },
                 /** A new Point from a Point and Transform */
                 point(p, t, attributes = {}) {
-                    let newObject = this.z_ignore.board.create('Point', [TSXGraph.dereference(p), TSXGraph.dereference(t),], attributes);
-                    return new Point(newObject);
+                    return new Point('Point', [p, t,], attributes);
                 },
                 /** A new Circle from a Circle and Transform */
                 circle(c, t, attributes = {}) {
-                    let newObject = this.z_ignore.board.create('Circle', TSXGraph.dereference([c, t]), attributes);
-                    return new Circle(newObject);
+                    return new Circle('Circle', [c, t,], attributes);
                 },
                 /** A new Curve from a Curve and Transform */
                 curve(c, t, attributes = {}) {
-                    let newObject = this.z_ignore.board.create('Curve', TSXGraph.dereference([c, t]), attributes);
-                    return new Curve(newObject);
+                    return new Curve('Curve', [c, t,], attributes);
                 },
             };
             this.transform.z_ignore = this;
@@ -347,71 +338,71 @@ export var TXG;
         }
         /** create a chart */
         chart(f, attributes = {}) {
-            let newObject = this.board.create('Chart', this.dereference([f,]), this.defaultAttributes(attributes));
-            return new Chart(newObject);
+            return new Chart('Chart', [f,], attributes);
         }
         /** This element is used to provide a constructor for a circle. */
         circle(centerPoint, remotePoint, attributes = {}) {
             let newObject; // special case for circle with immediate segment eg:  circle(point,[[1,2],[3,4]]  )
             if (Array.isArray(remotePoint) && Array.isArray(remotePoint[0]) && Array.isArray(remotePoint[1])) {
-                newObject = this.board.create(`circle`, this.dereference([centerPoint, remotePoint[0], remotePoint[1]]), this.defaultAttributes(attributes));
+                return new Circle(`circle`, TSXGraph.dereference([centerPoint, remotePoint[0], remotePoint[1]]), TSXGraph.defaultAttributes(attributes));
             }
             else {
-                newObject = this.board.create(`circle`, this.dereference([centerPoint, remotePoint]), this.defaultAttributes(attributes));
+                return new Circle(`circle`, TSXGraph.dereference([centerPoint, remotePoint]), TSXGraph.defaultAttributes(attributes));
             }
-            return new Circle(newObject);
         }
         /** This element is used to provide a constructor for curve, which is just a wrapper for element Curve. A curve is a mapping from R to R^2. t mapsto (x(t),y(t)). The graph is drawn for t in the interval [a,b]. The following types of curves can be plotted: parametric curves: t mapsto (x(t),y(t)), where x() and y() are univariate functions. polar curves: curves commonly written with polar equations like spirals and cardioids. data plots: plot line segments through a given list of coordinates. */
         curve(xArray, yArray, left = -5, right = 5, attributes = {}) {
-            let newObject = this.board.create('Curve', this.dereference([xArray, yArray, left, right,]), this.defaultAttributes(attributes));
-            return new Curve(newObject);
+            return new Curve('Curve', [xArray, yArray, left, right,], attributes);
         }
         /** Array of Points */
         group(pointArray, attributes = {}) {
-            let newObject = this.board.create('Group', this.dereference([pointArray,].flat()), this.defaultAttributes(attributes));
-            return new Group(newObject);
+            return new Group('Group', [pointArray,], attributes);
         }
         /** Displays an image. */
         image(url, lowerLeft, widthHeight, attributes = {}) {
-            let newObject = this.board.create('Image', this.dereference([url, lowerLeft, widthHeight,]), this.defaultAttributes(attributes));
-            return new Image(newObject);
+            return new Image('Image', [url, lowerLeft, widthHeight,], attributes);
         }
         // implementation of signature,  hidden from user
         implicitcurve(a, b, c, d, e, f, g, h, i) {
             let newObject = {}; // just so it is initialized
+            let params = [];
+            let attrs = {};
             if (arguments.length == 1) {
                 if (isJSXAttribute(a)) {
-                    newObject = this.board.create('implicitcurve', this.dereference([]), this.defaultAttributes(a)); // as unknown as Implicitcurve
+                    attrs = TSXGraph.defaultAttributes(a);
+                    params = TSXGraph.dereference([]);
                 }
                 else {
-                    newObject = this.board.create('implicitcurve', this.dereference([a,]), this.defaultAttributes({})); // as Implicitcurve
+                    params = TSXGraph.dereference([a,]);
                 }
             }
             if (arguments.length == 2) {
                 if (isJSXAttribute(b)) {
-                    newObject = this.board.create('implicitcurve', this.dereference([a,]), this.defaultAttributes(b)); // as unknown as Implicitcurve
+                    attrs = TSXGraph.defaultAttributes(b);
+                    params = TSXGraph.dereference([a,]);
                 }
                 else {
-                    newObject = this.board.create('implicitcurve', this.dereference([a, b,]), this.defaultAttributes({})); // as Implicitcurve
+                    params = TSXGraph.dereference([a, b,]);
                 }
             }
             if (arguments.length == 3) {
                 if (isJSXAttribute(c)) {
-                    newObject = this.board.create('implicitcurve', this.dereference([a, b,]), this.defaultAttributes(c)); // as unknown as Implicitcurve
+                    attrs = TSXGraph.defaultAttributes(c);
+                    params = TSXGraph.dereference([a, b,]);
                 }
                 else {
-                    newObject = this.board.create('implicitcurve', this.dereference([a, b, c,]), this.defaultAttributes({})); // as Implicitcurve
+                    params = TSXGraph.dereference([a, b, c,]);
                 }
             }
-            return new Implicitcurve(newObject);
+            return new Implicitcurve('implicitcurve', params, TSXGraph.defaultAttributes(attrs)); // as Implicitcurve
         }
         /** This element is used to provide a constructor for a general line given by two points.
                                        By setting additional properties a line can be used as an arrow and/or axis.
                                        
        *```js
-                                       JSX.line([3,2],[3,3], {strokeColor:'blue',strokeWidth:5, strokeOpacity:.5})
-                                       let P1 = JSX.point([3,2])
-                                       JSX.line(p1,[3,3])
+                                       TSX.line([3,2],[3,3], {strokeColor:'blue',strokeWidth:5, strokeOpacity:.5})
+                                       let P1 = TSX.point([3,2])
+                                       TSX.line(p1,[3,3])
                                        
        *```
                                        
@@ -419,481 +410,482 @@ export var TXG;
                                        Look at .conic.line() for a line defined by the equation 'az +bx +cy = 0'
                            */
         line(p1, p2, attributes = {}) {
-            let newObject = this.board.create('Line', this.dereference([p1, p2,]), this.defaultAttributes(attributes));
-            return new Line(newObject);
+            return new Line('Line', [p1, p2,], attributes);
         }
         /** Create a point. If any parent elements are functions or the attribute 'fixed' is true then point will be constrained.
                    
        *```js
-                    JSX.point([3,2], {strokeColor:'blue',strokeWidth:5, strokeOpacity:.5})
-                    JSX.point([3,3]), {fixed:true, showInfobox:true}
-                    JSX.point([()=>p1.X()+2,()=>p1.Y()+2]) // 2 up 2 right from p1
-                    JSX.point([1,2,2])  // three axis definition - [z,x,y]
+                    TSX.point([3,2], {strokeColor:'blue',strokeWidth:5, strokeOpacity:.5})
+                    TSX.point([3,3]), {fixed:true, showInfobox:true}
+                    TSX.point([()=>p1.X()+2,()=>p1.Y()+2]) // 2 up 2 right from p1
+                    TSX.point([1,2,2])  // three axis definition - [z,x,y]
                    
        *```
                    
         also create points with Intersection, Midpoint, Transform.Point, Circumcenter, Glider, and others. */
         point(position, attributes = {}) {
-            let newObject = this.board.create('Point', position, this.defaultAttributes(attributes));
-            return new Point(newObject);
+            return new Point('Point', position, TSXGraph.defaultAttributes(attributes));
         }
         /** Array of Points */
         polygon(pointArray, attributes = {}) {
-            let newObject = this.board.create('Polygon', this.dereference([pointArray,].flat()), this.defaultAttributes(attributes));
-            return new Polygon(newObject);
+            return new Polygon('Polygon', [pointArray,], attributes);
         }
         /** Construct and handle texts. The coordinates can either be abslute (i.e. respective to the coordinate system of the board) or be relative to the coordinates of an element given in Text#anchor. HTML, MathJaX, KaTeX and GEONExT syntax can be handled. There are two ways to display texts: using the text element of the renderer (canvas or svg). In most cases this is the suitable approach if speed matters. However, advanced rendering like MathJax, KaTeX or HTML/CSS are not possible. using HTML <div>. This is the most flexible approach. The drawback is that HTML can only be display ”above” the geometry elements. If HTML should be displayed in an inbetween layer, conder to use an element of type ForeignObject (available in svg renderer, only). */
         text(x, y, string, attributes = {}) {
-            let newObject = this.board.create('Text', this.dereference([x, y, string,]), this.defaultAttributes(attributes));
-            return new Text(newObject);
+            return new Text('Text', [x, y, string,], attributes);
         }
         /** A circular sector is a subarea of the area enclosed by a circle. It is enclosed by two radii and an arc. */
         sector(P1, P2, P3, attributes = {}) {
-            let newObject = this.board.create('Sector', this.dereference([P1, P2, P3,]), this.defaultAttributes(attributes));
-            return new Sector(newObject);
+            return new Sector('Sector', [P1, P2, P3,], attributes);
         }
         /** Vector field. Plot a vector field either given by two functions f1(x, y) and f2(x,y) or by a function f(x, y) returning an array of size 2. */
         vectorfield(fxfy, horizontalMesh = [-6, 25, 6], verticalMesh = [-6, 25, 6], attributes = {}) {
-            let newObject = this.board.create('Vectorfield', this.dereference([fxfy, horizontalMesh, verticalMesh,]), this.defaultAttributes(attributes));
-            return new Vectorfield(newObject);
+            return new Vectorfield('Vectorfield', [fxfy, horizontalMesh, verticalMesh,], attributes);
         }
         // implementation of signature,  hidden from user
         angle(a, b, c, d, e, f, g, h, i) {
             let newObject = {}; // just so it is initialized
+            let params = [];
+            let attrs = {};
             if (arguments.length == 2) {
                 if (isJSXAttribute(b)) {
-                    newObject = this.board.create('angle', this.dereference([a,]), this.defaultAttributes(b)); // as unknown as Angle
+                    attrs = TSXGraph.defaultAttributes(b);
+                    params = TSXGraph.dereference([a,]);
                 }
                 else {
-                    newObject = this.board.create('angle', this.dereference([a, b,]), this.defaultAttributes({})); // as Angle
+                    params = TSXGraph.dereference([a, b,]);
                 }
             }
             if (arguments.length == 3) {
                 if (isJSXAttribute(c)) {
-                    newObject = this.board.create('angle', this.dereference([a, b,]), this.defaultAttributes(c)); // as unknown as Angle
+                    attrs = TSXGraph.defaultAttributes(c);
+                    params = TSXGraph.dereference([a, b,]);
                 }
                 else {
-                    newObject = this.board.create('angle', this.dereference([a, b, c,]), this.defaultAttributes({})); // as Angle
+                    params = TSXGraph.dereference([a, b, c,]);
                 }
             }
             if (arguments.length == 4) {
                 if (isJSXAttribute(d)) {
-                    newObject = this.board.create('angle', this.dereference([a, b, c,]), this.defaultAttributes(d)); // as unknown as Angle
+                    attrs = TSXGraph.defaultAttributes(d);
+                    params = TSXGraph.dereference([a, b, c,]);
                 }
                 else {
-                    newObject = this.board.create('angle', this.dereference([a, b, c, d,]), this.defaultAttributes({})); // as Angle
+                    params = TSXGraph.dereference([a, b, c, d,]);
                 }
             }
             if (arguments.length == 5) {
                 if (isJSXAttribute(e)) {
-                    newObject = this.board.create('angle', this.dereference([a, b, c, d,]), this.defaultAttributes(e)); // as unknown as Angle
+                    attrs = TSXGraph.defaultAttributes(e);
+                    params = TSXGraph.dereference([a, b, c, d,]);
                 }
                 else {
-                    newObject = this.board.create('angle', this.dereference([a, b, c, d, e,]), this.defaultAttributes({})); // as Angle
+                    params = TSXGraph.dereference([a, b, c, d, e,]);
                 }
             }
-            return new Angle(newObject);
+            return new Angle('angle', params, TSXGraph.defaultAttributes(attrs)); // as Angle
         }
-        /** Create an Arc with three points */
-        arc(p1, p2, p3, attributes = {}) {
-            let newObject = this.board.create('Arc', this.dereference([p1, p2, p3,]), this.defaultAttributes(attributes));
-            return new Arc(newObject);
+        /** Create a circular Arc defined by three points (because a circle can be defined by three points - see circumcircle).
+                                   
+       *```js
+                                   let arc = TSX.arc([-8,5],[-4,5],[-9,9]])
+                                   
+       *```
+                                   
+        To create an arc with origin, startpoint, and angle, look at MajorArc/MinorArc. */
+        arc(origin, from, to, attributes = {}) {
+            return new Arc('Arc', [origin, from, to,], attributes);
         }
         /** Arrow defined by two points (like a Segment) with arrow at P2 */
         arrow(p1, p2, attributes = {}) {
-            let newObject = this.board.create('Arrow', this.dereference([p1, p2,]), this.defaultAttributes(attributes));
-            return new Arrow(newObject);
+            return new Arrow('Arrow', [p1, p2,], attributes);
         }
         // implementation of signature,  hidden from user
         parallel(a, b, c, d, e, f, g, h, i) {
             let newObject = {}; // just so it is initialized
+            let params = [];
+            let attrs = {};
             if (arguments.length == 2) {
                 if (isJSXAttribute(b)) {
-                    newObject = this.board.create('parallel', this.dereference([a,]), this.defaultAttributes(b)); // as unknown as Parallel
+                    attrs = TSXGraph.defaultAttributes(b);
+                    params = TSXGraph.dereference([a,]);
                 }
                 else {
-                    newObject = this.board.create('parallel', this.dereference([a, b,]), this.defaultAttributes({})); // as Parallel
+                    params = TSXGraph.dereference([a, b,]);
                 }
             }
             if (arguments.length == 3) {
                 if (isJSXAttribute(c)) {
-                    newObject = this.board.create('parallel', this.dereference([a, b,]), this.defaultAttributes(c)); // as unknown as Parallel
+                    attrs = TSXGraph.defaultAttributes(c);
+                    params = TSXGraph.dereference([a, b,]);
                 }
                 else {
-                    newObject = this.board.create('parallel', this.dereference([a, b, c,]), this.defaultAttributes({})); // as Parallel
+                    params = TSXGraph.dereference([a, b, c,]);
                 }
             }
             if (arguments.length == 4) {
                 if (isJSXAttribute(d)) {
-                    newObject = this.board.create('parallel', this.dereference([a, b, c,]), this.defaultAttributes(d)); // as unknown as Parallel
+                    attrs = TSXGraph.defaultAttributes(d);
+                    params = TSXGraph.dereference([a, b, c,]);
                 }
                 else {
-                    newObject = this.board.create('parallel', this.dereference([a, b, c, d,]), this.defaultAttributes({})); // as Parallel
+                    params = TSXGraph.dereference([a, b, c, d,]);
                 }
             }
             if (arguments.length == 5) {
                 if (isJSXAttribute(e)) {
-                    newObject = this.board.create('parallel', this.dereference([a, b, c, d,]), this.defaultAttributes(e)); // as unknown as Parallel
+                    attrs = TSXGraph.defaultAttributes(e);
+                    params = TSXGraph.dereference([a, b, c, d,]);
                 }
                 else {
-                    newObject = this.board.create('parallel', this.dereference([a, b, c, d, e,]), this.defaultAttributes({})); // as Parallel
+                    params = TSXGraph.dereference([a, b, c, d, e,]);
                 }
             }
-            return new Parallel(newObject);
+            return new Parallel('parallel', params, TSXGraph.defaultAttributes(attrs)); // as Parallel
         }
         /** Create an Arrow parallel to a segment. The constructed arrow contains p3 and has the same slope as the line through p1 and p2. */
         arrowparallel(p1, p2, p3, attributes = {}) {
-            let newObject = this.board.create('Arrowparallel', this.dereference([p1, p2, p3,]), this.defaultAttributes(attributes));
-            return new Arrowparallel(newObject);
+            return new Arrowparallel('Arrowparallel', [p1, p2, p3,], attributes);
         }
         /** Create an Axis with two points (like a Line) */
         axis(p1, p2, attributes = {}) {
-            let newObject = this.board.create('Axis', this.dereference([p1, p2,]), this.defaultAttributes(attributes));
-            return new Axis(newObject);
+            return new Axis('Axis', [p1, p2,], attributes);
         }
         /** Bisect an Angle defined with three points */
         bisector(p1, p2, p3, attributes = {}) {
-            let newObject = this.board.create('Bisector', this.dereference([p1, p2, p3,]), this.defaultAttributes(attributes));
-            return new Bisector(newObject);
+            return new Bisector('Bisector', [p1, p2, p3,], attributes);
         }
         /** Bisect a Line defined with two points */
         bisectorlines(l1, l2, attributes = {}) {
-            let newObject = this.board.create('Bisectorlines', this.dereference([l1, l2,]), this.defaultAttributes(attributes));
-            return new Bisectorlines(newObject);
+            return new Bisectorlines('Bisectorlines', [l1, l2,], attributes);
         }
         /** create a button */
         button(x, y, label, handler, attributes = {}) {
-            let newObject = this.board.create('button', [x, y, label], this.defaultAttributes(attributes));
-            return new Button(newObject);
+            return new Button('Button', [x, y, label, handler,], attributes);
         }
         /** This element is used to provide a constructor for cardinal spline curves. Create a dynamic cardinal spline interpolated curve given by sample points p_1 to p_n. */
         cardinalspline(data, funct, splineType, attributes = {}) {
-            let newObject = this.board.create('Cardinalspline', this.dereference([data, funct, splineType,]), this.defaultAttributes(attributes));
-            return new Curve(newObject);
+            return new Cardinalspline('Cardinalspline', [data, funct, splineType,], attributes);
         }
         /** This element is used to provide a constructor for special texts containing a form checkbox element. For this element, the attribute ”display” has to have the value 'html' (which is the default). The underlying HTML checkbox element can be accessed through the sub-object 'rendNodeCheck', e.g. to add event listeners. */
         checkbox(x, y, label, attributes = {}) {
-            let newObject = this.board.create('Checkbox', this.dereference([x, y, label,]), this.defaultAttributes(attributes));
-            return new Checkbox(newObject);
+            return new Checkbox('Checkbox', [x, y, label,], attributes);
         }
         /** Creates a Point at the center of a circle defined by 3 points */
         circumcenter(p1, p2, p3, attributes = {}) {
-            let newObject = this.board.create('Circumcenter', this.dereference([p1, p2, p3,]), this.defaultAttributes(attributes));
-            return new Circumcenter(newObject);
+            return new Circumcenter('Circumcenter', [p1, p2, p3,], attributes);
         }
         /** Draw a circle defined by 3 points */
         circumcircle(p1, p2, p3, attributes = {}) {
-            let newObject = this.board.create('Circumcircle', this.dereference([p1, p2, p3,]), this.defaultAttributes(attributes));
-            return new Circumcircle(newObject);
+            return new Circumcircle('Circumcircle', [p1, p2, p3,], attributes);
         }
         /** Draw an arc from P1 to P3 (missing P3 to P1) defined by 3 points */
         circumcircleArc(p1, p2, p3, attributes = {}) {
-            let newObject = this.board.create('CircumcircleArc', this.dereference([p1, p2, p3,]), this.defaultAttributes(attributes));
-            return new CircumcircleArc(newObject);
+            return new CircumcircleArc('CircumcircleArc', [p1, p2, p3,], attributes);
         }
         /** Creates a CircumCenter and draws a sector from P1 to P3 (missing P3 to P1) defined by 3 points */
         circumcircleSector(p1, p2, p3, attributes = {}) {
-            let newObject = this.board.create('CircumcircleSector', this.dereference([p1, p2, p3,]), this.defaultAttributes(attributes));
-            return new CircumcircleSector(newObject);
+            return new CircumcircleSector('CircumcircleSector', [p1, p2, p3,], attributes);
         }
         /** A comb to display domains of inequalities. */
         comb(p1, p2, attributes = {}) {
-            let newObject = this.board.create('Comb', this.dereference([p1, p2,]), this.defaultAttributes(attributes));
-            return new Comb(newObject);
+            return new Comb('Comb', [p1, p2,], attributes);
         }
         /** Difference of two closed path elements. The elements may be of type curve, circle, polygon, inequality. If one element is a curve, it has to be closed. The resulting element is of type curve. */
         curveDifference(curve1, curve2, attributes = {}) {
-            let newObject = this.board.create('CurveDifference', this.dereference([curve1, curve2,]), this.defaultAttributes(attributes));
-            return new CurveDifference(newObject);
+            return new CurveDifference('CurveDifference', [curve1, curve2,], attributes);
         }
         /** Intersection of two closed path elements. The elements may be of type curve, circle, polygon, inequality. If one element is a curve, it has to be closed. The resulting element is of type curve. */
         curveIntersection(curve1, curve2, attributes = {}) {
-            let newObject = this.board.create('CurveIntersection', this.dereference([curve1, curve2,]), this.defaultAttributes(attributes));
-            return new CurveIntersection(newObject);
+            return new CurveIntersection('CurveIntersection', [curve1, curve2,], attributes);
         }
         /** Union of two closed path elements. The elements may be of type curve, circle, polygon, inequality. If one element is a curve, it has to be closed. The resulting element is of type curve. */
         curveUnion(curve1, curve2, attributes = {}) {
-            let newObject = this.board.create('CurveUnion', this.dereference([curve1, curve2,]), this.defaultAttributes(attributes));
-            return new CurveUnion(newObject);
+            return new CurveUnion('CurveUnion', [curve1, curve2,], attributes);
         }
         /** This element is used to provide a constructor for the graph showing the (numerical) derivative of a given curve. */
         derivative(curve, attributes = {}) {
-            let newObject = this.board.create('Derivative', this.dereference([curve,]), this.defaultAttributes(attributes));
-            return new Derivative(newObject);
+            return new Derivative('Derivative', [curve,], attributes);
         }
         /** Two Points and Radius */
         ellipse(p1, p2, radius, attributes = {}) {
-            let newObject = this.board.create('Ellipse', this.dereference([p1, p2, radius,]), this.defaultAttributes(attributes));
-            return new Ellipse(newObject);
+            return new Ellipse('Ellipse', [p1, p2, radius,], attributes);
         }
         /** This element is used to provide a constructor for functiongraph, which is just a wrapper for element Curve with JXG.Curve#X() set to x. The graph is drawn for x in the interval [a,b]. */
         functiongraph(funct, leftBorder, rightBorder, attributes = {}) {
-            let newObject = this.board.create('Functiongraph', this.dereference([funct, leftBorder, rightBorder,]), this.defaultAttributes(attributes));
-            return new Functiongraph(newObject);
+            return new Functiongraph('Functiongraph', [funct, leftBorder, rightBorder,], attributes);
         }
         // implementation of signature,  hidden from user
         glider(a, b, c, d, e, f, g, h, i) {
             let newObject = {}; // just so it is initialized
+            let params = [];
+            let attrs = {};
             if (arguments.length == 1) {
                 if (isJSXAttribute(a)) {
-                    newObject = this.board.create('glider', this.dereference([]), this.defaultAttributes(a)); // as unknown as Glider
+                    attrs = TSXGraph.defaultAttributes(a);
+                    params = TSXGraph.dereference([]);
                 }
                 else {
-                    newObject = this.board.create('glider', this.dereference([a,]), this.defaultAttributes({})); // as Glider
+                    params = TSXGraph.dereference([a,]);
                 }
             }
             if (arguments.length == 2) {
                 if (isJSXAttribute(b)) {
-                    newObject = this.board.create('glider', this.dereference([a,]), this.defaultAttributes(b)); // as unknown as Glider
+                    attrs = TSXGraph.defaultAttributes(b);
+                    params = TSXGraph.dereference([a,]);
                 }
                 else {
-                    newObject = this.board.create('glider', this.dereference([a, b,]), this.defaultAttributes({})); // as Glider
+                    params = TSXGraph.dereference([a, b,]);
                 }
             }
             if (arguments.length == 3) {
                 if (isJSXAttribute(c)) {
-                    newObject = this.board.create('glider', this.dereference([a, b,]), this.defaultAttributes(c)); // as unknown as Glider
+                    attrs = TSXGraph.defaultAttributes(c);
+                    params = TSXGraph.dereference([a, b,]);
                 }
                 else {
-                    newObject = this.board.create('glider', this.dereference([a, b, c,]), this.defaultAttributes({})); // as Glider
+                    params = TSXGraph.dereference([a, b, c,]);
                 }
             }
-            return new Glider(newObject);
+            if (arguments.length == 4) {
+                if (isJSXAttribute(d)) {
+                    attrs = TSXGraph.defaultAttributes(d);
+                    params = TSXGraph.dereference([a, b, c,]);
+                }
+                else {
+                    params = TSXGraph.dereference([a, b, c, d,]);
+                }
+            }
+            return new Glider('glider', params, TSXGraph.defaultAttributes(attrs)); // as Glider
         }
         // implementation of signature,  hidden from user
         grid(a, b, c, d, e, f, g, h, i) {
             let newObject = {}; // just so it is initialized
+            let params = [];
+            let attrs = {};
             if (arguments.length == 0) {
                 if (isJSXAttribute(a)) {
-                    newObject = this.board.create('grid', this.dereference([]), this.defaultAttributes(a)); // as unknown as Grid
+                    attrs = TSXGraph.defaultAttributes(a);
+                    params = TSXGraph.dereference([]);
                 }
                 else {
-                    newObject = this.board.create('grid', this.dereference([]), this.defaultAttributes({})); // as Grid
+                    params = TSXGraph.dereference([]);
                 }
             }
             if (arguments.length == 1) {
                 if (isJSXAttribute(a)) {
-                    newObject = this.board.create('grid', this.dereference([]), this.defaultAttributes(a)); // as unknown as Grid
+                    attrs = TSXGraph.defaultAttributes(a);
+                    params = TSXGraph.dereference([]);
                 }
                 else {
-                    newObject = this.board.create('grid', this.dereference([a,]), this.defaultAttributes({})); // as Grid
+                    params = TSXGraph.dereference([a,]);
                 }
             }
             if (arguments.length == 2) {
                 if (isJSXAttribute(b)) {
-                    newObject = this.board.create('grid', this.dereference([a,]), this.defaultAttributes(b)); // as unknown as Grid
+                    attrs = TSXGraph.defaultAttributes(b);
+                    params = TSXGraph.dereference([a,]);
                 }
                 else {
-                    newObject = this.board.create('grid', this.dereference([a, b,]), this.defaultAttributes({})); // as Grid
+                    params = TSXGraph.dereference([a, b,]);
                 }
             }
             if (arguments.length == 3) {
                 if (isJSXAttribute(c)) {
-                    newObject = this.board.create('grid', this.dereference([a, b,]), this.defaultAttributes(c)); // as unknown as Grid
+                    attrs = TSXGraph.defaultAttributes(c);
+                    params = TSXGraph.dereference([a, b,]);
                 }
                 else {
-                    newObject = this.board.create('grid', this.dereference([a, b, c,]), this.defaultAttributes({})); // as Grid
+                    params = TSXGraph.dereference([a, b, c,]);
                 }
             }
-            return new Grid(newObject);
+            return new Grid('grid', params, TSXGraph.defaultAttributes(attrs)); // as Grid
         }
         /** Hatches can be used to mark congruent lines or curves. */
         hatch(line, numberHatches, attributes = {}) {
-            let newObject = this.board.create('Hatch', this.dereference([line, numberHatches,]), this.defaultAttributes(attributes));
-            return new Hatch(newObject);
+            return new Hatch('Hatch', [line, numberHatches,], attributes);
         }
         /** This element is used to provide a constructor for an hyperbola. An hyperbola is given by two points (the foci) and a third point on the hyperbola or the length of the major axis. */
         hyperbola(point1, point2, point3, start = -3.14, end = 3.14, attributes = {}) {
-            let newObject = this.board.create('Hyperbola', this.dereference([point1, point2, point3, start, end,]), this.defaultAttributes(attributes));
-            return new Hyperbola(newObject);
+            return new Hyperbola('Hyperbola', [point1, point2, point3, start, end,], attributes);
         }
         /** Constructs the incenter of the triangle described by the three given points. https://mathworld.wolfram.com/Incenter.html */
         incenter(p1, p2, p3, attributes = {}) {
-            let newObject = this.board.create('Incenter', this.dereference([p1, p2, p3,]), this.defaultAttributes(attributes));
-            return new Incenter(newObject);
+            return new Incenter('Incenter', [p1, p2, p3,], attributes);
         }
         /** An incircle is given by three points. */
         incircle(p1, p2, p3, attributes = {}) {
-            let newObject = this.board.create('Incircle', this.dereference([p1, p2, p3,]), this.defaultAttributes(attributes));
-            return new Incircle(newObject);
+            return new Incircle('Incircle', [p1, p2, p3,], attributes);
         }
         /** Creates an area indicating the solution of a linear inequality or an inequality of a function graph, i.e. an inequality of type y */
         inequality(boundaryLine, attributes = {}) {
-            let newObject = this.board.create('Inequality', this.dereference([boundaryLine,]), this.defaultAttributes(attributes));
-            return new Inequality(newObject);
+            return new Inequality('Inequality', [boundaryLine,], attributes);
         }
         /** This element is used to provide a constructor for special texts containing a HTML form input element. If the width of element is set with the attribute ”cssStyle”, the width of the label must be added. For this element, the attribute ”display” has to have the value 'html' (which is the default). The underlying HTML input field can be accessed through the sub-object 'rendNodeInput', e.g. to add event listeners. */
         input(x, y, prompt, initial, attributes = {}) {
-            let newObject = this.board.create('Input', this.dereference([x, y, prompt, initial,]), this.defaultAttributes(attributes));
-            return new Input(newObject);
+            return new Input('Input', [x, y, prompt, initial,], attributes);
         }
         /** This element is used to visualize the integral of a given curve over a given interval. */
         integral(range, curve, attributes = {}) {
-            let newObject = this.board.create('Integral', this.dereference([range, curve,]), this.defaultAttributes(attributes));
-            return new Integral(newObject);
+            return new Integral('Integral', [range, curve,], attributes);
         }
         /** An intersection point is a point which lives on two JSXGraph elements, i.e. it is one point of the set consisting of the intersection points of the two elements. The following element types can be (mutually) intersected: line, circle, curve, polygon, polygonal chain. */
         intersection(element1, element2, attributes = {}) {
-            let newObject = this.board.create('intersection', this.dereference([element1, element2, 0]), this.defaultAttributes(attributes));
-            return new Point(newObject);
+            return new Intersection('intersection', TSXGraph.dereference([element1, element2, 0]), TSXGraph.defaultAttributes(attributes));
         }
         /** A major arc is a segment of the circumference of a circle having measure greater than or equal to 180 degrees (pi radians). It is defined by a center, one point that defines the radius, and a third point that defines the angle of the arc. */
         majorArc(p1, p2, p3, attributes = {}) {
-            let newObject = this.board.create('MajorArc', this.dereference([p1, p2, p3,]), this.defaultAttributes(attributes));
-            return new MajorArc(newObject);
+            return new MajorArc('MajorArc', [p1, p2, p3,], attributes);
         }
         /** A major sector is a sector of a circle having measure greater than or equal to 180 degrees (pi radians). It is defined by a center, one point that defines the radius, and a third point that defines the angle of the sector. */
         majorSector(p1, p2, p3, attributes = {}) {
-            let newObject = this.board.create('MajorSector', this.dereference([p1, p2, p3,]), this.defaultAttributes(attributes));
-            return new MajorSector(newObject);
+            return new MajorSector('MajorSector', [p1, p2, p3,], attributes);
         }
         // implementation of signature,  hidden from user
         midpoint(a, b, c, d, e, f, g, h, i) {
             let newObject = {}; // just so it is initialized
+            let params = [];
+            let attrs = {};
             if (arguments.length == 1) {
                 if (isJSXAttribute(a)) {
-                    newObject = this.board.create('midpoint', this.dereference([]), this.defaultAttributes(a)); // as unknown as Midpoint
+                    attrs = TSXGraph.defaultAttributes(a);
+                    params = TSXGraph.dereference([]);
                 }
                 else {
-                    newObject = this.board.create('midpoint', this.dereference([a,]), this.defaultAttributes({})); // as Midpoint
+                    params = TSXGraph.dereference([a,]);
                 }
             }
             if (arguments.length == 2) {
                 if (isJSXAttribute(b)) {
-                    newObject = this.board.create('midpoint', this.dereference([a,]), this.defaultAttributes(b)); // as unknown as Midpoint
+                    attrs = TSXGraph.defaultAttributes(b);
+                    params = TSXGraph.dereference([a,]);
                 }
                 else {
-                    newObject = this.board.create('midpoint', this.dereference([a, b,]), this.defaultAttributes({})); // as Midpoint
+                    params = TSXGraph.dereference([a, b,]);
                 }
             }
             if (arguments.length == 3) {
                 if (isJSXAttribute(c)) {
-                    newObject = this.board.create('midpoint', this.dereference([a, b,]), this.defaultAttributes(c)); // as unknown as Midpoint
+                    attrs = TSXGraph.defaultAttributes(c);
+                    params = TSXGraph.dereference([a, b,]);
                 }
                 else {
-                    newObject = this.board.create('midpoint', this.dereference([a, b, c,]), this.defaultAttributes({})); // as Midpoint
+                    params = TSXGraph.dereference([a, b, c,]);
                 }
             }
-            return new Midpoint(newObject);
+            return new Midpoint('midpoint', params, TSXGraph.defaultAttributes(attrs)); // as Midpoint
         }
         /** A minor arc is a segment of the circumference of a circle having measure less than or equal to 180 degrees (pi radians). It is defined by a center, one point that defines the radius, and a third point that defines the angle of the arc. */
         minorArc(p1, p2, p3, attributes = {}) {
-            let newObject = this.board.create('MinorArc', this.dereference([p1, p2, p3,]), this.defaultAttributes(attributes));
-            return new MinorArc(newObject);
+            return new MinorArc('MinorArc', [p1, p2, p3,], attributes);
         }
         /** A minor sector is a sector of a circle having measure less than or equal to 180 degrees (pi radians). It is defined by a center, one point that defines the radius, and a third point that defines the angle of the sector. */
         minorSector(p1, p2, p3, attributes = {}) {
-            let newObject = this.board.create('MinorSector', this.dereference([p1, p2, p3,]), this.defaultAttributes(attributes));
-            return new MinorSector(newObject);
+            return new MinorSector('MinorSector', [p1, p2, p3,], attributes);
         }
         /** A mirror element of a point, line, circle, curve, polygon will be constructed. */
         mirrorelement(element, acrossPoint, attributes = {}) {
-            let newObject = this.board.create('mirrorelement', this.dereference([element, acrossPoint,]), this.defaultAttributes(attributes));
-            return new mirrorelement(newObject);
+            return new mirrorelement('mirrorelement', [element, acrossPoint,], attributes);
         }
         /** A mirror point will be constructed. */
         mirrorpoint(p1, p2, attributes = {}) {
-            let newObject = this.board.create('Mirrorpoint', this.dereference([p1, p2,]), this.defaultAttributes(attributes));
-            return new Mirrorpoint(newObject);
+            return new Mirrorpoint('Mirrorpoint', [p1, p2,], attributes);
         }
         /** A non-reflex angle is the acute or obtuse instance of an angle. It is defined by a center, one point that defines the radius, and a third point that defines the angle of the sector. */
         nonReflexAngle(point1, point2, point3, attributes = {}) {
-            let newObject = this.board.create('NonReflexAngle', this.dereference([point1, point2, point3,]), this.defaultAttributes(attributes));
-            return new NonReflexAngle(newObject);
+            return new NonReflexAngle('NonReflexAngle', [point1, point2, point3,], attributes);
         }
         // implementation of signature,  hidden from user
         normal(a, b, c, d, e, f, g, h, i) {
             let newObject = {}; // just so it is initialized
+            let params = [];
+            let attrs = {};
             if (arguments.length == 1) {
                 if (isJSXAttribute(a)) {
-                    newObject = this.board.create('normal', this.dereference([]), this.defaultAttributes(a)); // as unknown as Normal
+                    attrs = TSXGraph.defaultAttributes(a);
+                    params = TSXGraph.dereference([]);
                 }
                 else {
-                    newObject = this.board.create('normal', this.dereference([a,]), this.defaultAttributes({})); // as Normal
+                    params = TSXGraph.dereference([a,]);
                 }
             }
             if (arguments.length == 2) {
                 if (isJSXAttribute(b)) {
-                    newObject = this.board.create('normal', this.dereference([a,]), this.defaultAttributes(b)); // as unknown as Normal
+                    attrs = TSXGraph.defaultAttributes(b);
+                    params = TSXGraph.dereference([a,]);
                 }
                 else {
-                    newObject = this.board.create('normal', this.dereference([a, b,]), this.defaultAttributes({})); // as Normal
+                    params = TSXGraph.dereference([a, b,]);
                 }
             }
             if (arguments.length == 3) {
                 if (isJSXAttribute(c)) {
-                    newObject = this.board.create('normal', this.dereference([a, b,]), this.defaultAttributes(c)); // as unknown as Normal
+                    attrs = TSXGraph.defaultAttributes(c);
+                    params = TSXGraph.dereference([a, b,]);
                 }
                 else {
-                    newObject = this.board.create('normal', this.dereference([a, b, c,]), this.defaultAttributes({})); // as Normal
+                    params = TSXGraph.dereference([a, b, c,]);
                 }
             }
-            return new Normal(newObject);
+            return new Normal('normal', params, TSXGraph.defaultAttributes(attrs)); // as Normal
         }
         /** This is used to construct a point that is the orthogonal projection of a point to a line. */
         orthogonalprojection(point, line, attributes = {}) {
-            let newObject = this.board.create('Orthogonalprojection', this.dereference([point, line,]), this.defaultAttributes(attributes));
-            return new Orthogonalprojection(newObject);
+            return new Orthogonalprojection('Orthogonalprojection', [point, line,], attributes);
         }
         /** This element is used to provide a constructor for the ”other” intersection point. */
         otherIntersection(element1, element2, firstIntersection, attributes = {}) {
-            let newObject = this.board.create('otherintersection', this.dereference([element1, element2, firstIntersection]), attributes);
-            return new Point(newObject);
+            return new OtherIntersection('otherintersection', TSXGraph.dereference([element1, element2, firstIntersection]), attributes);
         }
         /** This element is used to provide a constructor for a parabola. A parabola is given by one point (the focus) and a line (the directrix). */
         parabola(focalPoint, line, attributes = {}) {
-            let newObject = this.board.create('Parabola', this.dereference([focalPoint, line,]), this.defaultAttributes(attributes));
-            return new Parabola(newObject);
+            return new Parabola('Parabola', [focalPoint, line,], attributes);
         }
         /** This element is used to provide a constructor for a segment. It's strictly spoken just a wrapper for element Line with Line#straightFirst and Line#straightLast properties set to false. If there is a third variable then the segment has a fixed length (which may be a function, too). */
         segment(P1, P2, attributes = {}) {
-            let newObject = this.board.create('Segment', this.dereference([P1, P2,]), this.defaultAttributes(attributes));
-            return new Segment(newObject);
+            return new Segment('Segment', [P1, P2,], attributes);
         }
         /**  */
         parallelogram(p1, p2, p3, attributes = {}) {
-            let newObject = this.board.create('Parallelogram', this.dereference([p1, p2, p3,]), this.defaultAttributes(attributes));
-            return new Parallelogram(newObject);
+            return new Parallelogram('Parallelogram', [p1, p2, p3,], attributes);
         }
         /** This element is used to provide a constructor for a perpendicular. */
         perpendicular(line, point, attributes = {}) {
-            let newObject = this.board.create('Perpendicular', this.dereference([line, point,]), this.defaultAttributes(attributes));
-            return new Perpendicular(newObject);
+            return new Perpendicular('Perpendicular', [line, point,], attributes);
+        }
+        /** This element is used to provide a constructor for a perpendicular segment. */
+        perpendicularSegment(line, point, attributes = {}) {
+            return new PerpendicularSegment('PerpendicularSegment', [line, point,], attributes);
         }
         /** This element is used to provide a constructor for the polar line of a point with respect to a conic or a circle. */
         polarLine(conic, point, attributes = {}) {
-            let newObject = this.board.create('PolarLine', this.dereference([conic, point,]), this.defaultAttributes(attributes));
-            return new PolarLine(newObject);
+            return new PolarLine('PolarLine', [conic, point,], attributes);
         }
         /** This element is used to provide a constructor for the pole point of a line with respect to a conic or a circle. */
         polePoint(conic, line, attributes = {}) {
-            let newObject = this.board.create('PolePoint', this.dereference([conic, line,]), this.defaultAttributes(attributes));
-            return new PolePoint(newObject);
+            return new PolePoint('PolePoint', [conic, line,], attributes);
         }
         /** This element is used to provide a constructor for the radical axis with respect to two circles with distinct centers. The angular bisector of the polar lines of the circle centers with respect to the other circle is always the radical axis. The radical axis passes through the intersection points when the circles intersect. When a circle about the midpoint of circle centers, passing through the circle centers, intersects the circles, the polar lines pass through those intersection points. */
         radicalAxis(circle1, circle2, attributes = {}) {
-            let newObject = this.board.create('RadicalAxis', this.dereference([circle1, circle2,]), this.defaultAttributes(attributes));
-            return new RadicalAxis(newObject);
+            return new RadicalAxis('RadicalAxis', [circle1, circle2,], attributes);
         }
         /** A reflex angle is the neither acute nor obtuse instance of an angle. It is defined by a center, one point that defines the radius, and a third point that defines the angle of the sector. */
         reflexAngle(point1, point2, point3, attributes = {}) {
-            let newObject = this.board.create('ReflexAngle', this.dereference([point1, point2, point3,]), this.defaultAttributes(attributes));
-            return new ReflexAngle(newObject);
+            return new ReflexAngle('ReflexAngle', [point1, point2, point3,], attributes);
         }
         /** Constructs a regular polygon. It needs two points which define the base line and the number of vertices. */
         regularPolygon(P1, P2, nVertices, attributes = {}) {
-            let newObject = this.board.create('RegularPolygon', this.dereference([P1, P2, nVertices,]), this.defaultAttributes(attributes));
-            return new RegularPolygon(newObject);
+            return new RegularPolygon('RegularPolygon', [P1, P2, nVertices,], attributes);
         }
         /** An input widget for choosing values from a given range of numbers.  Parameters are startpoint, endpoint,
                        and an array with [minimum, initialValue, maximum].  Query the value with slider.Value().  Set the slider either by
                        dragging the control or clicking on the line (you can disable clicking with {moveOnUp:false}
                
        *```js
-                let s = JSX.slider([1, 2], [3, 2], [1, 5, 10])           //  query with s.Value()
-                let s = JSX.slider([1, 2], [3, 2], [1, 5, 10],{snapWidth:1})     //  only values 1,2,3...
-                let s = JSX.slider([1, 2], [3, 2], [1, 5, 10],{withTicks:false}) //  hide the ticks
-                let s = JSX.slider[-3, 1], [1, 1], [-10, 1, 10], {
+                let s = TSX.slider([1, 2], [3, 2], [1, 5, 10])           //  query with s.Value()
+                let s = TSX.slider([1, 2], [3, 2], [1, 5, 10],{snapWidth:1})     //  only values 1,2,3...
+                let s = TSX.slider([1, 2], [3, 2], [1, 5, 10],{withTicks:false}) //  hide the ticks
+                let s = TSX.slider[-3, 1], [1, 1], [-10, 1, 10], {
                    highline: { strokeColor: 'red'},        // to left of handle
                    baseline: { strokeColor: 'blue'},       // to right of handle
                    fillColor: 'red',                       // handle color
@@ -903,57 +895,57 @@ export var TXG;
                
        *``` */
         slider(StartPoint, EndPoint, minimum_initial_maximum, attributes = {}) {
-            let newObject = this.board.create('Slider', this.dereference([StartPoint, EndPoint, minimum_initial_maximum,]), this.defaultAttributes(attributes));
-            return new Slider(newObject);
+            return new Slider('Slider', [StartPoint, EndPoint, minimum_initial_maximum,], attributes);
         }
         // implementation of signature,  hidden from user
         slopetriangle(a, b, c, d, e, f, g, h, i) {
             let newObject = {}; // just so it is initialized
+            let params = [];
+            let attrs = {};
             if (arguments.length == 1) {
                 if (isJSXAttribute(a)) {
-                    newObject = this.board.create('slopetriangle', this.dereference([]), this.defaultAttributes(a)); // as unknown as Slopetriangle
+                    attrs = TSXGraph.defaultAttributes(a);
+                    params = TSXGraph.dereference([]);
                 }
                 else {
-                    newObject = this.board.create('slopetriangle', this.dereference([a,]), this.defaultAttributes({})); // as Slopetriangle
+                    params = TSXGraph.dereference([a,]);
                 }
             }
             if (arguments.length == 2) {
                 if (isJSXAttribute(b)) {
-                    newObject = this.board.create('slopetriangle', this.dereference([a,]), this.defaultAttributes(b)); // as unknown as Slopetriangle
+                    attrs = TSXGraph.defaultAttributes(b);
+                    params = TSXGraph.dereference([a,]);
                 }
                 else {
-                    newObject = this.board.create('slopetriangle', this.dereference([a, b,]), this.defaultAttributes({})); // as Slopetriangle
+                    params = TSXGraph.dereference([a, b,]);
                 }
             }
             if (arguments.length == 3) {
                 if (isJSXAttribute(c)) {
-                    newObject = this.board.create('slopetriangle', this.dereference([a, b,]), this.defaultAttributes(c)); // as unknown as Slopetriangle
+                    attrs = TSXGraph.defaultAttributes(c);
+                    params = TSXGraph.dereference([a, b,]);
                 }
                 else {
-                    newObject = this.board.create('slopetriangle', this.dereference([a, b, c,]), this.defaultAttributes({})); // as Slopetriangle
+                    params = TSXGraph.dereference([a, b, c,]);
                 }
             }
-            return new Slopetriangle(newObject);
+            return new Slopetriangle('slopetriangle', params, TSXGraph.defaultAttributes(attrs)); // as Slopetriangle
         }
         /** This element is used to provide a constructor for (natural) cubic spline curves. Create a dynamic spline interpolated curve given by sample points p_1 to p_n. */
         spline(points, attributes = {}) {
-            let newObject = this.board.create('spline', TSXGraph.dereference(points), this.defaultAttributes(attributes));
-            return new Curve(newObject);
+            return new Spline('spline', TSXGraph.dereference(points), TSXGraph.defaultAttributes(attributes));
         }
         /** With the element tangent the slope of a line, circle, or curve in a certain point can be visualized. A tangent is always constructed by a glider on a line, circle, or curve and describes the tangent in the glider point on that line, circle, or curve. */
         tangent(glider, attributes = {}) {
-            let newObject = this.board.create('Tangent', this.dereference([glider,]), this.defaultAttributes(attributes));
-            return new Tangent(newObject);
+            return new Tangent('Tangent', [glider,], attributes);
         }
         /** A tape measure can be used to measure distances between points. */
         tapemeasure(P1, P2, attributes = {}) {
-            let newObject = this.board.create('Tapemeasure', this.dereference([P1, P2,]), this.defaultAttributes(attributes));
-            return new Tapemeasure(newObject);
+            return new Tapemeasure('Tapemeasure', [P1, P2,], attributes);
         }
         /** This element is used to provide a constructor for trace curve (simple locus curve), which is realized as a special curve. */
         tracecurve(glider, point, attributes = {}) {
-            let newObject = this.board.create('Tracecurve', this.dereference([glider, point,]), this.defaultAttributes(attributes));
-            return new Tracecurve(newObject);
+            return new Tracecurve('Tracecurve', [glider, point,], attributes);
         }
         /** Here, lower is an array of the form [x, y] and dim is an array of the form [w, h]. The arrays [x, y] and [w, h] define the 2D frame into which the 3D cube is (roughly) projected. If the view azimuth=0 and elevation=0, the 3D view will cover a rectangle with lower left corner [x,y] and side lengths [w, h] of the board. The 'cube' is of the form [[x1, x2], [y1, y2], [z1, z2]] which determines the coordinate ranges of the 3D cube.  */
         view3D(x = -13, y = -10, w = 20, h = 20, xBounds = [-5, 5], yBounds = [-5, 5], zBounds = [-5, 5], attributes = {
@@ -971,15 +963,23 @@ export var TXG;
             zPlaneFrontXAxis: { visible: false },
             zPlaneFrontYAxis: { visible: false }
         }) {
-            let newObject = this.board.create('view3D', [[x, y], [w, h], [xBounds, yBounds, zBounds]], attributes);
-            return new View3D(newObject);
+            return new View3D('view3D', [[x, y], [w, h], [xBounds, yBounds, zBounds]], attributes);
         }
     }
-    TXG.JSXBoard = JSXBoard;
+    TXG.TSXBoard = TSXBoard;
     class GeometryElement {
         elValue = {};
-        constructor(elValue) {
-            this.elValue = elValue;
+        scaleXY = 1; // used by V2 math library
+        constructor(className, params, attrs) {
+            if (className == 'Polygon' || className == 'Group') {
+                this.elValue = Math.board.create(className, TSXGraph.dereference(params.flat()), TSXGraph.defaultAttributes(attrs));
+            }
+            else {
+                this.elValue = Math.board.create(className, TSXGraph.dereference(params), TSXGraph.defaultAttributes(attrs));
+            }
+            if (Object.hasOwn(attrs, 'scaleXY')) {
+                this.scaleXY = attrs.scaleXY; // for V2 Math
+            }
         }
         /**  */
         get x() {
@@ -1177,8 +1177,17 @@ export var TXG;
     TXG.GeometryElement = GeometryElement;
     class GeometryElement3D {
         elValue = {};
-        constructor(elValue) {
-            this.elValue = elValue;
+        scaleXY = 1; // used by V2 math library
+        constructor(className, params, attrs) {
+            if (className == 'Polygon' || className == 'Group') {
+                this.elValue = Math.board.create(className, TSXGraph.dereference(params.flat()), TSXGraph.defaultAttributes(attrs));
+            }
+            else {
+                this.elValue = Math.board.create(className, TSXGraph.dereference(params), TSXGraph.defaultAttributes(attrs));
+            }
+            if (Object.hasOwn(attrs, 'scaleXY')) {
+                this.scaleXY = attrs.scaleXY; // for V2 Math
+            }
         }
         /**  */
         get element2D() {
@@ -1212,22 +1221,49 @@ export var TXG;
     TXG.GeometryElement3D = GeometryElement3D;
     class Board {
         elValue = {};
-        constructor(elValue) {
-            this.elValue = elValue;
+        scaleXY = 1; // used by V2 math library
+        constructor(className, params, attrs) {
+            if (className == 'Polygon' || className == 'Group') {
+                this.elValue = Math.board.create(className, TSXGraph.dereference(params.flat()), TSXGraph.defaultAttributes(attrs));
+            }
+            else {
+                this.elValue = Math.board.create(className, TSXGraph.dereference(params), TSXGraph.defaultAttributes(attrs));
+            }
+            if (Object.hasOwn(attrs, 'scaleXY')) {
+                this.scaleXY = attrs.scaleXY; // for V2 Math
+            }
         }
     }
     TXG.Board = Board;
     class Infobox {
         elValue = {};
-        constructor(elValue) {
-            this.elValue = elValue;
+        scaleXY = 1; // used by V2 math library
+        constructor(className, params, attrs) {
+            if (className == 'Polygon' || className == 'Group') {
+                this.elValue = Math.board.create(className, TSXGraph.dereference(params.flat()), TSXGraph.defaultAttributes(attrs));
+            }
+            else {
+                this.elValue = Math.board.create(className, TSXGraph.dereference(params), TSXGraph.defaultAttributes(attrs));
+            }
+            if (Object.hasOwn(attrs, 'scaleXY')) {
+                this.scaleXY = attrs.scaleXY; // for V2 Math
+            }
         }
     }
     TXG.Infobox = Infobox;
     class CA {
         elValue = {};
-        constructor(elValue) {
-            this.elValue = elValue;
+        scaleXY = 1; // used by V2 math library
+        constructor(className, params, attrs) {
+            if (className == 'Polygon' || className == 'Group') {
+                this.elValue = Math.board.create(className, TSXGraph.dereference(params.flat()), TSXGraph.defaultAttributes(attrs));
+            }
+            else {
+                this.elValue = Math.board.create(className, TSXGraph.dereference(params), TSXGraph.defaultAttributes(attrs));
+            }
+            if (Object.hasOwn(attrs, 'scaleXY')) {
+                this.scaleXY = attrs.scaleXY; // for V2 Math
+            }
         }
         /** f = map (x) -> x*sin(x); Usages: h = D(f, x); h = map (x) -> D(f, x); or D(x^2, x); */
         expandDerivatives() {
@@ -1240,8 +1276,8 @@ export var TXG;
     }
     TXG.CA = CA;
     class Chart extends GeometryElement {
-        constructor(elValues) {
-            super(elValues);
+        constructor(className, params, attrs) {
+            super(className, params, attrs);
         }
         /**  */
         get elements() {
@@ -1282,8 +1318,8 @@ export var TXG;
     }
     TXG.Chart = Chart;
     class Circle extends GeometryElement {
-        constructor(elValues) {
-            super(elValues);
+        constructor(className, params, attrs) {
+            super(className, params, attrs);
         }
         /** Circle area */
         Area() {
@@ -1313,8 +1349,17 @@ export var TXG;
     TXG.Circle = Circle;
     class Complex {
         elValue = {};
-        constructor(elValue) {
-            this.elValue = elValue;
+        scaleXY = 1; // used by V2 math library
+        constructor(className, params, attrs) {
+            if (className == 'Polygon' || className == 'Group') {
+                this.elValue = Math.board.create(className, TSXGraph.dereference(params.flat()), TSXGraph.defaultAttributes(attrs));
+            }
+            else {
+                this.elValue = Math.board.create(className, TSXGraph.dereference(params), TSXGraph.defaultAttributes(attrs));
+            }
+            if (Object.hasOwn(attrs, 'scaleXY')) {
+                this.scaleXY = attrs.scaleXY; // for V2 Math
+            }
         }
         /**  */
         get absval() {
@@ -1364,8 +1409,17 @@ export var TXG;
     TXG.Complex = Complex;
     class Composition {
         elValue = {};
-        constructor(elValue) {
-            this.elValue = elValue;
+        scaleXY = 1; // used by V2 math library
+        constructor(className, params, attrs) {
+            if (className == 'Polygon' || className == 'Group') {
+                this.elValue = Math.board.create(className, TSXGraph.dereference(params.flat()), TSXGraph.defaultAttributes(attrs));
+            }
+            else {
+                this.elValue = Math.board.create(className, TSXGraph.dereference(params), TSXGraph.defaultAttributes(attrs));
+            }
+            if (Object.hasOwn(attrs, 'scaleXY')) {
+                this.scaleXY = attrs.scaleXY; // for V2 Math
+            }
         }
         /** Adds an element to the composition container. */
         add() {
@@ -1403,8 +1457,17 @@ export var TXG;
     TXG.Composition = Composition;
     class Coords {
         elValue = {};
-        constructor(elValue) {
-            this.elValue = elValue;
+        scaleXY = 1; // used by V2 math library
+        constructor(className, params, attrs) {
+            if (className == 'Polygon' || className == 'Group') {
+                this.elValue = Math.board.create(className, TSXGraph.dereference(params.flat()), TSXGraph.defaultAttributes(attrs));
+            }
+            else {
+                this.elValue = Math.board.create(className, TSXGraph.dereference(params), TSXGraph.defaultAttributes(attrs));
+            }
+            if (Object.hasOwn(attrs, 'scaleXY')) {
+                this.scaleXY = attrs.scaleXY; // for V2 Math
+            }
         }
         /**  */
         get board() {
@@ -1433,8 +1496,8 @@ export var TXG;
     }
     TXG.Coords = Coords;
     class Curve extends GeometryElement {
-        constructor(elValues) {
-            super(elValues);
+        constructor(className, params, attrs) {
+            super(className, params, attrs);
         }
         /**  */
         get dataX() {
@@ -1509,8 +1572,8 @@ export var TXG;
     }
     TXG.Curve = Curve;
     class Curve3D extends Curve {
-        constructor(elValues) {
-            super(elValues);
+        constructor(className, params, attrs) {
+            super(className, params, attrs);
         }
         /** Function which maps u to x; i.e. */
         X() {
@@ -1528,8 +1591,17 @@ export var TXG;
     TXG.Curve3D = Curve3D;
     class Dump {
         elValue = {};
-        constructor(elValue) {
-            this.elValue = elValue;
+        scaleXY = 1; // used by V2 math library
+        constructor(className, params, attrs) {
+            if (className == 'Polygon' || className == 'Group') {
+                this.elValue = Math.board.create(className, TSXGraph.dereference(params.flat()), TSXGraph.defaultAttributes(attrs));
+            }
+            else {
+                this.elValue = Math.board.create(className, TSXGraph.dereference(params), TSXGraph.defaultAttributes(attrs));
+            }
+            if (Object.hasOwn(attrs, 'scaleXY')) {
+                this.scaleXY = attrs.scaleXY; // for V2 Math
+            }
         }
         /** Adds markers to every element of the board */
         addMarkers() {
@@ -1575,8 +1647,17 @@ export var TXG;
     TXG.Dump = Dump;
     class ForeignObject {
         elValue = {};
-        constructor(elValue) {
-            this.elValue = elValue;
+        scaleXY = 1; // used by V2 math library
+        constructor(className, params, attrs) {
+            if (className == 'Polygon' || className == 'Group') {
+                this.elValue = Math.board.create(className, TSXGraph.dereference(params.flat()), TSXGraph.defaultAttributes(attrs));
+            }
+            else {
+                this.elValue = Math.board.create(className, TSXGraph.dereference(params), TSXGraph.defaultAttributes(attrs));
+            }
+            if (Object.hasOwn(attrs, 'scaleXY')) {
+                this.scaleXY = attrs.scaleXY; // for V2 Math
+            }
         }
         /**  */
         get content() {
@@ -1605,8 +1686,8 @@ export var TXG;
     }
     TXG.ForeignObject = ForeignObject;
     class Group extends GeometryElement {
-        constructor(elValues) {
-            super(elValues);
+        constructor(className, params, attrs) {
+            super(className, params, attrs);
         }
         /**  */
         get coords() {
@@ -1691,8 +1772,8 @@ export var TXG;
     }
     TXG.Group = Group;
     class Image extends GeometryElement {
-        constructor(elValues) {
-            super(elValues);
+        constructor(className, params, attrs) {
+            super(className, params, attrs);
         }
         /**  */
         get size() {
@@ -1721,15 +1802,24 @@ export var TXG;
     }
     TXG.Image = Image;
     class Implicitcurve extends GeometryElement {
-        constructor(elValues) {
-            super(elValues);
+        constructor(className, params, attrs) {
+            super(className, params, attrs);
         }
     }
     TXG.Implicitcurve = Implicitcurve;
     class Legend {
         elValue = {};
-        constructor(elValue) {
-            this.elValue = elValue;
+        scaleXY = 1; // used by V2 math library
+        constructor(className, params, attrs) {
+            if (className == 'Polygon' || className == 'Group') {
+                this.elValue = Math.board.create(className, TSXGraph.dereference(params.flat()), TSXGraph.defaultAttributes(attrs));
+            }
+            else {
+                this.elValue = Math.board.create(className, TSXGraph.dereference(params), TSXGraph.defaultAttributes(attrs));
+            }
+            if (Object.hasOwn(attrs, 'scaleXY')) {
+                this.scaleXY = attrs.scaleXY; // for V2 Math
+            }
         }
         /**  */
         get colors() {
@@ -1750,8 +1840,8 @@ export var TXG;
     }
     TXG.Legend = Legend;
     class Line extends GeometryElement {
-        constructor(elValues) {
-            super(elValues);
+        constructor(className, params, attrs) {
+            super(className, params, attrs);
         }
         /**  */
         get defaultTicks() {
@@ -1812,8 +1902,8 @@ export var TXG;
     }
     TXG.Line = Line;
     class Line3D extends GeometryElement3D {
-        constructor(elValues) {
-            super(elValues);
+        constructor(className, params, attrs) {
+            super(className, params, attrs);
         }
         /**  */
         get direction() {
@@ -1838,8 +1928,8 @@ export var TXG;
     }
     TXG.Line3D = Line3D;
     class Point extends GeometryElement {
-        constructor(elValues) {
-            super(elValues);
+        constructor(className, params, attrs) {
+            super(className, params, attrs);
         }
         /**  */
         coords() {
@@ -1869,11 +1959,15 @@ export var TXG;
         Z() {
             return this.elValue.Z();
         }
+        /** Point location in vector form [n,n] */
+        XY() {
+            return [this.elValue.X(), this.elValue.Y()];
+        }
     }
     TXG.Point = Point;
     class Point3D extends GeometryElement3D {
-        constructor(elValues) {
-            super(elValues);
+        constructor(className, params, attrs) {
+            super(className, params, attrs);
         }
         /**  */
         get slide() {
@@ -1898,8 +1992,8 @@ export var TXG;
     }
     TXG.Point3D = Point3D;
     class Polygon extends GeometryElement {
-        constructor(elValues) {
-            super(elValues);
+        constructor(className, params, attrs) {
+            super(className, params, attrs);
         }
         /** Attributes for the polygon border lines. */
         get borders() {
@@ -1916,8 +2010,8 @@ export var TXG;
     }
     TXG.Polygon = Polygon;
     class Text extends GeometryElement {
-        constructor(elValues) {
-            super(elValues);
+        constructor(className, params, attrs) {
+            super(className, params, attrs);
         }
         /**  */
         get size() {
@@ -1982,8 +2076,8 @@ export var TXG;
     }
     TXG.Text = Text;
     class Ticks extends GeometryElement {
-        constructor(elValues) {
-            super(elValues);
+        constructor(className, params, attrs) {
+            super(className, params, attrs);
         }
         /**  */
         get board() {
@@ -2036,8 +2130,8 @@ export var TXG;
     }
     TXG.Ticks = Ticks;
     class Turtle extends GeometryElement {
-        constructor(elValues) {
-            super(elValues);
+        constructor(className, params, attrs) {
+            super(className, params, attrs);
         }
         /** Move the turtle backwards. */
         back() {
@@ -2202,8 +2296,8 @@ export var TXG;
     }
     TXG.Turtle = Turtle;
     class Sector extends Curve {
-        constructor(elValues) {
-            super(elValues);
+        constructor(className, params, attrs) {
+            super(className, params, attrs);
         }
         /**  */
         get point1() {
@@ -2232,8 +2326,8 @@ export var TXG;
     }
     TXG.Sector = Sector;
     class Vectorfield extends Curve {
-        constructor(elValues) {
-            super(elValues);
+        constructor(className, params, attrs) {
+            super(className, params, attrs);
         }
         /** Set the defining functions of vector field. */
         setF() {
@@ -2242,8 +2336,8 @@ export var TXG;
     }
     TXG.Vectorfield = Vectorfield;
     class Angle extends Sector {
-        constructor(elValues) {
-            super(elValues);
+        constructor(className, params, attrs) {
+            super(className, params, attrs);
         }
         /**  */
         get point() {
@@ -2264,8 +2358,8 @@ export var TXG;
     }
     TXG.Angle = Angle;
     class Arc extends Curve {
-        constructor(elValues) {
-            super(elValues);
+        constructor(className, params, attrs) {
+            super(className, params, attrs);
         }
         /**  */
         get anglepoint() {
@@ -2294,26 +2388,26 @@ export var TXG;
     }
     TXG.Arc = Arc;
     class Arrow extends Line {
-        constructor(elValues) {
-            super(elValues);
+        constructor(className, params, attrs) {
+            super(className, params, attrs);
         }
     }
     TXG.Arrow = Arrow;
     class Parallel extends Line {
-        constructor(elValues) {
-            super(elValues);
+        constructor(className, params, attrs) {
+            super(className, params, attrs);
         }
     }
     TXG.Parallel = Parallel;
     class Arrowparallel extends Parallel {
-        constructor(elValues) {
-            super(elValues);
+        constructor(className, params, attrs) {
+            super(className, params, attrs);
         }
     }
     TXG.Arrowparallel = Arrowparallel;
     class Axis extends Line {
-        constructor(elValues) {
-            super(elValues);
+        constructor(className, params, attrs) {
+            super(className, params, attrs);
         }
         /**  */
         get defaultTicks() {
@@ -2322,32 +2416,32 @@ export var TXG;
     }
     TXG.Axis = Axis;
     class Bisector extends Line {
-        constructor(elValues) {
-            super(elValues);
+        constructor(className, params, attrs) {
+            super(className, params, attrs);
         }
     }
     TXG.Bisector = Bisector;
     class Bisectorlines extends Composition {
-        constructor(elValues) {
-            super(elValues);
+        constructor(className, params, attrs) {
+            super(className, params, attrs);
         }
     }
     TXG.Bisectorlines = Bisectorlines;
     class Button extends Text {
-        constructor(elValues) {
-            super(elValues);
+        constructor(className, params, attrs) {
+            super(className, params, attrs);
         }
     }
     TXG.Button = Button;
     class Cardinalspline extends Curve {
-        constructor(elValues) {
-            super(elValues);
+        constructor(className, params, attrs) {
+            super(className, params, attrs);
         }
     }
     TXG.Cardinalspline = Cardinalspline;
     class Checkbox extends Text {
-        constructor(elValues) {
-            super(elValues);
+        constructor(className, params, attrs) {
+            super(className, params, attrs);
         }
         /** Returns the value of the checkbox element */
         Value() {
@@ -2356,26 +2450,26 @@ export var TXG;
     }
     TXG.Checkbox = Checkbox;
     class Circumcenter extends Point {
-        constructor(elValues) {
-            super(elValues);
+        constructor(className, params, attrs) {
+            super(className, params, attrs);
         }
     }
     TXG.Circumcenter = Circumcenter;
     class Circumcircle extends Circle {
-        constructor(elValues) {
-            super(elValues);
+        constructor(className, params, attrs) {
+            super(className, params, attrs);
         }
     }
     TXG.Circumcircle = Circumcircle;
     class CircumcircleArc extends Arc {
-        constructor(elValues) {
-            super(elValues);
+        constructor(className, params, attrs) {
+            super(className, params, attrs);
         }
     }
     TXG.CircumcircleArc = CircumcircleArc;
     class CircumcircleSector extends Sector {
-        constructor(elValues) {
-            super(elValues);
+        constructor(className, params, attrs) {
+            super(className, params, attrs);
         }
         /**  */
         get center() {
@@ -2384,68 +2478,68 @@ export var TXG;
     }
     TXG.CircumcircleSector = CircumcircleSector;
     class Comb extends Curve {
-        constructor(elValues) {
-            super(elValues);
+        constructor(className, params, attrs) {
+            super(className, params, attrs);
         }
     }
     TXG.Comb = Comb;
     class Conic extends Curve {
-        constructor(elValues) {
-            super(elValues);
+        constructor(className, params, attrs) {
+            super(className, params, attrs);
         }
     }
     TXG.Conic = Conic;
     class CurveDifference extends Curve {
-        constructor(elValues) {
-            super(elValues);
+        constructor(className, params, attrs) {
+            super(className, params, attrs);
         }
     }
     TXG.CurveDifference = CurveDifference;
     class CurveIntersection extends Curve {
-        constructor(elValues) {
-            super(elValues);
+        constructor(className, params, attrs) {
+            super(className, params, attrs);
         }
     }
     TXG.CurveIntersection = CurveIntersection;
     class CurveUnion extends Curve {
-        constructor(elValues) {
-            super(elValues);
+        constructor(className, params, attrs) {
+            super(className, params, attrs);
         }
     }
     TXG.CurveUnion = CurveUnion;
     class Derivative extends Curve {
-        constructor(elValues) {
-            super(elValues);
+        constructor(className, params, attrs) {
+            super(className, params, attrs);
         }
     }
     TXG.Derivative = Derivative;
     class Ellipse extends Conic {
-        constructor(elValues) {
-            super(elValues);
+        constructor(className, params, attrs) {
+            super(className, params, attrs);
         }
     }
     TXG.Ellipse = Ellipse;
     class ParametricSurface3D extends Curve3D {
-        constructor(elValues) {
-            super(elValues);
+        constructor(className, params, attrs) {
+            super(className, params, attrs);
         }
     }
     TXG.ParametricSurface3D = ParametricSurface3D;
     class Functiongraph extends Curve {
-        constructor(elValues) {
-            super(elValues);
+        constructor(className, params, attrs) {
+            super(className, params, attrs);
         }
     }
     TXG.Functiongraph = Functiongraph;
     class Functiongraph3D extends Curve3D {
-        constructor(elValues) {
-            super(elValues);
+        constructor(className, params, attrs) {
+            super(className, params, attrs);
         }
     }
     TXG.Functiongraph3D = Functiongraph3D;
     class Glider extends Point {
-        constructor(elValues) {
-            super(elValues);
+        constructor(className, params, attrs) {
+            super(className, params, attrs);
         }
         /** Animate the point. */
         startAnimation(direction, stepCount, delayMSec) {
@@ -2454,14 +2548,14 @@ export var TXG;
     }
     TXG.Glider = Glider;
     class Grid extends Curve {
-        constructor(elValues) {
-            super(elValues);
+        constructor(className, params, attrs) {
+            super(className, params, attrs);
         }
     }
     TXG.Grid = Grid;
     class Hatch extends Ticks {
-        constructor(elValues) {
-            super(elValues);
+        constructor(className, params, attrs) {
+            super(className, params, attrs);
         }
         /**  */
         get ticksDistance() {
@@ -2470,32 +2564,32 @@ export var TXG;
     }
     TXG.Hatch = Hatch;
     class Hyperbola extends Conic {
-        constructor(elValues) {
-            super(elValues);
+        constructor(className, params, attrs) {
+            super(className, params, attrs);
         }
     }
     TXG.Hyperbola = Hyperbola;
     class Incenter extends Point {
-        constructor(elValues) {
-            super(elValues);
+        constructor(className, params, attrs) {
+            super(className, params, attrs);
         }
     }
     TXG.Incenter = Incenter;
     class Incircle extends Circle {
-        constructor(elValues) {
-            super(elValues);
+        constructor(className, params, attrs) {
+            super(className, params, attrs);
         }
     }
     TXG.Incircle = Incircle;
     class Inequality extends Curve {
-        constructor(elValues) {
-            super(elValues);
+        constructor(className, params, attrs) {
+            super(className, params, attrs);
         }
     }
     TXG.Inequality = Inequality;
     class Input extends Text {
-        constructor(elValues) {
-            super(elValues);
+        constructor(className, params, attrs) {
+            super(className, params, attrs);
         }
         /** Sets value of the input element. */
         set() {
@@ -2508,8 +2602,8 @@ export var TXG;
     }
     TXG.Input = Input;
     class Integral extends Curve {
-        constructor(elValues) {
-            super(elValues);
+        constructor(className, params, attrs) {
+            super(className, params, attrs);
         }
         /** Attributes of the (left) base point of the integral. */
         get baseLeft() {
@@ -2534,20 +2628,20 @@ export var TXG;
     }
     TXG.Integral = Integral;
     class Intersection extends GeometryElement {
-        constructor(elValues) {
-            super(elValues);
+        constructor(className, params, attrs) {
+            super(className, params, attrs);
         }
     }
     TXG.Intersection = Intersection;
     class Label extends Text {
-        constructor(elValues) {
-            super(elValues);
+        constructor(className, params, attrs) {
+            super(className, params, attrs);
         }
     }
     TXG.Label = Label;
     class Locus extends Curve {
-        constructor(elValues) {
-            super(elValues);
+        constructor(className, params, attrs) {
+            super(className, params, attrs);
         }
         /**  */
         get ctime() {
@@ -2560,116 +2654,116 @@ export var TXG;
     }
     TXG.Locus = Locus;
     class MajorArc extends Curve {
-        constructor(elValues) {
-            super(elValues);
+        constructor(className, params, attrs) {
+            super(className, params, attrs);
         }
     }
     TXG.MajorArc = MajorArc;
     class MajorSector extends Curve {
-        constructor(elValues) {
-            super(elValues);
+        constructor(className, params, attrs) {
+            super(className, params, attrs);
         }
     }
     TXG.MajorSector = MajorSector;
     class Metapostspline extends Curve {
-        constructor(elValues) {
-            super(elValues);
+        constructor(className, params, attrs) {
+            super(className, params, attrs);
         }
     }
     TXG.Metapostspline = Metapostspline;
     class Midpoint extends Point {
-        constructor(elValues) {
-            super(elValues);
+        constructor(className, params, attrs) {
+            super(className, params, attrs);
         }
     }
     TXG.Midpoint = Midpoint;
     class MinorArc extends Curve {
-        constructor(elValues) {
-            super(elValues);
+        constructor(className, params, attrs) {
+            super(className, params, attrs);
         }
     }
     TXG.MinorArc = MinorArc;
     class MinorSector extends Curve {
-        constructor(elValues) {
-            super(elValues);
+        constructor(className, params, attrs) {
+            super(className, params, attrs);
         }
     }
     TXG.MinorSector = MinorSector;
     class mirrorelement extends GeometryElement {
-        constructor(elValues) {
-            super(elValues);
+        constructor(className, params, attrs) {
+            super(className, params, attrs);
         }
     }
     TXG.mirrorelement = mirrorelement;
     class Mirrorpoint extends Point {
-        constructor(elValues) {
-            super(elValues);
+        constructor(className, params, attrs) {
+            super(className, params, attrs);
         }
     }
     TXG.Mirrorpoint = Mirrorpoint;
     class NonReflexAngle extends Angle {
-        constructor(elValues) {
-            super(elValues);
+        constructor(className, params, attrs) {
+            super(className, params, attrs);
         }
     }
     TXG.NonReflexAngle = NonReflexAngle;
     class Normal extends Line {
-        constructor(elValues) {
-            super(elValues);
+        constructor(className, params, attrs) {
+            super(className, params, attrs);
         }
     }
     TXG.Normal = Normal;
     class Orthogonalprojection extends Point {
-        constructor(elValues) {
-            super(elValues);
+        constructor(className, params, attrs) {
+            super(className, params, attrs);
         }
     }
     TXG.Orthogonalprojection = Orthogonalprojection;
     class OtherIntersection extends Point {
-        constructor(elValues) {
-            super(elValues);
+        constructor(className, params, attrs) {
+            super(className, params, attrs);
         }
     }
     TXG.OtherIntersection = OtherIntersection;
     class Parabola extends Conic {
-        constructor(elValues) {
-            super(elValues);
+        constructor(className, params, attrs) {
+            super(className, params, attrs);
         }
     }
     TXG.Parabola = Parabola;
     class Parallelpoint extends Point {
-        constructor(elValues) {
-            super(elValues);
+        constructor(className, params, attrs) {
+            super(className, params, attrs);
         }
     }
     TXG.Parallelpoint = Parallelpoint;
     class Segment extends Line {
-        constructor(elValues) {
-            super(elValues);
+        constructor(className, params, attrs) {
+            super(className, params, attrs);
         }
     }
     TXG.Segment = Segment;
     class Parallelogram extends Polygon {
-        constructor(elValues) {
-            super(elValues);
+        constructor(className, params, attrs) {
+            super(className, params, attrs);
         }
     }
     TXG.Parallelogram = Parallelogram;
     class Perpendicular extends Segment {
-        constructor(elValues) {
-            super(elValues);
+        constructor(className, params, attrs) {
+            super(className, params, attrs);
         }
     }
     TXG.Perpendicular = Perpendicular;
     class PerpendicularPoint extends Point {
-        constructor(elValues) {
-            super(elValues);
+        constructor(className, params, attrs) {
+            super(className, params, attrs);
         }
     }
     TXG.PerpendicularPoint = PerpendicularPoint;
     class PerpendicularSegment extends Segment {
-        constructor(elValues) {
-            super(elValues);
+        constructor(className, params, attrs) {
+            super(className, params, attrs);
         }
         /**  */
         get point() {
@@ -2678,50 +2772,50 @@ export var TXG;
     }
     TXG.PerpendicularSegment = PerpendicularSegment;
     class PolarLine extends Line {
-        constructor(elValues) {
-            super(elValues);
+        constructor(className, params, attrs) {
+            super(className, params, attrs);
         }
     }
     TXG.PolarLine = PolarLine;
     class PolePoint extends Point {
-        constructor(elValues) {
-            super(elValues);
+        constructor(className, params, attrs) {
+            super(className, params, attrs);
         }
     }
     TXG.PolePoint = PolePoint;
     class PolygonalChain extends Polygon {
-        constructor(elValues) {
-            super(elValues);
+        constructor(className, params, attrs) {
+            super(className, params, attrs);
         }
     }
     TXG.PolygonalChain = PolygonalChain;
     class RadicalAxis extends Line {
-        constructor(elValues) {
-            super(elValues);
+        constructor(className, params, attrs) {
+            super(className, params, attrs);
         }
     }
     TXG.RadicalAxis = RadicalAxis;
     class Reflection extends GeometryElement {
-        constructor(elValues) {
-            super(elValues);
+        constructor(className, params, attrs) {
+            super(className, params, attrs);
         }
     }
     TXG.Reflection = Reflection;
     class ReflexAngle extends Angle {
-        constructor(elValues) {
-            super(elValues);
+        constructor(className, params, attrs) {
+            super(className, params, attrs);
         }
     }
     TXG.ReflexAngle = ReflexAngle;
     class RegularPolygon extends Polygon {
-        constructor(elValues) {
-            super(elValues);
+        constructor(className, params, attrs) {
+            super(className, params, attrs);
         }
     }
     TXG.RegularPolygon = RegularPolygon;
     class Riemannsum extends Curve {
-        constructor(elValues) {
-            super(elValues);
+        constructor(className, params, attrs) {
+            super(className, params, attrs);
         }
         /** Returns the value of the Riemann sum, i.e. */
         Value() {
@@ -2730,8 +2824,8 @@ export var TXG;
     }
     TXG.Riemannsum = Riemannsum;
     class Semicircle extends Arc {
-        constructor(elValues) {
-            super(elValues);
+        constructor(className, params, attrs) {
+            super(className, params, attrs);
         }
         /**  */
         get midpoint() {
@@ -2740,8 +2834,8 @@ export var TXG;
     }
     TXG.Semicircle = Semicircle;
     class Slider extends Glider {
-        constructor(elValues) {
-            super(elValues);
+        constructor(className, params, attrs) {
+            super(className, params, attrs);
         }
         /** Sets the maximum value of the slider. */
         setMax() {
@@ -2762,8 +2856,8 @@ export var TXG;
     }
     TXG.Slider = Slider;
     class Slopefield extends Vectorfield {
-        constructor(elValues) {
-            super(elValues);
+        constructor(className, params, attrs) {
+            super(className, params, attrs);
         }
         /** Set the defining functions of slope field. */
         setF() {
@@ -2772,8 +2866,8 @@ export var TXG;
     }
     TXG.Slopefield = Slopefield;
     class Slopetriangle extends Line {
-        constructor(elValues) {
-            super(elValues);
+        constructor(className, params, attrs) {
+            super(className, params, attrs);
         }
         /** Returns the value of the slope triangle, that is the slope of the tangent. */
         Value() {
@@ -2782,32 +2876,32 @@ export var TXG;
     }
     TXG.Slopetriangle = Slopetriangle;
     class Smartlabel extends Text {
-        constructor(elValues) {
-            super(elValues);
+        constructor(className, params, attrs) {
+            super(className, params, attrs);
         }
     }
     TXG.Smartlabel = Smartlabel;
     class Spline extends Curve {
-        constructor(elValues) {
-            super(elValues);
+        constructor(className, params, attrs) {
+            super(className, params, attrs);
         }
     }
     TXG.Spline = Spline;
     class Stepfunction extends Curve {
-        constructor(elValues) {
-            super(elValues);
+        constructor(className, params, attrs) {
+            super(className, params, attrs);
         }
     }
     TXG.Stepfunction = Stepfunction;
     class Tangent extends Line {
-        constructor(elValues) {
-            super(elValues);
+        constructor(className, params, attrs) {
+            super(className, params, attrs);
         }
     }
     TXG.Tangent = Tangent;
     class Tapemeasure extends Segment {
-        constructor(elValues) {
-            super(elValues);
+        constructor(className, params, attrs) {
+            super(className, params, attrs);
         }
         /** Returns the length of the tape measure. */
         Value() {
@@ -2816,14 +2910,14 @@ export var TXG;
     }
     TXG.Tapemeasure = Tapemeasure;
     class Tracecurve extends Curve {
-        constructor(elValues) {
-            super(elValues);
+        constructor(className, params, attrs) {
+            super(className, params, attrs);
         }
     }
     TXG.Tracecurve = Tracecurve;
     class Transform extends GeometryElement {
-        constructor(elValues) {
-            super(elValues);
+        constructor(className, params, attrs) {
+            super(className, params, attrs);
         }
         /**  */
         applyOnce(element) {
@@ -2840,8 +2934,8 @@ export var TXG;
     }
     TXG.Transform = Transform;
     class View3D extends GeometryElement3D {
-        constructor(elValues) {
-            super(elValues);
+        constructor(className, params, attrs) {
+            super(className, params, attrs);
         }
         /**  */
         get matrix3D() {

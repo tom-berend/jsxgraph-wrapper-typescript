@@ -3,13 +3,14 @@
     "author": "Tom Berend",
     "email": "tom.berend@cheeseandcrackers.ca",
     "description": "A thin TypeScript wrapper over JSXGraph to maximize scaffolding with VSCode.",
-    "version": "1.1.0",
+    "version": "1.2.0",
     "licence": "MIT",
     "main": "scr/tsxgraph.js",
     "types": "src/tsxgraph.d.ts",
     "scripts": {
         "build": "webpack --mode production",
-        "watch": "webpack serve --mode development"
+        "watch": "webpack serve --mode development",
+        "orbit": "tsc orbit/orbit.ts --target esnext --moduleResolution node --module esnext --declaration true --watch"
     },
     "devDependencies": {
         "css-loader": "^6.7.1",
@@ -21,5 +22,8 @@
         "webpack": "^5.91.0",
         "webpack-cli": "5.1.4",
         "webpack-dev-server": "^5.0.2"
+    },
+    "dependencies": {
+        "jsxgraph-wrapper-typescript": "^1.2.0"
     }
 }

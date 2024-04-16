@@ -1,5 +1,7 @@
 export declare namespace TXG {
     interface GeometryElementAttributes {
+        /** used by V2 vector math library */
+        scaleXY?: Number;
         /** Color of the element. */
         color?: String;
         /** Opacity of the element (between 0 and 1). */
@@ -42,6 +44,8 @@ export declare namespace TXG {
         name?: String;
     }
     interface GeometryElement3DAttributes {
+        /** used by V2 vector math library */
+        scaleXY?: Number;
         /** Set whether the element is visibledisplay name  */
         visible?: Boolean;
     }
@@ -70,6 +74,8 @@ export declare namespace TXG {
         point2?: Point;
     }
     interface CompositionAttributes {
+        /** used by V2 vector math library */
+        scaleXY?: Number;
     }
     interface CurveAttributes extends GeometryElementAttributes {
         /** The curveType is set in JXG.Curve#generateTerm and used in JXG.Curve#updateCurve. Possible values are'none' 'plot': Data plot 'parameter': we can not distinguish function graphs and parameter curves 'functiongraph': function graph 'polar' 'implicit' (not yet) Only parameter and plot are set directly. Polar is set with JXG.GeometryElement#setAttribute only. */
@@ -535,6 +541,8 @@ export declare namespace TXG {
     }
     interface PerpendicularAttributes extends SegmentAttributes {
     }
+    interface PerpendicularSegmentAttributes extends SegmentAttributes {
+    }
     interface PolarLineAttributes extends LineAttributes {
     }
     interface PolePointAttributes extends PointAttributes {
@@ -722,9 +730,11 @@ export declare namespace TXG {
     }
     /** Initialize a new board. */
     export class TSXGraph {
+        static defaultAttrs: Object;
         static initBoard(html: string, attributes?: any): TSXBoard;
         static freeBoard(board: TSXBoard): void;
         static dereference(params: any | any[]): any[];
+        static defaultAttributes(attrs: Object): Object;
     }
     interface ConicIface {
         z_ignore: Object;
@@ -737,7 +747,7 @@ export declare namespace TXG {
         /** An Ellipse from 3 points */
         threePoints(focalPoint1: Point | point, focalPoint2: Point | point, outerPoint: Point | point, attributes?: EllipseAttributes): Ellipse;
         /** Three Points, plus start and end. */
-        ellipseArc(focalPoint1: Point | point, focalPoint2: Point | point, outerPoint: Point | point, startAngle: Number | Function, endAngle: Number | Function, attributes?: ConicAttributes): Conic;
+        ellipseArc(focalPoint1: Point | point, focalPoint2: Point | point, outerPoint: Point | point, startAngle: Number | Function, endAngle: Number | Function, attributes?: EllipseAttributes): Ellipse;
     }
     interface TransformIface {
         z_ignore: Object;
@@ -798,7 +808,6 @@ export declare namespace TXG {
         get canvasHeight(): number;
         /** allows setting default attributes by class or across the board */
         setDefaultAttributes(attrs: Object): void;
-        private defaultAttributes;
         /** get a 2D canvas context (warning: cannot mix SVG and canvas) */
         getCanvasCTX(): CanvasRenderingContext2D;
         setBoundingBox(left: Number, top: Number, right: Number, bottom: Number): TSXBoard;
@@ -842,9 +851,9 @@ export declare namespace TXG {
                                        By setting additional properties a line can be used as an arrow and/or axis.
                                        
        *```js
-                                       JSX.line([3,2],[3,3], {strokeColor:'blue',strokeWidth:5, strokeOpacity:.5})
-                                       let P1 = JSX.point([3,2])
-                                       JSX.line(p1,[3,3])
+                                       TSX.line([3,2],[3,3], {strokeColor:'blue',strokeWidth:5, strokeOpacity:.5})
+                                       let P1 = TSX.point([3,2])
+                                       TSX.line(p1,[3,3])
                                        
        *```
                                        
@@ -855,10 +864,10 @@ export declare namespace TXG {
         /** Create a point. If any parent elements are functions or the attribute 'fixed' is true then point will be constrained.
                    
        *```js
-                    JSX.point([3,2], {strokeColor:'blue',strokeWidth:5, strokeOpacity:.5})
-                    JSX.point([3,3]), {fixed:true, showInfobox:true}
-                    JSX.point([()=>p1.X()+2,()=>p1.Y()+2]) // 2 up 2 right from p1
-                    JSX.point([1,2,2])  // three axis definition - [z,x,y]
+                    TSX.point([3,2], {strokeColor:'blue',strokeWidth:5, strokeOpacity:.5})
+                    TSX.point([3,3]), {fixed:true, showInfobox:true}
+                    TSX.point([()=>p1.X()+2,()=>p1.Y()+2]) // 2 up 2 right from p1
+                    TSX.point([1,2,2])  // three axis definition - [z,x,y]
                    
        *```
                    
@@ -885,8 +894,15 @@ export declare namespace TXG {
         angle(from: Point | point, around: Point | point, to: Point | point, attributes?: AngleAttributes): Angle;
         angle(line1: Line | line, line2: Line | line, direction1: [Number, Number], direction2: [Number, Number], attributes?: AngleAttributes): Angle;
         angle(line1: Line | line, line2: Line | line, dirPlusMinus1: Number, dirPlusMinus2: Number, attributes?: AngleAttributes): Angle;
-        /** Create an Arc with three points */
-        arc(p1: Point | point, p2: Point | point, p3: Point | point, attributes?: ArcAttributes): Arc;
+        /** Create a circular Arc defined by three points (because a circle can be defined by three points - see circumcircle).
+                                   
+       *```js
+                                   let arc = TSX.arc([-8,5],[-4,5],[-9,9]])
+                                   
+       *```
+                                   
+        To create an arc with origin, startpoint, and angle, look at MajorArc/MinorArc. */
+        arc(origin: Point | point, from: Point | point, to: Point | point, attributes?: ArcAttributes): Arc;
         /** Arrow defined by two points (like a Segment) with arrow at P2 */
         arrow(p1: Point | point, p2: Point | point, attributes?: ArrowAttributes): Arrow;
         /** A line parallel to a given line, through a point. */
@@ -949,7 +965,7 @@ export declare namespace TXG {
         /** This element is used to visualize the integral of a given curve over a given interval. */
         integral(range: Number[], curve: Curve, attributes?: IntegralAttributes): Integral;
         /** An intersection point is a point which lives on two JSXGraph elements, i.e. it is one point of the set consisting of the intersection points of the two elements. The following element types can be (mutually) intersected: line, circle, curve, polygon, polygonal chain. */
-        intersection(element1: Line | Circle, element2: Line | Circle, attributes?: IntersectionAttributes): Point;
+        intersection(element1: Line | Circle | Curve, element2: Line | Circle, attributes?: IntersectionAttributes): Point;
         /** A major arc is a segment of the circumference of a circle having measure greater than or equal to 180 degrees (pi radians). It is defined by a center, one point that defines the radius, and a third point that defines the angle of the arc. */
         majorArc(p1: Point | point, p2: Point | point, p3: Point | point, attributes?: MajorArcAttributes): MajorArc;
         /** A major sector is a sector of a circle having measure greater than or equal to 180 degrees (pi radians). It is defined by a center, one point that defines the radius, and a third point that defines the angle of the sector. */
@@ -982,6 +998,8 @@ export declare namespace TXG {
         parallelogram(p1: Point | point, p2: Point | point, p3: Point | point, attributes?: ParallelogramAttributes): Parallelogram;
         /** This element is used to provide a constructor for a perpendicular. */
         perpendicular(line: Line | line, point: Point | point, attributes?: PerpendicularAttributes): Perpendicular;
+        /** This element is used to provide a constructor for a perpendicular segment. */
+        perpendicularSegment(line: Line | line, point: Point | point, attributes?: PerpendicularSegmentAttributes): PerpendicularSegment;
         /** This element is used to provide a constructor for the polar line of a point with respect to a conic or a circle. */
         polarLine(conic: Conic | Circle, point: Point, attributes?: PolarLineAttributes): PolarLine;
         /** This element is used to provide a constructor for the pole point of a line with respect to a conic or a circle. */
@@ -997,10 +1015,10 @@ export declare namespace TXG {
                        dragging the control or clicking on the line (you can disable clicking with {moveOnUp:false}
                
        *```js
-                let s = JSX.slider([1, 2], [3, 2], [1, 5, 10])           //  query with s.Value()
-                let s = JSX.slider([1, 2], [3, 2], [1, 5, 10],{snapWidth:1})     //  only values 1,2,3...
-                let s = JSX.slider([1, 2], [3, 2], [1, 5, 10],{withTicks:false}) //  hide the ticks
-                let s = JSX.slider[-3, 1], [1, 1], [-10, 1, 10], {
+                let s = TSX.slider([1, 2], [3, 2], [1, 5, 10])           //  query with s.Value()
+                let s = TSX.slider([1, 2], [3, 2], [1, 5, 10],{snapWidth:1})     //  only values 1,2,3...
+                let s = TSX.slider([1, 2], [3, 2], [1, 5, 10],{withTicks:false}) //  hide the ticks
+                let s = TSX.slider[-3, 1], [1, 1], [-10, 1, 10], {
                    highline: { strokeColor: 'red'},        // to left of handle
                    baseline: { strokeColor: 'blue'},       // to right of handle
                    fillColor: 'red',                       // handle color
@@ -1026,7 +1044,8 @@ export declare namespace TXG {
     }
     export class GeometryElement {
         elValue: Object;
-        constructor(elValue: any);
+        scaleXY: number;
+        constructor(className: string, params: any[], attrs: Object);
         /**  */
         get x(): GeometryElement;
         /**  */
@@ -1125,7 +1144,8 @@ export declare namespace TXG {
     }
     export class GeometryElement3D {
         elValue: Object;
-        constructor(elValue: any);
+        scaleXY: number;
+        constructor(className: string, params: any[], attrs: Object);
         /**  */
         get element2D(): Number[];
         /**  */
@@ -1143,22 +1163,25 @@ export declare namespace TXG {
     }
     export class Board {
         elValue: Object;
-        constructor(elValue: any);
+        scaleXY: number;
+        constructor(className: string, params: any[], attrs: Object);
     }
     export class Infobox {
         elValue: Object;
-        constructor(elValue: any);
+        scaleXY: number;
+        constructor(className: string, params: any[], attrs: Object);
     }
     export class CA {
         elValue: Object;
-        constructor(elValue: any);
+        scaleXY: number;
+        constructor(className: string, params: any[], attrs: Object);
         /** f = map (x) -> x*sin(x); Usages: h = D(f, x); h = map (x) -> D(f, x); or D(x^2, x); */
         expandDerivatives(): any;
         /** Declare all subnodes as math nodes, i.e recursively set node.isMath = true; */
         setMath(): any;
     }
     export class Chart extends GeometryElement {
-        constructor(elValues: GeometryElement);
+        constructor(className: string, params: any[], attrs: Object);
         /**  */
         get elements(): any[];
         /** Create bar chart defined by two data arrays. */
@@ -1179,7 +1202,7 @@ export declare namespace TXG {
         updateDataArray(): Chart;
     }
     export class Circle extends GeometryElement {
-        constructor(elValues: GeometryElement);
+        constructor(className: string, params: any[], attrs: Object);
         /** Circle area */
         Area(): Number;
         /** Perimeter (circumference) of circle. */
@@ -1195,7 +1218,8 @@ export declare namespace TXG {
     }
     export class Complex {
         elValue: Object;
-        constructor(elValue: any);
+        scaleXY: number;
+        constructor(className: string, params: any[], attrs: Object);
         /**  */
         get absval(): Number;
         /**  */
@@ -1221,7 +1245,8 @@ export declare namespace TXG {
     }
     export class Composition {
         elValue: Object;
-        constructor(elValue: any);
+        scaleXY: number;
+        constructor(className: string, params: any[], attrs: Object);
         /** Adds an element to the composition container. */
         add(): Boolean;
         /** Invokes fullUpdate for every stored element with a fullUpdate method and hands over the given arguments. */
@@ -1241,7 +1266,8 @@ export declare namespace TXG {
     }
     export class Coords {
         elValue: Object;
-        constructor(elValue: any);
+        scaleXY: number;
+        constructor(className: string, params: any[], attrs: Object);
         /**  */
         get board(): Board;
         /**  */
@@ -1256,7 +1282,7 @@ export declare namespace TXG {
         setCoordinates(): Coords;
     }
     export class Curve extends GeometryElement {
-        constructor(elValues: GeometryElement);
+        constructor(className: string, params: any[], attrs: Object);
         /**  */
         get dataX(): Number[];
         set dataX(param: Number[]);
@@ -1293,7 +1319,7 @@ export declare namespace TXG {
         Z(): Number;
     }
     export class Curve3D extends Curve {
-        constructor(elValues: Curve);
+        constructor(className: string, params: any[], attrs: Object);
         /** Function which maps u to x; i.e. */
         X(): any;
         /** Function which maps u to y; i.e. */
@@ -1303,7 +1329,8 @@ export declare namespace TXG {
     }
     export class Dump {
         elValue: Object;
-        constructor(elValue: any);
+        scaleXY: number;
+        constructor(className: string, params: any[], attrs: Object);
         /** Adds markers to every element of the board */
         addMarkers(): Dump;
         /** Converts an array of different values into a parameter string that can be used by the code generators. */
@@ -1327,7 +1354,8 @@ export declare namespace TXG {
     }
     export class ForeignObject {
         elValue: Object;
-        constructor(elValue: any);
+        scaleXY: number;
+        constructor(className: string, params: any[], attrs: Object);
         /**  */
         get content(): Number[];
         /**  */
@@ -1342,7 +1370,7 @@ export declare namespace TXG {
         W(): number;
     }
     export class Group extends GeometryElement {
-        constructor(elValues: GeometryElement);
+        constructor(className: string, params: any[], attrs: Object);
         /**  */
         get coords(): Object;
         /** Adds all points in a group to this group. */
@@ -1385,7 +1413,7 @@ export declare namespace TXG {
         ungroup(): Group;
     }
     export class Image extends GeometryElement {
-        constructor(elValues: GeometryElement);
+        constructor(className: string, params: any[], attrs: Object);
         /**  */
         get size(): Number[];
         /**  */
@@ -1400,11 +1428,12 @@ export declare namespace TXG {
         W(): number;
     }
     export class Implicitcurve extends GeometryElement {
-        constructor(elValues: GeometryElement);
+        constructor(className: string, params: any[], attrs: Object);
     }
     export class Legend {
         elValue: Object;
-        constructor(elValue: any);
+        scaleXY: number;
+        constructor(className: string, params: any[], attrs: Object);
         /**  */
         get colors(): Number[];
         /**  */
@@ -1415,7 +1444,7 @@ export declare namespace TXG {
         get style(): String;
     }
     export class Line extends GeometryElement {
-        constructor(elValues: GeometryElement);
+        constructor(className: string, params: any[], attrs: Object);
         /**  */
         get defaultTicks(): Ticks;
         /**  */
@@ -1446,7 +1475,7 @@ export declare namespace TXG {
         Z(): number;
     }
     export class Line3D extends GeometryElement3D {
-        constructor(elValues: GeometryElement3D);
+        constructor(className: string, params: any[], attrs: Object);
         /**  */
         get direction(): Number[] | Function;
         /**  */
@@ -1459,7 +1488,7 @@ export declare namespace TXG {
         get range(): Number[];
     }
     export class Point extends GeometryElement {
-        constructor(elValues: GeometryElement);
+        constructor(className: string, params: any[], attrs: Object);
         /**  */
         coords(): Number[];
         /**  */
@@ -1474,9 +1503,11 @@ export declare namespace TXG {
         Y(): number;
         /**  */
         Z(): number;
+        /** Point location in vector form [n,n] */
+        XY(): [number, number];
     }
     export class Point3D extends GeometryElement3D {
-        constructor(elValues: GeometryElement3D);
+        constructor(className: string, params: any[], attrs: Object);
         /**  */
         get slide(): GeometryElement3D;
         /** Set the position of a 3D point. */
@@ -1489,7 +1520,7 @@ export declare namespace TXG {
         Z(): number;
     }
     export class Polygon extends GeometryElement {
-        constructor(elValues: GeometryElement);
+        constructor(className: string, params: any[], attrs: Object);
         /** Attributes for the polygon border lines. */
         get borders(): Number[];
         /** Attributes for the polygon vertices. */
@@ -1498,7 +1529,7 @@ export declare namespace TXG {
         updateRenderer(): any;
     }
     export class Text extends GeometryElement {
-        constructor(elValues: GeometryElement);
+        constructor(className: string, params: any[], attrs: Object);
         /**  */
         get size(): Number[];
         /** Returns the bounding box of the text element in user coordinates as an array of length 4: [upper left x, upper left y, lower right x, lower right y]. */
@@ -1531,7 +1562,7 @@ export declare namespace TXG {
         utf8_decode(): String;
     }
     export class Ticks extends GeometryElement {
-        constructor(elValues: GeometryElement);
+        constructor(className: string, params: any[], attrs: Object);
         /**  */
         get board(): Board;
         /**  */
@@ -1558,7 +1589,7 @@ export declare namespace TXG {
         updateRenderer(): Ticks;
     }
     export class Turtle extends GeometryElement {
-        constructor(elValues: GeometryElement);
+        constructor(className: string, params: any[], attrs: Object);
         /** Move the turtle backwards. */
         back(): Turtle;
         /** Alias for JXG.Turtle#back */
@@ -1641,7 +1672,7 @@ export declare namespace TXG {
         Z(): Number;
     }
     export class Sector extends Curve {
-        constructor(elValues: Curve);
+        constructor(className: string, params: any[], attrs: Object);
         /**  */
         get point1(): Point;
         /**  */
@@ -1656,12 +1687,12 @@ export declare namespace TXG {
         Radius(): Number;
     }
     export class Vectorfield extends Curve {
-        constructor(elValues: Curve);
+        constructor(className: string, params: any[], attrs: Object);
         /** Set the defining functions of vector field. */
         setF(): Object;
     }
     export class Angle extends Sector {
-        constructor(elValues: Sector);
+        constructor(className: string, params: any[], attrs: Object);
         /**  */
         get point(): Point;
         /** Frees an angle from a prescribed value. */
@@ -1672,7 +1703,7 @@ export declare namespace TXG {
         Value(): Number;
     }
     export class Arc extends Curve {
-        constructor(elValues: Curve);
+        constructor(className: string, params: any[], attrs: Object);
         /**  */
         get anglepoint(): Point;
         /**  */
@@ -1687,114 +1718,114 @@ export declare namespace TXG {
         Value(): Number;
     }
     export class Arrow extends Line {
-        constructor(elValues: Line);
+        constructor(className: string, params: any[], attrs: Object);
     }
     export class Parallel extends Line {
-        constructor(elValues: Line);
+        constructor(className: string, params: any[], attrs: Object);
     }
     export class Arrowparallel extends Parallel {
-        constructor(elValues: Parallel);
+        constructor(className: string, params: any[], attrs: Object);
     }
     export class Axis extends Line {
-        constructor(elValues: Line);
+        constructor(className: string, params: any[], attrs: Object);
         /**  */
         get defaultTicks(): Ticks;
     }
     export class Bisector extends Line {
-        constructor(elValues: Line);
+        constructor(className: string, params: any[], attrs: Object);
     }
     export class Bisectorlines extends Composition {
-        constructor(elValues: Composition);
+        constructor(className: string, params: any[], attrs: Object);
     }
     export class Button extends Text {
-        constructor(elValues: Text);
+        constructor(className: string, params: any[], attrs: Object);
     }
     export class Cardinalspline extends Curve {
-        constructor(elValues: Curve);
+        constructor(className: string, params: any[], attrs: Object);
     }
     export class Checkbox extends Text {
-        constructor(elValues: Text);
+        constructor(className: string, params: any[], attrs: Object);
         /** Returns the value of the checkbox element */
         Value(): String;
     }
     export class Circumcenter extends Point {
-        constructor(elValues: Point);
+        constructor(className: string, params: any[], attrs: Object);
     }
     export class Circumcircle extends Circle {
-        constructor(elValues: Circle);
+        constructor(className: string, params: any[], attrs: Object);
     }
     export class CircumcircleArc extends Arc {
-        constructor(elValues: Arc);
+        constructor(className: string, params: any[], attrs: Object);
     }
     export class CircumcircleSector extends Sector {
-        constructor(elValues: Sector);
+        constructor(className: string, params: any[], attrs: Object);
         /**  */
         get center(): Circumcenter;
     }
     export class Comb extends Curve {
-        constructor(elValues: Curve);
+        constructor(className: string, params: any[], attrs: Object);
     }
     export class Conic extends Curve {
-        constructor(elValues: Curve);
+        constructor(className: string, params: any[], attrs: Object);
     }
     export class CurveDifference extends Curve {
-        constructor(elValues: Curve);
+        constructor(className: string, params: any[], attrs: Object);
     }
     export class CurveIntersection extends Curve {
-        constructor(elValues: Curve);
+        constructor(className: string, params: any[], attrs: Object);
     }
     export class CurveUnion extends Curve {
-        constructor(elValues: Curve);
+        constructor(className: string, params: any[], attrs: Object);
     }
     export class Derivative extends Curve {
-        constructor(elValues: Curve);
+        constructor(className: string, params: any[], attrs: Object);
     }
     export class Ellipse extends Conic {
-        constructor(elValues: Conic);
+        constructor(className: string, params: any[], attrs: Object);
     }
     export class ParametricSurface3D extends Curve3D {
-        constructor(elValues: Curve3D);
+        constructor(className: string, params: any[], attrs: Object);
     }
     export class Functiongraph extends Curve {
-        constructor(elValues: Curve);
+        constructor(className: string, params: any[], attrs: Object);
     }
     export class Functiongraph3D extends Curve3D {
-        constructor(elValues: Curve3D);
+        constructor(className: string, params: any[], attrs: Object);
     }
     export class Glider extends Point {
-        constructor(elValues: Point);
+        constructor(className: string, params: any[], attrs: Object);
         /** Animate the point. */
         startAnimation(direction: Number, stepCount: Number, delayMSec: Number): void;
     }
     export class Grid extends Curve {
-        constructor(elValues: Curve);
+        constructor(className: string, params: any[], attrs: Object);
     }
     export class Hatch extends Ticks {
-        constructor(elValues: Ticks);
+        constructor(className: string, params: any[], attrs: Object);
         /**  */
         get ticksDistance(): Number;
     }
     export class Hyperbola extends Conic {
-        constructor(elValues: Conic);
+        constructor(className: string, params: any[], attrs: Object);
     }
     export class Incenter extends Point {
-        constructor(elValues: Point);
+        constructor(className: string, params: any[], attrs: Object);
     }
     export class Incircle extends Circle {
-        constructor(elValues: Circle);
+        constructor(className: string, params: any[], attrs: Object);
     }
     export class Inequality extends Curve {
-        constructor(elValues: Curve);
+        constructor(className: string, params: any[], attrs: Object);
     }
     export class Input extends Text {
-        constructor(elValues: Text);
+        constructor(className: string, params: any[], attrs: Object);
         /** Sets value of the input element. */
         set(): GeometryElement;
         /** Returns the value (content) of the input element */
         Value(): String;
     }
     export class Integral extends Curve {
-        constructor(elValues: Curve);
+        constructor(className: string, params: any[], attrs: Object);
         /** Attributes of the (left) base point of the integral. */
         get baseLeft(): Point;
         /** Attributes of the (right) base point of the integral. */
@@ -1807,110 +1838,110 @@ export declare namespace TXG {
         Value(): Point;
     }
     export class Intersection extends GeometryElement {
-        constructor(elValues: GeometryElement);
+        constructor(className: string, params: any[], attrs: Object);
     }
     export class Label extends Text {
-        constructor(elValues: Text);
+        constructor(className: string, params: any[], attrs: Object);
     }
     export class Locus extends Curve {
-        constructor(elValues: Curve);
+        constructor(className: string, params: any[], attrs: Object);
         /**  */
         get ctime(): Number;
         /**  */
         get eq(): String;
     }
     export class MajorArc extends Curve {
-        constructor(elValues: Curve);
+        constructor(className: string, params: any[], attrs: Object);
     }
     export class MajorSector extends Curve {
-        constructor(elValues: Curve);
+        constructor(className: string, params: any[], attrs: Object);
     }
     export class Metapostspline extends Curve {
-        constructor(elValues: Curve);
+        constructor(className: string, params: any[], attrs: Object);
     }
     export class Midpoint extends Point {
-        constructor(elValues: Point);
+        constructor(className: string, params: any[], attrs: Object);
     }
     export class MinorArc extends Curve {
-        constructor(elValues: Curve);
+        constructor(className: string, params: any[], attrs: Object);
     }
     export class MinorSector extends Curve {
-        constructor(elValues: Curve);
+        constructor(className: string, params: any[], attrs: Object);
     }
     export class mirrorelement extends GeometryElement {
-        constructor(elValues: GeometryElement);
+        constructor(className: string, params: any[], attrs: Object);
     }
     export class Mirrorpoint extends Point {
-        constructor(elValues: Point);
+        constructor(className: string, params: any[], attrs: Object);
     }
     export class NonReflexAngle extends Angle {
-        constructor(elValues: Angle);
+        constructor(className: string, params: any[], attrs: Object);
     }
     export class Normal extends Line {
-        constructor(elValues: Line);
+        constructor(className: string, params: any[], attrs: Object);
     }
     export class Orthogonalprojection extends Point {
-        constructor(elValues: Point);
+        constructor(className: string, params: any[], attrs: Object);
     }
     export class OtherIntersection extends Point {
-        constructor(elValues: Point);
+        constructor(className: string, params: any[], attrs: Object);
     }
     export class Parabola extends Conic {
-        constructor(elValues: Conic);
+        constructor(className: string, params: any[], attrs: Object);
     }
     export class Parallelpoint extends Point {
-        constructor(elValues: Point);
+        constructor(className: string, params: any[], attrs: Object);
     }
     export class Segment extends Line {
-        constructor(elValues: Line);
+        constructor(className: string, params: any[], attrs: Object);
     }
     export class Parallelogram extends Polygon {
-        constructor(elValues: Polygon);
+        constructor(className: string, params: any[], attrs: Object);
     }
     export class Perpendicular extends Segment {
-        constructor(elValues: Segment);
+        constructor(className: string, params: any[], attrs: Object);
     }
     export class PerpendicularPoint extends Point {
-        constructor(elValues: Point);
+        constructor(className: string, params: any[], attrs: Object);
     }
     export class PerpendicularSegment extends Segment {
-        constructor(elValues: Segment);
+        constructor(className: string, params: any[], attrs: Object);
         /**  */
         get point(): PerpendicularPoint;
     }
     export class PolarLine extends Line {
-        constructor(elValues: Line);
+        constructor(className: string, params: any[], attrs: Object);
     }
     export class PolePoint extends Point {
-        constructor(elValues: Point);
+        constructor(className: string, params: any[], attrs: Object);
     }
     export class PolygonalChain extends Polygon {
-        constructor(elValues: Polygon);
+        constructor(className: string, params: any[], attrs: Object);
     }
     export class RadicalAxis extends Line {
-        constructor(elValues: Line);
+        constructor(className: string, params: any[], attrs: Object);
     }
     export class Reflection extends GeometryElement {
-        constructor(elValues: GeometryElement);
+        constructor(className: string, params: any[], attrs: Object);
     }
     export class ReflexAngle extends Angle {
-        constructor(elValues: Angle);
+        constructor(className: string, params: any[], attrs: Object);
     }
     export class RegularPolygon extends Polygon {
-        constructor(elValues: Polygon);
+        constructor(className: string, params: any[], attrs: Object);
     }
     export class Riemannsum extends Curve {
-        constructor(elValues: Curve);
+        constructor(className: string, params: any[], attrs: Object);
         /** Returns the value of the Riemann sum, i.e. */
         Value(): Number;
     }
     export class Semicircle extends Arc {
-        constructor(elValues: Arc);
+        constructor(className: string, params: any[], attrs: Object);
         /**  */
         get midpoint(): Midpoint;
     }
     export class Slider extends Glider {
-        constructor(elValues: Glider);
+        constructor(className: string, params: any[], attrs: Object);
         /** Sets the maximum value of the slider. */
         setMax(): Object;
         /** Sets the minimum value of the slider. */
@@ -1921,37 +1952,37 @@ export declare namespace TXG {
         Value(): number;
     }
     export class Slopefield extends Vectorfield {
-        constructor(elValues: Vectorfield);
+        constructor(className: string, params: any[], attrs: Object);
         /** Set the defining functions of slope field. */
         setF(): Object;
     }
     export class Slopetriangle extends Line {
-        constructor(elValues: Line);
+        constructor(className: string, params: any[], attrs: Object);
         /** Returns the value of the slope triangle, that is the slope of the tangent. */
         Value(): Number;
     }
     export class Smartlabel extends Text {
-        constructor(elValues: Text);
+        constructor(className: string, params: any[], attrs: Object);
     }
     export class Spline extends Curve {
-        constructor(elValues: Curve);
+        constructor(className: string, params: any[], attrs: Object);
     }
     export class Stepfunction extends Curve {
-        constructor(elValues: Curve);
+        constructor(className: string, params: any[], attrs: Object);
     }
     export class Tangent extends Line {
-        constructor(elValues: Line);
+        constructor(className: string, params: any[], attrs: Object);
     }
     export class Tapemeasure extends Segment {
-        constructor(elValues: Segment);
+        constructor(className: string, params: any[], attrs: Object);
         /** Returns the length of the tape measure. */
         Value(): Number;
     }
     export class Tracecurve extends Curve {
-        constructor(elValues: Curve);
+        constructor(className: string, params: any[], attrs: Object);
     }
     export class Transform extends GeometryElement {
-        constructor(elValues: GeometryElement);
+        constructor(className: string, params: any[], attrs: Object);
         /**  */
         applyOnce(element: GeometryElement): void;
         /**  */
@@ -1960,7 +1991,7 @@ export declare namespace TXG {
         setMatrix(): Transform;
     }
     export class View3D extends GeometryElement3D {
-        constructor(elValues: GeometryElement3D);
+        constructor(className: string, params: any[], attrs: Object);
         /**  */
         get matrix3D(): Object;
         /**  */
