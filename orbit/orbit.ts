@@ -25,7 +25,7 @@ function orbit() {
         let yAxis = TSX.segment(origin, yAxisPt, { opacity: .3, strokeColor: 'gray' })
 
         let arc = TSX.arc(origin, yAxisPt, xAxisPt)
-        let glider = TSX.glider(3, 3, arc, { strokeColor: 'blue', name: '' })  // point on the arc
+        let glider = TSX.glider(arc, [3, 3], { strokeColor: 'blue', name: '' })  // point on the arc
 
         let radius = TSX.segment(origin, glider, { lastArrow: true, touchLastPoint: true })
         let minorArc = TSX.minorArc(origin, TSX.midpoint(yAxis, { name: '', opacity: 0 }), TSX.midpoint(radius, { name: '', opacity: 0 }), { firstArrow: true, lastArrow: true })

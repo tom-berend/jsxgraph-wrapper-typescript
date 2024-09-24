@@ -1,47 +1,20 @@
 
-
 import { TXG } from './tsxgraph'
-
-
-
-// let vDist = (a: TXG.Point, b: TXG.Point) =>  Math.sqrt(Math.pow(a.X() - b.X(), 2) + Math.pow(a.Y() - b.Y(), 2));
-
-
-
-/*
-
-{
-
-    // // complex numbers
-    // let x = new JSXGraph.Complex(0, 7)
-    // let y = new JSXGraph.Complex(0, 5)
-    // let z = x.mult(y)
-    // console.assert(z.real == -35, `expected -35, received ${z.real}`)
-    // console.assert(z.imaginary == 0, `expected 0, received ${z.imaginary}`)
-    // console.assert(z.toString() == '-35 + 0i')
-
-    // z = x.add(y)
-    // console.log(z.absval)
-    // let b = new JSXGraph.Complex(2, 2)
-    // let c = b.conj()
-}
-
-
-*/
-
 
 
 {
     // from  https://jsxgraph.uni-bayreuth.de/wiki/index.php?title=Browser_event_and_coordinates
-    const b = TXG.TSXGraph.initBoard('html00')
+    const TSX = TXG.TSXGraph.initBoard('html00')
 
-    // b.text(-4.5, 3.3, 'Version ' + TSX.TSXGraph.version)
-    b.text(-4.5, 2.6, new Date().toLocaleTimeString())
+    TSX.print('00: buttons and checkboxes')
+    TSX.text([-4.5, 2.6], new Date().toLocaleTimeString())
+    TSX.text([-4.5, 2.2], "just ordinary text")
+    TSX.text([-4.5, 1.6], '1', { strokeColor: 'red' })
 
-    let p = b.point([0, 0], { name: 'label' })
-    let t = b.text(-4, 1, '', { fontSize: 15 })
-    let c = b.checkbox(-4, 0, 'Checkbox')
-    let bt = b.button(-4, -1, 'Button', () => alert('hi'))
+    let p = TSX.point([0, 0], { name: 'label' })
+    let t = TSX.text([-4, 1], '', { fontSize: 15 })
+    let c = TSX.checkbox([-4, 0], 'Checkbox')
+    let bt = TSX.button([-4, -1], 'Button', () => alert('hi'))
 
 
 
@@ -58,9 +31,9 @@ import { TXG } from './tsxgraph'
 
     }
 
-    b.on('down', event);
-    b.on('up', event);
-    b.on('keydown', event);    // ONLY keydown works
+    TSX.on('down', event);
+    TSX.on('up', event);
+    TSX.on('keydown', event);    // ONLY keydown works
 
 }
 
@@ -126,7 +99,8 @@ import { TXG } from './tsxgraph'
 {
     const b = TXG.TSXGraph.initBoard('html01', { boundingbox: [-10, 10, 10, -10] })
 
-    b.text(-9, 9, 'Points, Polygons, Groups', { fontSize: 12 })
+
+    b.text([-9, 9], 'Points, Polygons, Groups', { fontSize: 12 })
     let p1 = b.point([0.0, 3.0])
     let p2 = b.point([2.0, 3.0])
     let p3 = b.point([4.0, 7.0])
@@ -176,7 +150,7 @@ import { TXG } from './tsxgraph'
 
 {
     const b = TXG.TSXGraph.initBoard('html02', { boundingbox: [-10, 10, 10, -10] })
-    b.text(-4.5, 4.5, 'Intersections', { fontSize: 15 })
+    b.text([-4.5, 4.5], 'Intersections', { fontSize: 15 })
 
     // Create an intersection point of circle and line
     let p1 = b.point([4.0, 4.0]);
@@ -199,7 +173,7 @@ import { TXG } from './tsxgraph'
 {
 
     const board = TXG.TSXGraph.initBoard('html03',)
-    board.text(-4.5, 4.5, 'Euclid 1st Prop', { fontSize: 15 })
+    board.text([-4.5, 4.5], 'Euclid 1st Prop', { fontSize: 15 })
     // problems
     let a = board.point([-2, 0], { name: 'A' })
     let b = board.point([2, 0], { name: 'B' })
@@ -218,48 +192,47 @@ import { TXG } from './tsxgraph'
 
 {
 
-    const board = TXG.TSXGraph.initBoard('html04',)
-    board.text(-4.5, 4.5, 'Euclid 2nd Prop', { fontSize: 15 })
+    const TSX = TXG.TSXGraph.initBoard('html04',)
+    TSX.text([-4.5, 4.5], 'Euclid 2nd Prop', { fontSize: 15 })
 
     // board.setDefaultAttributes({name:''})
 
     // problems
-    let a = board.point([2, 2])
-    let b = board.point([0, 0])
-    let c = board.point([-2, 0])
-    board.segment(b, c)
+    let a = TSX.point([2, 2])
+    let b = TSX.point([0, 0])
+    let c = TSX.point([-2, 0])
+    TSX.segment(b, c)
 
     // solution
-    let c0 = board.circle(b, c)
+    let c0 = TSX.circle(b, c)
 
     // create the equlaterial triangle from Prop 1
-    let c1 = board.circle(a, b, { visible: false })
-    let c2 = board.circle(b, a, { visible: false })
-    let d = board.intersection(c1, c2)
+    let c1 = TSX.circle(a, b, { visible: false })
+    let c2 = TSX.circle(b, a, { visible: false })
+    let d = TSX.intersection(c1, c2)
 
     // draw line b-d and create the intersection point e
-    let l1 = board.line(b, d)
-    let e = board.intersection(l1, c0)
+    let l1 = TSX.line(b, d)
+    let e = TSX.intersection(l1, c0)
 
-    let c3 = board.circle(d, e)
+    let c3 = TSX.circle(d, e)
 
     // extend the line from D-A to F
-    let l2 = board.line(d, a,)
-    let f = board.intersection(l2, c3)
-    board.segment(a, f, { color: 'red' })
-
+    let l2 = TSX.line(d, a,)
+    let f = TSX.intersection(l2, c3)
+    TSX.segment(a, f, { color: 'red' })
 }
 
-
 {
-    let B = TXG.TSXGraph.initBoard('html05', { boundingbox: [-1, 10, 11, -2], axis: true, showCopyright: false, showNavigation: false });
+    let TSX = TXG.TSXGraph.initBoard('html05', { boundingbox: [-1, 10, 11, -2], axis: true, showCopyright: false, showNavigation: false });
+    TSX.print('05: functiongraphs')
+
     let x = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10];
     let y = [8.4, 1, 0.1, 9, 3.3, 3.3, 4.5, 8, 9, 4];
-    let curve = B.create('curve', [x, y], { curveType: 'plot' });
+    let curve = TSX.create('curve', [x, y], { curveType: 'plot' });
 
-    let graph1 = B.functiongraph((x: number) => 4 * Math.sin(x) + 4, 0, 4 * Math.PI, { name: 'sin(x)', withLabel: true, strokeColor: 'red' });
-    let graph2 = B.functiongraph((x: number) => Math.pow(x - 4, 2) - 2, 0, 10, { name: 'x^2 - 2', withLabel: true, strokeColor: 'green' });
-
+    let graph1 = TSX.functiongraph((x: number) => 4 * Math.sin(x) + 4, 0, 4 * Math.PI, { name: 'sin(x)', withLabel: true, strokeColor: 'red' });
+    let graph2 = TSX.functiongraph((x: number) => Math.pow(x - 4, 2) - 2, 0, 10, { name: 'x^2 - 2', withLabel: true, strokeColor: 'green' });
 }
 
 {
@@ -268,7 +241,7 @@ import { TXG } from './tsxgraph'
     B.print('This is a test', 5, true)
     B.print('This is a second test')
 
-    https://www.cgsd.org/site/handlers/filedownload.ashx?moduleinstanceid=36&dataid=167&FileName=163-SMP-SEAA-C03L03.pdf
+    // https://www.cgsd.org/site/handlers/filedownload.ashx?moduleinstanceid=36&dataid=167&FileName=163-SMP-SEAA-C03L03.pdf
     let line = B.conic.line(2.5, 2, -30)
     let line2 = B.conic.line(-1, 1, 5)
 
@@ -341,7 +314,6 @@ import { TXG } from './tsxgraph'
     //             ],
     //             {strokeColor:'black',fontSize:'14px'});
 
-
 }
 
 
@@ -356,11 +328,11 @@ import { TXG } from './tsxgraph'
     let maxY = 9.5
     let counter = 10
 
-    let B = TXG.TSXGraph.initBoard('html09', { boundingbox: [-maxX, maxY, maxX, -maxY], grid: true });
+    let B = TXG.TSXGraph.initBoard('html09', { boundingbox: [-maxX, maxY, maxX, -maxY] });
 
-    B.print('Bounce!')
+    B.print('09: Bounce!')
 
-    let p = B.point([0, 0])
+    let p = B.point([0, 0], { name: '' })
     let c = B.circle(p, 1)  // circle is attached to point
 
     //// better way is to use a transform, but we use the SIMPLEST way, just setPositionDirectly()
@@ -377,7 +349,7 @@ import { TXG } from './tsxgraph'
 
         x += dx
         y += dy
-        p.setPositionDirectly(x, y)
+        p.setPositionDirectly([x, y])
 
         B.update()
     }
@@ -390,7 +362,7 @@ import { TXG } from './tsxgraph'
     const B = TXG.TSXGraph.initBoard('html10', { boundingbox: [-10, 10, 10, -10] })
 
 
-    B.print('arrow is a vector-like segment')
+    B.print('10: arrow is a vector-like segment')
     B.print('axis creates secondary axis lines')
     // Create an arrow providing two points.
     let p1 = B.point([8.5, 4.0])
@@ -414,10 +386,10 @@ import { TXG } from './tsxgraph'
     const b = TXG.TSXGraph.initBoard('html11')
 
 
-    b.text(-4.5, 4.6, 'Version ' + b.version)
-    b.text(-4.5, 4, new Date().toLocaleTimeString())
+    b.text([-4.5, 4.6], 'Version ' + b.version)
+    b.text([-4.5, 4], new Date().toLocaleTimeString())
 
-    let text1 = b.text(-1, 1, "Hello World", { fontSize: 28, strokeColor: 'green' });
+    let text1 = b.text([-1, 1], "Hello World", { fontSize: 28, strokeColor: 'green' });
     // and update after 2 second
     setInterval(() => {
         text1.setText('Time Out!!')
@@ -426,7 +398,7 @@ import { TXG } from './tsxgraph'
         text1.setCoords(-5, 0)
     }, 2000)
 
-    let t = b.text(-1, -1, 'hello', { strokeColor: 'string' })
+    let t = b.text([-1, -1], 'hello', { strokeColor: 'string' })
     t = t.setText('new')
     let tSize = t.crudeSizeEstimate()
     t = t.setText('new2')
@@ -434,8 +406,8 @@ import { TXG } from './tsxgraph'
     // console.assert(tSize < t.crudeSizeEstimate(), 'crude size increased',)
     // console.log('bounds', t.bounds())
 
-    let input = b.input(-3, 3, 'sin(x)*x', 'f(x)=', { cssStyle: 'width: 100px' })
-    b.text(-3, 2, '<button onclick="alert(`pressed`)">Update graph</button>')
+    let input = b.input([-3, 3], 'sin(x)*x', 'f(x)=', { cssStyle: 'width: 100px' })
+    b.text([-3, 2], '<button onclick="alert(`pressed`)">Update graph</button>')
 
 
 }
@@ -446,7 +418,7 @@ import { TXG } from './tsxgraph'
 {
     const b = TXG.TSXGraph.initBoard('html12', { boundingbox: [-10, 10, 10, -10], axis: true });
 
-    b.print('Transforms')
+    b.print('12: Transforms')
 
     let A = b.point([3, 1], { name: 'A' })
     let p1 = b.point([-1, 1], { name: 'blue', color: 'blue' })
@@ -454,7 +426,7 @@ import { TXG } from './tsxgraph'
 
 
 
-    b.text(-4.5, -4.5, 'Move point A around')
+    b.text([-4.5, -4.5], 'Move point A around')
     // tOff.bindTo(p1);
     let trans = b.transform.translate(1, 1)
     let p3 = b.transform.point(A, trans, { name: 'Trans' })
@@ -467,7 +439,7 @@ import { TXG } from './tsxgraph'
     let p5 = b.transform.point(p4, scale, { name: 'Scale' })
     let l2 = b.line(p4, p5);
 
-    b.text(0, 0, () => 'XY' + p5.X().toString() + p5.Y().toString())
+    b.text([0, 0], () => 'XY' + p5.X().toString() + p5.Y().toString())
 
 
 }
@@ -489,7 +461,7 @@ import { TXG } from './tsxgraph'
 
 {
     const b = TXG.TSXGraph.initBoard('html14')
-    b.text(-4.5, -4.5, 'Move point D around')
+    b.text([-4.5, -4.5], '14: Move point D around')
 
     // Create a glider with user defined coordinates. If the coordinates are not on
     // the circle (like in this case) the point will be projected onto the circle.
@@ -531,12 +503,12 @@ import { TXG } from './tsxgraph'
 {
     // Glider inherits from Point !!!
     const b = TXG.TSXGraph.initBoard('html16', { boundingbox: [-5, 5, 5, -5], axis: true })
-
+    b.print('16: glider animation')
 
     // Create a glider with default coordinates (1,0,0). Same premises as above.
     let p1 = b.point([2.0, 2.0])
     let c1 = b.circle(p1, 2.0)
-    let g2 = b.glider(2.0, 1.5, c1)
+    let g2 = b.glider(c1, [2.0, 1.5])
     g2.startAnimation(1, 20, 120);
 
 
@@ -562,7 +534,7 @@ import { TXG } from './tsxgraph'
 
     let bi1 = b.bisectorlines(l1, l2);
 
-    let but = b.button(0, 3, 'click me', () => b.print('pushed'))
+    let but = b.button([0, 3], 'click me', () => b.print('pushed'))
 }
 
 
@@ -577,7 +549,7 @@ import { TXG } from './tsxgraph'
 {
     const B = TXG.TSXGraph.initBoard('html19')
 
-    B.print('circumcircle from 3 points')
+    B.print('19: circumcircle from 3 points')
     // B.print('circumcenter from same three points')
 
     // note that circumcircle creates draggable points, even if specified as [0,1]
@@ -591,7 +563,7 @@ import { TXG } from './tsxgraph'
 {
     const Brd = TXG.TSXGraph.initBoard('html20')
 
-    Brd.print('Conic')
+    Brd.print('20: Conic')
 
     // Create a conic section through the points A, B, C, D, and E.
     let A = Brd.point([1, 5], { name: 'A' })
@@ -611,7 +583,7 @@ import { TXG } from './tsxgraph'
 {
     const B = TXG.TSXGraph.initBoard('html21', { axis: true })
 
-    B.print('comb and hatch')
+    B.print('21 comb and hatch')
     // B.addAxis()
     B.setAttribute({ axis: true })
 
@@ -624,8 +596,8 @@ import { TXG } from './tsxgraph'
     B.comb([1, 0], [3, 0]);
 
 
-    let p1 = B.glider(-4, 0, B.defaultAxes.x);
-    let p2 = B.glider(-1, 0, B.defaultAxes.y);
+    let p1 = B.glider(B.defaultAxes.x, [-4, 0]);
+    let p2 = B.glider(B.defaultAxes.y, [-1, 0]);
     let c1 = B.comb(p1, p2, { width: 1.5, frequency: 0.4, angle: Math.PI / 4 });
 
 
@@ -645,10 +617,10 @@ import { TXG } from './tsxgraph'
 {
     const B = TXG.TSXGraph.initBoard('html22', { axis: true })
 
-    B.print('tangent')
+    B.print('22: tangent')
     // Create a tangent providing a glider on a function graph
     let c1 = B.curve(function (t: number) { return t }, function (t: number) { return t * t * t; });
-    let g1 = B.glider(0.6, 1.2, c1);
+    let g1 = B.glider(c1, [0.6, 1.2]);
     let t1 = B.tangent(g1);
 }
 
@@ -657,9 +629,7 @@ import { TXG } from './tsxgraph'
 
     const B = TXG.TSXGraph.initBoard('html23', { boundingbox: [-5, 18, 18, -5] })
 
-    B.print('intersection')
-    B.print('union')
-    B.print('difference')
+    B.print('23: intersection, union, difference')
 
     let c1 = B.circle([0, 1.5], 3);
     let c2 = B.circle([1, -1.5], 3);
@@ -701,7 +671,7 @@ import { TXG } from './tsxgraph'
     test.forEach((s) => {
         i += 1
         B.print(s);
-        B.button(1, 4 - i, s, () => alert(s));
+        B.button([1, 4 - i], s, () => alert(s));
     })
 
 
@@ -720,7 +690,6 @@ import { TXG } from './tsxgraph'
     B.parabola([-4, 5], [[-6, 9], [-6, 1]])
 
     /////////////////////// ellipse
-
     // Create an Ellipse by three points
     let f1 = B.point([-8, -3])
     let f2 = B.point([-8, -7])
@@ -732,6 +701,7 @@ import { TXG } from './tsxgraph'
     let f4 = B.point([-1, -7])
     let radius = 7
     B.ellipse(f3, f4, radius);
+
 
     // Create an Ellipse arc by three points and two angles
     let f5 = B.point([6, -3])
@@ -822,12 +792,12 @@ import { TXG } from './tsxgraph'
     const JSX = TXG.TSXGraph.initBoard('html27')
 
     let bbox = JSX.getBoundingBox()
-    JSX.text(-4, 4, `Before: [${bbox[0]},${bbox[1]}]`)
+    JSX.text([-4, 4], `Before: [${bbox[0]}, ${bbox[1]}]`)
 
     JSX.setBoundingBox(-10, 10, 10, -10)
 
     let bbox2 = JSX.getBoundingBox()
-    JSX.text(-4, 3, `After: [${bbox2[0]},${bbox2[1]}]`)
+    JSX.text([-4, 3], `After: [${bbox2[0]}, ${bbox2[1]}]`)
 
 
     JSX.print('Change Bounding Box')
@@ -848,29 +818,23 @@ import { TXG } from './tsxgraph'
 }
 
 {
-    const JSX = TXG.TSXGraph.initBoard('html28')
+    const TSX = TXG.TSXGraph.initBoard('html28')
 
-    JSX.print('multiple signatures for Midpoint')
-    JSX.midpoint(JSX.point([-4, 1]), JSX.point([-1, 1]))
-    let seg = JSX.segment([1, 1], [4, 1])
-    JSX.midpoint(seg)
+    TSX.print('multiple signatures for Midpoint')
+    TSX.midpoint(TSX.point([-4, 1]), TSX.point([-1, 1]))
+    let seg = TSX.segment([1, 1], [4, 1])
+    TSX.midpoint(seg)
 
-    JSX.print('Create trace curve')
-
-    // let c1 = JSX.circle([0, -3], [2, -3])
-    // let p1 = JSX.point(-4, -2)
-    // let g1 = JSX.glider(c1, 2, -2)
-    // let s1 = JSX.segment(g1, p1)
-    // let p2 = JSX.midpoint(s1)
+    TSX.print('Create trace curve')
 
     // let curve = JSX.tracecurve(g1, p2)
 
-    let c1 = JSX.create('circle', [[0, -3], [2, -3]]),
-        p1 = JSX.point([-4, -2]),
-        g1 = JSX.glider(2, -2, c1),
-        s1 = JSX.segment(g1, p1),
-        p2 = JSX.midpoint(s1),
-        curve = JSX.tracecurve(g1, p2);
+    let c1 = TSX.create('circle', [[0, -3], [2, -3]]),
+        p1 = TSX.point([-4, -2]),
+        g1 = TSX.glider(c1, [2, -2]),
+        s1 = TSX.segment(g1, p1),
+        p2 = TSX.midpoint(s1),
+        curve = TSX.tracecurve(g1, p2);
 
 }
 
@@ -914,7 +878,7 @@ import { TXG } from './tsxgraph'
     B.setBoundingBox(-8, 8, 8, -8)
     B.addAxis()
 
-    B.print('implicit curve')
+    B.print('31: implicit curve')
 
     let a = B.slider([-3, 6], [3, 6], [-3, 1, 3], { name: 'a' })
     let f = (x: number, y: number) => x ** 2 - 2 * x * y - 2 * x + (a.Value() + 1) * y ** 2 + (4 * a.Value() + 2) * y + 4 * a.Value() - 3;
@@ -982,7 +946,7 @@ import { TXG } from './tsxgraph'
     let p3 = B.point([6.5, 1.0]);
 
     B.majorArc(p1, p, p3)  // p is constant
-    p2.setPositionDirectly(p2.X() - 3, p2.Y() - 3)
+    p2.setPositionDirectly([p2.X() - 3, p2.Y() - 3])
     B.minorArc(p1, p2, p3)
 
     let p4 = B.point([-6, 6])
@@ -994,16 +958,22 @@ import { TXG } from './tsxgraph'
     const B = TXG.TSXGraph.initBoard('html35')
     B.print('parallelogram')
 
+
+
+    B.create('polygon', [[-4, 4], [-4, -4], [-2, -4], [-2, 4]]);
+    B.create('point', [-1, 0], { name: 'A' });
+    B.create('point', [3, 0], { name: 'drag me' });
+
     let p1 = B.point([-3, -4]);
     let p2 = B.point([3, -1]);
     let p3 = B.point([-2, 0]);
-    let par = B.parallelogram(p1, p2, p3, {
-        hasInnerPoints: true,
-        parallelpoint: {
-            size: 6,
-            face: '<<>>'
-        }
-    });
+    // let par = B.parallelogram(p1, p2, p3, {
+    //     hasInnerPoints: true,
+    //     parallelpoint: {
+    //         size: 6,
+    //         face: '<<>>'
+    //     }
+    // });
 
 }
 
@@ -1082,6 +1052,7 @@ import { TXG } from './tsxgraph'
 
 {
     const board = TXG.TSXGraph.initBoard('html38',);
+    board.print('38:')
     board.setBoundingBox(-12, 12, 12, -12)
     board.addAxis()
 
@@ -1149,7 +1120,7 @@ import { TXG } from './tsxgraph'
             // y1 = y + f
             position = [position[0] + xSlide.Value(), position[1] + ySlide.Value()]
 
-            dots[i].setPositionDirectly(position[0], position[1])
+            dots[i].setPositionDirectly([position[0], position[1]])
 
         }
     }
@@ -1159,21 +1130,21 @@ import { TXG } from './tsxgraph'
 
 {
     const board = TXG.TSXGraph.initBoard('html39',);
-    board.print('Slopetriangle')
+    board.print('39: Slopetriangle')
 
     // // Create a slopetriangle on a tangent
     let f = board.functiongraph((x: number) => 3 * Math.sin(x)),
-        g = board.glider(1, 2, f),
+        g = board.glider(f, [1, 2]),
         t = board.tangent(g)
 
     let st = board.slopetriangle(t)
-    board.text(0, 4, () => 'Slope: ' + st.Value().toFixed(2))
+    board.text([0, 4], () => 'Slope: ' + st.Value().toFixed(2))
 
     // Create a on a line and a point on that line
     let p1 = board.point([-3, 3]),
         p2 = board.point([1, -3]),
         li = board.line(p1, p2),
-        p = board.glider(0, 0, li)
+        p = board.glider(li, [0, 0])
 
     let st2 = board.slopetriangle(li, p);
 
@@ -1182,7 +1153,7 @@ import { TXG } from './tsxgraph'
 
 {
     const board = TXG.TSXGraph.initBoard('html40',);
-    board.print('Point3D, Line3D, Curve3D')
+    board.print('40: Point3D, Line3D, Curve3D')
     board.print(' as VIEW methods')
 
     let bound = [-5, 5];
@@ -1204,12 +1175,12 @@ import { TXG } from './tsxgraph'
 {
 
 
-    const board = TXG.TSXGraph.initBoard('html41');
-    board.setBoundingBox(-8, 8, 8, -8)
-    board.print('functiongraph')
+    const TSX = TXG.TSXGraph.initBoard('html41');
+    TSX.setBoundingBox(-8, 8, 8, -8)
+    TSX.print('41: functiongraph')
 
     let box = [-5, 5];
-    let view = board.view3D(-6, -3, 8, 8, box, box, box,
+    let view = TSX.view3D(-6, -3, 8, 8, box, box, box,
         {
             xPlaneRear: { visible: false },
             yPlaneRear: { visible: false },
@@ -1234,7 +1205,7 @@ import { TXG } from './tsxgraph'
 {
     const board = TXG.TSXGraph.initBoard('html42');
     board.setBoundingBox(-8, 8, 8, -8)
-    board.print('Parametric Surface')
+    board.print('42: Parametric Surface')
 
 
 
@@ -1261,7 +1232,7 @@ import { TXG } from './tsxgraph'
 
 {
     const board = TXG.TSXGraph.initBoard('html43');
-    board.print('Three triangle centers lie on a line')
+    board.print('43: Three triangle centers lie on a line')
     // https://numbas.mathcentre.ac.uk/question/68491/create-a-jsxgraph-diagram-using-jessiecode-three-triangle-centres-lie-on-a-line/
 
     let A = board.point([-2, -2], { name: 'A' });
@@ -1306,7 +1277,7 @@ import { TXG } from './tsxgraph'
         showNavigation: false,
 
     });
-    brd2.print('demo from Google Group')
+    brd2.print('44: demo from Google Group')
 
     let s = brd2.slider(
         [1, 7],
@@ -1354,10 +1325,10 @@ import { TXG } from './tsxgraph'
     for (let i = 0; i < 16; i++) {
         for (let j = 0; j < 16; j++) {
             ctx.fillStyle = `rgb(
-                0
+        0
                 ${Math.floor(16 * i)}
                 ${Math.floor(16 * j)}
-                )`;
+    )`;
             ctx.fillRect(j * w / 16, i * h / 16, w / 16, h / 16);
         }
     }
@@ -1371,7 +1342,7 @@ import { TXG } from './tsxgraph'
         keepAspectRatio: true
     });
 
-    board.print('from:  The Center of Mobile ')
+    board.print('46: from:  The Center of Mobile ')
     board.print('Learning with Digital Technology')
 
     let c1 = board.slider([-3, 4.5], [0, 4.5], [0, 0.6, 1]);
@@ -1405,42 +1376,73 @@ import { TXG } from './tsxgraph'
     // }
 }
 
+{
+    const TSX = TXG.TSXGraph.initBoard('html47', {
+        boundingbox: [-1, 7, 7, -1],
+        axis: true,
+        grid: false,
+    })
+    TSX.print('47: perpenicular and normal')
 
+    let f = TSX.functiongraph((x: number) => 3 * Math.pow(x, 2))
+    let A = TSX.glider(f, [3, 6], { name: "normal to curve", color: "orange" })
+    let B = TSX.glider(f, [2, 5], { name: "perp to line", color: "red" })
+    TSX.normal(A, f)
+
+    let g = TSX.line([5, 0], [6, 4])
+    TSX.normal(g, B)        // must have a glider for normal   note: params are switched
+
+
+}
 
 {
-    const board = TXG.TSXGraph.initBoard('html48', { boundingbox: [-5, 10, 5, -1] })
-    board.print('cardinal spline and derivative')
+    const TSX = TXG.TSXGraph.initBoard('html48', { boundingbox: [-5, 10, 10, -5] })
+    TSX.print('48: bezier, cardinal spline and derivative')
+
+    // Draggable Bezier curve
+    let points: TXG.Point[] = []
+    points.push(TSX.point([-2, -1], { size: 4, color: 'blue', name: '0' }))
+
+    points.push(TSX.point([-2, -2.5], { name: '1' }))
+    points.push(TSX.point([-1, -2.5], { name: '2' }))
+
+    points.push(TSX.point([2, -2], { size: 4, color: 'blue', name: '3' }))
+
+    points.push(TSX.point([4, -1], { name: '4' }))
+    points.push(TSX.point([2, 0], { name: '5' }))
+
+    points.push(TSX.point([4, 1], { size: 4, color: 'blue', name: '6' }))
+
+    let curve = TSX.bezierCurve(points, { strokeColor: 'orange', strokeWidth: 5, fixed: false }); // Draggable curve
+
+    // let bz = TSX.NumericsMath.bezier(points)
+    // TSX.curve(bz[0], bz[1])
+
+
+
+
+
 
     //create a cardinal spline out of an array of JXG points with adjustable tension
     //create array of points
-    let p1 = board.point([0, 0])
-    let p2 = board.point([1, 4])
-    let p3 = board.point([4, 5])
-    let p4 = board.point([2, 3])
-    let p5 = board.point([3, 0])
+    let p1 = TSX.point([0, 0])
+    let p2 = TSX.point([1, 4])
+    let p3 = TSX.point([4, 5])
+    let p4 = TSX.point([2, 3])
+    let p5 = TSX.point([3, 0])
     let p = [p1, p2, p3, p4, p5]
 
-
-
     // // tension
-    let tau = board.slider([-4, 8], [2, 8], [0.001, 0.5, 1], { name: 'tau' });
-
-
+    let tau = TSX.slider([-4, 8], [2, 8], [0.001, 0.5, 1], { name: 'tau' });
 
     // this works
-    let cardinal = board.NumericsMath.CardinalSpline(p, () => tau.Value())  //returns [fn, fn, fn#Points-3]
-    let c = board.curve(cardinal[0], cardinal[1], -5, 5, { strokeWidth: 3 })
+    let cardinal = TSX.NumericsMath.CardinalSpline(p, () => tau.Value())  //returns [fn, fn, fn#Points-3]
+    let c = TSX.curve(cardinal[0], cardinal[1], -5, 5, { strokeWidth: 3 })
     // this doesn't work
-    // let c = board.cardinalspline(p,()=>tau.Value(),'uniform')
+    // let c = TSX.cardinalspline(p,()=>tau.Value(),'uniform')
 
-    let t = board.transform.translate(-2, -2);
-    let c2 = board.transform.curve(c, t, { strokeColor: 'green' });
-
-    // for fun, test creating a circle from a circle and transform
-    // note that the transform circle also changes size with the original ciricle (as it should)
-    let cl1 = board.circle([-3, 3], [-2, 2], { strokeColor: 'black', center: { visible: true } });
-    let cl2 = board.transform.circle(cl1, t, { strokeColor: 'black' });
-
+    let t = TSX.transform.translate(-3, -3);
+    let c2 = TSX.transform.curve(c, t, { strokeColor: 'green' });
 
 
 }
@@ -1500,7 +1502,6 @@ import { TXG } from './tsxgraph'
     let an2 = board.mirrorelement(an1, mirr);
 
 
-
 }
 
 {
@@ -1553,7 +1554,7 @@ import { TXG } from './tsxgraph'
 {
 
     const board = TXG.TSXGraph.initBoard('html54')
-    board.print('Reflex and Non-Reflex Angle')
+    board.print('54:  Reflex and Non-Reflex Angle')
 
     // Create a non-reflex angle out of three free points
     let p1 = board.point([4.0, 0]),
@@ -1566,11 +1567,11 @@ import { TXG } from './tsxgraph'
     // let a = board.reflexAngle(p1, p2, p3, { radius: 2 })
 
 
-    board.text(3, 3, () => (a.Value().toFixed(2)))
+    board.text([3, 3], () => (a.Value().toFixed(2)))
 
     let p4 = board.point([0.5, 0])
     let b = board.nonReflexAngle(p1, p4, p3, { radius: 2 })
-    board.text(4.5, 4.5, () => b.Value().toFixed(2))
+    board.text([4.5, 4.5], () => b.Value().toFixed(2))
 
 }
 
@@ -1602,15 +1603,15 @@ import { TXG } from './tsxgraph'
     ///////////////////////
 
     // Create an intersection point of circle and line
-    var p1 = board.point([2.0, 2.0]);
-    var c1 = board.circle(p1, 4.0);
+    let p1 = board.point([2.0, 2.0]);
+    let c1 = board.circle(p1, 4.0);
 
-    var p2 = board.point([2.0, 2.0]);
-    var p3 = board.point([2.0, 2.0]);
-    var l1 = board.line(p2, p3);
+    let p2 = board.point([2.0, 2.0]);
+    let p3 = board.point([2.0, 2.0]);
+    let l1 = board.line(p2, p3);
 
-    var i = board.intersection(c1, l1);
-    var j = board.otherIntersection(c1, l1, i);
+    let i = board.intersection(c1, l1);
+    let j = board.otherIntersection(c1, l1, i);
 
 }
 
@@ -1648,7 +1649,7 @@ import { TXG } from './tsxgraph'
             dy = absPos[1] - cPos[1];
 
         let coords = new ((window as any).JXG as any).Coords(1, [dx, dy], (JSX.board as any));
-        console.log('coords', coords)
+        // console.log('coords', coords)
         return coords;  // returns Coords object
     }
     let down = function (e: Object) {
@@ -1681,7 +1682,7 @@ import { TXG } from './tsxgraph'
 
 {
     const JSX = TXG.TSXGraph.initBoard('html58')
-    JSX.print('checking for whether points can be defined [x,y]')
+    JSX.print('58: checking for whether points can be defined [x,y]')
 
     JSX.line([-1, 0], [1, 0])          // works, but I can drag the line
     JSX.circle([0, 0], [1, 0])         // works, but I can drag the circle
@@ -1690,15 +1691,44 @@ import { TXG } from './tsxgraph'
     let a = JSX.arrow([-3, 0], [-3, -2])     // points are given names
     JSX.arrowparallel([-3, 0], [-3, -4], [-4, 0])
 
+}
 
+{
+    const TSX = TXG.TSXGraph.initBoard('html59', {
+        boundingbox: [-8, 8, 8, -8],
+        axis: true,
+        grid: false,
+    })
+    TSX.print('59: Slopefield')
 
+    // Slider to control length of vectors
+    var s = TSX.slider([-3, 7], [3, 7], [0, 0.33, 1], { name: 'length' });
+    // Slider to control number of steps
+    var stepsize = TSX.slider([-3, 6], [3, 6], [1, 20, 100], { name: 'steps', snapWidth: 1 });
+
+    var field = TSX.slopefield(
+        (x: number, y: number) => x * x - y * y,
+        [-6, () => stepsize.Value(), 6],
+        [-5, () => stepsize.Value(), 5],
+        {
+            strokeWidth: 1.5,
+            highlightStrokeWidth: 0.5,
+            highlightStrokeColor: 'blue',
+
+            scale: () => s.Value(),
+
+            arrowhead: {
+                enabled: false,
+                size: 8,
+                angle: Math.PI / 16
+            }
+        });
 
 }
 
-
 {
     let JSX = TXG.TSXGraph.initBoard('html60', {})
-    JSX.print('grid')
+    JSX.print('60: grid')
 
     // let g = JSX.grid([2,3],[3,2],{drawZero:true})
 
@@ -1884,10 +1914,46 @@ import { TXG } from './tsxgraph'
 
 }
 
+
+{
+    let JSX = TXG.TSXGraph.initBoard('html67');
+
+    JSX.print('67: Input Field')
+
+    let input = JSX.input([-4, -1], 'Circuncircle', '')
+
+    let text = JSX.text([-4, 0], () => input.Value())
+
+    input.onChange(() => JSX.print(input.Value()))
+}
+
+
+
+{
+    let JSX = TXG.TSXGraph.initBoard('html68');
+
+    JSX.print('Reset Button')
+
+    let chkbx = JSX.checkbox([-4, -1], 'Circuncircle')
+    let circle = JSX.circle([0, 0], 3, { visible: () => chkbx.Value() })
+
+    // TODO:  tbtb
+    let button = JSX.button([-4, 2], 'Reset', function () {
+        chkbx.setAttribute({ checked: false });
+        circle.setAttribute({ visible: false });
+    })
+
+    // chkbx.onChange(() => circle.setAttribute({ visible: chkbx.Value() }))
+}
+
+
+
 {
     // (window as any).JXG.Options.text.useKatex = true;
 
     const TSX = TXG.TSXGraph.initBoard('html69')
+
+    TSX.print('69: almost 3D')
 
     let B = TSX.point([-2, -1], { name: 'B' })
     let C = TSX.point([-3, 2], { name: 'C' })
@@ -1898,7 +1964,7 @@ import { TXG } from './tsxgraph'
     // want a point .5 units perpendicular AB
     let perp = TSX.perpendicular(seg, A, { opacity: 0 })
     let diameter = TSX.circle(A, 0.4, { opacity: 0 })
-    let offset = TSX.intersection(perp, diameter, { opacity: 0,name:'' })
+    let offset = TSX.intersection(perp, diameter, { opacity: 0, name: '' })
 
     let ellipse = TSX.conic.threePoints(B, left, offset)
     let triangle = TSX.polygon([B, C, left], { fillColor: 'red' })
@@ -1922,13 +1988,1056 @@ import { TXG } from './tsxgraph'
     TSX.segment(A2, E2)
 }
 
+// {
+//     let TSX = TXG.TSXGraph.initBoard('html70');
+//     let text = TSX.text([-4, 2], 'Object', { dragArea: 'right' });
+//     let text2 = TSX.text([-2, 2],
+//         `< div style = "width:1px;" >
+//         <form action="#" >
+//             <select name="object" id = "object" >
+//                 <option value="point" > Point </option>
+//                     < option value = "line" > Line </option>
+//                         </select>
+//                         </form>
+//                         </div>`, { fixed: true });
+
+//
+//     var fo = board.create('fo', [
+//         '<div style="width:50px;height:20px;" ><form action="#"><select name="lang2" id="lang2"> <option value="javascript">JavaScript</option> <option value="php">PHP</option> </select></form></div>',
+//         [-2, 2]],
+//         {layer: 1, fixed: false}
+//      );
+//     */
+//     let text3 = JSX.text([-2, 0], () => (document as any).getElementById('object').value);
+
+//     // there is no 'change' event on text.  if you stuff the value of JSX.text into an
+//     // invisible input, you can use the onChange.
+
+// }
 
 
 
+{
+    let TSX = TXG.TSXGraph.initBoard('html71');
+    TSX.print('PolygonalChain')
+    let attr = {
+        snapToGrid: true
+    }
+    let p = [];
+
+    p.push(TSX.point([-4, 0], attr));
+    p.push(TSX.point([-1, -3], attr));
+    p.push(TSX.point([0, 2], attr));
+    p.push(TSX.point([2, 1], attr));
+    p.push(TSX.point([4, -2], attr));
+
+    // let chain = JSX.create('polygonalchain', p, { borders: { strokeWidth: 3 } });
+    let chain = TSX.polygonalChain(p)
+
+}
+
+
+{
+    let TSX = TXG.TSXGraph.initBoard('html72');
+    TSX.addAxis()
+
+    let getRandomInt = (min: number, max: number) => (Math.round(Math.random() * (max - min)) + min)
+    let targetX = 0
+    let targetY = 0
+    let target = TSX.point([targetX, targetY])
+    let hitOpacity = 0
+    let hit = TSX.point([targetX, targetY], { opacity: hitOpacity, strokeWidth: 25 })
+
+    let fade = () => {
+        if (hitOpacity > 0) {
+            hitOpacity -= .01
+            hit.setAttribute({ opacity: hitOpacity })
+        }
+    }
+
+    let inp1 = TSX.input([-4.5, 4.5], '0', 'x: ', { cssStyle: 'width:15px' })
+    let inp2 = TSX.input([-3.5, 4.5], '0', 'y: ', { cssStyle: 'width:15px' })
+
+    setInterval(fade, 20);   // run every 20 ms
+    TSX.button([-2.5, 4.5], 'Go', () => {
+        let v1 = parseInt(inp1.Value())
+        let v2 = parseInt(inp2.Value())
+        hit.setPositionDirectly([v1, v2])
+
+        let hitColor = 'red'  // assume wrong
+        hitOpacity = 1
+        if (targetX == v1 && targetY == v2) {  // answer was correct
+            hitColor = 'green'
+
+            targetX = getRandomInt(-4, 4)
+            targetY = getRandomInt(-4, 4)
+            target.setPositionDirectly([targetX, targetY])
+        }
+        hit.setAttribute({ opacity: hitOpacity, strokeColor: hitColor, name: '' })
+    })
+}
+
+
+{
+    let TSX = TXG.TSXGraph.initBoard('html73');
+    TSX.print('73:')
+
+    let bound = [-5, 5];
+    let view = TSX.view3D(-6, -3, 8, 8, bound, bound, bound)
+
+    let PI = Math.PI
+    let xSlide = TSX.slider([-4.5, 4.8], [3, 4.8], [-PI, 0, PI], { name: 'x' })
+    let ySlide = TSX.slider([-4.5, 4.4], [3, 4.4], [-PI, 0, PI], { name: 'y' })
+    let zSlide = TSX.slider([-4.5, 4.0], [3, 4.0], [-PI, 0, PI], { name: 'z' })
+
+    type Point3 = {
+        point: TXG.Point3D,
+        x: number,
+        y: number,
+        z: number,
+    }
+
+    let hex = (n: number) => n.toString(16).padStart(2, '0')
+    let points: Point3[] = []
+
+    for (let i = -2; i <= 2; i++) {
+        for (let j = -2; j <= 2; j++) {
+            for (let k = -3; k <= 1; k++) {
+                let color = '#' + hex((i + 3) * 40) + hex((j + 3) * 40) + hex((k + 3) * 40)
+                let color2 = '#' + hex((i + 2) * 40) + hex((j + 2) * 40) + hex((k + 2) * 40)
+
+                points.push({
+                    point: view.point3D([i, j, k], { gradient: 'linear', fillColor: color, gradientSecondColor: color2, size: 20, withLabel: false }),
+                    x: i,
+                    y: j,
+                    z: k,
+                })
+
+            }
+        }
+    }
+
+    let turn = () => {
+        // rotation around x
+        let cosX = Math.cos(xSlide.Value())
+        let sinX = Math.sin(xSlide.Value())
+        let rotX =
+            [[1, 0, 0, 0],
+            [0, cosX, -sinX, 0],
+            [0, sinX, cosX, 0],
+            [0, 0, 0, 1]]
+
+        // rotation around y
+        let cosY = Math.cos(ySlide.Value())
+        let sinY = Math.sin(ySlide.Value())
+        let rotY =
+            [[cosY, 0, sinY, 0],
+            [0, 1, 0, 0],
+            [- sinY, 0, cosY, 0],
+            [0, 0, 0, 1]]
+
+        // rotation around z
+        let cosZ = Math.cos(zSlide.Value())
+        let sinZ = Math.sin(zSlide.Value())
+        let rotZ =
+            [[cosZ, -sinZ, 0, 0],
+            [sinZ, cosZ, 0, 0],
+            [0, 0, 1, 0],
+            [0, 0, 0, 1]
+            ]
+
+        points.map((pointN: Point3) => {
+            let point = [pointN.x, pointN.y, pointN.z, 0]
+
+            point = TSX.MatrixMath.matVecMult(rotX, point)
+            point = TSX.MatrixMath.matVecMult(rotY, point)
+            point = TSX.MatrixMath.matVecMult(rotZ, point)
+
+            pointN.point.setPosition([point[0], point[1], point[2]])
+        })
+    }
+
+    xSlide.onChange(() => turn())
+    ySlide.onChange(() => turn())
+    zSlide.onChange(() => turn())
+}
+
+{
+    let TSX = TXG.TSXGraph.initBoard('html74');
+
+    TSX.print('Tangent to a circle')
+    let c = TSX.circle([0, 0], 1)
+    let p1 = TSX.point([-3, 3])
+    let s = TSX.glider(c)
+    let l1 = TSX.line(p1, s)
+    let i = TSX.intersection(c, l1)
+
+    let p2 = TSX.point([-3, -3])
+    let l2 = TSX.line(i, p2)
+}
+{
+    let TSX = TXG.TSXGraph.initBoard('html75');
+
+    TSX.print('Perspective Projection')
+
+    let bound = [-5, 5];
+    let view = TSX.view3D(-6, -3, 8, 8, bound, bound, bound, { projection: 'central' })
+
+    let p = view.point3D([1, 2, 2], { name: 'A', size: 5 });
+    let q = view.point3D(() => [p.X(), p.Y(), p.Z() - 3], { name: 'B', size: 5, fixed: true });
+
+
+    let l1 = view.line3D([1, 3, 3], [-3, -3, -3], { point1: { visible: true }, point2: { visible: true } });
+    let l2 = view.line3D(q, l1.point1);
+
+    // Line by point, direction, range
+    // var l3 = view.line3D(p, [0, 0, 1], [-2, 4]);
+
+    let c1 = view.curve3D((x: number) => Math.sin(x), (y: number) => 3 * Math.cos(y), (z: number) => z, [-5, 5])
+
+}
+
+{
+    let TSX = TXG.TSXGraph.initBoard('html76');
+
+    TSX.print('Sphere with Perspective Projection')
+    TSX.print('Sphere3D requres next version of JSXGraph')
+
+    let bound = [-5, 5];
+    let view = TSX.view3D(-6, -3, 8, 8, bound, bound, bound, { projection: 'parallel' })
+
+    let p = view.point3D([1, 2, 2], { name: 'A', size: 5 });
+
+    // let s2 = view.sphere3D([0, 0, 0], [-3, -3, -3], { color: 'red', fillColor: 'red', strokeColor: 'red', opacity: 1, strokeopacity: 1, fillopacity: 1 });
+
+}
+
+
+{
+    let TSX = TXG.TSXGraph.initBoard('html77');
+
+    TSX.print('Polygon3d')
+    TSX.print('Sphere3D requres next version of JSXGraph')
+
+    let bound = [-5, 5];
+    let view = TSX.view3D(-6, -3, 8, 8, bound, bound, bound, { projection: 'parallel' })
+
+    let points: TXG.Point3D[] = []
+
+    points.push(view.point3D([-1, -1, -1]))
+    points.push(view.point3D([-1, 1, 1]))
+    points.push(view.point3D([1, 2, 3]))
+
+    // view.polygon3D(points, { fillColor: 'blue' })
+}
+
+
+{
+    let TSX = TXG.TSXGraph.initBoard('html78', { boundingbox: [-1, 5, 5, -1] });
+    TSX.print('Descartes Multiplication')
+    // TSX.addAxis()
+
+    let a = 2
+    let b = 2
+
+    let B = TSX.point([0, 0], { fixed: true, name: 'B' })
+    let xAxis = TSX.line(B, [10, 0], { fixed: true })
+    let A = TSX.point([1, 0], { fixed: true, name: 'A' })
+
+    // unit line
+    TSX.segment(A, B, { strokeColor: 'red' })
+    TSX.text([.5, -.4], '1', { fontSize: 20, strokeColor: 'red' })
+
+    // BD
+    let D = TSX.glider(xAxis, [a, 0], { name: 'D' })
+}
+
+
+{
+    let board = TXG.TSXGraph.initBoard('html79')
+
+    board.print('79: circle3D and intersectioncircle3D')
+    board.print('Sphere3D, Circle3d, etc requres next version of JSXGraph')
+
+    // Create the intersection circle of two spheres
+    let view = board.view3D(-6, -3, 8, 8,
+        [0, 4], [0, 4], [0, 4],
+        {
+            xPlaneRear: { fillOpacity: 0.0, gradient: null },
+            yPlaneRear: { fillOpacity: 0.0, gradient: null },
+            zPlaneRear: { fillOpacity: 0., gradient: null }
+        }
+    );
+    let a1 = view.point3D([0, -.1, 0]);
+    let a2 = view.point3D([0, 3, 0]);
+
+    // let s1 = view.sphere3D(a1, 2, { fillColor: '#00ff80' });
+    // let s2 = view.sphere3D(a2, 2, { fillColor: '#ff0000' });
+
+    // let i = view.intersectioncircle3D(s1, s2, { strokeWidth: 10, strokeColor: 'red' });
+
+    // let a3 = view.point3D([-3, 0, 0])
+    // let circle = view.circle3D(a3, [0, 0, 1], 2, { strokeWidth: 10, strokeColor: 'blue' })
+}
+
+{
+    let board = TXG.TSXGraph.initBoard('html80')
+
+    board.print('plane3D')
+    // Create the intersection circle of two spheres
+    let view = board.view3D(-6, -3, 8, 8,
+        [0, 4], [0, 4], [0, 4],
+        {
+            xPlaneRear: { fillOpacity: 0, gradient: null },
+            yPlaneRear: { fillOpacity: 0, gradient: null },
+            zPlaneRear: { fillOpacity: 0, gradient: null }
+        }
+    );
+    let a0 = view.point3D([1, 1, 1])
+
+    let pnt = [-1, 1, 1]  // either point3D or number[]
+    let axis1 = [0, 1, 0], axis2 = [0, 0, 1]
+    let range1 = [0, 3], range2 = [0, 3]
+    let plane = view.plane3D(a0, axis1, axis2, range1, range2,
+        {
+            fillColor: 'red', gradientSecondColor: 'blue', fillOpacity: .5, strokeColor: 'blue',
+            gradient: 'linear', visible: true
+        })
+
+
+}
+
+{
+    let TSX = TXG.TSXGraph.initBoard('html81')
+    TSX.print('centroid')
+
+    let p1 = TSX.point([-4, -4])
+    let p2 = TSX.point([4, -4])
+    let p3 = TSX.point([-2, 4]);
+
+    TSX.polygon([p1, p2, p3])
+
+    let mid12 = TSX.midpoint(p1, p2);
+    let mid13 = TSX.midpoint(p1, p3);
+    let mid23 = TSX.midpoint(p2, p3);
+
+    let seg1 = TSX.segment(p1, mid23);
+    let seg2 = TSX.segment(p2, mid13);
+    TSX.segment(p3, mid12);
+
+    TSX.intersection(seg1, seg2, { strokeColor: 'blue' });
+
+}
+
+{
+    let TSX = TXG.TSXGraph.initBoard('html81')
+    // TSX.print('copernicus')
+
+    let imgOffset = .25
+
+    let sun = TSX.image('icons/sun.png', [0 - .5, 0 - .5], [1, 1]);
+    let earth = TSX.image('icons/earth.png', [1 - imgOffset, 0 - imgOffset], [.5, .5]);
+    let mars = TSX.image('icons/mars.png', [2 - imgOffset, 0 - imgOffset], [.5, .5]);
+
+    let eOrbit = 365    // days
+    let mOrbit = 687
+
+    // Kepler's 3rd law  dist^3 == period^2  (then scaled to fit)
+    let eDist = Math.cbrt(Math.pow(eOrbit, 2)) / 25
+    let mDist = Math.cbrt(Math.pow(mOrbit, 2)) / 25
+
+    TSX.circle([0, 0], eDist)   // just for reference
+    TSX.circle([0, 0], mDist)
+
+    let chk = TSX.checkbox([-4, 4], 'See from Earth POV')
+
+    let time = 0
+
+    setInterval(() => {
+        let earthX = Math.cos(time / eOrbit) * eDist - imgOffset
+        let earthY = Math.sin(time / eOrbit) * eDist - imgOffset
+        earth.setPositionDirectly([earthX, earthY])
+
+        let marsX = Math.cos(time / mOrbit) * mDist - imgOffset
+        let marsY = Math.sin(time / mOrbit) * mDist - imgOffset
+        mars.setPositionDirectly([marsX, marsY])
+
+        // the next line sets the EARTH as the center of this construction.
+        if (chk.Value()) {
+            TSX.setBoundingBox(-5 + earthX, 5 + earthY, 5 + earthX, -5 + earthY)
+            chk.setPositionDirectly([-4 + earthX, 4 + earthY])   // checkbox relative position
+        }
+
+        time += 2
+        TSX.update()
+    }, 10)
+}
+
+
+{
+    let TSX = TXG.TSXGraph.initBoard('html82', { axis: true })
+    TSX.print('quadrants')
+
+    let colorFn = (x: number, y: number): string => {
+        // console.log(x, y)
+        if (x > 0 && y > 0)
+            return 'green'
+        if (x > 0 && y < 0)
+            return 'red'
+        if (x < 0 && y < 0)
+            return 'blue'
+        if (x < 0 && y > 0)
+            return 'orange'
+        return '#000000'
+    }
+
+    let opacityFn = (x: number, y: number) => {
+        // console.log(x, y)
+        if (x > 0 && y > 0)
+            return .1
+        if (x > 0 && y < 0)
+            return .9
+        if (x < 0 && y < 0)
+            return .3
+        if (x < 0 && y > 0)
+            return .9
+        return 1
+    }
+
+    // two steps
+    let P1 = TSX.point([0, 0])
+    P1.setAttribute({ color: () => colorFn(P1.X(), P1.Y()) })
+    P1.setAttribute({ opacity: () => opacityFn(P1.X(), P1.Y()) })
+    P1.setAttribute({ strokeWidth: () => 10 * opacityFn(P1.X(), P1.Y()) })
+}
+
+{
+    const TSX = TXG.TSXGraph.initBoard('html83', {
+        boundingbox: [-5, 5, 5, -5], axis: true,
+        defaultAxes: {
+            x: { ticks: { visible: false } },
+            y: { ticks: { visible: false } }
+        }
+    });
+    // let TSX = TXG.TSXGraph.initBoard('html83')
+    TSX.print('line glider')
+    let a = TSX.point([-2, -2], { fixed: true, opacity: 0 })
+    let b = TSX.point([2, 2], { fixed: true, opacity: 0 })
+    let s1 = TSX.segment(a, b)
+    let c = TSX.glider(s1)
+
+}
+
+{
+    let TSX = TXG.TSXGraph.initBoard('html84',
+        { boundingbox: [-5, 1.5, 5, -.2], axis: true });
+
+    TSX.print('84: Gaussian Distribution')
+    TSX.print('requres next version of JSXGraph')
+
+    // let runs: [number, number, string][] = [
+    //     [0, 0.2, 'blue'],
+    //     [0, 1.0, 'red'],
+    //     [0, 5.0, 'orange'],
+    //     [-2, 0.5, 'green'],
+    // ]
+
+    // let labelY = 1.2
+    // runs.forEach((run, i) => {
+    //     TSX.create('segment', [[0, labelY - (i / 10)], [1, labelY - (i / 10)]], { strokeColor: run[2] })
+    //     TSX.create('text', [1.5, labelY - (i / 10), `&mu;=${run[0]}, &#963;<sup>2</sup>=${run[1]}`])
+    //     let x = Array(50000).fill(0).map(() => TSX.StatisticsMath.randomNormal(run[0], Math.sqrt(run[1])))
+    //     let res = TSX.StatisticsMath.histogram(x, 40, false, true);
+    //     TSX.create('curve', [res[1], res[0]], { strokeColor: run[2], strokeWidth: 2 });
+
+    // })
+
+}
+{
+    let TSX = TXG.TSXGraph.initBoard('html85',
+        { boundingbox: [-0.5, 1.5, 5, -0.06], axis: true })
+    TSX.print('Exponential Distribution')
+    TSX.print('requres next version of JSXGraph')
+
+
+    // let runs: [number, string][] = [
+    //     [0.5, 'red'],
+    //     [1.0, 'green'],
+    //     [1.5, 'blue'],
+    // ]
+
+    // let labelY = 1
+    // runs.forEach((run, i) => {
+    //     TSX.create('segment', [[1.8, labelY - (i / 20)], [2.3, labelY - (i / 20)]], { strokeColor: run[1] })
+    //     TSX.create('text', [2.5, labelY - (i / 20), `&lambda;=${run[0]}`])
+
+    //     let x = Array(50000).fill(0).map(() => TSX.StatisticsMath.randomExponential(run[0]))
+    //     let res = TSX.StatisticsMath.histogram(x, 40, false);
+    //     TSX.curve(res[1], res[0], 0, 5, { strokeColor: run[1], strokeWidth: 2 });
+    // })
+
+}
+
+{
+
+    const TSX = TXG.TSXGraph.initBoard('html86', {
+        boundingbox: [0, 9, 7, 7],
+        axis: true,
+        grid: false,
+        keepAspectRatio: false
+    });
+
+    TSX.print('Glider on Ellipse')
+    // TSX.renderer.container.style.backgroundColor = '#f0f0fb';
+
+
+    let A = TSX.point([1.6, 8.025], { visible: false });
+    let B = TSX.point([5.5, 8], { visible: false });
+    let C = TSX.point([3.65, 8.5], { visible: false });
+    let el0 = TSX.create('ellipse', [A, B, C]);  // defined by 3 points
+    let el1 = TSX.create('ellipse', [A, B, 4.3]); // defined by 2 points and distance
+    let el2 = TSX.create('ellipse', [A, B, 4.2]); // defined by 2 points and distance
+    let el3 = TSX.create('ellipse', [A, B, 4.1]); // defined by 2 points and distance
+
+    let g0 = TSX.glider(el0, { name: "", face: "triangleright", strokeWidth: 6, strokeColor: 'blue' });
+    let g1 = TSX.glider(el1, [5.3, 6.33], { name: "", face: "triangleleft", strokeWidth: 3, strokeColor: 'blue' });
+    let g2 = TSX.glider(el2);
+    let g3 = TSX.glider(el3, [5.3, 6.33]);
+
+    g0.startAnimation(1, 30, 250);
+    g1.startAnimation(-1, 18, 130);
+    g2.startAnimation(-1, 18, 130);
+    g3.startAnimation(-1, 18, 130);
+
+}
+{
+    const TSX = TXG.TSXGraph.initBoard('html87', { axis: true })
+    TSX.print('arrows around an ellipse')
+
+    let foci1: [number, number] = [3, 0]
+    let foci2 = [-1, 0]
+    let major = 4.5
+
+    TSX.ellipse(foci1, foci2, major)
+
+    let center = [(foci1[0] + foci2[0]) / 2, (foci1[1] + foci2[1]) / 2]
+
+    // d1 + d2 = major,
+    // at x=0, d1==d2 so hypotenuse == major/2.  apply pythagoras
+    let base = foci2[0] - center[0]  // only true for ellipses aligned on grid
+    let minorHalf = Math.sqrt(Math.pow(major / 2, 2) - Math.pow(base, 2))
+
+    // arrow pointing UP at angle 0 (easy to replace with a segment+arrowhead)
+    let arrowArray = [[0, 0], [-.2, -.2], [.2, -.2]]
+
+    // create physical points that we can move
+    let arrow: TXG.Point[] = []
+    arrowArray.forEach((point) => arrow.push(TSX.point(point, { opacity: 0, name: '' })))
+
+    // quick and dirty to draw arrow polygon
+    TSX.segment(arrow[0], arrow[1])
+    TSX.segment(arrow[1], arrow[2])
+    TSX.segment(arrow[2], arrow[0])
+
+    let arrowRadions = 0;
+
+    let updater = () => {
+        arrowArray.map((point, i) => {
+
+            let position = [...point]   // clone with spread operator
+
+            // // rotate
+            position =
+                [position[0] * Math.cos(arrowRadions) - position[1] * Math.sin(arrowRadions),
+                position[0] * Math.sin(arrowRadions) + position[1] * Math.cos(arrowRadions)]
+
+            // translation
+            position =
+                [position[0] + center[0] + (major / 2 * Math.cos(arrowRadions)),
+                position[1] + center[1] + (minorHalf * Math.sin(arrowRadions))]
+
+            arrow[i].setPositionDirectly(position)
+        })
+
+        arrowRadions += .1;
+        TSX.update()
+    }
+
+    setInterval(updater, 200)
+}
+{
+    let TSX = TXG.TSXGraph.initBoard('html88',
+        { boundingbox: [-3, .5, 40, -.04], axis: true });
+    TSX.print('Binomial Distribution')
+    TSX.print('requres next version of JSXGraph')
 
 
 
+    // let runs: [number, number, string][] = [
+    //     [0.5, 20, 'brown'],
+    //     [0.7, 20, 'red'],
+    //     [0.5, 40, 'orange'],
+    // ]
 
+    // let lblY = .4
+    // runs.forEach((run, i) => {
+    //     TSX.create('segment', [[10, lblY - (i / 50)], [12, lblY - (i / 50)]], { strokeColor: run[2] })
+    //     TSX.create('text', [13, lblY - (i / 50), `p=${run[0]}, n=${run[1]}`])
+
+    //     let x = Array(5000).fill(0).map(() => TSX.StatisticsMath.randomBinomial(run[1], run[0]))
+    //     let res = TSX.StatisticsMath.histogram(x, 40, [0, 40], true, false);
+    //     TSX.create('curve', [res[1], res[0]], { strokeColor: run[2] });
+
+    // })
+
+}
+{
+
+    let TSX = TXG.TSXGraph.initBoard('html89',
+        { boundingbox: [-3, .5, 20, -.04], axis: true });
+    TSX.print('Poisson Distribution')
+    TSX.print('requres next version of JSXGraph')
+
+
+
+    // let runs: [number, string][] = [
+    //     [1.0, 'red'],
+    //     [2.0, 'orange'],
+    //     [4.0, 'purple'],
+    //     [10.0, 'blue'],
+    // ]
+
+    // let lblY = .4
+    // runs.forEach((run, i) => {
+    //     TSX.create('segment', [[10, lblY - (i / 50)], [12, lblY - (i / 50)]], { strokeColor: run[1] })
+    //     TSX.create('text', [13, lblY - (i / 50), `&lambda;=${run[0]}`])
+
+    //     let x = Array(5000).fill(0).map(() => TSX.StatisticsMath.randomPoisson(run[0]))
+    //     let res = TSX.StatisticsMath.histogram(x, 20, [0, 20], true, false);
+    //     TSX.create('curve', [res[1], res[0]], { strokeColor: run[1] });
+
+    // })
+
+}
+
+{
+    let TSX = TXG.TSXGraph.initBoard('html90',
+        { boundingbox: [-3, .5, 20, -.04], axis: true });
+    TSX.print('gamma density')
+    TSX.print('requres next version of JSXGraph')
+
+    // let runs: [number, number, string][] = [
+    //     [0.5, 1.0, 'brown'],
+    //     [1.0, 2.0, 'red'],
+    //     [2.0, 2.0, 'orange'],
+    //     [3.0, 2.0, 'yellow'],
+    //     [5.0, 1.0, 'green'],
+    //     [9.0, 0.5, 'black'],
+    //     [7.5, 1.0, 'purple'],
+    // ]
+
+    // let lblY = .4
+    // runs.forEach((run, i) => {
+    //     TSX.create('segment', [[10, lblY - (i / 50)], [12, lblY - (i / 50)]], { strokeColor: run[2] })
+    //     TSX.create('text', [13, lblY - (i / 50), `K=${run[0]}, 0=${run[1]}`])
+
+    //     let x = Array(5000).fill(0).map(() => TSX.StatisticsMath.randomGamma(run[0], run[1]))
+    //     let res = TSX.StatisticsMath.histogram(x, 50, [0, 20], true, false);
+    //     TSX.create('curve', [res[1], res[0]], { strokeColor: run[2] });
+    // })
+
+}
+{
+    let TSX = TXG.TSXGraph.initBoard('html91',
+        { boundingbox: [-3, 1.2, 20, -.1], axis: true });
+    TSX.print('gamma cumulative density')
+    TSX.print('requres next version of JSXGraph')
+
+
+    // let runs: [number, number, string][] = [
+    //     [0.5, 1.0, 'brown'],
+    //     [1.0, 2.0, 'red'],
+    //     [2.0, 2.0, 'orange'],
+    //     [3.0, 2.0, 'yellow'],
+    //     [5.0, 1.0, 'green'],
+    //     [9.0, 0.5, 'black'],
+    //     [7.5, 1.0, 'purple'],
+    // ]
+
+    // let lblY = .4
+    // runs.forEach((run, i) => {
+    //     let x = Array(5000).fill(0).map(() => TSX.StatisticsMath.randomGamma(run[0], run[1]))
+    //     let res = TSX.StatisticsMath.histogram(x, 50, [0, 20], true, true)
+    //     TSX.create('curve', [res[1], res[0]], { strokeColor: run[2] })
+    // })
+
+
+}
+
+{
+    // This code I use for pi-ticks at the y-axis
+    const TSX = TXG.TSXGraph.initBoard('html92',
+        {
+            boundingbox: [-6.5, 6.5, 6.5, -6.5], axis: true,
+            defaultAxes: {
+                y: {
+                    ticks: {
+                        scale: Math.PI,
+                        scaleSymbol: '\u03c0',
+                        ticksDistance: 0.5,
+                        beautifulScientificTickLabels: true,
+                        insertTicks: false
+                    }
+                }
+            }
+        });
+    TSX.print('PI ticks on Y axis')
+
+
+}
+{
+    const TSX = TXG.TSXGraph.initBoard('html93', { boundingbox: [-3, 3, 3, -3] });
+    TSX.print('Trigonometric functions')   // from JSXGraph Wiki
+
+    let ax = TSX.line([0, 0], [1, 0], { visible: false });
+    let ay = TSX.line([0, 0], [0, 1], { visible: false });
+
+    let p0 = TSX.point([0, 0], { fixed: true, visible: false });
+    let p1 = TSX.point([1, 0], { name: '', visible: false, fixed: true });
+    let c = TSX.circle(p0, p1, { dash: 2, strokeWidth: 1, strokeOpacity: 0.6 });
+    let p2 = TSX.glider(c, [.4, 1], { name: '', withLabel: false });
+    let p3 = TSX.point([function () { return p2.X(); }, 0.0], { visible: false, name: '', withLabel: false });
+    let p4 = TSX.point([0.0, function () { return p2.Y(); }], { visible: false, name: '', withLabel: false });
+
+    TSX.create('line', [p0, p2], { straightFirst: false, straightLast: false, strokeColor: 'black' });   // Hypotenuse
+    TSX.create('line', [p2, p3], { straightFirst: false, straightLast: false, strokeColor: 'red' });     // sin
+    TSX.create('line', [p2, p4], { straightFirst: false, straightLast: false, strokeColor: 'red' });     // cos
+
+    let t = TSX.tangent(p2, { visible: false });
+    let p5 = TSX.intersection(t, ax, { visible: false, name: '', withLabel: false });
+    let p6 = TSX.intersection(t, ay, { visible: false, name: '', withLabel: false });
+    TSX.line(p5, p6, { straightFirst: false, straightLast: false });                       // tan + cot
+    TSX.line(p0, p6, { straightFirst: false, straightLast: false, strokeColor: 'green' });   // csc
+    TSX.line(p0, p5, { straightFirst: false, straightLast: false, strokeColor: 'green' });   // sec
+
+    TSX.text([
+        () => (p0.X() + p2.X()) * 0.5,
+        () => (p0.Y() + p2.Y()) * 0.5],
+        '1', {});
+
+    TSX.text([
+        () => (p2.X() + p4.X()) * 0.3,
+        () => (p2.Y() + p4.Y()) * 0.5],
+        'cos', {});
+
+    TSX.text([
+        () => (p2.X() + p3.X()) * 0.5,
+        () => (p2.Y() + p3.Y()) * 0.5],
+        'sin', {});
+
+    TSX.text([
+        () => 0.1 + (p2.X() + p5.X()) * 0.5,
+        () => 0.1 + (p2.Y() + p5.Y()) * 0.5],
+        'tan', {});
+
+    TSX.text([
+        () => 0.1 + (p2.X() + p6.X()) * 0.5,
+        () => 0.1 + (p2.Y() + p6.Y()) * 0.5],
+        'cot', {});
+
+    TSX.text([
+        () => -0.2 + (p0.X() + p6.X()) * 0.5,
+        () => (p0.Y() + p6.Y()) * 0.5],
+        'csc', {});
+
+    TSX.text([
+        () => (p0.X() + p5.X()) * 0.5,
+        () => (p0.Y() + p5.Y()) * 0.5],
+        'sec', {});
+}
+
+{
+    const TSX = TXG.TSXGraph.initBoard('html94', { boundingbox: [-3, 3, 3, -3] });
+
+    TSX.print('94: IntersectionLine3D')
+    TSX.print('requres next version of JSXGraph')
+
+    // // Create the intersection line of two planes
+    // let bound = [-5, 5];
+    // let view = TSX.view3D(-6, -3, 8, 8, bound, bound, bound)
+
+    // let a = view.point3D([0, 0, 0]);
+    // let b = view.point3D([2, 2, -1]);
+
+    // let p1 = view.plane3D(a, [1, 0, 0], [0, 1, 0], [0, 3], [0, 3],
+    //     { fillColor: '#00ff80' }
+    // );
+    // let p2 = view.plane3D(b, [-2, 1, 1], [1, -2, 1], [0, 3], [0, 3],
+    //     { fillColor: '#ff0000' }
+    // );
+
+    // let i = view.intersectionline3D(p1, p2);
+
+}
+{
+
+    const TSX = TXG.TSXGraph.initBoard('html95', { axis: true });
+
+    TSX.print('polar plot and curves')
+
+    // Polar plot
+    // Create a curve with the equation r(phi)= a*(1+phi), i.e.
+    // a cardioid.
+    let a = TSX.slider([-4, 2], [-2, 2], [0, 1, 5]);
+
+    let graph = TSX.curve(
+        (phi: number) => a.Value() * (1 - Math.cos(phi)),
+        [1, 0],
+        0, 2 * Math.PI,
+        { curveType: 'polar' }
+    );
+
+    [1, 2, 3, 4, 5, 6].forEach((b) => TSX.curve(
+        (x: number) => a.Value() * b * Math.pow(x, .5) / Math.pow(x, 2),
+        (y: number) => y,
+        0, 5)
+    )
+
+}
+
+{
+
+    let TSX = TXG.TSXGraph.initBoard('html96')
+
+    TSX.setBoundingBox(-5, 5, 5, -5)
+    TSX.addAxis()
+
+    TSX.curve(
+        (x: number) => Math.pow(Math.pow(x, .5), 2),
+        (y: number) => y,
+        0, 8)
+
+    let box = [-5, 5];
+    let view = TSX.view3D(-6, -3, 8, 8, box, box, [0, 5],
+        {
+            xPlaneRear: { visible: false },
+            yPlaneRear: { visible: false },
+        });
+
+    // Function F to be plotted
+    let F = (x: number, y: number) => Math.pow(x, .5) + Math.pow(y, .5);
+
+    // 3D surface
+    let s = view.functiongraph3D(
+        F,
+        box,
+        box,
+        {
+            strokeWidth: 0.5,
+            stepsU: 70,
+            stepsV: 70
+        })
+
+    let sliderZ = TSX.slider([-4.5, 4.5], [0, 4.5], [0, 2, 10], { name: 'Z' })
+
+    // some level curves at z=0
+    let curves = [1, 3, 5, 7, 9, 11]
+    curves.forEach((n: number) => {
+        view.curve3D(
+            (x: number) => n * Math.pow(x, .5) / Math.pow(x, 2),
+            (y: number) => y,
+            (z: number) => 0,
+            [0, 5],
+            { strokeColor: 'black' })
+    })
+
+    // finally the curve on the surface
+    view.curve3D(
+        (x: number) => sliderZ.Value() * Math.pow(x, .5) / Math.pow(x, 2),
+        (y: number) => y,
+        (z: number) => Math.pow(sliderZ.Value(), .5),
+        [0, 5],
+        { strokeColor: 'red', strokeWidth: 3 })
+
+}
+
+
+{
+    let TSX = TXG.TSXGraph.initBoard('html97')
+    TSX.print('segments with fixed length')
+
+
+    // Create a segment providing two points.
+    let p1 = TSX.point([-4.0, 1.0]);
+    let p2 = TSX.point([-1.0, 1.0]);
+    // AB
+    let l1 = TSX.segment(p1, p2);
+    let p3 = TSX.point([-4.0, 2.0]);
+    let p4 = TSX.point([-1.0, 2.0]);
+    // CD
+    let l2 = TSX.segment(p3, p4, 3); // Fixed length
+    let p5 = TSX.point([-4.0, 3.0]);
+    let p6 = TSX.point([-1.0, 4.0]);
+    // EF
+    let l3 = TSX.segment(p5, p6, () => l1.L(), { firstArrow: true, lastArrow: true }); // Fixed, but dependent length
+
+
+
+    /// something else
+    let A = TSX.point([0, 0], { name: 'A' });
+    let B = TSX.point([3, 0], { name: 'B' });
+    let C = TSX.point([3, 3], { name: 'C' });
+    let D = TSX.point([3, -4], { name: 'D' });
+
+    let alpha = TSX.angle(C, A, B, { radius: 3 });
+    let beta = TSX.angle(A, B, D, { radius: 3 });
+
+    alpha.setAngle(function () { return Math.PI / 4; });
+    // beta.setAngle(function () { return Math.PI / 2; });
+}
+{
+
+    const TSX = TXG.TSXGraph.initBoard('html98')
+    TSX.setBoundingBox(-15, 15, 15, -15)
+    TSX.addAxis
+    TSX.print('98: poncelet_traverse')
+
+
+
+    // "poncelet_traverse" creates a segment from p on the outer circle c2, tangent
+    // to the inner circle c1, and returns the other point where the outer circle
+    // intersects that tangent
+
+    let poncelet_traverse = ((p: TXG.Point | TXG.Glider, incirc: TXG.Circle, excirc: TXG.Circle): TXG.Point => {
+        let noshow = { visible: false };
+        let t = TSX.tangent(p, incirc, noshow);                                // tangent only has one parameter  !!
+        let ct = TSX.otherIntersection(incirc, t, p, noshow);              //
+        let pv = TSX.line(p, ct, noshow)
+        let p2 = TSX.otherIntersection(excirc, pv, p, noshow);
+        return p2;
+    })
+
+
+    // for checkbox actions, use .Value() in codeblock or .onChannge()
+
+    let buttonHide = TSX.checkbox([-10, 8], 'Hide initial triangle')
+    buttonHide.onChange(() => P.moveTo([A.X(), A.Y()], 0))
+
+
+    let A = TSX.point([4, 4], {
+        name: 'A',
+        visible: () => !buttonHide.Value()
+    });
+    let B = TSX.point([-5, 2], {
+        name: 'B',
+        visible: () => !buttonHide.Value()
+    });
+    let C = TSX.point([2, -3], {
+        name: 'C',
+        visible: () => !buttonHide.Value()
+    });
+
+    let tri = TSX.polygon([A, B, C], {
+        visible: () => !buttonHide.Value()
+    });
+
+    let excirc = TSX.circumcircle(A, B, C);
+    let incirc = TSX.incircle(A, B, C);
+
+    // The position of P should be at the same place as A.
+
+    let P = TSX.glider(excirc, [A.X(), A.Y()], {
+        name: 'P',
+        visible: () => buttonHide.Value()
+    });
+
+    let Q = poncelet_traverse(P, incirc, excirc);
+    Q.setAttribute({
+        name: 'Q',
+        visible: () => buttonHide.Value()
+    });
+
+
+    let R = poncelet_traverse(Q, incirc, excirc);
+    R.setAttribute({
+        name: 'R',
+        visible: () => buttonHide.Value()
+    });
+
+    // and create triangle with
+    let tri2 = TSX.polygon([P, Q, R],
+        {
+            visible: () => buttonHide.Value()
+        });
+
+
+}
+
+{
+
+    let w = 100
+    const TSX = TXG.TSXGraph.initBoard('html99', {
+        boundingbox: [-w, w, w, -5],
+        axis: true,
+    });
+
+    TSX.print('99: on click, on drag')
+
+    let t0 = TSX.point([0, 40], { withLabel: false, visible: false, });
+    let t1 = TSX.point([30, 40], { withLabel: false, visible: false, });
+    let S = TSX.segment(t0, t1, { withLabel: false });
+
+    S.on('drag', () => {
+        console.log(t0.X(), t0.Y())
+        t0.setPositionDirectly([0, t0.Y()]);
+        t1.setPositionDirectly([30, t0.Y()]);
+    })
+
+    S.on('click', () => alert('clicked'))
+
+}
+
+
+{
+
+    const TSX = TXG.TSXGraph.initBoard('html100')
+    TSX.print('100: moveTo() and button.onClick()')
+
+    let up = [4, 4]
+    let dn = [-4, -4]
+    let line = TSX.segment(up, dn)
+    let P = TSX.point([0, 0], { strokeColor: 'black' })
+    let Pup = TSX.point(up, { visible: false })
+    let Pdn = TSX.point(dn, { visible: false })
+
+    let isLeftRight = true;
+    let buttonMove = TSX.button([-2, 4], 'initial',
+        // use the button() codeblock to change the text and control a flag
+        () => { isLeftRight = !isLeftRight; buttonMove.rendNodeButton.innerHTML = isLeftRight ? 'left' : 'right' })
+    // use onClick() to add actions to the button
+    buttonMove.onClick(() => {
+        isLeftRight ? P.moveTo(up, 1000) : P.moveTo(dn, 1000)
+    })
+
+}
+
+{
+
+    const TSX = TXG.TSXGraph.initBoard("html101", {
+        boundingbox: [-1, 7, 7, -1],
+        axis: true,
+        grid: false,
+    })
+    TSX.print('101: tangent on reflection to a curve')
+
+    let g = TSX.segment([3, 0], [2, 4])
+    let f = TSX.functiongraph((x: number) => 3 * Math.pow(x, 2))
+
+    let f_re = TSX.reflection(f, g)
+    let B = TSX.glider(f_re, [5, 2])
+
+    TSX.tangent(B, { color: 'green' }) // fail
+}
 
 
 
@@ -1941,11 +3050,11 @@ import { TXG } from './tsxgraph'
     // useKatex can only be set ONCE.  unsetting it has no effect
     (window as any).JXG.Options.text.useKatex = true;
 
-    const brd2 = TXG.TSXGraph.initBoard('htmlLAST')
+    const brd2 = TXG.TSXGraph.initBoard('htmlLAST0')
     brd2.print('testing Katex')
 
-    brd2.text(-4, 2, '\\pm\\sqrt{a^2 + b^2}', { useKatex: true })
-    brd2.text(-4, 1, '\\pm\\sqrt{a^2 + b^2}', { useKatex: false });
+    brd2.text([-4, 2], '\\pm\\sqrt{a^2 + b^2}', { useKatex: true })
+    brd2.text([-4, 1], '\\pm\\sqrt{a^2 + b^2}', { useKatex: false });
 
     let pq = brd2.arrow([0, 0], [1, 1], {
         withLabel: true,
@@ -1955,6 +3064,122 @@ import { TXG } from './tsxgraph'
     });
 
 
+}
+{
+
+
+    {
+        let TSX = TXG.TSXGraph.initBoard('htmlLAST1');
+        TSX.setBoundingBox(-1, 5, 5, -1)
+        // top left, a model of uniform circular motion
+
+        let origin = TSX.point([0, 0], { name: '' })
+
+        // use ()=> to lock the axis points to the origin, even if the origin moved
+        let xAxisPt = TSX.point([() => origin.X(), () => origin.Y() + 4], { name: 'y', opacity: 0 })
+        let yAxisPt = TSX.point([() => origin.X() + 4, () => origin.Y()], { name: 'x', opacity: 0 })
+        let xAxis = TSX.segment(origin, xAxisPt, { opacity: .3, strokeColor: 'gray' })
+        let yAxis = TSX.segment(origin, yAxisPt, { opacity: .3, strokeColor: 'gray' })
+
+        let arc = TSX.arc(origin, yAxisPt, xAxisPt)
+        let glider = TSX.glider(arc, [3, 3], { strokeColor: 'blue', name: '' })  // point on the arc
+
+        let radius = TSX.segment(origin, glider, { lastArrow: true, touchLastPoint: true })
+        let minorArc = TSX.minorArc(origin, TSX.midpoint(yAxis, { name: '', opacity: 0 }), TSX.midpoint(radius, { name: '', opacity: 0 }), { firstArrow: true, lastArrow: true })
+
+        let arcRad = TSX.intersection(minorArc, radius, { opacity: 0, name: '\\vec{r}', label: { offset: [-30, 10], fontSize: 20 } })
+        let axisRad = TSX.intersection(minorArc, yAxis, { name: 'ω', opacity: 0, label: { offset: [0, 40], fontSize: 20 } })
+
+
+        // we want a tangent line at the glider point.  Easy to use 'perpendicularSegment, but no control over length
+        let gliderCircle = TSX.circle(glider, 2, { opacity: 0 })  // radius of two
+        let gliderPerp = TSX.perpendicularSegment(radius, glider, { opacity: 0 })
+        let perpEnd = TSX.intersection(gliderPerp, gliderCircle, { opacity: 0 })
+        let gliderEnd = TSX.segment(glider, perpEnd,
+            {
+                withLabel: true,
+                name: '\\vec{V}_T=r \\omega',
+                label: { position: 'top', fontSize: 20 },
+                strokeWidth: 3,
+                lastArrow: { type: 2, size: 8 }
+            }
+        )
+
+    }
 
 }
+
+
+
+// function histogram(x:number[],num_bins:number, range:[number,number],density:boolean,cumulative:boolean) {
+//     var i, le, k,
+//         mi, ma, delta,
+//         s,
+//         counts = [],
+//         bins = [];
+
+
+//     // Evaluate range
+//     // if (range === false) {
+//     //     mi = Math.min.apply(null, x);
+//     //     ma = Math.max.apply(null, x);
+//     // } else {
+//         mi = range[0];
+//         ma = range[1];
+//     // }
+
+//     // Set uniform delta
+//     if (num_bins > 0) {
+//         delta = (ma - mi) / (num_bins - 1);
+//     } else {
+//         delta = 0;
+//     }
+
+//     console.log(`num_bins:${num_bins}, range:${range}, mi=${mi}, ma=${ma}, delta=${delta}, cumulative=${cumulative}, density=${density}`)
+
+
+//     // Set the bins and init the counts array
+//     for (i = 0; i < num_bins; i++) {
+//         counts.push(0);
+//         bins.push(mi + i * delta);
+//     }
+//     // bins.push(ma);
+
+//     // Determine the counts
+//     le = x.length;
+//     for (i = 0; i < le; i++) {
+//         k = Math.floor((x[i] - mi) / delta);
+//         if (k >= 0 && k < num_bins) {
+//             counts[k] += 1;
+//         }
+//     }
+
+//     // Normalize if density===true
+//     if (density) {
+//         // s = JXG.Math.Statistics.sum(counts);
+
+//         // use reduce() method to find the sum
+//         s = counts.reduce((accumulator, currentValue) => {
+//             return accumulator + currentValue
+//         }, 0);
+
+//         for (i = 0; i < num_bins; i++) {
+//             counts[i] /= (s * delta);
+//             // counts[i] /= s;
+//         }
+//     }
+
+//     // Cumulative counts
+//     if (cumulative) {
+//         for (i = 0; i < num_bins; i++) {
+//             counts[i] *= delta;
+//         }
+//         for (i = 1; i < num_bins; i++) {
+//             counts[i] += counts[i - 1];
+//         }
+//         counts[0] = 0;
+//     }
+
+//     return [counts, bins];
+// }
 
