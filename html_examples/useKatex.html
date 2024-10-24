@@ -1,0 +1,38 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0">
+
+    <script src="https://cdn.jsdelivr.net/npm/katex@0.16.11/dist/katex.min.js"></script>
+    <link href="https://cdn.jsdelivr.net/npm/katex@0.16.11/dist/katex.min.css" rel="stylesheet">
+
+    <script src="https://cdn.jsdelivr.net/npm/jsxgraph@1.10.0/distrib/jsxgraphcore.min.js"></script>
+    <link href="https://cdn.jsdelivr.net/npm/jsxgraph@1.10.0/distrib/jsxgraph.min.css" rel="stylesheet">
+</head>
+
+<body>
+    <script>
+        window.WebFontConfig = {
+            custom: {
+                families: ["KaTeX_AMS", "KaTeX_Caligraphic:n4,n7", "KaTeX_Fraktur:n4,n7",
+                    "KaTeX_Main:n4,n7,i4,i7", "KaTeX_Math:i4,i7", "KaTeX_Script",
+                    "KaTeX_SansSerif:n4,n7,i4", "KaTeX_Size1", "KaTeX_Size2", "KaTeX_Size3",
+                    "KaTeX_Size4", "KaTeX_Typewriter"],
+            },
+        };
+    </script>
+    <script src="https://cdn.jsdelivr.net/npm/webfontloader@1.6.28/webfontloader.min.js"></script>
+
+    run `tsc` at least once to create the dist directory and generate`tsxgraph.js`<br>
+
+    <!-- create the canvas for JSXGraph -->
+    <div id="jxgbox" class="jxgbox" style="width:600px; height:600px;"></div>
+
+    <!-- load the .js file (either edited directly, or created with tsc) -->
+    <script type="module" src="./useKatex.js" defer></script>
+
+</body>
+
+</html>

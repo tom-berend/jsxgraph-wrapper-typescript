@@ -2,65 +2,48 @@
 
 **A thin TypeScript wrapper over JSXGraph to maximize VSCode scaffolding.**
 
-The wrapper provides a 'TypeScript' flavor to JSXGraph syntax, providing navigation, scaffolding, syntax checking, and discovery with VSCode.
+[JSXGraph](https://jsxgraph.uni-bayreuth.de/wp/index.html) is amazing for creating geometry constructions, writing games, building dashboards, and teaching coding.
 
-This approach is different from merely providing descriptions with a d.ts file. The wrapper changes the programming interface by adding a thin layer on top of JSXGraph, typically 2-3 lines per call.
+But building a JSXGraph construction is finicky.  [VSCode](https://code.visualstudio.com/) can provide scaffolding, type-checking,
+syntax checking, and object discovery, but JSXGraph's syntax doesn't co-operate.  JSXGraph constructions use a
+single 'create()' function, with over 100 overloads, requiring frequent references to the [API Reference](https://jsxgraph.org/docs/index.html) and debugging with the browser console.
 
-I needed this wrapper to use JSXGraph as a graphics library for **novice** programmers.  JSXGraph is an amazing tool for writing games and learning to code.
-
-
-## Already know TypeScript?  Quick Start with NPM and TSC
-
-```
-npm i jsxgraph-wrapper-typescript
-npm run orbit
-```
-No need for Webpack or similar, just use TypeScript's TSC.  Browse orbit.ts and index.html in the `/orbit` subdirectory.  The HTML looks for the JSXGraph and KATEX libraries in `node_modules`.  Of course, webpack is fully supported, an example is included
-
-Or... you can use plain JavaScript, and VSCode will still provide scaffolding (but not error checking). Look at `orbit.js` which was created by Typescript.  You can edit it directly with no compile step.
-
-(24-sept-2024  I seem to get some new errors from Node's d.ts type files, just ignore.)
+This wrapper provides a more-typical [TypeScript](https://www.typescriptlang.org/) interface, with each geometry element in a separate class to support interactive discovery and scaffolding with VSCode.  The syntax remains familiar if you already know JSXGraph, and delightful if you don't.
 
 
-![](./npm.png)
+| **JSXGraph**    | **TSXGraph** | comment |
+| --------- | ------- |--------|
+| `board.create('point',[0,0])`  | `TSX.point([0,0])`   |  // looks similar because an immediate address is [x,y]
+| `board.create('segment' , [p1, p2])`     | `TSX.segment(p1, p2)` | // much closer to what you would expect
+| `board.create('intersection', [cl,ln])` | `TSX.intersection(cl,ln))`    |  // VSCode shows order of parameters
+
+A wrapper approach is different from providing a d.ts file. The wrapper changes the programming interface by adding a thin layer on top of JSXGraph, typically 2-3 lines per call.
 
 
+## Quick Start
 
+This package includes a quick-start workflow with webserver, `TSC -watch` compiling your typescript, and  html generated on the fly.  It looks for source files in the `/src` directory.
 
-## Key Difference between Wrapper and JSXGraph
-
-The vanilla JSXGraph interface offers a a single 'create()' function, with over 100 overloads.  Developing a construction involves frequent references to the [API Reference](https://jsxgraph.org/docs/index.html) and debugging with the browser console.
-
-This wrapper provides a more-typical TypeScript interface, with each geometry element in a separate class for interactive discovery and scaffolding with VSCode.  The syntax remains familiar if you already know JSXGraph.  Here's an example.
+Install the package, start the workflow, and browse to `http://localhost:3000`.   Add or edit `.ts` files in `/src` and refresh the browser.
 
 ```
-    const JSX = TXG.TSXGraph.initBoard('jxgbox')
-    let p = [-2, -2]
-    let a = JSX.point(p, { name: 'A',strokeColor:'orange' })
-    let side_a = JSX.segment(a, [2,-2], { visible: false })
+npm i
+npm run start
 ```
 
-The magic happens when using VSCode...
+When you are ready to move your constructions, the `.js` file you created is in the `dist\src` directory.  If you don't want this workflow, just copy `tsxgraph.ts` to your own workflow.
 
-![](./vscode.png)
-
-
+JSXGraph is constantly evolving.  This wrapper was built around JSXGraph 1.10.1.
 
 
-## Reasons NOT to Use this Wrapper
+This package includes **Space Icons** by [Good Stuff No Nonsense](https://goodstuffnononsense.com/), licensed under CC BY 4.0.
+~~~
+TSX.image("icons/saturn.png",[0,0])    // Use VSCode's `CTRL+I` to list the icons
+~~~
 
-If you already know JSXGraph and are happy coding in JavaScript, this isn't for you.
+If you try the wrapper, I'd love to hear from you. 
 
-The wrapper enables 95% of JSXGraph's capabilities for interactive constructions. Specialized methods and attributes not provided can mostly be accessed with the wrapper 'legacy' constructor `JSX.create(string, array, object)`.  But if you are coding with 'inside baseball' then you should use native JSXGraph.
-
-JSXGraph is both a graphics engine and a storehouse of numerical algorithms. This wrapper is focused on graphics. I've started to add some of the Math methods, but it is a work in progress.  Also still lots of cleaning in the GeometryElement attributes and methods.
-
-JSXGraph is constantly evolving.  This wrapper was built around JSXGraph 1.9.2/dev, and is slightly ahead of JSXGraph production.
-
-
-
-Have fun!
-
+---
 
 ![](test.png)
 
