@@ -23,15 +23,41 @@ app.get('/lib/tsxgraph.js', (req, res) => {
 });
 
 app.all('*', function (req, res) {
-    // if thing.js then return thing.js, otherwise thing.html
-    if (req.url.slice(-3) == '.js') {
+    console.log(req.url)
+    // if we are asked for something from lib
+    if (req.url.slice(0, 5) == '/lib/' && req.url.slice(-3) == '.js') {
+        const fileText = fs.readFileSync(req.url.slice(1), 'utf8');
+        res.setHeader('content-type', 'text/javascript');
+        res.send(fileText)
+    } else if (req.url.slice(0, 5) == '/lib/' && req.url.slice(-4) == '.css') {
+        const fileText = fs.readFileSync(req.url.slice(1), 'utf8');
+        res.setHeader('content-type', 'text/css');
+        res.send(fileText)
+    } else if (req.url.slice(0, 5) == '/lib/' && req.url.slice(-5) == '.woff') {
+        const fileText = fs.readFileSync(req.url.slice(1));
+        res.setHeader('content-type', 'text/woff');
+        res.send(fileText)
+    } else if (req.url.slice(0, 5) == '/lib/' && req.url.slice(-6) == '.woff2') {
+        const fileText = fs.readFileSync(req.url.slice(1));
+        res.setHeader('content-type', 'text/woff2');
+        res.send(fileText)
+
+        // default js comes from dist file, otherwise thing is assumed html
+    } else if (req.url.slice(-3) == '.js') {
         const fileText = fs.readFileSync(`./dist/src/${req.url}`, 'utf8');
         res.setHeader('content-type', 'text/javascript');
         res.send(fileText)
+    } else if (req.url.slice(-4) == '.png') {
+        const fileText = fs.readFileSync(req.url.slice(1));
+        res.setHeader('content-type', 'image/png');
+        res.send(fileText)
+
+
     } else {
         res.setHeader('content-type', 'text/html');
         res.send(makeHTML(req.url + '.js'));
     }
+
 });
 
 function buttons() {
@@ -65,57 +91,55 @@ function makeHTML(file) {
 <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0">
-
-    <script src="https://cdn.jsdelivr.net/npm/katex@0.16.11/dist/katex.min.js"></script>
-    <link href="https://cdn.jsdelivr.net/npm/katex@0.16.11/dist/katex.min.css" rel="stylesheet">
-
-    <script src="https://cdn.jsdelivr.net/npm/jsxgraph@1.10.0/distrib/jsxgraphcore.min.js"></script>
-    <link href="https://cdn.jsdelivr.net/npm/jsxgraph@1.10.0/distrib/jsxgraph.min.css" rel="stylesheet">
-</head>
-
-<body>
-    <script>
-        window.WebFontConfig = {
-            custom: {
-                families: ["KaTeX_AMS", "KaTeX_Caligraphic:n4,n7", "KaTeX_Fraktur:n4,n7",
-                    "KaTeX_Main:n4,n7,i4,i7", "KaTeX_Math:i4,i7", "KaTeX_Script",
-                    "KaTeX_SansSerif:n4,n7,i4", "KaTeX_Size1", "KaTeX_Size2", "KaTeX_Size3",
-                    "KaTeX_Size4", "KaTeX_Typewriter"],
-            },
-        };
-    </script>
-    <script src="https://cdn.jsdelivr.net/npm/webfontloader@1.6.28/webfontloader.min.js"></script>
 `;
 
 
-    // // look at URL.  run parameter if it exists, otherwise show files in /src
-    // parse_str($_SERVER['QUERY_STRING'], $output);
+    // use these to fetch from jsdelivr
 
-    // echo "<button type='button' onclick=\"window.location.href = '{$_SERVER['PHP_SELF']}';\">Home</button><br><br>";
+    // ret +=
+    // `<script src="https://cdn.jsdelivr.net/npm/katex@0.16.11/dist/katex.min.js"></script>
+    // <link href="https://cdn.jsdelivr.net/npm/katex@0.16.11/dist/katex.min.css" rel="stylesheet">
 
-    // if (isset($output['f'])) {
-    ret += buttons();
-    ret += '<div id="jxgbox" class="jxgbox" style="width:600px; height:600px;"></div>';   // create the jxgbox div
-    ret += `<script src='http://localhost:3000${file}' type='module' defer>  </script>`;
-    // } else {
-    //     $files = scandir('./dist/src');
-    //     $jsFiles = [];
-    //     foreach ($files as $file) {
-    //         if (substr($file, -3) === '.js') {
-    //             $jsFiles[] = $file;
-    //         }
-    //     }
+    // <script src="https://cdn.jsdelivr.net/npm/jsxgraph@1.10.0/distrib/jsxgraphcore.min.js"></script>
+    // <link href="https://cdn.jsdelivr.net/npm/jsxgraph@1.10.0/distrib/jsxgraph.min.css" rel="stylesheet">
 
-    //     $table = "<table>";
-    //     foreach ($jsFiles as $file) {
-    //         $table .= "<tr><td><a href='{$_SERVER['PHP_SELF']}?f=$file'>$file</a></td></tr>";
-    //     }
-    //     $table .= "</table>";
-    //     echo $table;
-    //}
+    // <script src="https://cdn.jsdelivr.net/npm/webfontloader@1.6.28/webfontloader.min.js"></script>`;
+
+
+
+    // use these to fetch from local drive - MUCH faster for development
+    ret += `
+    <script src="lib/katex.min.js"></script>
+    <link href="lib/katex.min.css" rel="stylesheet">
+
+    <script src="lib/jsxgraphcore.js"></script>
+    <link href="lib/jsxgraph.css" rel="stylesheet">
+
+    <script src="lib/webfontloader.min.js"></script>`;
+
+
+
+    ret += `</head>
+    <body>
+    <script>
+    window.WebFontConfig = {
+        custom: {
+            families: ["KaTeX_AMS", "KaTeX_Caligraphic:n4,n7", "KaTeX_Fraktur:n4,n7",
+            "KaTeX_Main:n4,n7,i4,i7", "KaTeX_Math:i4,i7", "KaTeX_Script",
+            "KaTeX_SansSerif:n4,n7,i4", "KaTeX_Size1", "KaTeX_Size2", "KaTeX_Size3",
+            "KaTeX_Size4", "KaTeX_Typewriter"],
+        },
+    };
+    </script>`;
+
+
+    ret += `\n` + buttons();
+    ret += '\n<div id="jxgbox" class="jxgbox" style="width:600px; height:600px;"></div>';   // create the jxgbox div
+    ret += `\n<script src = 'http://localhost:3000${file}' type = 'module' defer>  </script> `;
+
 
     // standard footer
-    ret += '</body></html>';
+    ret += `\n</body></html>`;
 
     return ret
 }

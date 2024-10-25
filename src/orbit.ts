@@ -12,7 +12,6 @@ function orbit() {
     let TSX = TXG.TSXGraph.initBoard('jxgbox');
     TSX.setBoundingBox(-1, 5, 5, -1)
 
-    TSX.input([4,4],'input','')
     let origin = TSX.point([0, 0])
 
     // use ()=> to lock the axis points to the origin
