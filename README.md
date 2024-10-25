@@ -17,6 +17,11 @@ This wrapper provides a more-typical [TypeScript](https://www.typescriptlang.org
 | `board.create('segment' , [p1, p2])`     | `TSX.segment(p1, p2)` | // much closer to what you would expect
 | `board.create('intersection', [cl,ln])` | `TSX.intersection(cl,ln))`    |  // VSCode shows order of parameters
 
+
+With the wrapper, VSCode offers the usual signatures, object keys, and completions.
+
+![](vscode.png)
+
 A wrapper approach is different from providing a d.ts file. The wrapper changes the programming interface by adding a thin layer on top of JSXGraph, typically 2-3 lines per call.
 
 
@@ -37,7 +42,7 @@ JSXGraph is constantly evolving.  This wrapper was built around JSXGraph 1.10.1.
 
 ## Fun
 
-This package includes **Space Icons** by [Good Stuff No Nonsense](https://goodstuffnononsense.com/), licensed under CC BY 4.0.  
+This package includes **Space Icons** by [Good Stuff No Nonsense](https://goodstuffnononsense.com/), licensed under CC BY 4.0.
 ~~~
 TSX.image("icons/saturn.png",[0,0])    // Use VSCode's `CTRL+I` to list the icons
 ~~~
