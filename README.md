@@ -36,16 +36,16 @@ npm i
 npm run start
 ```
 
-When you are ready to move your constructions, the `.js` file you created are in the `dist\src` directory.  If you don't want to use this workflow, just copy `tsxgraph.ts` to your own workflow.
+When you are ready to move your constructions, the `.js` files you have created are in the `dist\src` directory.  If you don't want to use this workflow, just copy `tsxgraph.ts` to your own workflow.
 
 JSXGraph is constantly evolving.  This wrapper was built around JSXGraph 1.10.1.
 
-## Fun
 
 This package includes **Space Icons** by [Good Stuff No Nonsense](https://goodstuffnononsense.com/), licensed under CC BY 4.0.
 ~~~
 TSX.image("icons/saturn.png",[0,0])    // Use VSCode's `CTRL+I` to list the icons
 ~~~
+
 
 If you try the wrapper, I'd love to hear from you.
 
