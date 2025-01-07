@@ -21,7 +21,7 @@
         //
         /////////////////////////////////////////////////////////////////////////////
 
-        //   Generated on October 25, 2024, 1:04 am 
+        //   Generated on January 4, 2025, 10:55 pm 
 
 
 
@@ -71,17 +71,57 @@
  /** Draw label for this Element? */
  drawLabels?: Boolean
  /** Size in pixels */
- size?: Number
+ size?: Number|Function
  /** There are different point styles which differ in appearance. */
   face?: 'o'|'line'|'point'|'cross'| 'plus' | 'minus' | 'divide'| 'diamond'| 'triangledown' | 'triangleleft' | 'triangleright'| 'triangleup' | 'square' |'circle' | string
  /** Include the the zero line in the grid */
   drawZero?: Boolean
+ /** If true, the dash pattern is multiplied by strokeWidth / 2. */
+  dashScale?: Boolean
+ /** If the element is dragged it will be moved on mousedown or touchstart to the top of its layer. Works only for SVG renderer and for simple elements consisting of one SVG node. */
+  dragToTopOfLayer?: Boolean
+ /** If true the element is fixed and can not be dragged around. The element will even stay at its position on zoom and moveOrigin events. Only free elements like points, texts, curves can be frozen. */
+  frozen?: Boolean
+ /** Gradient type. Possible values are 'linear'. 'radial' or null. */
+  gradient?: string
+ /** Angle (in radians) of the gradiant in case the gradient is of type 'linear'. If the angle is 0, the first color is on the left and the second color is on the right. If the angle is π/2 the first color is on top and the second color at the bottom. */
+  gradientAngle?: number
+ /** From the SVG specification: ‘cx’, ‘cy’ and ‘r’ define the largest (i.e., outermost) circle for the radial gradient. The gradient will be drawn such that the 100% gradient stop is mapped to the perimeter of this largest (i.e., outermost) circle. For radial gradients in canvas this is the value 'x1'. Takes a value between 0 and 1. */
+  gradientCX?: number
+ /** From the SVG specification: ‘cx’, ‘cy’ and ‘r’ define the largest (i.e., outermost) circle for the radial gradient. The gradient will be drawn such that the 100% gradient stop is mapped to the perimeter of this largest (i.e., outermost) circle. For radial gradients in canvas this is the value 'y1'. Takes a value between 0 and 1. */
+  gradientCY?: number
+ /** The gradientEndOffset attribute is a number (ranging from 0 to 1) which indicates where the second gradient stop is placed, see the SVG specification for more information. For linear gradients, this attribute represents a location along the gradient vector. For radial gradients, it represents a percentage distance from (fx,fy) to the edge of the outermost/largest circle. */
+  gradientEndOffset?: number
+ /** This attribute defines the radius of the start circle of the radial gradient. The gradient will be drawn such that the 0% <stop> is mapped to the perimeter of the start circle. For radial gradients in canvas this is the value 'r0'. Takes a value between 0 and 1. */
+  gradientFR?: number
+ /** `fx` and `fy` define the focal point for the radial gradient. The gradient will be drawn such that the 0% gradient stop is mapped to (fx, fy). For radial gradients in canvas this is the value 'x0'. Takes a value between 0 and 1. */
+  gradientFX?: number
+ /** y-coordinate of the circle center for the second color in case of gradient 'radial'. (The attribute fy in SVG) For radial gradients in canvas this is the value 'y0'. Takes a value between 0 and 1. */
+  gradientFY?: number
+ /** From the SVG specification: ‘cx’, ‘cy’ and ‘r’ define the largest (i.e., outermost) circle for the radial gradient. The gradient will be drawn such that the 100% gradient stop is mapped to the perimeter of this largest (i.e., outermost) circle. For radial gradients in canvas this is the value 'r1'. Takes a value between 0 and 1. */
+  gradientR?: number
+ /** Second color for gradient. */
+  gradientSecondColor?: String
+ /** Opacity of second gradient color. Takes a value between 0 and 1. */
+  gradientSecondOpacity?: number
+ /** The gradientStartOffset attribute is a number (ranging from 0 to 1) which indicates where the first gradient stop is placed, see the SVG specification for more information. For linear gradients, this attribute represents a location along the gradient vector. For radial gradients, it represents a percentage distance from (fx,fy) to the edge of the outermost/largest circle. */
+  gradientStartOffset?: number
+ /** Should the element use highlight attributes on mouseOver? */
+  highlight?: Boolean
+ /** The fill color of the given geometry element when the mouse is pointed over it. */
+  highlightFillColor?: string|Function
+ /** Opacity for fill color when the object is highlighted. */
+  highlightFillOpacity?: number|Function
  /** The stroke color of the given geometry element when the user moves the mouse over it. */
-  highlightStrokeColor?: String
+  highlightStrokeColor?: string|Function
  /** Opacity for stroke color when the object is highlighted. */
-  highlightStrokeOpacity?: Number
+  highlightStrokeOpacity?: number|Function
  /** Width of the element's stroke when the mouse is pointed over it. */
-  highlightStrokeWidth?: Number
+  highlightStrokeWidth?: number|Function
+ /** Display layer which will contain the element. */
+  layer?: number
+ /** Line endings (linecap) of a stroke element, i.e. line, circle, curve. Possible values are:'butt','round','square'. */
+  lineCap?: string
  /** Controls if an element can get the focus with the tab key. tabindex corresponds to the HTML attribute of the same name. See descriptiona at MDN. The additional value ”null” completely disables focus of an element. The value will be ignored if keyboard control of the board is not enabled or the element is fixed or not visible. */
   tabindex?: Number
  }
@@ -89,8 +129,30 @@
  interface GeometryElement3DAttributes  {
  /** used by V2 vector math library */
  scaleXY?: Number 
+ /** label for this item */
+ name?:string|Function
+ /** label for this item */
+ hasLabel?:boolean
+ /** Opacity of the element (between 0 and 1). */
+ opacity?: number|Function
  /** Set whether the element is visibledisplay name  */
  visible?:Boolean
+ /** Set the width of lines in pixels  */
+ strokeWidth?:number
+ /** Set the color of lines */
+ strokeColor?:string|Function
+ /** Set the color of areas */
+ fillColor?:string|Function
+ /** Arrow at the end of the line? */
+ firstArrow?:Boolean
+ /** Arrow at the start of the line? */
+ lastArrow?:Boolean
+ /** Highlight on mouse-over? */
+ highlight?:Boolean
+ /** Attributes for first point (an object) */
+ point1?:Point3DAttributes
+ /** Attributes for second point (an object) */
+ point2?:Point3DAttributes
  }
 
  interface BoardAttributes  {
@@ -201,10 +263,8 @@
  scaleXY?: Number 
  }
 
- interface ForeignObjectAttributes  {
- /** used by V2 vector math library */
- scaleXY?: Number 
- /** List of attractor elements. If the distance of the foreignobject is less than attractorDistance the foreignobject is made to glider of this element. */
+ interface ForeignObjectAttributes extends GeometryElementAttributes {
+ /** List of attractor elements. If the distance of the ForeignObject is less than attractorDistance the ForeignObject is made to glider of this element. */
   attractors?: Element[]
  }
 
@@ -280,9 +340,14 @@
   touchLastPoint?: Boolean
  }
 
+ interface LineEqnAttributes extends LineAttributes {
+ }
+
  interface Line3DAttributes extends GeometryElement3DAttributes {
- /**  */
-  strokeColor?: String
+ /** size of the point in pixelslabel for this item */
+ size?:number
+ /** is this point draggable? */
+ fixed?:boolean
  }
 
  interface Plane3DAttributes extends GeometryElement3DAttributes {
@@ -300,6 +365,12 @@
  }
 
  interface Point3DAttributes extends GeometryElement3DAttributes {
+ /** Size in pixels */
+ size?: Number|Function
+ /** If true the element is fixed and can not be dragged around. The element will be repositioned on zoom and moveOrigin events. */
+ fixed?: Boolean
+ /** If true a label will display the element's name. */
+ withLabel?: Boolean
  }
 
  interface PolygonAttributes extends GeometryElementAttributes {
@@ -613,6 +684,9 @@
   stepsV?: Number
  }
 
+ interface Face3DAttributes extends GeometryElement3DAttributes {
+ }
+
  interface FunctiongraphAttributes extends CurveAttributes {
  }
 
@@ -776,6 +850,13 @@
  interface PolygonalChainAttributes extends PolygonAttributes {
  }
 
+ interface Polyhedron3DAttributes extends GeometryElement3DAttributes {
+ /** Opacity of each face. */
+  fillOpacity?: number
+ /** Array of face colors. */
+  fillColorArray?: string[]
+ }
+
  interface RadicalAxisAttributes extends LineAttributes {
  }
 
@@ -934,11 +1015,16 @@
  interface TransformAttributes extends GeometryElementAttributes {
  }
 
+ interface TransformPointAttributes extends PointAttributes {
+ }
+
  interface View3DAttributes extends GeometryElement3DAttributes {
  /** Choose the projection type to be used: `parallel` or `central`. `parallel` is parallel projection, also called orthographic projection.   `central` is central projection, also called perspective projection */
  projection?: `parallel`|`central`
  /** Support occlusion by ordering points? */
  depthorderpoints?: Boolean
+ /** use {enable:true, layers:[12]} */
+ depthOrder?: Object
  /** Position of the main axes in a View3D element. Possible values are 'center' and 'border'. */
  axesPosition?: String
  /** Allow vertical dragging of objects, i.e. in direction of the z-axis. Subobjects areenabled: truekey: 'shift'Possible values for attribute key: 'shift' or 'ctrl'. */
@@ -989,14 +1075,20 @@
  bank?: Object
  }
 
+ interface TranslateAttributes extends TransformAttributes {
+ }
+
+ interface RotateAttributes extends TransformAttributes {
+ }
+
+ interface ScaleAttributes extends TransformAttributes {
+ }
+
         type NumberFunction = Number|Function
 
         /** A 'point' has a position in space.  The only characteristic that distinguishes one point from another is its position. */
         type pointAddr =  NumberFunction[] | [number,number] |[number,Function]|[Function,number]|[Function|Function] // allow tuples or arrays
 
-
-        /** A Vector has both magnitude and direction, but no fixed position in space. */
-        type Vec2 = [number,number]
 
         type line  = [Point|pointAddr,Point|pointAddr]
 
@@ -1005,6 +1097,8 @@
         type arrayNumber = Number[]
         type arrayNumber2 = arrayNumber|Number
         type matAny = arrayNumber2[]
+
+
 
         interface MoveToOptions{
            callback?:Function,
@@ -1080,7 +1174,9 @@
            /** Attributes for the default axes in case of the attribute axis:true in JXG.JSXGraph#initBoard. */
            defaultAxes?: {x?:AxisAttributes,y?:AxisAttributes}
            /** if grid true, then draw the zeroGrid? */
-           drawZero?: Boolean
+           drawZero?: Boolean,
+           /** speed optimization.  value should be 'svg' */
+           minimizeReflow?: string,
 
         //    /** Description string for the board. */
         //    description?: String
@@ -1182,10 +1278,44 @@
         }
 
 
-        /** JSXGraph library wrapped in TypeScript */
-        export class TSXGraph{
+            /** JSXGraph library wrapped in TypeScript */
+            export class TSXGraph{
 
-            static defaultAttrs:Object = {name:'',keepAspectRatio:true}
+            // this is the 'alternative mixins' pattern for TypeScript
+
+        /** use this to create mixins in Typescript.  Each mixin is a traditional ES class,
+         *  For example, to add classes Jumpable and Duckable to class Sprite, you add
+         * an interface which merges the expected mixins using the same name as your base, and
+         * then apply the mixins at runtime.
+        ```js
+        class Jumpable {  jump() {}  }
+        class Duckable {  duck() {}  }
+        class Sprite { x = 0; y = 0; }   // base class
+        interface Sprite extends Jumpable, Duckable {}
+        TXG.TSXGraph.applyMixins(Sprite, [Jumpable, Duckable]);
+
+        let s = new Sprite()  // now includes methods from mixins
+        s.jump();
+        ~~~
+                 */
+                static applyMixins(derivedCtor: any, constructors: any[]):void {
+                    constructors.forEach((baseCtor) => {
+                      Object.getOwnPropertyNames(baseCtor.prototype).forEach((name) => {
+                        Object.defineProperty(
+                          derivedCtor.prototype,
+                          name,
+                          Object.getOwnPropertyDescriptor(baseCtor.prototype, name) ||
+                            Object.create(null)
+                        );
+                      });
+                    });
+                  }
+
+
+
+
+
+            static defaultAttrs:Object = {name:''}
 
             /** Initialize a new board. The first parameter 'html' should be the ID of a <DIV> in your web page.
 
@@ -1361,34 +1491,12 @@ const board = TXG.TSXGraph.initBoard('jxgbox', { axis: true });
    ellipseArc( focalPoint1:Point|pointAddr, focalPoint2:Point|pointAddr, outerPoint:Point|pointAddr, startAngle:Number|Function, endAngle:Number|Function,attributes?:EllipseAttributes):Ellipse
 }
 
- interface TransformIface {
- z_ignore: Object,
- /** Move a distance from a point */
-   translate( x:Number|Function, y:Number|Function,attributes?:TransformAttributes):Transform
- /** Increase distance from a point by a factor */
-   scale( x:number|Function, y:number|Function,attributes?:TransformAttributes):Transform
- /** Rotate by angle around a point */
-   rotate( angle:Number|Function, point?:Point|pointAddr,attributes?:TransformAttributes):Transform
- /** Reflect around a line */
-   reflect( x:Number|Function, y:Number|Function,attributes?:TransformAttributes):Transform
- /** Move proportionally to distance */
-   shear( x:Number|Function, y:Number|Function,attributes?:TransformAttributes):Transform
- /** Transform using a MAT3 */
-   generic( a:Number, b:Number, c:Number, d:Number, e:Number, f:Number, g:Number, h:Number, i:Number,attributes?:TransformAttributes):Transform
- /** A new Point from a Point and Transform */
-   point( p:Point|pointAddr, t:Transform|Transform[],attributes?:PointAttributes):Point
- /** A new Circle from a Circle and Transform */
-   circle( c:Circle, t:Transform|Transform[],attributes?:CircleAttributes):Circle
- /** A new Curve from a Curve and Transform */
-   curve( c:Curve, t:Transform|Transform[],attributes?:CurveAttributes):Curve
-}
-
  interface JSXMathJSXMathIface {
  } 
 
  interface MatrixJSXMathIface {
  /** Calculates the cross product of two vectors both of length three. */
- crossProduct(c1:matAny,c2:matAny):matAny,
+ crossProduct(v1:number[],v2:number[]):number[],
  /** Generates a 4x4 matrix for 3D to 2D projections. */
  frustum(left:Number,right:Number,top:Number,bottom:Number,near:Number,far:Number):matAny,
  /** Generates an identity matrix of size m x n.  (Yes it is possible to have a non-square identity matrix) */
@@ -1634,10 +1742,17 @@ const board = TXG.TSXGraph.initBoard('jxgbox', { axis: true });
                         }
                     }
 
+
                     // I cannot figure out how to get the keybard to respond.  mouse works fine
                     // addKeyboardEventHandlers():void{
                     //     (this.board as any).addKeyboardEventHandlers()
                     // }
+
+
+                    /** Set the current frame.  If it doesn't exist, it will be created. Optionally set a location.  Example:  TSX.setFrame('starship',[4,4]) */
+                    public setFrame(name:string,location?:number[]){
+                        (this.board as any).setFrame(name,location)
+                    }
 
                     public print(...args: any[]) {
                         let bbox = (this.board as any).getBoundingBox()   // get every time, in case setBoundingBox()
@@ -1719,17 +1834,17 @@ const board = TXG.TSXGraph.initBoard('jxgbox', { axis: true });
                     ///////////  V2 Math Library
 
 
-                    /** new Points from point, angle, and distance.  Angle is in radians. */
-                    public V2AngleDistance(origin: TXG.Point, distance: number, angle: number, dest?: TXG.Point): TXG.Point {
-                        console.log(origin, origin.tsxBoard)
-                        if (!dest) { dest = JSXMath.board.point([0, 0], { name: '' }) }
+                    // /** new Points from point, angle, and distance.  Angle is in radians. */
+                    // public V2AngleDistance(origin: TXG.Point, distance: number, angle: number, dest?: TXG.Point): TXG.Point {
+                    //     console.log(origin, origin.tsxBoard)
+                    //     if (!dest) { dest = JSXMath.board.point([0, 0], { name: '' }) }
 
-                        let x = origin.X() + distance * Math.cos(angle)
-                        let y = origin.Y() + distance * Math.sin(angle)
-                        console.log(x,y)
-                        dest.setPositionDirectly([x, y])
-                        return dest
-                    }
+                    //     let x = origin.X() + distance * Math.cos(angle)
+                    //     let y = origin.Y() + distance * Math.sin(angle)
+                    //     console.log(x,y)
+                    //     dest.setPositionDirectly([x, y])
+                    //     return dest
+                    // }
 
 
 
@@ -1739,8 +1854,6 @@ const board = TXG.TSXGraph.initBoard('jxgbox', { axis: true });
         
  /**  */
  conic:ConicIface
- /** This element is used to provide projective transformations. */
- transform:TransformIface
  JSXMathMath:JSXMathJSXMathIface
  MatrixMath:MatrixJSXMathIface
  GeometryMath:GeometryJSXMathIface
@@ -1776,53 +1889,12 @@ const board = TXG.TSXGraph.initBoard('jxgbox', { axis: true });
  },
  }
  this.conic.z_ignore = this
- this.transform = {
- /** @protected */ 
- z_ignore: {}, 
-   /** Move a distance from a point */
-   translate( x:Number|Function, y:Number|Function,attributes: TransformAttributes ={}) : Transform {
- return new Transform('Transform',[x, y, ],{type:'translate' })
- },
-   /** Increase distance from a point by a factor */
-   scale( x:number|Function, y:number|Function,attributes: TransformAttributes ={}) : Transform {
- return new Transform('Transform',[x, y, ],{type:'scale' })
- },
-   /** Rotate by angle around a point */
-   rotate( angle:Number|Function, point:Point|pointAddr=[0,0],attributes: TransformAttributes ={}) : Transform {
- return new Transform('Transform',[angle, point, ],{type:'rotate' })
- },
-   /** Reflect around a line */
-   reflect( x:Number|Function, y:Number|Function,attributes: TransformAttributes ={}) : Transform {
- return new Transform('Transform',[x, y, ],{type:'reflect' })
- },
-   /** Move proportionally to distance */
-   shear( x:Number|Function, y:Number|Function,attributes: TransformAttributes ={}) : Transform {
- return new Transform('Transform',[x, y, ],{type:'shear' })
- },
-   /** Transform using a MAT3 */
-   generic( a:Number, b:Number, c:Number, d:Number, e:Number, f:Number, g:Number, h:Number, i:Number,attributes: TransformAttributes ={}) : Transform {
- return new Transform('Transform',[a, b, c, d, e, f, g, h, i, ],{type:'generic' })
- },
-   /** A new Point from a Point and Transform */
-   point( p:Point|pointAddr, t:Transform|Transform[],attributes: PointAttributes ={}) : Point {
- return new Point('Point',[p, t, ],attributes) as Point
- },
-   /** A new Circle from a Circle and Transform */
-   circle( c:Circle, t:Transform|Transform[],attributes: CircleAttributes ={}) : Circle {
- return new Circle('Circle',[c, t, ],attributes) as Circle
- },
-   /** A new Curve from a Curve and Transform */
-   curve( c:Curve, t:Transform|Transform[],attributes: CurveAttributes ={}) : Curve {
- return new Curve('Curve',[c, t, ],attributes) as Curve
- },
- }
- this.transform.z_ignore = this
  this.JSXMathMath = { 
  } 
 
  this.MatrixMath = { 
  /** Calculates the cross product of two vectors both of length three. */
- crossProduct(c1:matAny,c2:matAny):matAny { return (window as any).JXG.Math.crossProduct(c1,c2)  as matAny} ,
+ crossProduct(v1:number[],v2:number[]):number[] { return (window as any).JXG.Math.crossProduct(v1,v2)  as number[]} ,
  /** Generates a 4x4 matrix for 3D to 2D projections. */
  frustum(left:Number,right:Number,top:Number,bottom:Number,near:Number,far:Number):matAny { return (window as any).JXG.Math.frustum(left,right,top,bottom,near,far)  as matAny} ,
  /** Generates an identity matrix of size m x n.  (Yes it is possible to have a non-square identity matrix) */
@@ -1976,7 +2048,7 @@ chart(f:Number[], attributes: ChartAttributes ={} ):Chart{return new Chart('Char
 *```
                 
 Also see: Circumcircle is a circle described by three points.  An Arc is a segment of a circle. */
-circle(centerPoint:Point|pointAddr, remotePoint:Point|pointAddr|Line|line|Number|Function|Circle, attributes: CircleAttributes ={} ):Circle{
+circle(centerPoint:Point|pointAddr|Function, remotePoint:Point|pointAddr|Line|line|Number|Function|Circle, attributes: CircleAttributes ={} ):Circle{
   let newObject:any  // special case for circle with immediate segment eg:  circle(point,[[1,2],[3,4]]  )
                             if (Array.isArray(remotePoint) && Array.isArray(remotePoint[0] ) && Array.isArray(remotePoint[1] )) {
                                 return new Circle(`circle`, TSXGraph.dereference([centerPoint, remotePoint[0] ,remotePoint[1]]), TSXGraph.defaultAttributes(attributes))
@@ -1986,8 +2058,7 @@ circle(centerPoint:Point|pointAddr, remotePoint:Point|pointAddr|Line|line|Number
 }
 
  /** Plot a set of points or a function from arrays X and Y */
- curve(xArray:number[], yArray:number[],  attributes?:CurveAttributes):Curve 
- curve(xArray:Function, yArray:Function,  attributes?:CurveAttributes):Curve 
+ curve(xArray:number[]|Function, yArray:number[]|Function,  attributes?:CurveAttributes):Curve 
  curve(xArray:number[]|Function, yArray:number[]|Function, left:NumberFunction, right:NumberFunction,  attributes?:CurveAttributes):Curve 
 
             // implementation of signature,  hidden from user
@@ -2063,17 +2134,30 @@ bezierCurve(points:Point[], attributes: BezierCurveAttributes ={} ):Curve{
 }
 
 
+ /** This element is used to provide a constructor for arbitrary content in an SVG foreignObject container.
+```js
+TSX.foreignObject(
+    `<video width="300" height="200" src="https://eucbeniki.sio.si/vega2/278/Video_metanje_oge_.mp4" type="html5video" controls>`,
+    [0, -3], [9, 6],
+    {layer: 8, fixed: true})
+```
+              */
+foreignObject(content:string, position:number[], size:number[]|null=null, attributes: ForeignObjectAttributes ={} ):ForeignObject{return new ForeignObject('ForeignObject', [content,position,size,], attributes)
+}
+
+
  /** Array of Points */
-group(pointArray:Point[], attributes: GroupAttributes ={} ):Group{return new Group('Group', [pointArray,], attributes)
+group(pointArray:Point[]|Polygon, attributes: GroupAttributes ={} ):Group{return new Group('Group', [pointArray,], attributes)
 }
 
 
  /** Display an image.  The first element is the location URL of the image.
                 A collection of space icons is provided, press CTRL+I to show the list.
-                The second parameter sets the lower left point of the image, you may need to shift the image location to center it.
+                The second parameter sets the lower left point of the image.
                 The optional third parameter sets the size multiplier of the image, default is [1,1].
                 
-If you want to move it, tie the image to a point.  For more flexibility, see TSX.Rotate() and TSX.Translate()
+If you want to move the image, just tie the image to a point, maybe at the center of the image.
+                 For more flexibility, see TSX.Rotate() and TSX.Translate()
                 
 *```js
             TSX.image('icons/earth.png', [0, 0],[2,2])
@@ -2081,7 +2165,7 @@ If you want to move it, tie the image to a point.  For more flexibility, see TSX
             TSX.image('icons/moon-full-moon.png', [()=>p1.X(),()=>p1.Y()])
                 
 *``` */
-image(url:String|spaceIcon, lowerLeft:[Function,Function]|pointAddr, widthHeight:[Number,Number]=[1,1], attributes: ImageAttributes ={} ):Image{return new Image('Image', [url,lowerLeft,widthHeight,], attributes)
+image(url:String|spaceIcon, lowerLeft:pointAddr, widthHeight:[Number,Number]=[1,1], attributes: ImageAttributes ={} ):Image{return new Image('Image', [url,lowerLeft,widthHeight,], attributes)
 }
 
  /** An implicit curve is a plane curve defined by an implicit equation relating two coordinate variables, commonly x and y. For example, the unit circle is defined by the implicit equation x2 + y2 = 1. In general, every implicit curve is defined by an equation of the form f(x, y) = 0 for some function f of two variables.  IMPLICIT means that the equation is not expressed as a solution for either x in terms of y or vice versa. */
@@ -2119,7 +2203,6 @@ image(url:String|spaceIcon, lowerLeft:[Function,Function]|pointAddr, widthHeight
    }
    return new Implicitcurve('implicitcurve', params, TSXGraph.defaultAttributes(attrs)) // as Implicitcurve
  }
-
  /** This element is used to provide a constructor for a general line given by two points.
                                 By setting additional properties a line can be used as an arrow and/or axis.
                                 
@@ -2133,21 +2216,69 @@ image(url:String|spaceIcon, lowerLeft:[Function,Function]|pointAddr, widthHeight
  also create lines with Segment, Arrow, Transform.Point, Circumcenter, Glider, and others.
                                  Look at .conic.line() for a line defined by the equation 'az +bx +cy = 0'
                     */
-line(p1:Point|pointAddr, p2:Point|pointAddr, attributes: LineAttributes ={} ):Line{return new Line('Line', [p1,p2,], attributes)
+                    // This implementation of Line comes from the fieldsandmethods table.
+        line(a?: any, b?: any, c?: any, d?: any): Line {
+            let newObject: Line = {} as Line // just so it is initialized
+            let params = []
+            let attrs = {}
+            if (arguments.length == 1) {
+                if (isJSXAttribute(a)) {
+                    attrs = TSXGraph.defaultAttributes(a)
+                    params = TSXGraph.dereference([])
+                } else {
+                    params = TSXGraph.dereference([a,])
+                }
+            }
+            if (arguments.length == 2) {
+                if (isJSXAttribute(b)) {
+                    attrs = TSXGraph.defaultAttributes(b)
+                    params = TSXGraph.dereference([a,])
+                } else {
+                    params = TSXGraph.dereference([a, b,])
+                }
+            }
+            if (arguments.length == 3) {
+                if (isJSXAttribute(c)) {
+                    attrs = TSXGraph.defaultAttributes(c)
+                    params = TSXGraph.dereference([a, b,])
+                } else {
+                    if(typeof a == 'number' || typeof a == 'function')   //  this must be a line equation
+                       params = TSXGraph.dereference([c, a, b,])   // fix order of params to Standard Form of Line
+                    else
+                       params = TSXGraph.dereference([a, b, c,])
+                }
+            }
+            if (arguments.length == 4) {
+                if (isJSXAttribute(d)) {
+                    attrs = TSXGraph.defaultAttributes(d)
+                    if(typeof a == 'number' || typeof a == 'function')   //  this must be a line equation
+                       params = TSXGraph.dereference([c, a, b,])   // fix order of params to Standard Form of Line
+                    else
+                       params = TSXGraph.dereference([a, b, c,])
+                } else {
+                    params = TSXGraph.dereference([a, b, c, d,])  // no signature matches this
+                }
+            }
+            return new Line('line', params, TSXGraph.defaultAttributes(attrs)) // as Line
+        }
+
+ /** something */
+lineEqn(A:number|Function, B:number|Function, C:number|Function, attributes: LineEqnAttributes ={} ):LineEqn{
+  return new Line('line', TSXGraph.dereference([C,A,B]), attributes);
 }
 
 
  /** Create a point. If any parent elements are functions or the attribute 'fixed' is true then point will be constrained.
             
 *```js
-             TSX.point([3,2],{strokeColor:'blue',strokeWidth:5,strokeOpacity:.5})
-             TSX.point([3,3]),{fixed:true, showInfobox:true}
-             TSX.point([()=>p1.X()+2,()=>p1.Y()+2]) // 2 up 2 right from p1
-             TSX.point([1,2,2])  // three axis definition - [z,x,y]
+TSX.point([3,2],{strokeColor:'blue',strokeWidth:5,strokeOpacity:.5})
+TSX.point([3,3]),{fixed:true, showInfobox:true}
+TSX.point([()=>p1.X()+2,()=>p1.Y()+2]) // 2 up 2 right from p1
+TSX.point([1,2,2])  // three axis definition - [z,x,y]
             
 *```
             
- also create points with Intersection, Midpoint, Transform.Point, Circumcenter, Glider, and others. */
+ also create points with Intersection, Midpoint, TransformPoint, Circumcenter, Glider, and others. */
 point(position:pointAddr, attributes: PointAttributes ={} ):Point{
  return new Point('Point', position, TSXGraph.defaultAttributes(attributes))
 }
@@ -2161,9 +2292,9 @@ polygon(pointArray:Point[]|pointAddr[], attributes: PolygonAttributes ={} ):Poly
  /** Display a message
                                 
 *```js
-                                TSX.text([3,2],[3,3], {fontSize:20, strokeColor:'blue'})
-                                TSX.text([0, 4], () => 'BD ' + B.distance(D).toFixed(2))
-                                TSX.text([-4, 2], '\pm\sqrt{a^2 + b^2}', { useKatex: true })
+TSX.text([3,2],[3,3], {fontSize:20, strokeColor:'blue'})
+TSX.text([0, 4], () => 'BD ' + B.distance(D).toFixed(2))
+TSX.text([-4, 2], '\pm\sqrt{a^2 + b^2}', { useKatex: true })
                                 
 *``` */
 text(position:Point|pointAddr, label:String|Function, attributes: TextAttributes ={} ):Text{
@@ -2182,15 +2313,19 @@ vectorfield(fxfy:Function[], horizontalMesh:Number[]=[-6,25,6], verticalMesh:Num
 }
 
  /** The angle element is used to denote an angle defined by three points (from, around,to), or two lines and two directions (either points or plus-or-minus 1 to indicate direction.
+~~~js
+
+TSX.angle(p1,p2,p3)                                  // angle from 3 points
+TSX.angle(l1, l2, [5.5, 0], [4, 3], { radius: 1 })   // 2 lines, two directions
+TSX.angle(l1, l2, 1, -1, { radius: 2 })              // 2 lines two +/- values
+~~~
              As opposed to the sector, an angle has two angle points and no radius point.
-                                
+ 
  type=='sector': Sector is displayed.
-                                
+ 
  type=='square': a parallelogram is displayed.
-                                
- type=='auto':  a square is displayed if the angle is near orthogonal.
-                                
- If no name is provided the angle label is automatically set to a lower greek letter. */
+ 
+ type=='auto':  a square is displayed if the angle is near orthogonal. */
  angle(from:Point|pointAddr, around:Point|pointAddr, to:Point|pointAddr,  attributes?:AngleAttributes):Angle 
  angle(line1:Line|line, line2:Line|line, direction1:[Number,Number], direction2:[Number,Number],  attributes?:AngleAttributes):Angle 
  angle(line1:Line|line, line2:Line|line, dirPlusMinus1:Number, dirPlusMinus2:Number,  attributes?:AngleAttributes):Angle 
@@ -2396,7 +2531,7 @@ ellipse(p1:Point|pointAddr, p2:Point|pointAddr, radius:Point|pointAddr|Number|Fu
 ```js
 let f = TSX.functiongraph((x: number) => 3 * Math.pow(x, 2))
 ``` */
-functiongraph(funct:Function, leftBorder?:Number, rightBorder?:Number, attributes: FunctiongraphAttributes ={} ):Curve{return new Functiongraph('Functiongraph', [funct,leftBorder,rightBorder,], attributes)
+functiongraph(funct:(x:number)=>number, leftBorder?:number, rightBorder?:number, attributes: FunctiongraphAttributes ={} ):Curve{return new Functiongraph('Functiongraph', [funct,leftBorder,rightBorder,], attributes)
 }
 
  /** A point bound to a GeometryElement like Line, Circle, or Curve, with  optionally a starting point defined by [X,Y]
@@ -2901,6 +3036,30 @@ tracecurve(glider:Glider, point:Point, attributes: TracecurveAttributes ={} ):Tr
 }
 
 
+ /** Create a new point from an existing point and a concatenation of transforms. This is a powerful way of creating complex constructions that can be rotated, scaled, and translated.  An alternative to using Groups.
+~~~js
+    // define and initialize the translation values
+    let tX = TSX.slider([-9, 9.0], [3, 9.0], [-10, 0, 10], { name: 'tX' })
+    let tY = TSX.slider([-9, 8.5], [3, 8.5], [-10, 0, 10], { name: 'tY' })
+    let tRotate = TSX.slider([-9, 8.0], [3, 8.0], [-Math.PI * 2, 0, Math.PI * 2], { name: 'tRotate' })
+    let tScale = TSX.slider([-9, 7.5], [3, 7.5], [0, 1, 5], { name: 'tScale' })
+    // set up the model for the complex shape (use opacity:0)
+    let a = TSX.point([1, 5])
+    let b = TSX.point([2, 5])
+    // set up tranforms for rotation, scaling, and translation
+    let trans = TSX.translate(()=>tX.Value(), ()=>tY.Value())
+    let rot = TSX.rotate(() => tRotate.Value(), a)  // rotation around c
+    let scale = TSX.scale(()=>tScale.Value(),()=>tScale.Value())  // scaling is relative to [0,0]
+    // implement shape based on model and applying transforms
+    let ma = TSX.transformPoint(a,[rot,scale,trans],{color:'blue'})
+    let mb = TSX.transformPoint(b,[rot,scale,trans],{color:'blue'})
+    TSX.segment(ma,mb)
+~~~             */
+transformPoint(point:Point, transform:Transform|Transform[], attributes: TransformPointAttributes ={} ):Point{
+  return new Point('point', TSXGraph.dereference([point,TSXGraph.dereference(transform)]),TSXGraph.defaultAttributes(attributes))
+}
+
+
  /** Here, lower is an array of the form [x, y] and dim is an array of the form [w, h]. The arrays [x, y] and [w, h] define the 2D frame into which the 3D cube is (roughly) projected. If the view azimuth=0 and elevation=0, the 3D view will cover a rectangle with lower left corner [x,y] and side lengths [w, h] of the board. The 'cube' is of the form [[x1, x2], [y1, y2], [z1, z2]] which determines the coordinate ranges of the 3D cube.  */
 view3D(x:Number=-13, y:Number=-10, w:Number=20, h:Number=20, xBounds:Number[]=[-5,5], yBounds:Number[]=[-5,5], zBounds:Number[]=[-5,5], attributes: View3DAttributes={
                         depthorderpoints:true,
@@ -2919,6 +3078,24 @@ view3D(x:Number=-13, y:Number=-10, w:Number=20, h:Number=20, xBounds:Number[]=[-
                          zPlaneFrontYAxis: { visible: false }
                      }, ):View3D{
  return new View3D('view3D',[ [x,y],[w,h],[xBounds,yBounds,zBounds]], attributes)
+}
+
+
+ /** Create a Transform object with Translate properties. */
+translate(dx:number|Function, dy:number|Function, attributes: TranslateAttributes ={} ):Transform{
+ return new Transform('Transform', TSXGraph.dereference([dx,dy]), {type:'translate'})
+}
+
+
+ /** Create a Transform object with Rotate properties. */
+rotate(angle:number|Function, around:Point|pointAddr, attributes: RotateAttributes ={} ):Transform{
+ return new Transform('Transform', TSXGraph.dereference([angle,around]), {type:'rotate'})
+}
+
+
+ /** Create a Transform object with Scale properties.  Scaling is relative to [0,0]. */
+scale(xMultiplier:number|Function, yMultiplier:number|Function, attributes: ScaleAttributes ={} ):Transform{
+ return new Transform('Transform', TSXGraph.dereference([xMultiplier,yMultiplier]), {type:'scale'})
 }
 
 }
@@ -3226,6 +3403,11 @@ view3D(x:Number=-13, y:Number=-10, w:Number=20, h:Number=20, xBounds:Number[]=[-
  public get visible():Boolean {
   return (this.elValue as any).visible as Boolean
 }
+
+ /**  */
+ setAttribute(attrs:GeometryElement3DAttributes): void {
+  return (this.elValue as any).setAttribute(attrs) as void
+}
 }
 
  export class Board {
@@ -3288,7 +3470,7 @@ view3D(x:Number=-13, y:Number=-10, w:Number=20, h:Number=20, xBounds:Number[]=[-
 
  export class Chart extends GeometryElement {
  constructor(className:string, params:any[], attrs: Object){
-   super(className, params, attrs)
+   super(className, TSXGraph.dereference(params), attrs)
 }
 
  /**  */
@@ -3339,7 +3521,7 @@ view3D(x:Number=-13, y:Number=-10, w:Number=20, h:Number=20, xBounds:Number[]=[-
 
  export class Circle extends GeometryElement {
  constructor(className:string, params:any[], attrs: Object){
-   super(className, params, attrs)
+   super(className, TSXGraph.dereference(params), attrs)
 }
 
  /** Circle area */
@@ -3375,7 +3557,7 @@ view3D(x:Number=-13, y:Number=-10, w:Number=20, h:Number=20, xBounds:Number[]=[-
 
  export class Circle3D extends GeometryElement3D {
  constructor(className:string, params:any[], attrs: Object){
-   super(className, params, attrs)
+   super(className, TSXGraph.dereference(params), attrs)
 }
 }
 
@@ -3554,7 +3736,7 @@ view3D(x:Number=-13, y:Number=-10, w:Number=20, h:Number=20, xBounds:Number[]=[-
 
  export class Curve extends GeometryElement {
  constructor(className:string, params:any[], attrs: Object){
-   super(className, params, attrs)
+   super(className, TSXGraph.dereference(params), attrs)
 }
 
  /**  */
@@ -3646,13 +3828,13 @@ view3D(x:Number=-13, y:Number=-10, w:Number=20, h:Number=20, xBounds:Number[]=[-
 
  export class BezierCurve extends Curve {
  constructor(className:string, params:any[], attrs: Object){
-   super(className, params, attrs)
+   super(className, TSXGraph.dereference(params), attrs)
 }
 }
 
  export class Curve3D extends Curve {
  constructor(className:string, params:any[], attrs: Object){
-   super(className, params, attrs)
+   super(className, TSXGraph.dereference(params), attrs)
 }
 
  /** Function which maps u to x; i.e. */
@@ -3737,20 +3919,10 @@ view3D(x:Number=-13, y:Number=-10, w:Number=20, h:Number=20, xBounds:Number[]=[-
 }
 }
 
- export class ForeignObject {
- elValue: Object = {}
- tsxBoard: TSXBoard = JSXMath.board  // copy, sometimes need access to board
- scaleXY:number = 1   // used by V2 math library
- constructor(className:string, params:any[], attrs: ForeignObjectAttributes){
- if (className == 'Polygon' || className == 'PolygonalChain' || className == 'Group') {
-    this.elValue = (JSXMath.board  as any).create(className, TSXGraph.dereference(params.flat()), TSXGraph.defaultAttributes(attrs))
- } else {
-    this.elValue = (JSXMath.board  as any).create(className, TSXGraph.dereference(params), TSXGraph.defaultAttributes(attrs))
- }
- if (attrs.hasOwnProperty('scaleXY')) {
-    this.scaleXY = (attrs as any).scaleXY    // for V2 Math
+ export class ForeignObject extends GeometryElement {
+ constructor(className:string, params:any[], attrs: Object){
+   super(className, TSXGraph.dereference(params), attrs)
 }
- }
 
  /**  */
  public get content():Number[] {
@@ -3785,7 +3957,7 @@ view3D(x:Number=-13, y:Number=-10, w:Number=20, h:Number=20, xBounds:Number[]=[-
 
  export class Group extends Composition {
  constructor(className:string, params:any[], attrs: Object){
-   super(className, params, attrs)
+   super(className, TSXGraph.dereference(params), attrs)
 }
 
  /**  */
@@ -3804,7 +3976,7 @@ view3D(x:Number=-13, y:Number=-10, w:Number=20, h:Number=20, xBounds:Number[]=[-
 }
 
  /** Adds an Point to this group. */
- addPoint(point:Point|pointAddr): Group {
+ addPoint(point:Point|pointAddr|Image): Group {
   return (this.elValue as any).addPoint(TSXGraph.dereference(point)) as Group
 }
 
@@ -3814,13 +3986,18 @@ view3D(x:Number=-13, y:Number=-10, w:Number=20, h:Number=20, xBounds:Number[]=[-
 }
 
  /** Adds a point to the set of rotation points of the group. */
- addRotationPoint(): Group {
-  return (this.elValue as any).addRotationPoint() as Group
+ addRotationPoint(point:Point): Group {
+  return (this.elValue as any).addRotationPoint(TSXGraph.dereference(point)) as Group
 }
 
  /** Adds a point to the set of the scale points of the group. */
- addScalePoint(): Group {
-  return (this.elValue as any).addScalePoint() as Group
+ addScalePoint(point:Point,direction:number|Function): Group {
+  return (this.elValue as any).addScalePoint(TSXGraph.dereference(point),direction) as Group
+}
+
+ /** Adds a point to the set of the translation points of the group. */
+ addTranslationPoint(point:Point): Group {
+  return (this.elValue as any).addTranslationPoint(TSXGraph.dereference(point)) as Group
 }
 
  /** List of the element ids resp. */
@@ -3829,58 +4006,48 @@ view3D(x:Number=-13, y:Number=-10, w:Number=20, h:Number=20, xBounds:Number[]=[-
 }
 
  /** Removes a point from the group. */
- removePoint(): Group {
-  return (this.elValue as any).removePoint() as Group
+ removePoint(point:Point): Group {
+  return (this.elValue as any).removePoint(TSXGraph.dereference(point)) as Group
 }
 
  /** Removes the rotation property from a point of the group. */
- removeRotationPoint(): Group {
-  return (this.elValue as any).removeRotationPoint() as Group
+ removeRotationPoint(point:Point): Group {
+  return (this.elValue as any).removeRotationPoint(TSXGraph.dereference(point)) as Group
 }
 
  /** Removes the scaling property from a point of the group. */
- removeScalePoint(): Group {
-  return (this.elValue as any).removeScalePoint() as Group
+ removeScalePoint(point:Point): Group {
+  return (this.elValue as any).removeScalePoint(TSXGraph.dereference(point)) as Group
 }
 
  /** Removes the translation property from a point of the group. */
- removeTranslationPoint(): Group {
-  return (this.elValue as any).removeTranslationPoint() as Group
-}
-
- /** Sets ids of elements to the array this.parents. */
- setParents(): Object {
-  return (this.elValue as any).setParents() as Object
-}
-
- /**  */
- setProperty(): Group {
-  return (this.elValue as any).setProperty() as Group
+ removeTranslationPoint(point:Point): Group {
+  return (this.elValue as any).removeTranslationPoint(TSXGraph.dereference(point)) as Group
 }
 
  /** Sets the center of rotation for the group. */
- setRotationCenter(): Group {
-  return (this.elValue as any).setRotationCenter() as Group
+ setRotationCenter(pivot:Point|pointAddr|"centroid"): Group {
+  return (this.elValue as any).setRotationCenter(TSXGraph.dereference(pivot)) as Group
 }
 
  /** Sets the rotation points of the group. */
- setRotationPoints(): Group {
-  return (this.elValue as any).setRotationPoints() as Group
+ setRotationPoints(points:Point|Point[]): Group {
+  return (this.elValue as any).setRotationPoints(TSXGraph.dereference(points)) as Group
 }
 
  /** Sets the center of scaling for the group. */
- setScaleCenter(): Group {
-  return (this.elValue as any).setScaleCenter() as Group
+ setScaleCenter(point:Point|pointAddr): Group {
+  return (this.elValue as any).setScaleCenter(TSXGraph.dereference(point)) as Group
 }
 
  /** Sets the scale points of the group. */
- setScalePoints(): Group {
-  return (this.elValue as any).setScalePoints() as Group
+ setScalePoints(points:Point|Point[]): Group {
+  return (this.elValue as any).setScalePoints(TSXGraph.dereference(points)) as Group
 }
 
  /** Sets the translation points of the group. */
- setTranslationPoints(): Group {
-  return (this.elValue as any).setTranslationPoints() as Group
+ setTranslationPoints(points:Point|Point[]): Group {
+  return (this.elValue as any).setTranslationPoints(TSXGraph.dereference(points)) as Group
 }
 
  /** Releases all elements of this group. */
@@ -3891,7 +4058,7 @@ view3D(x:Number=-13, y:Number=-10, w:Number=20, h:Number=20, xBounds:Number[]=[-
 
  export class Image extends GeometryElement {
  constructor(className:string, params:any[], attrs: Object){
-   super(className, params, attrs)
+   super(className, TSXGraph.dereference(params), attrs)
 }
 
  /**  */
@@ -3927,13 +4094,13 @@ view3D(x:Number=-13, y:Number=-10, w:Number=20, h:Number=20, xBounds:Number[]=[-
 
  export class Implicitcurve extends GeometryElement {
  constructor(className:string, params:any[], attrs: Object){
-   super(className, params, attrs)
+   super(className, TSXGraph.dereference(params), attrs)
 }
 }
 
  export class Intersectioncircle3D extends GeometryElement3D {
  constructor(className:string, params:any[], attrs: Object){
-   super(className, params, attrs)
+   super(className, TSXGraph.dereference(params), attrs)
 }
 }
 
@@ -3975,7 +4142,7 @@ view3D(x:Number=-13, y:Number=-10, w:Number=20, h:Number=20, xBounds:Number[]=[-
 
  export class Line extends GeometryElement {
  constructor(className:string, params:any[], attrs: Object){
-   super(className, params, attrs)
+   super(className, TSXGraph.dereference(params), attrs)
 }
 
  /**  */
@@ -4049,9 +4216,15 @@ view3D(x:Number=-13, y:Number=-10, w:Number=20, h:Number=20, xBounds:Number[]=[-
 }
 }
 
+ export class LineEqn extends Line {
+ constructor(className:string, params:any[], attrs: Object){
+   super(className, TSXGraph.dereference(params), attrs)
+}
+}
+
  export class Line3D extends GeometryElement3D {
  constructor(className:string, params:any[], attrs: Object){
-   super(className, params, attrs)
+   super(className, TSXGraph.dereference(params), attrs)
 }
 
  /**  */
@@ -4082,7 +4255,7 @@ view3D(x:Number=-13, y:Number=-10, w:Number=20, h:Number=20, xBounds:Number[]=[-
 
  export class Plane3D extends GeometryElement3D {
  constructor(className:string, params:any[], attrs: Object){
-   super(className, params, attrs)
+   super(className, TSXGraph.dereference(params), attrs)
 }
 
  /**  */
@@ -4138,7 +4311,7 @@ view3D(x:Number=-13, y:Number=-10, w:Number=20, h:Number=20, xBounds:Number[]=[-
 
  export class Point extends GeometryElement {
  constructor(className:string, params:any[], attrs: Object){
-   super(className, params, attrs)
+   super(className, TSXGraph.dereference(params), attrs)
 }
 
  /**  */
@@ -4210,7 +4383,7 @@ P.moveTo([A.X(), A.Y()], 5000)
 
  export class Point3D extends GeometryElement3D {
  constructor(className:string, params:any[], attrs: Object){
-   super(className, params, attrs)
+   super(className, TSXGraph.dereference(params), attrs)
 }
 
  /**  */
@@ -4241,7 +4414,7 @@ P.moveTo([A.X(), A.Y()], 5000)
 
  export class Polygon extends GeometryElement {
  constructor(className:string, params:any[], attrs: Object){
-   super(className, params, attrs)
+   super(className, TSXGraph.dereference(params), attrs)
 }
 
  /** Attributes for the polygon border lines. */
@@ -4267,13 +4440,13 @@ P.moveTo([A.X(), A.Y()], 5000)
 
  export class Polygon3D extends GeometryElement3D {
  constructor(className:string, params:any[], attrs: Object){
-   super(className, params, attrs)
+   super(className, TSXGraph.dereference(params), attrs)
 }
 }
 
  export class Text extends GeometryElement {
  constructor(className:string, params:any[], attrs: Object){
-   super(className, params, attrs)
+   super(className, TSXGraph.dereference(params), attrs)
 }
 
  /**  */
@@ -4359,13 +4532,13 @@ P.moveTo([A.X(), A.Y()], 5000)
 
  export class Text3D extends GeometryElement3D {
  constructor(className:string, params:any[], attrs: Object){
-   super(className, params, attrs)
+   super(className, TSXGraph.dereference(params), attrs)
 }
 }
 
  export class Ticks extends GeometryElement {
  constructor(className:string, params:any[], attrs: Object){
-   super(className, params, attrs)
+   super(className, TSXGraph.dereference(params), attrs)
 }
 
  /**  */
@@ -4426,7 +4599,7 @@ P.moveTo([A.X(), A.Y()], 5000)
 
  export class Turtle extends GeometryElement {
  constructor(className:string, params:any[], attrs: Object){
-   super(className, params, attrs)
+   super(className, TSXGraph.dereference(params), attrs)
 }
 
  /** Move the turtle backwards. */
@@ -4632,7 +4805,7 @@ P.moveTo([A.X(), A.Y()], 5000)
 
  export class Sector extends Curve {
  constructor(className:string, params:any[], attrs: Object){
-   super(className, params, attrs)
+   super(className, TSXGraph.dereference(params), attrs)
 }
 
  /**  */
@@ -4668,7 +4841,7 @@ P.moveTo([A.X(), A.Y()], 5000)
 
  export class Vectorfield extends Curve {
  constructor(className:string, params:any[], attrs: Object){
-   super(className, params, attrs)
+   super(className, TSXGraph.dereference(params), attrs)
 }
 
  /** Set the defining functions of vector field. */
@@ -4679,7 +4852,7 @@ P.moveTo([A.X(), A.Y()], 5000)
 
  export class Angle extends Sector {
  constructor(className:string, params:any[], attrs: Object){
-   super(className, params, attrs)
+   super(className, TSXGraph.dereference(params), attrs)
 }
 
  /**  */
@@ -4705,7 +4878,7 @@ P.moveTo([A.X(), A.Y()], 5000)
 
  export class Arc extends Curve {
  constructor(className:string, params:any[], attrs: Object){
-   super(className, params, attrs)
+   super(className, TSXGraph.dereference(params), attrs)
 }
 
  /**  */
@@ -4741,25 +4914,25 @@ P.moveTo([A.X(), A.Y()], 5000)
 
  export class Arrow extends Line {
  constructor(className:string, params:any[], attrs: Object){
-   super(className, params, attrs)
+   super(className, TSXGraph.dereference(params), attrs)
 }
 }
 
  export class Parallel extends Line {
  constructor(className:string, params:any[], attrs: Object){
-   super(className, params, attrs)
+   super(className, TSXGraph.dereference(params), attrs)
 }
 }
 
  export class Arrowparallel extends Parallel {
  constructor(className:string, params:any[], attrs: Object){
-   super(className, params, attrs)
+   super(className, TSXGraph.dereference(params), attrs)
 }
 }
 
  export class Axis extends Line {
  constructor(className:string, params:any[], attrs: Object){
-   super(className, params, attrs)
+   super(className, TSXGraph.dereference(params), attrs)
 }
 
  /**  */
@@ -4770,19 +4943,19 @@ P.moveTo([A.X(), A.Y()], 5000)
 
  export class Bisector extends Line {
  constructor(className:string, params:any[], attrs: Object){
-   super(className, params, attrs)
+   super(className, TSXGraph.dereference(params), attrs)
 }
 }
 
  export class Bisectorlines extends Composition {
  constructor(className:string, params:any[], attrs: Object){
-   super(className, params, attrs)
+   super(className, TSXGraph.dereference(params), attrs)
 }
 }
 
  export class Button extends Text {
  constructor(className:string, params:any[], attrs: Object){
-   super(className, params, attrs)
+   super(className, TSXGraph.dereference(params), attrs)
 }
 
  /**  */
@@ -4807,13 +4980,13 @@ P.moveTo([A.X(), A.Y()], 5000)
 
  export class Cardinalspline extends Curve {
  constructor(className:string, params:any[], attrs: Object){
-   super(className, params, attrs)
+   super(className, TSXGraph.dereference(params), attrs)
 }
 }
 
  export class Checkbox extends Text {
  constructor(className:string, params:any[], attrs: Object){
-   super(className, params, attrs)
+   super(className, TSXGraph.dereference(params), attrs)
 }
 
  /**  */
@@ -4834,25 +5007,25 @@ P.moveTo([A.X(), A.Y()], 5000)
 
  export class Circumcenter extends Point {
  constructor(className:string, params:any[], attrs: Object){
-   super(className, params, attrs)
+   super(className, TSXGraph.dereference(params), attrs)
 }
 }
 
  export class Circumcircle extends Circle {
  constructor(className:string, params:any[], attrs: Object){
-   super(className, params, attrs)
+   super(className, TSXGraph.dereference(params), attrs)
 }
 }
 
  export class CircumcircleArc extends Arc {
  constructor(className:string, params:any[], attrs: Object){
-   super(className, params, attrs)
+   super(className, TSXGraph.dereference(params), attrs)
 }
 }
 
  export class CircumcircleSector extends Sector {
  constructor(className:string, params:any[], attrs: Object){
-   super(className, params, attrs)
+   super(className, TSXGraph.dereference(params), attrs)
 }
 
  /**  */
@@ -4863,67 +5036,88 @@ P.moveTo([A.X(), A.Y()], 5000)
 
  export class Comb extends Curve {
  constructor(className:string, params:any[], attrs: Object){
-   super(className, params, attrs)
+   super(className, TSXGraph.dereference(params), attrs)
 }
 }
 
  export class Conic extends Curve {
  constructor(className:string, params:any[], attrs: Object){
-   super(className, params, attrs)
+   super(className, TSXGraph.dereference(params), attrs)
 }
 }
 
  export class CurveDifference extends Curve {
  constructor(className:string, params:any[], attrs: Object){
-   super(className, params, attrs)
+   super(className, TSXGraph.dereference(params), attrs)
 }
 }
 
  export class CurveIntersection extends Curve {
  constructor(className:string, params:any[], attrs: Object){
-   super(className, params, attrs)
+   super(className, TSXGraph.dereference(params), attrs)
 }
 }
 
  export class CurveUnion extends Curve {
  constructor(className:string, params:any[], attrs: Object){
-   super(className, params, attrs)
+   super(className, TSXGraph.dereference(params), attrs)
 }
 }
 
  export class Derivative extends Curve {
  constructor(className:string, params:any[], attrs: Object){
-   super(className, params, attrs)
+   super(className, TSXGraph.dereference(params), attrs)
 }
 }
 
  export class Ellipse extends Conic {
  constructor(className:string, params:any[], attrs: Object){
-   super(className, params, attrs)
+   super(className, TSXGraph.dereference(params), attrs)
 }
 }
 
  export class ParametricSurface3D extends Curve3D {
  constructor(className:string, params:any[], attrs: Object){
-   super(className, params, attrs)
+   super(className, TSXGraph.dereference(params), attrs)
+}
+}
+
+ export class Face3D extends GeometryElement3D {
+ constructor(className:string, params:any[], attrs: Object){
+   super(className, TSXGraph.dereference(params), attrs)
+}
+
+ /**  */
+ public get dataX():number[] {
+  return (this.elValue as any).dataX as number[]
+}
+
+ /**  */
+ public get dataY():number[] {
+  return (this.elValue as any).dataY as number[]
+}
+
+ /**  */
+ public get dataZ():number[] {
+  return (this.elValue as any).dataZ as number[]
 }
 }
 
  export class Functiongraph extends Curve {
  constructor(className:string, params:any[], attrs: Object){
-   super(className, params, attrs)
+   super(className, TSXGraph.dereference(params), attrs)
 }
 }
 
  export class Functiongraph3D extends Curve3D {
  constructor(className:string, params:any[], attrs: Object){
-   super(className, params, attrs)
+   super(className, TSXGraph.dereference(params), attrs)
 }
 }
 
  export class Glider extends Point {
  constructor(className:string, params:any[], attrs: Object){
-   super(className, params, attrs)
+   super(className, TSXGraph.dereference(params), attrs)
 }
 
  /** Animate the point. */
@@ -4934,19 +5128,19 @@ P.moveTo([A.X(), A.Y()], 5000)
 
  export class Glider3D extends Point3D {
  constructor(className:string, params:any[], attrs: Object){
-   super(className, params, attrs)
+   super(className, TSXGraph.dereference(params), attrs)
 }
 }
 
  export class Grid extends Curve {
  constructor(className:string, params:any[], attrs: Object){
-   super(className, params, attrs)
+   super(className, TSXGraph.dereference(params), attrs)
 }
 }
 
  export class Hatch extends Ticks {
  constructor(className:string, params:any[], attrs: Object){
-   super(className, params, attrs)
+   super(className, TSXGraph.dereference(params), attrs)
 }
 
  /**  */
@@ -4957,31 +5151,31 @@ P.moveTo([A.X(), A.Y()], 5000)
 
  export class Hyperbola extends Conic {
  constructor(className:string, params:any[], attrs: Object){
-   super(className, params, attrs)
+   super(className, TSXGraph.dereference(params), attrs)
 }
 }
 
  export class Incenter extends Point {
  constructor(className:string, params:any[], attrs: Object){
-   super(className, params, attrs)
+   super(className, TSXGraph.dereference(params), attrs)
 }
 }
 
  export class Incircle extends Circle {
  constructor(className:string, params:any[], attrs: Object){
-   super(className, params, attrs)
+   super(className, TSXGraph.dereference(params), attrs)
 }
 }
 
  export class Inequality extends Curve {
  constructor(className:string, params:any[], attrs: Object){
-   super(className, params, attrs)
+   super(className, TSXGraph.dereference(params), attrs)
 }
 }
 
  export class Input extends Text {
  constructor(className:string, params:any[], attrs: Object){
-   super(className, params, attrs)
+   super(className, TSXGraph.dereference(params), attrs)
 }
 
  /** Sets value of the input element. */
@@ -5002,7 +5196,7 @@ P.moveTo([A.X(), A.Y()], 5000)
 
  export class Integral extends Curve {
  constructor(className:string, params:any[], attrs: Object){
-   super(className, params, attrs)
+   super(className, TSXGraph.dereference(params), attrs)
 }
 
  /** Attributes of the (left) base point of the integral. */
@@ -5033,19 +5227,19 @@ P.moveTo([A.X(), A.Y()], 5000)
 
  export class Intersection extends Point {
  constructor(className:string, params:any[], attrs: Object){
-   super(className, params, attrs)
+   super(className, TSXGraph.dereference(params), attrs)
 }
 }
 
  export class Label extends Text {
  constructor(className:string, params:any[], attrs: Object){
-   super(className, params, attrs)
+   super(className, TSXGraph.dereference(params), attrs)
 }
 }
 
  export class Locus extends Curve {
  constructor(className:string, params:any[], attrs: Object){
-   super(className, params, attrs)
+   super(className, TSXGraph.dereference(params), attrs)
 }
 
  /**  */
@@ -5061,115 +5255,115 @@ P.moveTo([A.X(), A.Y()], 5000)
 
  export class MajorArc extends Curve {
  constructor(className:string, params:any[], attrs: Object){
-   super(className, params, attrs)
+   super(className, TSXGraph.dereference(params), attrs)
 }
 }
 
  export class MajorSector extends Curve {
  constructor(className:string, params:any[], attrs: Object){
-   super(className, params, attrs)
+   super(className, TSXGraph.dereference(params), attrs)
 }
 }
 
  export class Metapostspline extends Curve {
  constructor(className:string, params:any[], attrs: Object){
-   super(className, params, attrs)
+   super(className, TSXGraph.dereference(params), attrs)
 }
 }
 
  export class Midpoint extends Point {
  constructor(className:string, params:any[], attrs: Object){
-   super(className, params, attrs)
+   super(className, TSXGraph.dereference(params), attrs)
 }
 }
 
  export class MinorArc extends Curve {
  constructor(className:string, params:any[], attrs: Object){
-   super(className, params, attrs)
+   super(className, TSXGraph.dereference(params), attrs)
 }
 }
 
  export class MinorSector extends Curve {
  constructor(className:string, params:any[], attrs: Object){
-   super(className, params, attrs)
+   super(className, TSXGraph.dereference(params), attrs)
 }
 }
 
  export class mirrorelement extends GeometryElement {
  constructor(className:string, params:any[], attrs: Object){
-   super(className, params, attrs)
+   super(className, TSXGraph.dereference(params), attrs)
 }
 }
 
  export class Mirrorpoint extends Point {
  constructor(className:string, params:any[], attrs: Object){
-   super(className, params, attrs)
+   super(className, TSXGraph.dereference(params), attrs)
 }
 }
 
  export class NonReflexAngle extends Angle {
  constructor(className:string, params:any[], attrs: Object){
-   super(className, params, attrs)
+   super(className, TSXGraph.dereference(params), attrs)
 }
 }
 
  export class Normal extends Line {
  constructor(className:string, params:any[], attrs: Object){
-   super(className, params, attrs)
+   super(className, TSXGraph.dereference(params), attrs)
 }
 }
 
  export class Orthogonalprojection extends Point {
  constructor(className:string, params:any[], attrs: Object){
-   super(className, params, attrs)
+   super(className, TSXGraph.dereference(params), attrs)
 }
 }
 
  export class OtherIntersection extends Point {
  constructor(className:string, params:any[], attrs: Object){
-   super(className, params, attrs)
+   super(className, TSXGraph.dereference(params), attrs)
 }
 }
 
  export class Parabola extends Conic {
  constructor(className:string, params:any[], attrs: Object){
-   super(className, params, attrs)
+   super(className, TSXGraph.dereference(params), attrs)
 }
 }
 
  export class Parallelpoint extends Point {
  constructor(className:string, params:any[], attrs: Object){
-   super(className, params, attrs)
+   super(className, TSXGraph.dereference(params), attrs)
 }
 }
 
  export class Segment extends Line {
  constructor(className:string, params:any[], attrs: Object){
-   super(className, params, attrs)
+   super(className, TSXGraph.dereference(params), attrs)
 }
 }
 
  export class Parallelogram extends Polygon {
  constructor(className:string, params:any[], attrs: Object){
-   super(className, params, attrs)
+   super(className, TSXGraph.dereference(params), attrs)
 }
 }
 
  export class Perpendicular extends Segment {
  constructor(className:string, params:any[], attrs: Object){
-   super(className, params, attrs)
+   super(className, TSXGraph.dereference(params), attrs)
 }
 }
 
  export class PerpendicularPoint extends Point {
  constructor(className:string, params:any[], attrs: Object){
-   super(className, params, attrs)
+   super(className, TSXGraph.dereference(params), attrs)
 }
 }
 
  export class PerpendicularSegment extends Segment {
  constructor(className:string, params:any[], attrs: Object){
-   super(className, params, attrs)
+   super(className, TSXGraph.dereference(params), attrs)
 }
 
  /**  */
@@ -5180,49 +5374,60 @@ P.moveTo([A.X(), A.Y()], 5000)
 
  export class PolarLine extends Line {
  constructor(className:string, params:any[], attrs: Object){
-   super(className, params, attrs)
+   super(className, TSXGraph.dereference(params), attrs)
 }
 }
 
  export class PolePoint extends Point {
  constructor(className:string, params:any[], attrs: Object){
-   super(className, params, attrs)
+   super(className, TSXGraph.dereference(params), attrs)
 }
 }
 
  export class PolygonalChain extends Polygon {
  constructor(className:string, params:any[], attrs: Object){
-   super(className, params, attrs)
+   super(className, TSXGraph.dereference(params), attrs)
+}
+}
+
+ export class Polyhedron3D extends GeometryElement3D {
+ constructor(className:string, params:any[], attrs: Object){
+   super(className, TSXGraph.dereference(params), attrs)
+}
+
+ /**  */
+ public get faces():Face3D[] {
+  return (this.elValue as any).faces as Face3D[]
 }
 }
 
  export class RadicalAxis extends Line {
  constructor(className:string, params:any[], attrs: Object){
-   super(className, params, attrs)
+   super(className, TSXGraph.dereference(params), attrs)
 }
 }
 
  export class Reflection extends GeometryElement {
  constructor(className:string, params:any[], attrs: Object){
-   super(className, params, attrs)
+   super(className, TSXGraph.dereference(params), attrs)
 }
 }
 
  export class ReflexAngle extends Angle {
  constructor(className:string, params:any[], attrs: Object){
-   super(className, params, attrs)
+   super(className, TSXGraph.dereference(params), attrs)
 }
 }
 
  export class RegularPolygon extends Polygon {
  constructor(className:string, params:any[], attrs: Object){
-   super(className, params, attrs)
+   super(className, TSXGraph.dereference(params), attrs)
 }
 }
 
  export class Riemannsum extends Curve {
  constructor(className:string, params:any[], attrs: Object){
-   super(className, params, attrs)
+   super(className, TSXGraph.dereference(params), attrs)
 }
 
  /** Returns the value of the Riemann sum, i.e. */
@@ -5233,7 +5438,7 @@ P.moveTo([A.X(), A.Y()], 5000)
 
  export class Semicircle extends Arc {
  constructor(className:string, params:any[], attrs: Object){
-   super(className, params, attrs)
+   super(className, TSXGraph.dereference(params), attrs)
 }
 
  /**  */
@@ -5244,7 +5449,7 @@ P.moveTo([A.X(), A.Y()], 5000)
 
  export class Slider extends Glider {
  constructor(className:string, params:any[], attrs: Object){
-   super(className, params, attrs)
+   super(className, TSXGraph.dereference(params), attrs)
 }
 
  /** Sets the maximum value of the slider. */
@@ -5275,7 +5480,7 @@ P.moveTo([A.X(), A.Y()], 5000)
 
  export class Slopefield extends Vectorfield {
  constructor(className:string, params:any[], attrs: Object){
-   super(className, params, attrs)
+   super(className, TSXGraph.dereference(params), attrs)
 }
 
  /** Set the defining functions of slope field. */
@@ -5286,7 +5491,7 @@ P.moveTo([A.X(), A.Y()], 5000)
 
  export class Slopetriangle extends Line {
  constructor(className:string, params:any[], attrs: Object){
-   super(className, params, attrs)
+   super(className, TSXGraph.dereference(params), attrs)
 }
 
  /** Returns the value of the slope triangle, that is the slope of the tangent. */
@@ -5297,43 +5502,43 @@ P.moveTo([A.X(), A.Y()], 5000)
 
  export class Smartlabel extends Text {
  constructor(className:string, params:any[], attrs: Object){
-   super(className, params, attrs)
+   super(className, TSXGraph.dereference(params), attrs)
 }
 }
 
  export class Sphere3D extends GeometryElement3D {
  constructor(className:string, params:any[], attrs: Object){
-   super(className, params, attrs)
+   super(className, TSXGraph.dereference(params), attrs)
 }
 }
 
  export class Spline extends Curve {
  constructor(className:string, params:any[], attrs: Object){
-   super(className, params, attrs)
+   super(className, TSXGraph.dereference(params), attrs)
 }
 }
 
  export class Stepfunction extends Curve {
  constructor(className:string, params:any[], attrs: Object){
-   super(className, params, attrs)
+   super(className, TSXGraph.dereference(params), attrs)
 }
 }
 
  export class Tangent extends Line {
  constructor(className:string, params:any[], attrs: Object){
-   super(className, params, attrs)
+   super(className, TSXGraph.dereference(params), attrs)
 }
 }
 
  export class tangentTo extends Line {
  constructor(className:string, params:any[], attrs: Object){
-   super(className, params, attrs)
+   super(className, TSXGraph.dereference(params), attrs)
 }
 }
 
  export class Tapemeasure extends Segment {
  constructor(className:string, params:any[], attrs: Object){
-   super(className, params, attrs)
+   super(className, TSXGraph.dereference(params), attrs)
 }
 
  /** Returns the length of the tape measure. */
@@ -5344,13 +5549,31 @@ P.moveTo([A.X(), A.Y()], 5000)
 
  export class Tracecurve extends Curve {
  constructor(className:string, params:any[], attrs: Object){
-   super(className, params, attrs)
+   super(className, TSXGraph.dereference(params), attrs)
 }
 }
 
  export class Transform extends GeometryElement {
  constructor(className:string, params:any[], attrs: Object){
-   super(className, params, attrs)
+   super(className, TSXGraph.dereference(params), attrs)
+}
+
+ /** Create a new Point from a Point and Transform.  Translation just requires dx and dy.
+                            Rotation requires a point to rotate around, and a rotation transform around that point, and
+                            a remote point that sets both the radius and the initial angle of the rotation.
+                            
+Example: Given a rotation transform controlled by a slider, create a rotating point using the transform method Point() and the
+                            radius point.
+```js
+    let slid = TSX.slider([-4,0],[-2,0],[-20,0,20])  // controls rotation
+    let c = TSX.point([-1,-1],{name:'c'})     //center
+    let rot = TSX.rotate(()=>slid.Value(),c)  // rotation around c
+    let initial = TSX.point([-1,1],{name:'initial'})
+    let d = rot.point(initial,{name:'rotation around c'})  // new point
+    TSX.segment(c,d)    // to illustrate
+``` */
+ point(fromPoint:Point,attributes:PointAttributes={}): Point {
+  return JSXMath.board.create('point',[TSXGraph.dereference(fromPoint), this.elValue],TSXGraph.defaultAttributes(attributes)) as Point as Point
 }
 
  /**  */
@@ -5358,9 +5581,15 @@ P.moveTo([A.X(), A.Y()], 5000)
   return (this.elValue as any).applyOnce(TSXGraph.dereference(element)) as void
 }
 
- /**  */
+ /**  Binds a transformation to a GeometryElement or an array of elements. In every update of the GeometryElement(s), the transformation is executed. That means, in order to immediately apply the transformation, a call of board.update() has to follow. */
  bindTo(element:GeometryElement): void {
   return (this.elValue as any).bindTo(TSXGraph.dereference(element)) as void
+}
+
+ /**  */
+ melt(t:Transform): Transform {
+  this.elValue = (this.elValue as any).melt(TSXGraph.dereference(t));
+ return this  as Transform
 }
 
  /**  */
@@ -5369,9 +5598,20 @@ P.moveTo([A.X(), A.Y()], 5000)
 }
 }
 
+ export class TransformPoint extends Point {
+ constructor(className:string, params:any[], attrs: Object){
+   super(className, TSXGraph.dereference(params), attrs)
+}
+}
+
  export class View3D extends GeometryElement3D {
  constructor(className:string, params:any[], attrs: Object){
-   super(className, params, attrs)
+   super(className, TSXGraph.dereference(params), attrs)
+}
+
+ /**  */
+ public get defaultAxes():Object {
+  return (this.elValue as any).defaultAxes as Object
 }
 
  /**  */
@@ -5380,12 +5620,12 @@ P.moveTo([A.X(), A.Y()], 5000)
 }
 
  /** This element is used to provide a constructor for a 3D Point. */
- point3D(xyz:NumberFunction[]|Function,attributes:Object={}): Point3D {
+ point3D(xyz:NumberFunction[]|Function,attributes:Point3DAttributes={}): Point3D {
   return (this.elValue as any).create("point3d",[xyz],attributes) as Point3D
 }
 
  /** This element is used to provide a constructor for a 3D line. */
- line3D(point1:NumberFunction[]|Point3D,point2:NumberFunction[]|Point3D,attributes:Object={}): Line3D {
+ line3D(point1:Point3D|NumberFunction[],point2:Point3D|NumberFunction[],attributes:GeometryElement3DAttributes={}): Line3D {
   return (this.elValue as any).create("line3d",TSXGraph.dereference([point1,point2]),attributes) as Line3D
 }
 
@@ -5400,7 +5640,7 @@ P.moveTo([A.X(), A.Y()], 5000)
 }
 
  /**  */
- polygon3D(points:Point3D[],attributes:Object={}): Sphere3D {
+ polygon3D(points:Point3D[]|number[][],attributes:Object={}): Sphere3D {
   return (this.elValue as any).create("polygon3d",TSXGraph.dereference(points),attributes) as Sphere3D
 }
 
@@ -5419,6 +5659,11 @@ P.moveTo([A.X(), A.Y()], 5000)
   return (this.elValue as any).create("text3d",[...TSXGraph.dereference(position),text],attributes) as Text3D
 }
 
+ /** This element is used to provide a constructor for a 3D Polyhedron. */
+ polyhedron3D(points: [number,number,number][]|Object, faces:number[][]|string[][],attributes:Object={}): Polyhedron3D {
+  return (this.elValue as any).create("polyhedron3d",[points,faces],attributes) as Polyhedron3D
+}
+
  /** Create a 3D plane object defined by a point and two directions, and extending negative and positive distanced in those directions by a range.  Remember to set visible:true.
                             
 *```js 
@@ -5431,7 +5676,7 @@ P.moveTo([A.X(), A.Y()], 5000)
          gradient: 'linear', visible:true })
                             
 ``` */
- plane3D(point:Point3D|number[],axis1:number[],axis2:number[],range1:number[],range2:number[],attributes:Object={}): Plane3D {
+ plane3D(point:Point3D|number[]|Function,axis1:number[]|Function,axis2:number[]|Function,range1:number[],range2:number[],attributes:Object={}): Plane3D {
   return (this.elValue as any).create("plane3d",TSXGraph.dereference([point,axis1,axis2,range1,range2]),attributes) as Plane3D
 }
 
@@ -5508,5 +5753,23 @@ P.moveTo([A.X(), A.Y()], 5000)
  /**  */
  stopAzimuth(): any {
   return (this.elValue as any).stopAzimuth() as any
+}
+}
+
+ export class Translate extends Transform {
+ constructor(className:string, params:any[], attrs: Object){
+   super(className, TSXGraph.dereference(params), attrs)
+}
+}
+
+ export class Rotate extends Transform {
+ constructor(className:string, params:any[], attrs: Object){
+   super(className, TSXGraph.dereference(params), attrs)
+}
+}
+
+ export class Scale extends Transform {
+ constructor(className:string, params:any[], attrs: Object){
+   super(className, TSXGraph.dereference(params), attrs)
 }
 }}

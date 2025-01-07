@@ -15,7 +15,8 @@ This wrapper provides a more-typical [TypeScript](https://www.typescriptlang.org
 | --------- | ------- |--------|
 | `board.create('point',[0,0])`  | `TSX.point([0,0])`   |  // looks similar because an immediate address is always [x,y]
 | `board.create('segment' , [p1, p2])`     | `TSX.segment(p1, p2)` | // much closer to what you would expect
-| `board.create('intersection', [cl,ln])` | `TSX.intersection(cl,ln))`    |  // VSCode shows order of parameters
+| `board.create('intersection', [cl,ln])` | `TSX.intersection(cl,ln))`    |  // VSCode shows order of parameters|
+| `let rot = board.create('transform', [()=>slider.Value(), c], {type: 'rotate'})`| `let rot = TSX.rotate(()=>slider.Value(),c)` | // transform that rotates around c|
 
 
 With the wrapper, VSCode offers the usual signatures, object keys, and completions.
