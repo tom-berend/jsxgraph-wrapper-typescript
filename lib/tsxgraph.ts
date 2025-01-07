@@ -21,7 +21,7 @@
         //
         /////////////////////////////////////////////////////////////////////////////
 
-        //   Generated on January 4, 2025, 10:55 pm 
+        //   Generated on January 7, 2025, 3:40 pm 
 
 
 
@@ -1087,7 +1087,7 @@
         type NumberFunction = Number|Function
 
         /** A 'point' has a position in space.  The only characteristic that distinguishes one point from another is its position. */
-        type pointAddr =  NumberFunction[] | [number,number] |[number,Function]|[Function,number]|[Function|Function] // allow tuples or arrays
+        type pointAddr =  NumberFunction[] | [number,number] |[number,Function]|[Function,number]|[Function|Function]|number[] // allow tuples or arrays
 
 
         type line  = [Point|pointAddr,Point|pointAddr]
@@ -1477,10 +1477,93 @@ const board = TXG.TSXGraph.initBoard('jxgbox', { axis: true });
             'icons/moon-dreamy.png'
 
 
+ interface CurveMultiDefn{
+ /**  Plot a set of points or a function from arrays X and Y  */
+ ( xArray: number[]|Function,  yArray: number[]|Function,  attrs?: CurveAttributes) : Curve
+ /**  Plot a set of points or a function from arrays X and Y  */
+ ( xArray: number[]|Function,  yArray: number[]|Function,  left: NumberFunction,  right: NumberFunction,  attrs?: CurveAttributes) : Curve
+}
+ interface ImplicitcurveMultiDefn{
+ /**  An implicit curve is a plane curve defined by an implicit equation relating two coordinate variables, commonly x and y. For example, the unit circle is defined by the implicit equation x2 + y2 = 1. In general, every implicit curve is defined by an equation of the form f(x, y) = 0 for some function f of two variables.  IMPLICIT means that the equation is not expressed as a solution for either x in terms of y or vice versa.  */
+ ( f: Function|String,  attrs?: ImplicitcurveAttributes) : Implicitcurve
+ /**  An implicit curve is a plane curve defined by an implicit equation relating two coordinate variables, commonly x and y. For example, the unit circle is defined by the implicit equation x2 + y2 = 1. In general, every implicit curve is defined by an equation of the form f(x, y) = 0 for some function f of two variables.  IMPLICIT means that the equation is not expressed as a solution for either x in terms of y or vice versa.  */
+ ( f: Function|String,  dfx: Function|String,  dfy: Function|String,  attrs?: ImplicitcurveAttributes) : Implicitcurve
+}
+ interface LineMultiDefn{
+ /**  Create a line defined by two points (or point addresses]
+
+*```js
+TSX.line([3,2],[3,3],{strokeColor:'blue',strokeWidth:5,strokeOpacity:.5})
+let P1 = TSX.point([3,2])
+TSX.line(p1,[3,3])
+
+*```
+                       */
+ ( p1: Point|pointAddr,  p2: Point|pointAddr,  attrs?: LineAttributes) : Line
+ /**  Create a line for the equation a*x+b*y+c*z = 0',
+
+*```js
+TSX.line(2,3,()=>offset())   // create a line for the equation a*x+b*y+c*z = 0
+
+*```
+                       */
+ ( A: number|Function,  B: number|Function,  C: number|Function,  attrs?: LineAttributes) : Line
+}
+ interface AngleMultiDefn{
+ /**  The angle element is used to denote an angle defined by three points (from, around,to), or two lines and two directions (either points or plus-or-minus 1 to indicate direction.
+~~~js
+
+TSX.angle(p1,p2,p3)                                  // angle from 3 points
+TSX.angle(l1, l2, [5.5, 0], [4, 3], { radius: 1 })   // 2 lines, two directions
+TSX.angle(l1, l2, 1, -1, { radius: 2 })              // 2 lines two +/- values
+~~~
+             As opposed to the sector, an angle has two angle points and no radius point.
+ 
+ type=='sector': Sector is displayed.
+ 
+ type=='square': a parallelogram is displayed.
+ 
+ type=='auto':  a square is displayed if the angle is near orthogonal.  */
+ ( from: Point|pointAddr,  around: Point|pointAddr,  to: Point|pointAddr,  attrs?: AngleAttributes) : Angle
+ /**  The angle element is used to denote an angle defined by three points (from, around,to), or two lines and two directions (either points or plus-or-minus 1 to indicate direction.
+~~~js
+
+TSX.angle(p1,p2,p3)                                  // angle from 3 points
+TSX.angle(l1, l2, [5.5, 0], [4, 3], { radius: 1 })   // 2 lines, two directions
+TSX.angle(l1, l2, 1, -1, { radius: 2 })              // 2 lines two +/- values
+~~~
+             As opposed to the sector, an angle has two angle points and no radius point.
+ 
+ type=='sector': Sector is displayed.
+ 
+ type=='square': a parallelogram is displayed.
+ 
+ type=='auto':  a square is displayed if the angle is near orthogonal.  */
+ ( line1: Line|line,  line2: Line|line,  direction1: [Number,Number],  direction2: [Number,Number],  attrs?: AngleAttributes) : Angle
+ /**  The angle element is used to denote an angle defined by three points (from, around,to), or two lines and two directions (either points or plus-or-minus 1 to indicate direction.
+~~~js
+
+TSX.angle(p1,p2,p3)                                  // angle from 3 points
+TSX.angle(l1, l2, [5.5, 0], [4, 3], { radius: 1 })   // 2 lines, two directions
+TSX.angle(l1, l2, 1, -1, { radius: 2 })              // 2 lines two +/- values
+~~~
+             As opposed to the sector, an angle has two angle points and no radius point.
+ 
+ type=='sector': Sector is displayed.
+ 
+ type=='square': a parallelogram is displayed.
+ 
+ type=='auto':  a square is displayed if the angle is near orthogonal.  */
+ ( line1: Line|line,  line2: Line|line,  dirPlusMinus1: Number,  dirPlusMinus2: Number,  attrs?: AngleAttributes) : Angle
+}
+ interface ParallelMultiDefn{
+ /**  A line parallel to a given line (or two points), through a point.  */
+ ( line: Line|[Point,Point],  point: Point|pointAddr,  attrs?: ParallelAttributes) : Parallel
+ /**  A line parallel to a given line (or two points), through a point.  */
+ ( lineP1: Point|pointAddr,  lineP2: Point|pointAddr,  Point: Point|pointAddr,  attrs?: ParallelAttributes) : Parallel
+}
  interface ConicIface {
  z_ignore: Object,
- /** Line defined by solution to a*x + b*y = c */
-   line( a:Number|Function, b:Number|Function, c?:Number|Function ,attributes?:LineAttributes):Line
  /** Just as two (distinct) points determine a line, five points (no three collinear) determine a conic. */
    fivePoints( A:Point|pointAddr, B:Point|pointAddr, C:Point|pointAddr, D:Point|pointAddr, E:Point|pointAddr,attributes?:ConicAttributes):Conic
  /** Build a plane algebraic curve from six numbers that satisfies Ax^2 + Bxy + Cy^2 + Dx + Ey + F = 0, and A,B,C not all zero.  This might be a circle, ellipse, parabola, or hyperbola. */
@@ -1491,6 +1574,68 @@ const board = TXG.TSXGraph.initBoard('jxgbox', { axis: true });
    ellipseArc( focalPoint1:Point|pointAddr, focalPoint2:Point|pointAddr, outerPoint:Point|pointAddr, startAngle:Number|Function, endAngle:Number|Function,attributes?:EllipseAttributes):Ellipse
 }
 
+ interface ConicMultiDefn{
+ /**  Build a plane algebraic curve from six numbers that satisfies Ax^2 + Bxy + Cy^2 + Dx + Ey + F = 0, and A,B,C not all zero.  This might be a circle, ellipse, parabola, or hyperbola.  */
+ ( A: Number,  B: Number,  C: Number,  D: Number,  E: Number,  F: Number,  attrs?: ConicAttributes) : Conic
+}
+ interface GliderMultiDefn{
+ /**  A point bound to a GeometryElement like Line, Circle, or Curve, with  optionally a starting point defined by [X,Y]
+```js
+let c1 = TSX.circle(a, 1)
+let g1 = TSX.glider(c1)
+let g2 = TSX.glider(c1,[0,0])  // includes initial point
+```   */
+ ( hostElement: GeometryElement,  attrs?: GliderAttributes) : Glider
+ /**  A point bound to a GeometryElement like Line, Circle, or Curve, with  optionally a starting point defined by [X,Y]
+```js
+let c1 = TSX.circle(a, 1)
+let g1 = TSX.glider(c1)
+let g2 = TSX.glider(c1,[0,0])  // includes initial point
+```   */
+ ( hostElement: GeometryElement,  initialPosition: number[],  attrs?: GliderAttributes) : Glider
+}
+ interface GridMultiDefn{
+ /**  Creates a grid to support the user with element placement or to improve determination of position.  */
+ ( axis1: Axis,  axis2: Axis,  attrs?: GridAttributes) : Grid
+ /**  Creates a grid to support the user with element placement or to improve determination of position.  */
+ ( attrs?: GridAttributes) : Grid
+}
+ interface MidpointMultiDefn{
+ /**  A point in the middle of two given points or a line segment.  */
+ ( p1: Point,  p2: Point,  attrs?: MidpointAttributes) : Midpoint
+ /**  A point in the middle of two given points or a line segment.  */
+ ( line: Line,  attrs?: MidpointAttributes) : Midpoint
+}
+ interface NormalMultiDefn{
+ /**  A line through a given point on an element of type line, circle, curve, or turtle and orthogonal (at right angle) to that object.  */
+ ( object: Line|Circle|Curve,  point: Point,  attrs?: NormalAttributes) : Normal
+ /**  A line through a given point on an element of type line, circle, curve, or turtle and orthogonal (at right angle) to that object.  */
+ ( glider: Glider,  attrs?: NormalAttributes) : Normal
+}
+ interface ParallelpointMultiDefn{
+ /**  A parallel point is given by three points, or a line and a point. Taking the Euclidean vector from the first to the second point, the parallel point is determined by adding that vector to the third point. The line determined by the first two points is parallel to the line determined by the third point and the constructed point.  */
+ ( line: Line|[Point,Point],  point: Point|pointAddr,  attrs?: ParallelpointAttributes) : Parallelpoint
+ /**  A parallel point is given by three points, or a line and a point. Taking the Euclidean vector from the first to the second point, the parallel point is determined by adding that vector to the third point. The line determined by the first two points is parallel to the line determined by the third point and the constructed point.  */
+ ( P1: Point,  P2: Point,  P3: Point,  attrs?: ParallelpointAttributes) : Parallelpoint
+}
+ interface SegmentMultiDefn{
+ /**  Create a line segment between two points. If there is a third variable then the segment has a fixed length (which may be a function) determined by the absolute value of that number.  */
+ ( P1: Point|pointAddr,  P2: Point|pointAddr,  attrs?: SegmentAttributes) : Segment
+ /**  Create a line segment between two points. If there is a third variable then the segment has a fixed length (which may be a function) determined by the absolute value of that number.  */
+ ( P1: Point|pointAddr,  P2: Point|pointAddr,  length: number|Function,  attrs?: SegmentAttributes) : Segment
+}
+ interface SlopetriangleMultiDefn{
+ /**  A slope triangle is an imaginary triangle that helps you find the slope of a line or a line segment (use the method '.Value()' ). The hypotenuse of the triangle (the diagonal) is the line you are interested in finding the slope of. The two 'legs' of the triangle are the 'rise' and 'run' used in the slope formula.  */
+ ( tangent: Point | Tangent,  attrs?: SlopetriangleAttributes) : Slopetriangle
+ /**  A slope triangle is an imaginary triangle that helps you find the slope of a line or a line segment (use the method '.Value()' ). The hypotenuse of the triangle (the diagonal) is the line you are interested in finding the slope of. The two 'legs' of the triangle are the 'rise' and 'run' used in the slope formula.  */
+ ( line: Line,  point: Point,  attrs?: SlopetriangleAttributes) : Slopetriangle
+}
+ interface TangentMultiDefn{
+ /**  A tangent to a point on a line, circle, or curve.  Usually the point is a Glider.  */
+ ( point: Glider,  attrs?: TangentAttributes) : Tangent
+ /**  A tangent to a point on a line, circle, or curve.  Usually the point is a Glider.  */
+ ( point: Point,  curve: Line|Circle|Curve,  attrs?: TangentAttributes) : Tangent
+}
  interface JSXMathJSXMathIface {
  } 
 
@@ -1867,10 +2012,6 @@ const board = TXG.TSXGraph.initBoard('jxgbox', { axis: true });
  this.conic = {
  /** @protected */ 
  z_ignore: {}, 
-   /** Line defined by solution to a*x + b*y = c */
-   line( a:Number|Function, b:Number|Function, c:Number|Function = 1,attributes: LineAttributes ={}) : Line {
- return new Line('Line',[a, b, c, ],attributes) as Line
- },
    /** Just as two (distinct) points determine a line, five points (no three collinear) determine a conic. */
    fivePoints( A:Point|pointAddr, B:Point|pointAddr, C:Point|pointAddr, D:Point|pointAddr, E:Point|pointAddr,attributes: ConicAttributes ={}) : Conic {
  return new Conic('Conic',[A, B, C, D, E, ],attributes)
@@ -2057,55 +2198,52 @@ circle(centerPoint:Point|pointAddr|Function, remotePoint:Point|pointAddr|Line|li
                             }
 }
 
- /** Plot a set of points or a function from arrays X and Y */
- curve(xArray:number[]|Function, yArray:number[]|Function,  attributes?:CurveAttributes):Curve 
- curve(xArray:number[]|Function, yArray:number[]|Function, left:NumberFunction, right:NumberFunction,  attributes?:CurveAttributes):Curve 
 
             // implementation of signature,  hidden from user
-            curve(a?:any, b?:any, c?:any, d?:any,e?:any,f?:any,g?:any,h?:any,i?:any):Curve {
+            curve:CurveMultiDefn = (a?:any, b?:any, c?:any, d?:any,e?:any,f?:any,g?:any,h?:any,i?:any) :Curve => {
  let newObject: Curve = {} as Curve // just so it is initialized
    let params = []
    let attrs = {}
-   if (arguments.length == 1){
+   if (b === undefined) {
       if(isJSXAttribute(a)){
           attrs = TSXGraph.defaultAttributes(a)
           params = TSXGraph.dereference([])
       }else{
           params = TSXGraph.dereference([a,])
       }
-   }
-   if (arguments.length == 2){
+   }    else {
+   if (c === undefined) {
       if(isJSXAttribute(b)){
           attrs = TSXGraph.defaultAttributes(b)
           params = TSXGraph.dereference([a,])
       }else{
           params = TSXGraph.dereference([a,b,])
       }
-   }
-   if (arguments.length == 3){
+   }    else {
+   if (d === undefined) {
       if(isJSXAttribute(c)){
           attrs = TSXGraph.defaultAttributes(c)
           params = TSXGraph.dereference([a,b,])
       }else{
           params = TSXGraph.dereference([a,b,c,])
       }
-   }
-   if (arguments.length == 4){
+   }    else {
+   if (e === undefined) {
       if(isJSXAttribute(d)){
           attrs = TSXGraph.defaultAttributes(d)
           params = TSXGraph.dereference([a,b,c,])
       }else{
           params = TSXGraph.dereference([a,b,c,d,])
       }
-   }
-   if (arguments.length == 5){
+   }    else {
+   if (f === undefined) {
       if(isJSXAttribute(e)){
           attrs = TSXGraph.defaultAttributes(e)
           params = TSXGraph.dereference([a,b,c,d,])
       }else{
           params = TSXGraph.dereference([a,b,c,d,e,])
       }
-   }
+   } }}}}
    return new Curve('curve', params, TSXGraph.defaultAttributes(attrs)) // as Curve
  }
 
@@ -2168,105 +2306,107 @@ If you want to move the image, just tie the image to a point, maybe at the cente
 image(url:String|spaceIcon, lowerLeft:pointAddr, widthHeight:[Number,Number]=[1,1], attributes: ImageAttributes ={} ):Image{return new Image('Image', [url,lowerLeft,widthHeight,], attributes)
 }
 
- /** An implicit curve is a plane curve defined by an implicit equation relating two coordinate variables, commonly x and y. For example, the unit circle is defined by the implicit equation x2 + y2 = 1. In general, every implicit curve is defined by an equation of the form f(x, y) = 0 for some function f of two variables.  IMPLICIT means that the equation is not expressed as a solution for either x in terms of y or vice versa. */
- implicitcurve(f:Function|String,  attributes?:ImplicitcurveAttributes):Implicitcurve 
- implicitcurve(f:Function|String, dfx:Function|String, dfy:Function|String,  attributes?:ImplicitcurveAttributes):Implicitcurve 
 
             // implementation of signature,  hidden from user
-            implicitcurve(a?:any, b?:any, c?:any, d?:any,e?:any,f?:any,g?:any,h?:any,i?:any):Implicitcurve {
+            implicitcurve:ImplicitcurveMultiDefn = (a?:any, b?:any, c?:any, d?:any,e?:any,f?:any,g?:any,h?:any,i?:any) :Implicitcurve => {
  let newObject: Implicitcurve = {} as Implicitcurve // just so it is initialized
    let params = []
    let attrs = {}
-   if (arguments.length == 1){
+   if (b === undefined) {
       if(isJSXAttribute(a)){
           attrs = TSXGraph.defaultAttributes(a)
           params = TSXGraph.dereference([])
       }else{
           params = TSXGraph.dereference([a,])
       }
-   }
-   if (arguments.length == 2){
+   }    else {
+   if (c === undefined) {
       if(isJSXAttribute(b)){
           attrs = TSXGraph.defaultAttributes(b)
           params = TSXGraph.dereference([a,])
       }else{
           params = TSXGraph.dereference([a,b,])
       }
-   }
-   if (arguments.length == 3){
+   }    else {
+   if (d === undefined) {
       if(isJSXAttribute(c)){
           attrs = TSXGraph.defaultAttributes(c)
           params = TSXGraph.dereference([a,b,])
       }else{
           params = TSXGraph.dereference([a,b,c,])
       }
-   }
+   }    else {
+   if (e === undefined) {
+      if(isJSXAttribute(d)){
+          attrs = TSXGraph.defaultAttributes(d)
+          params = TSXGraph.dereference([a,b,c,])
+      }else{
+          params = TSXGraph.dereference([a,b,c,d,])
+      }
+   }    else {
+   if (f === undefined) {
+      if(isJSXAttribute(e)){
+          attrs = TSXGraph.defaultAttributes(e)
+          params = TSXGraph.dereference([a,b,c,d,])
+      }else{
+          params = TSXGraph.dereference([a,b,c,d,e,])
+      }
+   } }}}}
    return new Implicitcurve('implicitcurve', params, TSXGraph.defaultAttributes(attrs)) // as Implicitcurve
  }
- /** This element is used to provide a constructor for a general line given by two points.
-                                By setting additional properties a line can be used as an arrow and/or axis.
-                                
-*```js
-                                TSX.line([3,2],[3,3],{strokeColor:'blue',strokeWidth:5,strokeOpacity:.5})
-                                let P1 = TSX.point([3,2])
-                                TSX.line(p1,[3,3])
-                                
-*```
-                                
- also create lines with Segment, Arrow, Transform.Point, Circumcenter, Glider, and others.
-                                 Look at .conic.line() for a line defined by the equation 'az +bx +cy = 0'
-                    */
-                    // This implementation of Line comes from the fieldsandmethods table.
-        line(a?: any, b?: any, c?: any, d?: any): Line {
-            let newObject: Line = {} as Line // just so it is initialized
-            let params = []
-            let attrs = {}
-            if (arguments.length == 1) {
-                if (isJSXAttribute(a)) {
-                    attrs = TSXGraph.defaultAttributes(a)
-                    params = TSXGraph.dereference([])
-                } else {
-                    params = TSXGraph.dereference([a,])
-                }
-            }
-            if (arguments.length == 2) {
-                if (isJSXAttribute(b)) {
-                    attrs = TSXGraph.defaultAttributes(b)
-                    params = TSXGraph.dereference([a,])
-                } else {
-                    params = TSXGraph.dereference([a, b,])
-                }
-            }
-            if (arguments.length == 3) {
-                if (isJSXAttribute(c)) {
-                    attrs = TSXGraph.defaultAttributes(c)
-                    params = TSXGraph.dereference([a, b,])
-                } else {
-                    if(typeof a == 'number' || typeof a == 'function')   //  this must be a line equation
-                       params = TSXGraph.dereference([c, a, b,])   // fix order of params to Standard Form of Line
-                    else
-                       params = TSXGraph.dereference([a, b, c,])
-                }
-            }
-            if (arguments.length == 4) {
-                if (isJSXAttribute(d)) {
-                    attrs = TSXGraph.defaultAttributes(d)
-                    if(typeof a == 'number' || typeof a == 'function')   //  this must be a line equation
-                       params = TSXGraph.dereference([c, a, b,])   // fix order of params to Standard Form of Line
-                    else
-                       params = TSXGraph.dereference([a, b, c,])
-                } else {
-                    params = TSXGraph.dereference([a, b, c, d,])  // no signature matches this
-                }
-            }
-            return new Line('line', params, TSXGraph.defaultAttributes(attrs)) // as Line
-        }
 
- /** something */
-lineEqn(A:number|Function, B:number|Function, C:number|Function, attributes: LineEqnAttributes ={} ):LineEqn{
-  return new Line('line', TSXGraph.dereference([C,A,B]), attributes);
-}
-
+            // implementation of signature,  hidden from user
+            line:LineMultiDefn = (a?:any, b?:any, c?:any, d?:any,e?:any,f?:any,g?:any,h?:any,i?:any) :Line => {
+ let newObject: Line = {} as Line // just so it is initialized
+   let params = []
+   let attrs = {}
+   if (b === undefined) {
+      if(isJSXAttribute(a)){
+          attrs = TSXGraph.defaultAttributes(a)
+          params = TSXGraph.dereference([])
+      }else{
+          params = TSXGraph.dereference([a,])
+      }
+   }    else {
+   if (c === undefined) {
+      if(isJSXAttribute(b)){
+          attrs = TSXGraph.defaultAttributes(b)
+          params = TSXGraph.dereference([a,])
+      }else{
+          params = TSXGraph.dereference([a,b,])
+      }
+   }    else {
+   if (d === undefined) {
+      if(isJSXAttribute(c)){
+          attrs = TSXGraph.defaultAttributes(c)
+          params = TSXGraph.dereference([a,b,])
+      }else{
+          params = TSXGraph.dereference([a,b,c,])
+      }
+   }    else {
+   if (e === undefined) {
+      if(isJSXAttribute(d)){
+          attrs = TSXGraph.defaultAttributes(d)
+          params = TSXGraph.dereference([a,b,c,])
+      }else{
+          params = TSXGraph.dereference([a,b,c,d,])
+      }
+   }    else {
+   if (f === undefined) {
+      if(isJSXAttribute(e)){
+          attrs = TSXGraph.defaultAttributes(e)
+          params = TSXGraph.dereference([a,b,c,d,])
+      }else{
+          params = TSXGraph.dereference([a,b,c,d,e,])
+      }
+   } }}}}
+ if(typeof a == 'number' || typeof a == 'function')
+                             // reorder the a,b,c elements of the line
+                             return new Line('line', TSXGraph.dereference([c,a,b]), TSXGraph.defaultAttributes(attrs)) // as Line
+                          else
+                             return new Line('line', params, TSXGraph.defaultAttributes(attrs)) // as Line
+             
+ }
 
  /** Create a point. If any parent elements are functions or the attribute 'fixed' is true then point will be constrained.
             
@@ -2312,61 +2452,52 @@ sector(P1:Point|pointAddr, P2:Point|pointAddr, P3:Point|pointAddr, attributes: S
 vectorfield(fxfy:Function[], horizontalMesh:Number[]=[-6,25,6], verticalMesh:Number[]=[-6,25,6], attributes: VectorfieldAttributes ={} ):Vectorfield{return new Vectorfield('Vectorfield', [fxfy,horizontalMesh,verticalMesh,], attributes)
 }
 
- /** The angle element is used to denote an angle defined by three points (from, around,to), or two lines and two directions (either points or plus-or-minus 1 to indicate direction.
-~~~js
-
-TSX.angle(p1,p2,p3)                                  // angle from 3 points
-TSX.angle(l1, l2, [5.5, 0], [4, 3], { radius: 1 })   // 2 lines, two directions
-TSX.angle(l1, l2, 1, -1, { radius: 2 })              // 2 lines two +/- values
-~~~
-             As opposed to the sector, an angle has two angle points and no radius point.
- 
- type=='sector': Sector is displayed.
- 
- type=='square': a parallelogram is displayed.
- 
- type=='auto':  a square is displayed if the angle is near orthogonal. */
- angle(from:Point|pointAddr, around:Point|pointAddr, to:Point|pointAddr,  attributes?:AngleAttributes):Angle 
- angle(line1:Line|line, line2:Line|line, direction1:[Number,Number], direction2:[Number,Number],  attributes?:AngleAttributes):Angle 
- angle(line1:Line|line, line2:Line|line, dirPlusMinus1:Number, dirPlusMinus2:Number,  attributes?:AngleAttributes):Angle 
 
             // implementation of signature,  hidden from user
-            angle(a?:any, b?:any, c?:any, d?:any,e?:any,f?:any,g?:any,h?:any,i?:any):Angle {
+            angle:AngleMultiDefn = (a?:any, b?:any, c?:any, d?:any,e?:any,f?:any,g?:any,h?:any,i?:any) :Angle => {
  let newObject: Angle = {} as Angle // just so it is initialized
    let params = []
    let attrs = {}
-   if (arguments.length == 2){
+   if (b === undefined) {
+      if(isJSXAttribute(a)){
+          attrs = TSXGraph.defaultAttributes(a)
+          params = TSXGraph.dereference([])
+      }else{
+          params = TSXGraph.dereference([a,])
+      }
+   }    else {
+   if (c === undefined) {
       if(isJSXAttribute(b)){
           attrs = TSXGraph.defaultAttributes(b)
           params = TSXGraph.dereference([a,])
       }else{
           params = TSXGraph.dereference([a,b,])
       }
-   }
-   if (arguments.length == 3){
+   }    else {
+   if (d === undefined) {
       if(isJSXAttribute(c)){
           attrs = TSXGraph.defaultAttributes(c)
           params = TSXGraph.dereference([a,b,])
       }else{
           params = TSXGraph.dereference([a,b,c,])
       }
-   }
-   if (arguments.length == 4){
+   }    else {
+   if (e === undefined) {
       if(isJSXAttribute(d)){
           attrs = TSXGraph.defaultAttributes(d)
           params = TSXGraph.dereference([a,b,c,])
       }else{
           params = TSXGraph.dereference([a,b,c,d,])
       }
-   }
-   if (arguments.length == 5){
+   }    else {
+   if (f === undefined) {
       if(isJSXAttribute(e)){
           attrs = TSXGraph.defaultAttributes(e)
           params = TSXGraph.dereference([a,b,c,d,])
       }else{
           params = TSXGraph.dereference([a,b,c,d,e,])
       }
-   }
+   } }}}}
    return new Angle('angle', params, TSXGraph.defaultAttributes(attrs)) // as Angle
  }
 
@@ -2394,47 +2525,52 @@ arc(origin:Point|pointAddr, from:Point|pointAddr, to:Point|pointAddr, attributes
 arrow(p1:Point|pointAddr, p2:Point|pointAddr, attributes: ArrowAttributes ={} ):Arrow{return new Arrow('Arrow', [p1,p2,], attributes)
 }
 
- /** A line parallel to a given line (or two points), through a point. */
- parallel(line:Line|[Point,Point], point:Point|pointAddr,  attributes?:ParallelAttributes):Parallel 
- parallel(lineP1:Point|pointAddr, lineP2:Point|pointAddr, Point:Point|pointAddr,  attributes?:ParallelAttributes):Parallel 
 
             // implementation of signature,  hidden from user
-            parallel(a?:any, b?:any, c?:any, d?:any,e?:any,f?:any,g?:any,h?:any,i?:any):Parallel {
+            parallel:ParallelMultiDefn = (a?:any, b?:any, c?:any, d?:any,e?:any,f?:any,g?:any,h?:any,i?:any) :Parallel => {
  let newObject: Parallel = {} as Parallel // just so it is initialized
    let params = []
    let attrs = {}
-   if (arguments.length == 2){
+   if (b === undefined) {
+      if(isJSXAttribute(a)){
+          attrs = TSXGraph.defaultAttributes(a)
+          params = TSXGraph.dereference([])
+      }else{
+          params = TSXGraph.dereference([a,])
+      }
+   }    else {
+   if (c === undefined) {
       if(isJSXAttribute(b)){
           attrs = TSXGraph.defaultAttributes(b)
           params = TSXGraph.dereference([a,])
       }else{
           params = TSXGraph.dereference([a,b,])
       }
-   }
-   if (arguments.length == 3){
+   }    else {
+   if (d === undefined) {
       if(isJSXAttribute(c)){
           attrs = TSXGraph.defaultAttributes(c)
           params = TSXGraph.dereference([a,b,])
       }else{
           params = TSXGraph.dereference([a,b,c,])
       }
-   }
-   if (arguments.length == 4){
+   }    else {
+   if (e === undefined) {
       if(isJSXAttribute(d)){
           attrs = TSXGraph.defaultAttributes(d)
           params = TSXGraph.dereference([a,b,c,])
       }else{
           params = TSXGraph.dereference([a,b,c,d,])
       }
-   }
-   if (arguments.length == 5){
+   }    else {
+   if (f === undefined) {
       if(isJSXAttribute(e)){
           attrs = TSXGraph.defaultAttributes(e)
           params = TSXGraph.dereference([a,b,c,d,])
       }else{
           params = TSXGraph.dereference([a,b,c,d,e,])
       }
-   }
+   } }}}}
    return new Parallel('parallel', params, TSXGraph.defaultAttributes(attrs)) // as Parallel
  }
 
@@ -2527,96 +2663,108 @@ ellipse(p1:Point|pointAddr, p2:Point|pointAddr, radius:Point|pointAddr|Number|Fu
 }
 
 
- /** A wrapper for element Curve with X() set to x. The graph is drawn for x in the interval [a,b] default -10 to 10.
+ /** Functiongraph visualizes a map x → f(x).  It is a wrapper for element Curve. The graph is drawn for x in the interval [a,b] default -10 to 10.
 ```js
 let f = TSX.functiongraph((x: number) => 3 * Math.pow(x, 2))
 ``` */
 functiongraph(funct:(x:number)=>number, leftBorder?:number, rightBorder?:number, attributes: FunctiongraphAttributes ={} ):Curve{return new Functiongraph('Functiongraph', [funct,leftBorder,rightBorder,], attributes)
 }
 
- /** A point bound to a GeometryElement like Line, Circle, or Curve, with  optionally a starting point defined by [X,Y]
-```js
-let c1 = TSX.circle(a, 1)
-let g1 = TSX.glider(c1)
-let g2 = TSX.glider(c1,[0,0])  // includes initial point
-```  */
- glider(hostElement:GeometryElement,  attributes?:GliderAttributes):Glider 
- glider(hostElement:GeometryElement, initialPosition:number[],  attributes?:GliderAttributes):Glider 
- glider( attributes?:GliderAttributes):Glider 
 
             // implementation of signature,  hidden from user
-            glider(a?:any, b?:any, c?:any, d?:any,e?:any,f?:any,g?:any,h?:any,i?:any):Glider {
+            glider:GliderMultiDefn = (a?:any, b?:any, c?:any, d?:any,e?:any,f?:any,g?:any,h?:any,i?:any) :Glider => {
  let newObject: Glider = {} as Glider // just so it is initialized
    let params = []
    let attrs = {}
-   if (arguments.length == 1){
+   if (b === undefined) {
       if(isJSXAttribute(a)){
           attrs = TSXGraph.defaultAttributes(a)
           params = TSXGraph.dereference([])
       }else{
           params = TSXGraph.dereference([a,])
       }
-   }
-   if (arguments.length == 2){
+   }    else {
+   if (c === undefined) {
       if(isJSXAttribute(b)){
           attrs = TSXGraph.defaultAttributes(b)
           params = TSXGraph.dereference([a,])
       }else{
           params = TSXGraph.dereference([a,b,])
       }
-   }
-   if (arguments.length == 3){
+   }    else {
+   if (d === undefined) {
       if(isJSXAttribute(c)){
           attrs = TSXGraph.defaultAttributes(c)
           params = TSXGraph.dereference([a,b,])
       }else{
           params = TSXGraph.dereference([a,b,c,])
       }
-   }
-params = b? TSXGraph.dereference([b[0]??0,b[1]??0,a]):TSXGraph.dereference([0,0,a])
-                        return new Glider('Glider', params ,TSXGraph.defaultAttributes(attrs));
+   }    else {
+   if (e === undefined) {
+      if(isJSXAttribute(d)){
+          attrs = TSXGraph.defaultAttributes(d)
+          params = TSXGraph.dereference([a,b,c,])
+      }else{
+          params = TSXGraph.dereference([a,b,c,d,])
+      }
+   }    else {
+   if (f === undefined) {
+      if(isJSXAttribute(e)){
+          attrs = TSXGraph.defaultAttributes(e)
+          params = TSXGraph.dereference([a,b,c,d,])
+      }else{
+          params = TSXGraph.dereference([a,b,c,d,e,])
+      }
+   } }}}}
+ params = b? TSXGraph.dereference([b[0]??0,b[1]??0,a]):TSXGraph.dereference([0,0,a])
+                         return new Point('Glider', params ,TSXGraph.defaultAttributes(attrs));
  }
- /** Creates a grid to support the user with element placement or to improve determination of position. */
- grid(axis1:Axis, axis2:Axis,  attributes?:GridAttributes):Grid 
- grid( attributes?:GridAttributes):Grid 
 
             // implementation of signature,  hidden from user
-            grid(a?:any, b?:any, c?:any, d?:any,e?:any,f?:any,g?:any,h?:any,i?:any):Grid {
+            grid:GridMultiDefn = (a?:any, b?:any, c?:any, d?:any,e?:any,f?:any,g?:any,h?:any,i?:any) :Grid => {
  let newObject: Grid = {} as Grid // just so it is initialized
    let params = []
    let attrs = {}
-   if (arguments.length == 0){
-      if(isJSXAttribute(a)){
-          attrs = TSXGraph.defaultAttributes(a)
-          params = TSXGraph.dereference([])
-      }else{
-          params = TSXGraph.dereference([])
-      }
-   }
-   if (arguments.length == 1){
+   if (b === undefined) {
       if(isJSXAttribute(a)){
           attrs = TSXGraph.defaultAttributes(a)
           params = TSXGraph.dereference([])
       }else{
           params = TSXGraph.dereference([a,])
       }
-   }
-   if (arguments.length == 2){
+   }    else {
+   if (c === undefined) {
       if(isJSXAttribute(b)){
           attrs = TSXGraph.defaultAttributes(b)
           params = TSXGraph.dereference([a,])
       }else{
           params = TSXGraph.dereference([a,b,])
       }
-   }
-   if (arguments.length == 3){
+   }    else {
+   if (d === undefined) {
       if(isJSXAttribute(c)){
           attrs = TSXGraph.defaultAttributes(c)
           params = TSXGraph.dereference([a,b,])
       }else{
           params = TSXGraph.dereference([a,b,c,])
       }
-   }
+   }    else {
+   if (e === undefined) {
+      if(isJSXAttribute(d)){
+          attrs = TSXGraph.defaultAttributes(d)
+          params = TSXGraph.dereference([a,b,c,])
+      }else{
+          params = TSXGraph.dereference([a,b,c,d,])
+      }
+   }    else {
+   if (f === undefined) {
+      if(isJSXAttribute(e)){
+          attrs = TSXGraph.defaultAttributes(e)
+          params = TSXGraph.dereference([a,b,c,d,])
+      }else{
+          params = TSXGraph.dereference([a,b,c,d,e,])
+      }
+   } }}}}
    return new Grid('grid', params, TSXGraph.defaultAttributes(attrs)) // as Grid
  }
 
@@ -2672,39 +2820,52 @@ majorArc(p1:Point|pointAddr, p2:Point|pointAddr, p3:Point|pointAddr, attributes:
 majorSector(p1:Point|pointAddr, p2:Point|pointAddr, p3:Point|pointAddr, attributes: MajorSectorAttributes ={} ):MajorSector{return new MajorSector('MajorSector', [p1,p2,p3,], attributes)
 }
 
- /** A point in the middle of two given points or a line segment. */
- midpoint(p1:Point, p2:Point,  attributes?:MidpointAttributes):Midpoint 
- midpoint(line:Line,  attributes?:MidpointAttributes):Midpoint 
 
             // implementation of signature,  hidden from user
-            midpoint(a?:any, b?:any, c?:any, d?:any,e?:any,f?:any,g?:any,h?:any,i?:any):Midpoint {
+            midpoint:MidpointMultiDefn = (a?:any, b?:any, c?:any, d?:any,e?:any,f?:any,g?:any,h?:any,i?:any) :Midpoint => {
  let newObject: Midpoint = {} as Midpoint // just so it is initialized
    let params = []
    let attrs = {}
-   if (arguments.length == 1){
+   if (b === undefined) {
       if(isJSXAttribute(a)){
           attrs = TSXGraph.defaultAttributes(a)
           params = TSXGraph.dereference([])
       }else{
           params = TSXGraph.dereference([a,])
       }
-   }
-   if (arguments.length == 2){
+   }    else {
+   if (c === undefined) {
       if(isJSXAttribute(b)){
           attrs = TSXGraph.defaultAttributes(b)
           params = TSXGraph.dereference([a,])
       }else{
           params = TSXGraph.dereference([a,b,])
       }
-   }
-   if (arguments.length == 3){
+   }    else {
+   if (d === undefined) {
       if(isJSXAttribute(c)){
           attrs = TSXGraph.defaultAttributes(c)
           params = TSXGraph.dereference([a,b,])
       }else{
           params = TSXGraph.dereference([a,b,c,])
       }
-   }
+   }    else {
+   if (e === undefined) {
+      if(isJSXAttribute(d)){
+          attrs = TSXGraph.defaultAttributes(d)
+          params = TSXGraph.dereference([a,b,c,])
+      }else{
+          params = TSXGraph.dereference([a,b,c,d,])
+      }
+   }    else {
+   if (f === undefined) {
+      if(isJSXAttribute(e)){
+          attrs = TSXGraph.defaultAttributes(e)
+          params = TSXGraph.dereference([a,b,c,d,])
+      }else{
+          params = TSXGraph.dereference([a,b,c,d,e,])
+      }
+   } }}}}
    return new Midpoint('midpoint', params, TSXGraph.defaultAttributes(attrs)) // as Midpoint
  }
 
@@ -2732,39 +2893,52 @@ mirrorpoint(p1:Point, p2:Point, attributes: MirrorpointAttributes ={} ):Mirrorpo
 nonReflexAngle(point1:Point, point2:Point, point3:Point, attributes: NonReflexAngleAttributes ={} ):NonReflexAngle{return new NonReflexAngle('NonReflexAngle', [point1,point2,point3,], attributes)
 }
 
- /** A line through a given point on an element of type line, circle, curve, or turtle and orthogonal (at right angle) to that object. */
- normal(object:Line|Circle|Curve, point:Point,  attributes?:NormalAttributes):Normal 
- normal(glider:Glider,  attributes?:NormalAttributes):Normal 
 
             // implementation of signature,  hidden from user
-            normal(a?:any, b?:any, c?:any, d?:any,e?:any,f?:any,g?:any,h?:any,i?:any):Normal {
+            normal:NormalMultiDefn = (a?:any, b?:any, c?:any, d?:any,e?:any,f?:any,g?:any,h?:any,i?:any) :Normal => {
  let newObject: Normal = {} as Normal // just so it is initialized
    let params = []
    let attrs = {}
-   if (arguments.length == 1){
+   if (b === undefined) {
       if(isJSXAttribute(a)){
           attrs = TSXGraph.defaultAttributes(a)
           params = TSXGraph.dereference([])
       }else{
           params = TSXGraph.dereference([a,])
       }
-   }
-   if (arguments.length == 2){
+   }    else {
+   if (c === undefined) {
       if(isJSXAttribute(b)){
           attrs = TSXGraph.defaultAttributes(b)
           params = TSXGraph.dereference([a,])
       }else{
           params = TSXGraph.dereference([a,b,])
       }
-   }
-   if (arguments.length == 3){
+   }    else {
+   if (d === undefined) {
       if(isJSXAttribute(c)){
           attrs = TSXGraph.defaultAttributes(c)
           params = TSXGraph.dereference([a,b,])
       }else{
           params = TSXGraph.dereference([a,b,c,])
       }
-   }
+   }    else {
+   if (e === undefined) {
+      if(isJSXAttribute(d)){
+          attrs = TSXGraph.defaultAttributes(d)
+          params = TSXGraph.dereference([a,b,c,])
+      }else{
+          params = TSXGraph.dereference([a,b,c,d,])
+      }
+   }    else {
+   if (f === undefined) {
+      if(isJSXAttribute(e)){
+          attrs = TSXGraph.defaultAttributes(e)
+          params = TSXGraph.dereference([a,b,c,d,])
+      }else{
+          params = TSXGraph.dereference([a,b,c,d,e,])
+      }
+   } }}}}
    return new Normal('normal', params, TSXGraph.defaultAttributes(attrs)) // as Normal
  }
 
@@ -2788,74 +2962,100 @@ otherIntersection(element1:Line|Circle, element2:Line|Circle, firstIntersection:
 parabola(focalPoint:Point|pointAddr, line:Line|line, attributes: ParabolaAttributes ={} ):Parabola{return new Parabola('Parabola', [focalPoint,line,], attributes)
 }
 
- /** A parallel point is given by three points, or a line and a point. Taking the Euclidean vector from the first to the second point, the parallel point is determined by adding that vector to the third point. The line determined by the first two points is parallel to the line determined by the third point and the constructed point. */
- parallelpoint(line:Line|[Point,Point], point:Point|pointAddr,  attributes?:ParallelpointAttributes):Parallelpoint 
- parallelpoint(P1:Point, P2:Point, P3:Point,  attributes?:ParallelpointAttributes):Parallelpoint 
 
             // implementation of signature,  hidden from user
-            parallelpoint(a?:any, b?:any, c?:any, d?:any,e?:any,f?:any,g?:any,h?:any,i?:any):Parallelpoint {
+            parallelpoint:ParallelpointMultiDefn = (a?:any, b?:any, c?:any, d?:any,e?:any,f?:any,g?:any,h?:any,i?:any) :Parallelpoint => {
  let newObject: Parallelpoint = {} as Parallelpoint // just so it is initialized
    let params = []
    let attrs = {}
-   if (arguments.length == 2){
+   if (b === undefined) {
+      if(isJSXAttribute(a)){
+          attrs = TSXGraph.defaultAttributes(a)
+          params = TSXGraph.dereference([])
+      }else{
+          params = TSXGraph.dereference([a,])
+      }
+   }    else {
+   if (c === undefined) {
       if(isJSXAttribute(b)){
           attrs = TSXGraph.defaultAttributes(b)
           params = TSXGraph.dereference([a,])
       }else{
           params = TSXGraph.dereference([a,b,])
       }
-   }
-   if (arguments.length == 3){
+   }    else {
+   if (d === undefined) {
       if(isJSXAttribute(c)){
           attrs = TSXGraph.defaultAttributes(c)
           params = TSXGraph.dereference([a,b,])
       }else{
           params = TSXGraph.dereference([a,b,c,])
       }
-   }
-   if (arguments.length == 4){
+   }    else {
+   if (e === undefined) {
       if(isJSXAttribute(d)){
           attrs = TSXGraph.defaultAttributes(d)
           params = TSXGraph.dereference([a,b,c,])
       }else{
           params = TSXGraph.dereference([a,b,c,d,])
       }
-   }
+   }    else {
+   if (f === undefined) {
+      if(isJSXAttribute(e)){
+          attrs = TSXGraph.defaultAttributes(e)
+          params = TSXGraph.dereference([a,b,c,d,])
+      }else{
+          params = TSXGraph.dereference([a,b,c,d,e,])
+      }
+   } }}}}
    return new Parallelpoint('parallelpoint', params, TSXGraph.defaultAttributes(attrs)) // as Parallelpoint
  }
- /** Create a line segment between two points. If there is a third variable then the segment has a fixed length (which may be a function) determined by the absolute value of that number. */
- segment(P1:Point|pointAddr, P2:Point|pointAddr,  attributes?:SegmentAttributes):Segment 
- segment(P1:Point|pointAddr, P2:Point|pointAddr, length:number|Function,  attributes?:SegmentAttributes):Segment 
 
             // implementation of signature,  hidden from user
-            segment(a?:any, b?:any, c?:any, d?:any,e?:any,f?:any,g?:any,h?:any,i?:any):Segment {
+            segment:SegmentMultiDefn = (a?:any, b?:any, c?:any, d?:any,e?:any,f?:any,g?:any,h?:any,i?:any) :Segment => {
  let newObject: Segment = {} as Segment // just so it is initialized
    let params = []
    let attrs = {}
-   if (arguments.length == 2){
+   if (b === undefined) {
+      if(isJSXAttribute(a)){
+          attrs = TSXGraph.defaultAttributes(a)
+          params = TSXGraph.dereference([])
+      }else{
+          params = TSXGraph.dereference([a,])
+      }
+   }    else {
+   if (c === undefined) {
       if(isJSXAttribute(b)){
           attrs = TSXGraph.defaultAttributes(b)
           params = TSXGraph.dereference([a,])
       }else{
           params = TSXGraph.dereference([a,b,])
       }
-   }
-   if (arguments.length == 3){
+   }    else {
+   if (d === undefined) {
       if(isJSXAttribute(c)){
           attrs = TSXGraph.defaultAttributes(c)
           params = TSXGraph.dereference([a,b,])
       }else{
           params = TSXGraph.dereference([a,b,c,])
       }
-   }
-   if (arguments.length == 4){
+   }    else {
+   if (e === undefined) {
       if(isJSXAttribute(d)){
           attrs = TSXGraph.defaultAttributes(d)
           params = TSXGraph.dereference([a,b,c,])
       }else{
           params = TSXGraph.dereference([a,b,c,d,])
       }
-   }
+   }    else {
+   if (f === undefined) {
+      if(isJSXAttribute(e)){
+          attrs = TSXGraph.defaultAttributes(e)
+          params = TSXGraph.dereference([a,b,c,d,])
+      }else{
+          params = TSXGraph.dereference([a,b,c,d,e,])
+      }
+   } }}}}
    return new Segment('segment', params, TSXGraph.defaultAttributes(attrs)) // as Segment
  }
 
@@ -2944,39 +3144,52 @@ slider(StartPoint:Point|pointAddr, EndPoint:Point|pointAddr, minimum_initial_max
 slopefield(func:Function, xData:NumberFunction[], yData:NumberFunction[], attributes: SlopefieldAttributes ={} ):Slopefield{return new Slopefield('Slopefield', [func,xData,yData,], attributes)
 }
 
- /** A slope triangle is an imaginary triangle that helps you find the slope of a line or a line segment (use the method '.Value()' ). The hypotenuse of the triangle (the diagonal) is the line you are interested in finding the slope of. The two 'legs' of the triangle are the 'rise' and 'run' used in the slope formula. */
- slopetriangle(tangent:Point | Tangent,  attributes?:SlopetriangleAttributes):Slopetriangle 
- slopetriangle(line:Line, point:Point,  attributes?:SlopetriangleAttributes):Slopetriangle 
 
             // implementation of signature,  hidden from user
-            slopetriangle(a?:any, b?:any, c?:any, d?:any,e?:any,f?:any,g?:any,h?:any,i?:any):Slopetriangle {
+            slopetriangle:SlopetriangleMultiDefn = (a?:any, b?:any, c?:any, d?:any,e?:any,f?:any,g?:any,h?:any,i?:any) :Slopetriangle => {
  let newObject: Slopetriangle = {} as Slopetriangle // just so it is initialized
    let params = []
    let attrs = {}
-   if (arguments.length == 1){
+   if (b === undefined) {
       if(isJSXAttribute(a)){
           attrs = TSXGraph.defaultAttributes(a)
           params = TSXGraph.dereference([])
       }else{
           params = TSXGraph.dereference([a,])
       }
-   }
-   if (arguments.length == 2){
+   }    else {
+   if (c === undefined) {
       if(isJSXAttribute(b)){
           attrs = TSXGraph.defaultAttributes(b)
           params = TSXGraph.dereference([a,])
       }else{
           params = TSXGraph.dereference([a,b,])
       }
-   }
-   if (arguments.length == 3){
+   }    else {
+   if (d === undefined) {
       if(isJSXAttribute(c)){
           attrs = TSXGraph.defaultAttributes(c)
           params = TSXGraph.dereference([a,b,])
       }else{
           params = TSXGraph.dereference([a,b,c,])
       }
-   }
+   }    else {
+   if (e === undefined) {
+      if(isJSXAttribute(d)){
+          attrs = TSXGraph.defaultAttributes(d)
+          params = TSXGraph.dereference([a,b,c,])
+      }else{
+          params = TSXGraph.dereference([a,b,c,d,])
+      }
+   }    else {
+   if (f === undefined) {
+      if(isJSXAttribute(e)){
+          attrs = TSXGraph.defaultAttributes(e)
+          params = TSXGraph.dereference([a,b,c,d,])
+      }else{
+          params = TSXGraph.dereference([a,b,c,d,e,])
+      }
+   } }}}}
    return new Slopetriangle('slopetriangle', params, TSXGraph.defaultAttributes(attrs)) // as Slopetriangle
  }
 
@@ -2985,39 +3198,52 @@ spline(points:Point[]|number[][], attributes: SplineAttributes ={} ):Curve{
  return new Spline('spline', TSXGraph.dereference(points), TSXGraph.defaultAttributes(attributes))
 }
 
- /** A tangent to a point on a line, circle, or curve.  Usually the point is a Glider. */
- tangent(point:Glider,  attributes?:TangentAttributes):Tangent 
- tangent(point:Point, curve:Line|Circle|Curve,  attributes?:TangentAttributes):Tangent 
 
             // implementation of signature,  hidden from user
-            tangent(a?:any, b?:any, c?:any, d?:any,e?:any,f?:any,g?:any,h?:any,i?:any):Tangent {
+            tangent:TangentMultiDefn = (a?:any, b?:any, c?:any, d?:any,e?:any,f?:any,g?:any,h?:any,i?:any) :Tangent => {
  let newObject: Tangent = {} as Tangent // just so it is initialized
    let params = []
    let attrs = {}
-   if (arguments.length == 1){
+   if (b === undefined) {
       if(isJSXAttribute(a)){
           attrs = TSXGraph.defaultAttributes(a)
           params = TSXGraph.dereference([])
       }else{
           params = TSXGraph.dereference([a,])
       }
-   }
-   if (arguments.length == 2){
+   }    else {
+   if (c === undefined) {
       if(isJSXAttribute(b)){
           attrs = TSXGraph.defaultAttributes(b)
           params = TSXGraph.dereference([a,])
       }else{
           params = TSXGraph.dereference([a,b,])
       }
-   }
-   if (arguments.length == 3){
+   }    else {
+   if (d === undefined) {
       if(isJSXAttribute(c)){
           attrs = TSXGraph.defaultAttributes(c)
           params = TSXGraph.dereference([a,b,])
       }else{
           params = TSXGraph.dereference([a,b,c,])
       }
-   }
+   }    else {
+   if (e === undefined) {
+      if(isJSXAttribute(d)){
+          attrs = TSXGraph.defaultAttributes(d)
+          params = TSXGraph.dereference([a,b,c,])
+      }else{
+          params = TSXGraph.dereference([a,b,c,d,])
+      }
+   }    else {
+   if (f === undefined) {
+      if(isJSXAttribute(e)){
+          attrs = TSXGraph.defaultAttributes(e)
+          params = TSXGraph.dereference([a,b,c,d,])
+      }else{
+          params = TSXGraph.dereference([a,b,c,d,e,])
+      }
+   } }}}}
    return new Tangent('tangent', params, TSXGraph.defaultAttributes(attrs)) // as Tangent
  }
 
@@ -4319,6 +4545,11 @@ scale(xMultiplier:number|Function, yMultiplier:number|Function, attributes: Scal
   return (this.elValue as any).coords() as Number[]
 }
 
+ /**  */
+ startAnimation(direction:Number,stepCount:Number,delayMSec:Number): void {
+  return (this.elValue as any).startAnimation(direction,stepCount,delayMSec) as void
+}
+
  /** Calculates Euclidean distance for two Points, eg:  p1.Dist(p2) */
  Dist(toPoint:Point|pointAddr): number {
   return (this.elValue as any).Dist(TSXGraph.dereference(toPoint)) as number
@@ -5118,11 +5349,6 @@ P.moveTo([A.X(), A.Y()], 5000)
  export class Glider extends Point {
  constructor(className:string, params:any[], attrs: Object){
    super(className, TSXGraph.dereference(params), attrs)
-}
-
- /** Animate the point. */
- startAnimation(direction:Number,stepCount:Number,delayMSec:Number): void {
-  return (this.elValue as any).startAnimation(direction,stepCount,delayMSec) as void
 }
 }
 
