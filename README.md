@@ -35,7 +35,7 @@ This package includes a quick-start workflow.  It looks for source files in the 
 npm i
 npm run start
 ```
-Install the package, start the workflow, and browse to `http://localhost:3000`.   Add or edit `.ts` files in `/src` and refresh your browser.
+Browse to `http://localhost:3000`.   Add or edit `.ts` files in `/src` and refresh your browser.
 
 
 When you are ready to move your constructions, the `.js` files you have created are in the `dist\src` directory.  If you don't want to use this workflow, just copy `tsxgraph.ts` to your own workflow.
