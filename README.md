@@ -30,16 +30,17 @@ A wrapper approach is different from providing a d.ts file. The wrapper changes 
 
 This package includes a quick-start workflow.  It looks for source files in the `/src` directory.
 
-Install the package, start the workflow, and browse to `http://localhost:3000`.   Add or edit `.ts` files in `/src` and refresh your browser.
 
 ```
 npm i
 npm run start
 ```
+Install the package, start the workflow, and browse to `http://localhost:3000`.   Add or edit `.ts` files in `/src` and refresh your browser.
+
 
 When you are ready to move your constructions, the `.js` files you have created are in the `dist\src` directory.  If you don't want to use this workflow, just copy `tsxgraph.ts` to your own workflow.
 
-JSXGraph is constantly evolving.  This wrapper was built around JSXGraph 1.10.1.
+JSXGraph is constantly evolving.  This wrapper was built around JSXGraph 1.11 beta.
 
 
 This package includes **Space Icons** by [Good Stuff No Nonsense](https://goodstuffnononsense.com/), licensed under CC BY 4.0.
