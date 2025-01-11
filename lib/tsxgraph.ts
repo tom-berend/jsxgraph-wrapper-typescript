@@ -21,7 +21,7 @@
         //
         /////////////////////////////////////////////////////////////////////////////
 
-        //   Generated on January 7, 2025, 3:40 pm 
+        //   Generated on January 11, 2025, 1:58 pm 
 
 
 
@@ -131,8 +131,8 @@
  scaleXY?: Number 
  /** label for this item */
  name?:string|Function
- /** label for this item */
- hasLabel?:boolean
+ /** enable label for this item */
+ withLabel?:boolean
  /** Opacity of the element (between 0 and 1). */
  opacity?: number|Function
  /** Set whether the element is visibledisplay name  */
@@ -199,6 +199,8 @@
   center?: GeometryElementAttributes
  /** If true, moving the mouse over inner points triggers hasPoint. */
   hasInnerPoints?: Boolean
+ /** Attributes for circle label. */
+  label?: LabelAttributes
  /** Attributes for center point. */
   point?: Point
  /** Attributes for center point. */
@@ -369,8 +371,6 @@
  size?: Number|Function
  /** If true the element is fixed and can not be dragged around. The element will be repositioned on zoom and moveOrigin events. */
  fixed?: Boolean
- /** If true a label will display the element's name. */
- withLabel?: Boolean
  }
 
  interface PolygonAttributes extends GeometryElementAttributes {
@@ -1021,6 +1021,12 @@
  interface View3DAttributes extends GeometryElement3DAttributes {
  /** Choose the projection type to be used: `parallel` or `central`. `parallel` is parallel projection, also called orthographic projection.   `central` is central projection, also called perspective projection */
  projection?: `parallel`|`central`
+ /** Specify the user handing of the azimuth. */
+ az?: screenControls
+ /** Specify the user handing of the bank angle. */
+ bank?: screenControls
+ /** Specify the user handing of the elevation. */
+ el?: screenControls
  /** Support occlusion by ordering points? */
  depthorderpoints?: Boolean
  /** use {enable:true, layers:[12]} */
@@ -1071,8 +1077,6 @@
  zPlaneRearXAxis?: Object
  /** Attributes of the 3D y-axis on the 3D plane orthogonal to the z-axis at the ”rear” of the cube. */
  zPlaneRearYAxis?: Object
- /** Specify the user handling of the bank angle. */
- bank?: Object
  }
 
  interface TranslateAttributes extends TransformAttributes {
@@ -1087,7 +1091,7 @@
         type NumberFunction = Number|Function
 
         /** A 'point' has a position in space.  The only characteristic that distinguishes one point from another is its position. */
-        type pointAddr =  NumberFunction[] | [number,number] |[number,Function]|[Function,number]|[Function|Function]|number[] // allow tuples or arrays
+        type pointAddr =  NumberFunction[] | [number,number] |[number,Function]|[Function,number]|[Function|Function] // allow tuples or arrays
 
 
         type line  = [Point|pointAddr,Point|pointAddr]
@@ -1106,6 +1110,45 @@
            repeat?:number
         }
 
+        ///////////////////////////////////////////
+        ///////  stuff for View3D elevation controls
+        interface pointerControls{
+            /**  specifies whether pointer navigation is allowed by elevation. */
+            enabled?:Boolean,
+            /** Number indicating how many passes the range of the el_slider makes when the cursor crosses the entire board once in the horizontal direction.*/
+            speed?: number,
+            /** specifies whether the pointer navigation is continued when the cursor leaves the board. */
+            outside?: Boolean,
+            /** Which button of the pointer should be used? ('-1' (=no button), '0' or '2') */
+            button?: '-1'|'0'|'2'
+            /** Should an additional key be pressed? ('none', 'shift' or 'ctrl') */
+            key?: 'none'|'shift'|'ctrl'
+        }
+        interface keyboardControls{
+           /** specifies whether the keyboard (arrow keys) can be used to navigate the board.*/
+           enabled?: Boolean
+           /** Size of the step per keystroke. */
+           step?: number
+            /** Should an additional key be pressed? ('none', 'shift' or 'ctrl') */
+            key?: 'none'|'shift'|'ctrl'
+        }
+        interface sliderControls extends SliderAttributes{
+            min?: number, // Minimum value.
+            max?: number,  //Maximum value.
+            start?: number, //Start value.
+        }
+
+        interface screenControls{
+            /** an object */
+           pointer?: pointerControls,
+            /** an object */
+           keyboard?: keyboardControls,
+           continuous?:Boolean,
+            /** an object */
+           slider?: sliderControls,
+        }
+        ////////  end View3D elevation controls
+        //////////////////////////////////////////
 
         // there is no constructor for labels, but we need the attributes anyhow for Tick, etc.
         interface LabelAttributes extends TextAttributes{
@@ -5845,6 +5888,11 @@ Example: Given a rotation transform controlled by a slider, create a rotating po
   return (this.elValue as any).matrix3D as Object
 }
 
+ /**  */
+ setView(azimuth:number,elevation:number,radius?:number): View3D {
+  return (this.elValue as any).setView(azimuth,elevation,radius) as View3D
+}
+
  /** This element is used to provide a constructor for a 3D Point. */
  point3D(xyz:NumberFunction[]|Function,attributes:Point3DAttributes={}): Point3D {
   return (this.elValue as any).create("point3d",[xyz],attributes) as Point3D
@@ -5876,7 +5924,7 @@ Example: Given a rotation transform controlled by a slider, create a rotating po
 }
 
  /** Glider3D is an alias for JSXGraph's Point3d(). */
- glider3D(element:Curve3D, initial:number[]=[0,0,0],attributes:Object={}): Point3D {
+ glider3D(element:Curve3D|Line3D, initial:number[]=[0,0,0],attributes:Object={}): Point3D {
   return (this.elValue as any).create("point3d",[...initial,TSXGraph.dereference(element)],attributes) as Point3D
 }
 

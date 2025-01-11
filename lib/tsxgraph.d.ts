@@ -102,8 +102,8 @@ export declare namespace TXG {
         scaleXY?: Number;
         /** label for this item */
         name?: string | Function;
-        /** label for this item */
-        hasLabel?: boolean;
+        /** enable label for this item */
+        withLabel?: boolean;
         /** Opacity of the element (between 0 and 1). */
         opacity?: number | Function;
         /** Set whether the element is visibledisplay name  */
@@ -160,6 +160,8 @@ export declare namespace TXG {
         center?: GeometryElementAttributes;
         /** If true, moving the mouse over inner points triggers hasPoint. */
         hasInnerPoints?: Boolean;
+        /** Attributes for circle label. */
+        label?: LabelAttributes;
         /** Attributes for center point. */
         point?: Point;
         /** Attributes for center point. */
@@ -292,8 +294,6 @@ export declare namespace TXG {
         size?: Number | Function;
         /** If true the element is fixed and can not be dragged around. The element will be repositioned on zoom and moveOrigin events. */
         fixed?: Boolean;
-        /** If true a label will display the element's name. */
-        withLabel?: Boolean;
     }
     interface PolygonAttributes extends GeometryElementAttributes {
         /** Attributes for the polygon border lines. */
@@ -796,6 +796,12 @@ export declare namespace TXG {
     interface View3DAttributes extends GeometryElement3DAttributes {
         /** Choose the projection type to be used: `parallel` or `central`. `parallel` is parallel projection, also called orthographic projection.   `central` is central projection, also called perspective projection */
         projection?: `parallel` | `central`;
+        /** Specify the user handing of the azimuth. */
+        az?: screenControls;
+        /** Specify the user handing of the bank angle. */
+        bank?: screenControls;
+        /** Specify the user handing of the elevation. */
+        el?: screenControls;
         /** Support occlusion by ordering points? */
         depthorderpoints?: Boolean;
         /** use {enable:true, layers:[12]} */
@@ -846,8 +852,6 @@ export declare namespace TXG {
         zPlaneRearXAxis?: Object;
         /** Attributes of the 3D y-axis on the 3D plane orthogonal to the z-axis at the ”rear” of the cube. */
         zPlaneRearYAxis?: Object;
-        /** Specify the user handling of the bank angle. */
-        bank?: Object;
     }
     interface TranslateAttributes extends TransformAttributes {
     }
@@ -857,11 +861,45 @@ export declare namespace TXG {
     }
     type NumberFunction = Number | Function;
     /** A 'point' has a position in space.  The only characteristic that distinguishes one point from another is its position. */
-    type pointAddr = NumberFunction[] | [number, number] | [number, Function] | [Function, number] | [Function | Function] | number[];
+    type pointAddr = NumberFunction[] | [number, number] | [number, Function] | [Function, number] | [Function | Function];
     type line = [Point | pointAddr, Point | pointAddr];
     type arrayNumber = Number[];
     type arrayNumber2 = arrayNumber | Number;
     type matAny = arrayNumber2[];
+    interface pointerControls {
+        /**  specifies whether pointer navigation is allowed by elevation. */
+        enabled?: Boolean;
+        /** Number indicating how many passes the range of the el_slider makes when the cursor crosses the entire board once in the horizontal direction.*/
+        speed?: number;
+        /** specifies whether the pointer navigation is continued when the cursor leaves the board. */
+        outside?: Boolean;
+        /** Which button of the pointer should be used? ('-1' (=no button), '0' or '2') */
+        button?: '-1' | '0' | '2';
+        /** Should an additional key be pressed? ('none', 'shift' or 'ctrl') */
+        key?: 'none' | 'shift' | 'ctrl';
+    }
+    interface keyboardControls {
+        /** specifies whether the keyboard (arrow keys) can be used to navigate the board.*/
+        enabled?: Boolean;
+        /** Size of the step per keystroke. */
+        step?: number;
+        /** Should an additional key be pressed? ('none', 'shift' or 'ctrl') */
+        key?: 'none' | 'shift' | 'ctrl';
+    }
+    interface sliderControls extends SliderAttributes {
+        min?: number;
+        max?: number;
+        start?: number;
+    }
+    interface screenControls {
+        /** an object */
+        pointer?: pointerControls;
+        /** an object */
+        keyboard?: keyboardControls;
+        continuous?: Boolean;
+        /** an object */
+        slider?: sliderControls;
+    }
     interface LabelAttributes extends TextAttributes {
         /** Automatic position of label text.*/
         autoPosition?: Boolean;
@@ -2709,6 +2747,8 @@ const board = TXG.TSXGraph.initBoard('jxgbox', { axis: true });
         get defaultAxes(): Object;
         /**  */
         get matrix3D(): Object;
+        /**  */
+        setView(azimuth: number, elevation: number, radius?: number): View3D;
         /** This element is used to provide a constructor for a 3D Point. */
         point3D(xyz: NumberFunction[] | Function, attributes?: Point3DAttributes): Point3D;
         /** This element is used to provide a constructor for a 3D line. */
@@ -2722,7 +2762,7 @@ const board = TXG.TSXGraph.initBoard('jxgbox', { axis: true });
         /** In 3D space, a circle consists of all points on a given plane with a given distance from a given point. The given point is called the center, and the given distance is called the radius. A circle can be constructed by providing a center, a normal vector, and a radius (given as a number or function). */
         circle3D(point: Point3D, normal: number[], radius: number, attributes?: Object): Circle3D;
         /** Glider3D is an alias for JSXGraph's Point3d(). */
-        glider3D(element: Curve3D, initial?: number[], attributes?: Object): Point3D;
+        glider3D(element: Curve3D | Line3D, initial?: number[], attributes?: Object): Point3D;
         /** This element is used to provide a constructor for a 3D Text. */
         text3D(position: NumberFunction[], text: string | Function, attributes?: Object): Text3D;
         /** This element is used to provide a constructor for a 3D Polyhedron. */
