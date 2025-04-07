@@ -1,7 +1,6 @@
 
-import { TXG } from "../lib/tsxgraph.js"    // note: we need the '.js'
+import { TSX } from "../lib/tsxgraph.js"    // note: we need the '.js'
 
-let TSX = TXG.TSXGraph.initBoard('jxgbox')
 
 try {
     TSX.image('icons/earth.png', [0, 0], [2, 2])

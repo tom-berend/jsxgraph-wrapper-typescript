@@ -1,4 +1,4 @@
-import { TXG } from "../lib/tsxgraph.js"    // note: we need the '.js'
+import { TSX } from "../lib/tsxgraph.js"    // note: we need the '.js'
 
 // easier to call the orbit function from here than from JS.  TS programs tend to be longer and more complex.
 
@@ -7,10 +7,8 @@ orbit()
 
 
 function orbit() {
-    TXG.TSXGraph.useKatex()    // going to use Katex for all labels
-
-    let TSX = TXG.TSXGraph.initBoard('jxgbox');
-    TSX.setBoundingBox(-1, 5, 5, -1)
+    TSX.board.useKatex()    // going to use Katex for all labels
+    TSX.board.setBoundingBox([-1, 5, 5, -1])
 
     let origin = TSX.point([0, 0])
 
