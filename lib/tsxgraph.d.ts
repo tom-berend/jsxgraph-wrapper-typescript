@@ -20,9 +20,6 @@ export declare namespace TSX {
     export function _jsxBoard(): any;
     /** PRIVATE - retrieves the current JSXGraph View3d object. */
     export function _jsxView3d(): any;
-    abstract class View3D {
-        setView(x: number, y: number, z: number): void;
-    }
     type arrayNumber = Number[];
     type arrayNumber2 = arrayNumber | Number;
     type matAny = arrayNumber2[];
@@ -52,6 +49,40 @@ export declare namespace TSX {
         symbol?: '\u2318' | '\u22b9' | '\u26f6';
         css?: string;
         cssButton?: string;
+    }
+    interface pointerControls {
+        /**  specifies whether pointer navigation is allowed by elevation. */
+        enabled?: Boolean;
+        /** Number indicating how many passes the range of the el_slider makes when the cursor crosses the entire board once in the horizontal direction.*/
+        speed?: number;
+        /** specifies whether the pointer navigation is continued when the cursor leaves the board. */
+        outside?: Boolean;
+        /** Which button of the pointer should be used? ('-1' (=no button), '0' or '2') */
+        button?: '-1' | '0' | '2';
+        /** Should an additional key be pressed? ('none', 'shift' or 'ctrl') */
+        key?: 'none' | 'shift' | 'ctrl';
+    }
+    interface keyboardControls {
+        /** specifies whether the keyboard (arrow keys) can be used to navigate the board.*/
+        enabled?: Boolean;
+        /** Size of the step per keystroke. */
+        step?: number;
+        /** Should an additional key be pressed? ('none', 'shift' or 'ctrl') */
+        key?: 'none' | 'shift' | 'ctrl';
+    }
+    interface sliderControls {
+        min?: number;
+        max?: number;
+        start?: number;
+    }
+    interface screenControls {
+        /** an object */
+        pointer?: pointerControls;
+        /** an object */
+        keyboard?: keyboardControls;
+        continuous?: Boolean;
+        /** an object */
+        slider?: sliderControls;
     }
     export interface AriaAttributes {
         /** default false */
@@ -318,6 +349,8 @@ export declare namespace TSX {
         zoomY?: number;
     }
     export interface GeometryElementAttributes {
+        /** If true, the infobox is shown on mouse/pen over for all points which have set their attribute showInfobox to `inherit`. */
+        showInfobox?: Boolean;
         /** ARIA settings for the element. */
         aria?: AriaAttributes;
         /** Apply CSS classes to an element in non-highlighted view. */
@@ -426,8 +459,8 @@ export declare namespace TSX {
         attractorDistance?: number;
         /** If set to true, the point will only snap to (possibly invisibly) grid points when within Point#attractorDistance of such a grid point.The coordinates of the grid points are either integer multiples of snapSizeX and snapSizeY (given in user coordinates, not pixels) or are the intersection points of the major ticks of the boards default axes in case that snapSizeX, snapSizeY are negative. */
         attractToGrid?: Boolean;
-        /** If true, the infobox is shown on mouse/pen over, if false not. If the value is 'inherit', the value of JXG.currentBoard#showInfobox is taken. true | false | 'inherit' */
-        showInfobox?: Boolean | String;
+        /** If true, the infobox is shown on mouse/pen over, if false not. If the value is 'inherit', the value of JXG.currentBoard#showInfobox is taken. */
+        showInfobox?: Boolean;
         /** If set to true, the point will snap to a grid of integer multiples of Point#snapSizeX and Point#snapSizeY (in user coordinates).The coordinates of the grid points are either integer multiples of snapSizeX and snapSizeY (given in user coordinates, not pixels) or are the intersection points of the major ticks of the boards default axes in case that snapSizeX, snapSizeY are negative. */
         snapToGrid?: Boolean;
         /** This attribute was used to determined the point layout. It was derived from GEONExT and was replaced by Point#face and Point#size. */
@@ -490,6 +523,66 @@ export declare namespace TSX {
         point1?: Point3DAttributes;
         /** Attributes for second point (an object) */
         point2?: Point3DAttributes;
+    }
+    export interface View3DAttributes extends GeometryElement3DAttributes {
+        /** Choose the projection type to be used: `parallel` or `central`. `parallel` is parallel projection, also called orthographic projection.   `central` is central projection, also called perspective projection */
+        projection?: `parallel` | `central`;
+        /** Specify the user handing of the azimuth. */
+        az?: screenControls;
+        /** Specify the user handing of the bank angle. */
+        bank?: screenControls;
+        /** Specify the user handing of the elevation. */
+        el?: screenControls;
+        /** Support occlusion by ordering points? */
+        depthorderpoints?: Boolean;
+        /** use {enable:true, layers:[12]} */
+        depthOrder?: Object;
+        /** Position of the main axes in a View3D element. Possible values are 'center' and 'border'. */
+        axesPosition?: String;
+        /** Allow vertical dragging of objects, i.e. in direction of the z-axis. Subobjects areenabled: truekey: 'shift'Possible values for attribute key: 'shift' or 'ctrl'. */
+        verticalDrag?: Object;
+        /** Attributes of the 3D x-axis. */
+        xAxis?: Object;
+        /** Attributes of the 3D plane orthogonal to the x-axis at the ”front” of the cube. */
+        xPlaneFront?: Object;
+        /** Attributes of the 3D y-axis on the 3D plane orthogonal to the x-axis at the ”front” of the cube. */
+        xPlaneFrontYAxis?: Object;
+        /** Attributes of the 3D z-axis on the 3D plane orthogonal to the x-axis at the ”front” of the cube. */
+        xPlaneFrontZAxis?: Object;
+        /** Attributes of the 3D plane orthogonal to the x-axis at the ”rear” of the cube. */
+        xPlaneRear?: Object;
+        /** Attributes of the 3D y-axis on the 3D plane orthogonal to the x-axis at the ”rear” of the cube. */
+        xPlaneRearYAxis?: Object;
+        /** Attributes of the 3D z-axis on the 3D plane orthogonal to the x-axis at the ”rear” of the cube. */
+        xPlaneRearZAxis?: Object;
+        /** Attributes of the 3D y-axis. */
+        yAxis?: Line3D;
+        /** Attributes of the 3D plane orthogonal to the y-axis at the ”front” of the cube. */
+        yPlaneFront?: Object;
+        /** Attributes of the 3D x-axis on the 3D plane orthogonal to the y-axis at the ”front” of the cube. */
+        yPlaneFrontXAxis?: Object;
+        /** Attributes of the 3D z-axis on the 3D plane orthogonal to the y-axis at the ”front” of the cube. */
+        yPlaneFrontZAxis?: Object;
+        /** Attributes of the 3D plane orthogonal to the y-axis at the ”rear” of the cube. */
+        yPlaneRear?: Object;
+        /** Attributes of the 3D x-axis on the 3D plane orthogonal to the y-axis at the ”rear” of the cube. */
+        yPlaneRearXAxis?: Object;
+        /** Attributes of the 3D z-axis on the 3D plane orthogonal to the y-axis at the ”rear” of the cube. */
+        yPlaneRearZAxis?: Object;
+        /** Attributes of the 3D z-axis. */
+        zAxis?: Line3D;
+        /** Attributes of the 3D plane orthogonal to the z-axis at the ”front” of the cube. */
+        zPlaneFront?: Object;
+        /** Attributes of the 3D x-axis on the 3D plane orthogonal to the z-axis at the ”front” of the cube. */
+        zPlaneFrontXAxis?: Object;
+        /** Attributes of the 3D y-axis on the 3D plane orthogonal to the z-axis at the ”front” of the cube. */
+        zPlaneFrontYAxis?: Object;
+        /** Attributes of the 3D plane orthogonal to the z-axis at the ”rear” of the cube. */
+        zPlaneRear?: Object;
+        /** Attributes of the 3D x-axis on the 3D plane orthogonal to the z-axis at the ”rear” of the cube. */
+        zPlaneRearXAxis?: Object;
+        /** Attributes of the 3D y-axis on the 3D plane orthogonal to the z-axis at the ”rear” of the cube. */
+        zPlaneRearYAxis?: Object;
     }
     export interface currentBoardAttributes {
     }
@@ -2038,7 +2131,7 @@ export declare namespace TSX {
         /**  */
         get is3D(): Boolean;
         /**  */
-        get view(): View3D;
+        get view(): any;
         /**  */
         get strokeColor(): String;
         /**  */
@@ -2060,7 +2153,7 @@ export declare namespace TSX {
         /**  */
         startAnimation(direction: number, stepCount: number, delayMSec: number): void;
         /**  */
-        stopAnimation(): void;
+        stopAnimation(): any;
         /** Calculates Euclidean distance for two Points, eg:  p1.Dist(p2) */
         Dist(toPoint: Point | pointAddr): number;
         /** Set the face of a point element. */
@@ -2125,6 +2218,36 @@ export declare namespace TSX {
         Y(): number;
         /** Treat the line as parametric curve in homogeneous coordinates. */
         Z(): number;
+    }
+    export class View3D extends GeometryElement3D {
+        /**  */
+        get defaultAxes(): Object;
+        /**  */
+        get matrix3D(): Object;
+        /**  */
+        setView(azimuth: number, elevation: number, radius?: number): View3D;
+        /**  */
+        animateAzimuth(): Object;
+        /** Creates a new 3D element of type elementType. */
+        create(): Object;
+        /** Intersect a ray with the bounding cube of the 3D view. */
+        intersectionLineCube(): number[];
+        /**  */
+        intersectionPlanePlane(): number[];
+        /** Test if coordinates are inside of the bounding cube. */
+        isInCube(): number[];
+        /** Project a 2D coordinate to the plane defined by point ”foot” and the normal vector `normal`. */
+        project2DTo3DPlane(): number[];
+        /** Project a 2D coordinate to a new 3D position by keeping the 3D x, y coordinates and changing only the z coordinate. */
+        project2DTo3DVertical(): number[];
+        /** Project 3D coordinates to 2D board coordinates The 3D coordinates are provides as three numbers x, y, z or one array of length 3. */
+        project3DTo2D(): number[];
+        /** Limit 3D coordinates to the bounding cube. */
+        project3DToCube(): GeometryElement3D | Composition;
+        /** Select a single or multiple elements at once. */
+        select(): GeometryElement3D | Composition;
+        /**  */
+        stopAzimuth(): any;
     }
     export class currentBoard {
     }
