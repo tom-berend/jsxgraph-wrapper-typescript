@@ -22,7 +22,7 @@
         //
         /////////////////////////////////////////////////////////////////////////////
 
-        //   Generated on April 9, 2025, 10:33 pm
+        //   Generated on April 9, 2025, 10:21 pm
 
  export namespace TSX {     // match JSXGraph definition for JXG_Point3D, etc
         type NumberFunction = Number | Function
