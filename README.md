@@ -13,11 +13,11 @@ This wrapper provides a more-typical [TypeScript](https://www.typescriptlang.org
 
 | **JSXGraph**    | **TSXGraph** | comment |
 | --------- | ------- |--------|
-| `board.create('point',[0,0])`  | `TSX.point([0,0])`   |  // looks similar because an immediate address is always [x,y]
-| `board.create('segment' , [p1, p2])`     | `TSX.segment(p1, p2)` | // much closer to what you would expect
-| `board.create('intersection', [cl,ln])` | `TSX.intersection(cl,ln))`    |  // VSCode shows order of parameters|
-| `let rot = board.create('transform', [()=>slider.Value(), c], {type: 'rotate'})`| `let rot = TSX.rotate(()=>slider.Value(),c)` | // transform that rotates around c|
-| `view.create('point3d',[0,00])`  | `TSX.point3d([0,0,0])`   |  // 2D and 3D are consolidated, view is not required
+| `board.create('point',[0,0])`  | `TSX.Point([0,0])`   |  // looks similar because an immediate address is always [x,y]
+| `board.create('segment' , [p1, p2])`     | `TSX.Segment(p1, p2)` | // much closer to what you would expect
+| `board.create('intersection', [cl,ln])` | `TSX.Intersection(cl,ln))`    |  // VSCode shows order of parameters|
+| `let rot = board.create('transform', [()=>slider.Value(), c], {type: 'rotate'})`| `let rot = TSX.Rotate(()=>slider.Value(),c)` | // transform that rotates around c|
+| `view.create('point3d',[0,00])`  | `TSX.Point3D([0,0,0])`   |  // 2D and 3D are consolidated, view is not required
 
 
 With the wrapper, VSCode offers the usual signatures, object keys, and completions.
@@ -46,7 +46,7 @@ JSXGraph is constantly evolving.  This wrapper was built around JSXGraph 1.11 be
 
 This package includes **Space Icons** by [Good Stuff No Nonsense](https://goodstuffnononsense.com/), licensed under CC BY 4.0.
 ~~~
-TSX.image("icons/saturn.png",[0,0])    // Use VSCode's `CTRL+I` to list the icons
+TSX.Image("icons/saturn.png",[0,0])    // Use VSCode's `CTRL+I` to list the icons
 ~~~
 
 

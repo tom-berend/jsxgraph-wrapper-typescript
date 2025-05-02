@@ -6,20 +6,18 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0">
 
     <!-- this example fetches from jsdelivr.  for development, faster to use local files from /lib. -->
-    <script src="https://cdn.jsdelivr.net/npm/jsxgraph@1.10.0/distrib/jsxgraphcore.min.js"></script>
-    <link href="https://cdn.jsdelivr.net/npm/jsxgraph@1.10.0/distrib/jsxgraph.min.css" rel="stylesheet">
+    <script src="https://cdn.jsdelivr.net/npm/jsxgraph@1.11.0/distrib/jsxgraphcore.min.js"></script>
+    <link href="https://cdn.jsdelivr.net/npm/jsxgraph@1.11.0/distrib/jsxgraph.min.css" rel="stylesheet">
 </head>
 
 <body>
-    run `tsc` at least once to create the dist directory and generate`tsxgraph.js`<br>
-
     <!-- create the canvas for JSXGraph -->
     <div id="jxgbox" class="jxgbox" style="width:600px; height:600px;"></div>
 
+    <script type="'module" src="../dist/lib/tsxgraph.js"></script>
+
     <!-- load the .js file (either edited directly, or created with tsc) -->
-    <script type="module" src="simple.js" defer></script>
-    <script>
-        let TSX = TXG.TSXGraph.initboard('jxgbox')
+    <script type="module" src="simple.js"></script>
     </script>
 
 </body>

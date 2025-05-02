@@ -2,7 +2,7 @@
 
         /////////////////////////////////////////////////////////////////////////////
         //
-        //    Copyright 2024 Tom Berend   (MIT Licence)
+        //    Copyright 2024-2025 Tom Berend   (MIT Licence)
         //
         //    Permission is hereby granted, free of charge, to any person obtaining a copy of this
         //    software and associated documentation files (the “Software”), to deal in the Software
@@ -21,163 +21,20 @@
         //    DEALINGS IN THE SOFTWARE.
         //
         /////////////////////////////////////////////////////////////////////////////
+        //   Generated on May 1, 2025, 12:14 pm
 
-        //   Generated on April 8, 2025, 2:43 pm
-
- export namespace TSX {     // match JSXGraph definition for JXG_Point3D, etc
+     // match JSXGraph definition for JXG_Point3D, etc
         type NumberFunction = Number | Function
 
         /** A 'point' has a position in space.  The only characteristic that distinguishes one point from another is its position. */
-        export type pointAddr = NumberFunction[] | [number, number] | [number, Function] | [Function, number] | [Function | Function] // allow tuples or arrays
-        export type pointAddr3D =  NumberFunction[] // | [number | Function, number | Function, number | Function]  // either tuple or array
-        ///////  THIS FILE IS INSERTED INTO TSXGRAPH.TS DURING THE BUILD PROCESS  //////
-
-
-//////////////////////////////////////////////////////////////
-///  WE NEED A PLACE TO STORE THE BOARD AND VIEW3D OBJECTS ///
-//////////////////////////////////////////////////////////////
-
-
-
-/** PRIVATE, Nothing here, just some storage.  Ignore */
-export class TSXBoard {
-    public _jBoard: Object
-    public _jView3d: Object
-
-    private currentCanvas: string = ''
-    private boardList = new Map<string, Object>()     // will be keyed array of boards  { 'jxgbox': jBoard, 'jxgbox2': jBoard2 }
-
-    constructor(b: Object, v: Object) {
-        this._jBoard = b;
-        this._jView3d = v;
-    }
-
-    // getters are used from outside this class
-    get jBoard() {
-        if (this.isEmptyObject(this._jBoard)) {     // create if doesn't exists
-            this.jInitBoard('jxgbox', defaultAttributes({}))
-        }
-        return this._jBoard
-    }
-    get jView3d() {
-        if (this.isEmptyObject(this._jView3d)) {     // create if doesn't exists
-            this.jInitBoard('jxgbox', defaultAttributes({}))
-        }
-        return this._jView3d
-    }
-
-
-
-
-    /** test for empty object {} */
-    isEmptyObject(obj: Object): Boolean {
-        for (let _var in obj) return false;  // if there is a property, it is not empty (doesn't work for dates, etc)
-        return true;
-    }
-
-    // this is the code for InitBoard, which is created in the wrapper.
-    jInitBoard(canvas: string, attributes: Object = {}): Object {
-        // console.log('jInitBoard', canvas, attributes)
-
-        if (canvas.length === 0)       // default to currentCanvas, then to jxgbox
-            canvas = (this.currentCanvas.length === 0) ? 'jxgbox' : this.currentCanvas;
-
-
-
-        if ((canvas !== this.currentCanvas)) {   // test whether board needs to be created
-            // console.log('change currentCanvas from ', this.currentCanvas, ' to ', canvas)
-
-            // check if we have previously created this board
-            if (this.boardList.has(canvas)) {
-                let temp = this.boardList.get(canvas)! as [object, object] // we already have this board
-                this._jBoard = temp[0]
-                this._jView3d = temp[1]
-                this.currentCanvas = canvas
-                return this._jBoard
-            }
-
-            // create the board
-            this._jBoard = (window as any).JXG.JSXGraph.initBoard(canvas, attributes)
-
-
-            let bounding = (this._jBoard as any).getBoundingBox()
-            // console.log(bounding, [[bounding[0], bounding[3]], Math.abs(bounding[2] - bounding[0]), Math.abs(bounding[3] - bounding[1])])
-
-            // axesPosition is immutable.  if it is set in initBoard(), then set it in
-            let attrs = (this._jBoard as any).attr;
-            let ap = 'none'
-            if ('axesposition' in attrs) {
-                ap = attrs.axesposition;
-            }
-
-            //create the 3D view
-            this._jView3d = (this._jBoard as any).create('view3d',
-                [[bounding[0], bounding[3]],
-                [Math.abs(bounding[2] - bounding[0]), Math.abs(bounding[3] - bounding[1])],
-                // [box, box, box]] same size of the bounding box
-                [[bounding[0], bounding[2]], [bounding[3], bounding[1]], [bounding[0], bounding[2]]]],  // just guessing at z axis
-                {
-                    projection: 'central',
-                    // projection: 'parallel',
-                    pan: { enabled: false },
-                    trackball: { enabled: true },
-                    axesPosition: ap,
-                    depthOrder: {
-                        enabled: true,
-                    },
-                    depthOrderPoints: true,
-                    xPlaneRear: { visible: false },
-                    yPlaneRear: { visible: false }, //fillOpacity: 0.2, fillColor: 'blue' },
-                    zPlaneRear: { visible: false },
-                    az: { pointer: { enabled: false }, keyboard: { enabled: true, key: 'none' } },
-                    el: { pointer: { enabled: false }, keyboard: { enabled: true, key: 'none' } },
-
-                });
-
-            console.log('setview in setup');
-            (this._jView3d as any).setView(Math.PI, Math.PI / 2, 0);
-
-            this.boardList.set(canvas, [this._jBoard, this.jView3d])   // keep a copy in case multiple boards
-            this.currentCanvas = canvas
-
-            printLineNumber = 0 // reset the 'print' utility
-        }
-        return this._jBoard
-    }
-
-
-
+        type pointAddr = NumberFunction[] | [number, number] | [number, Function] | [Function, number] | [Function | Function] // allow tuples or arrays
+        type pointAddr3D =  NumberFunction[] // | [number | Function, number | Function, number | Function]  // either tuple or array
+        let defaultAttrs: Object = {
+    keepAspectRatio: true,
+    name: '', showinfobox: false,
+    pan: { enabled: false },
+    resize: { enabled: false },
 }
-
-// this is a hack, it pollutes the namespace.  But we can't
-// run the playground without it.   Fix it if we merge with JSXGraph.
-if (typeof (window as any).TSXGlobal === "undefined")       // only create if it doesn't exist
-    (window as any).TSXGlobal = new TSXBoard({}, {});           // object to store 'board' and 'view3D' objects
-
-
-// and some simple methods to retrieve them
-/** PRIVATE - retrieves the current JSXGraph Board object. */
-export function _jsxBoard() {
-    return (window as any).TSXGlobal.jBoard;
-}
-/** PRIVATE - retrieves the current JSXGraph View3d object. */
-export function _jsxView3d() {
-    return (window as any).TSXGlobal.jView3d;
-}
-
-//////////////////////////////////////////////////////////////
-//////////////////////////////////////////////////////////////
-//////////////////////////////////////////////////////////////
-
-
-
-// abstract class View3D {
-//     setView(x: number, y: number, z: number) { }
-
-// }
-
-let jBoard: Object
-let defaultAttrs: Object = { name: '', showinfobox: false }
 
 
 
@@ -191,7 +48,7 @@ type matAny = arrayNumber2[]
 
 
 
-interface ShaderInterface {
+export interface ShaderInterface {
     enabled: Boolean,
     type: 'angle' | 'zIndex',
     hue: number,
@@ -200,14 +57,14 @@ interface ShaderInterface {
     maxLightness: number,
 }
 
-interface MoveToOptions {
+export interface MoveToOptions {
     callback?: Function,
     effect?: "==" | "<>" | "--" | "<" | ">",
     repeat?: number
 }
 
 
-interface SelectionAttributes {
+export interface SelectionAttributes {
     enabled?: Boolean,
     name?: string,
     needShift?: Boolean,  // mouse selection needs pressing of the shift key
@@ -215,7 +72,7 @@ interface SelectionAttributes {
     fillColor?: string,
 }
 
-interface ScreenShotAttributes {
+export interface ScreenShotAttributes {
     scale?: number,
     type?: string,
     symbol?: '\u2318' | '\u22b9' | '\u26f6',
@@ -226,7 +83,7 @@ interface ScreenShotAttributes {
 
 ///////////////////////////////////////////
 ///////  stuff for View3D elevation controls
-interface pointerControls {
+export interface pointerControls {
     /**  specifies whether pointer navigation is allowed by elevation. */
     enabled?: Boolean,
     /** Number indicating how many passes the range of the el_slider makes when the cursor crosses the entire board once in the horizontal direction.*/
@@ -238,7 +95,7 @@ interface pointerControls {
     /** Should an additional key be pressed? ('none', 'shift' or 'ctrl') */
     key?: 'none' | 'shift' | 'ctrl'
 }
-interface keyboardControls {
+export interface keyboardControls {
     /** specifies whether the keyboard (arrow keys) can be used to navigate the board.*/
     enabled?: Boolean
     /** Size of the step per keystroke. */
@@ -246,13 +103,13 @@ interface keyboardControls {
     /** Should an additional key be pressed? ('none', 'shift' or 'ctrl') */
     key?: 'none' | 'shift' | 'ctrl'
 }
-interface sliderControls {
+export interface sliderControls {
     min?: number, // Minimum value.
     max?: number,  //Maximum value.
     start?: number, //Start value.
 }
 
-interface screenControls {
+export interface screenControls {
     /** an object */
     pointer?: pointerControls,
     /** an object */
@@ -277,17 +134,17 @@ export interface AriaAttributes {
     ignore?: Boolean
 }
 
-interface DisplayPoint {
+export interface DisplayPoint {
     size?: Number
     face?: 'cross' | 'plus' | 'minus' | 'divide' | 'diamond' | 'triangledown' | 'triangleleft' | 'triangleright' | 'triangleup' | 'square' | 'circle'
 
 }
 
-interface VertexAttributes {
+export interface VertexAttributes {
     visible?: Boolean
 }
 
-interface PanAttributes {
+export interface PanAttributes {
     /** allow panning */
     enabled?: Boolean
     /** panning is done with two fingers on touch devices */
@@ -296,7 +153,7 @@ interface PanAttributes {
     needShift?: Boolean
 }
 
-interface ZoomAttributes {
+export interface ZoomAttributes {
     /** turns off zooming completely, if set to false. */
     enabled?: Boolean,
     /** horizontal zoom factor (multiplied to JXG.Board#zoomX) */
@@ -328,28 +185,28 @@ interface ZoomAttributes {
 /**
 *  Constant: user coordinates relative to the coordinates system defined by the bounding box.
 */
-export const COORDS_BY_USER = 0x0001
+ const COORDS_BY_USER = 0x0001
 /**
 *  Constant: screen coordinates in pixel relative to the upper left corner of the div element.
 */
-export const COORDS_BY_SCREEN = 0x0002
+ const COORDS_BY_SCREEN = 0x0002
 
 
-interface JSXMathAttributes {
-}
+// export interface JSXMathAttributes {
+// }
 
 
 
 
-///// some math classes by hand
-export class IntervalArithmetic {
-}
-export class PolyMonomial {
-}
-export class PolyPolynomial {
-}
-export class Symbolic {
-}
+// ///// some math classes by hand
+//  class IntervalArithmetic {
+// }
+//  class PolyMonomial {
+// }
+//  class PolyPolynomial {
+// }
+//  class Symbolic {
+// }
 
 
 
@@ -361,13 +218,13 @@ export class Symbolic {
 //////////
 //////////        /** use this to create mixins in Typescript.  Each mixin is a traditional ES class,
 //////////         *  For example, to add classes Jumpable and Duckable to class Sprite, you add
-//////////         * an interface which merges the expected mixins using the same name as your base, and
+//////////         * an export interface which merges the expected mixins using the same name as your base, and
 //////////         * then apply the mixins at runtime.
 //////////        ```js
 //////////        class Jumpable {  jump() {}  }
 //////////        class Duckable {  duck() {}  }
 //////////        class Sprite { x = 0; y = 0; }   // base class
-//////////        interface Sprite extends Jumpable, Duckable {}
+//////////        export interface Sprite extends Jumpable, Duckable {}
 //////////        TXG.TSXGraph.applyMixins(Sprite, [Jumpable, Duckable]);
 //////////
 //////////        let s = new Sprite()  // now includes methods from mixins
@@ -405,7 +262,7 @@ const board = TXG.TSXGraph.initBoard('jxgbox', { axis: true });
 
 
 
-export type spaceIcon =
+ export type SpaceIcon =
     'icons/alien-1.png' |
     'icons/alien-2.png' |
     'icons/alien-3.png' |
@@ -488,726 +345,15 @@ export type spaceIcon =
     'icons/moon-dreamy.png'
 
 
-// utility to appy default attributes
-function defaultAttributes(attrs: Object = {}) {
-    for (const property in defaultAttrs) {
-        if (!attrs.hasOwnProperty(property)) {   // if the user has not specified a value for this property
-            (attrs as any)[property] = (defaultAttrs as any)[property]
-        }
-    }
-    return attrs
-}
 
-// utility to determine if last parameter is the attributes
-function isAttribute(last: any): Boolean {
-    return ((typeof last == 'object') &&     // must be an object
-        (!Array.isArray(last)) &&     // not an array (typeof treats arrays as objects)
-        (last !== null) &&     // null returns type 'object' - javascript bug
-        ('elType' in last === false))              // if has elType then a JSXGraph object
-}
 
 
-// print utility - needs work !!
-let printLineNumber: number = 0   // added a print() function, this tracks the line#
-export function print(...args: any[]) {
-    let bbox = _jsxBoard().getBoundingBox()   // get every time, in case setBoundingBox()
-    let left = bbox[0] // align x to left border
-    let lineHeight = (bbox[1] - bbox[3]) / 20  //
-    let top = bbox[1] - (2 * lineHeight) - (printLineNumber * lineHeight)  // align y to top border
-
-    let helper = (stringText: string, item: any): string => {
-        if (typeof item == null) {
-            stringText += 'null, ';
-        } else if (item == undefined) {
-            stringText += 'undefined';
-        } else if (typeof item == 'string') {
-            stringText += '\'' + item + '\'';
-        } else if (typeof item == 'number') {
-            stringText += Number.isInteger(item) ? item.toString() : item.toFixed(2);
-        } else if (typeof item == 'boolean') {
-            stringText += item ? 'true' : 'false';
-        } else if (Array.isArray(item)) {
-            stringText += '['
-            stringText = item.reduce((acc, curr) => acc + helper('', curr), stringText)
-            stringText += ']'
-        } else if (typeof item == 'object') {
-            stringText += '{'
-            if ('elType' in item) {
-                stringText += item.elType
-            } else if ('elV2Math' in item) {
-                stringText += [item.X(), item.Y()]
-            }
-            stringText += '}'
-        } else {
-            stringText += 'UNKNOWN';
-        }
-        stringText += ', '
-        return stringText
-    }
-
-
-    let stringText = ''
-    args.forEach((argn) => {
-        stringText = helper(stringText, argn)
-    });
-
-    _jsxBoard().create('text', [left, top, stringText], { fontSize: 10, strokeColor: 'blue', fontUnits: 'EM' })
-    printLineNumber += 1
-}
-
-
-// JXG methods that we pass through
-
-/** Version of JSXGraph.  */
-export function version(): String {
-    return (window as any).JXG.version;
-}
-
-
-// these are some useful board methods that we pass through
-
-/** Board and construction methods.  **Press '.' to see options** */
-export let board = {
-
-    /** Set the bounding box of the board.  Returns the board.
-    ```js
-    TSX.board.setBoundingBox([-8, 8, 8, -8])
-    ```*/
-
-    /** Stop updates of the board.  Returns the board. */
-    suspendUpdate: (): Object => _jsxBoard().suspendUpdate(),
-
-
-    /** Enable updates of the board.  Returns the board. */
-    unsuspendUpdate: (): Object => _jsxBoard().unsuspendUpdate(),
-
-
-    /** Update the board.  Returns the board.  */
-    update: (): Object => _jsxBoard().update(),
-
-    /** Use MathJax by default. PUT THIS AT THE VERY TOP OF YOUR PROGRAM.  See: {@link https://math.meta.stackexchange.com/questions/5020/mathjax-basic-tutorial-and-quick-reference}
-     * ```js
-     * TSX.board.useMathJax()  // only needed once
-     * let a = TSX.point([-3, 3], { size: 4, color: 'blue', name: '\\(\\overrightarrow{a}\\)', fixed: true, label: { fontSize: 20 } });
-     *```
-     */
-    useMathJax: () => (window as any).JXG.Options.text.useMathJax = true,   // by default MathJax is true
-
-
-    /** sets the projection to parallel or perspective.  Possible values are 'centeral' or 'parallel'. */
-    projection3D: (setting: 'parallel' | 'central') => _jsxView3d().setAttribute({ 'projection': setting }),
-
-    // /** Adds an animation.*/
-    // addAnimation: (element:GeometryElement) => _jsxBoard().addAnimation(element),
-
-    /** Add the default x- and y-axis and grid to the construction,, equivalent to using the code below.
-     * ```js
-     * TSX.axis([0,0],[1,0]);
-     * TSX.axis([0,0],[0,1]);
-     * ```
-     */
-    addAxis: () => {        // using _jsxBoard ensures board is created if necessary
-        _jsxBoard().create('axis', [[0, 0], [1, 0]]);
-        _jsxBoard().create('axis', [[0, 0], [0, 1]]);
-    },
-
-    /**  Set infobox visible / invisible. */
-    displayInfobox: (val: Boolean) => _jsxBoard().displayInfobox(val),
-
-
-    /** Sets an arbitrary number of attributes.  Use an object with key-value pairs.
-     * ```js
-     * TSX.board.setAttribute({axis:true});    // turn on the default axis
-     * ```
-     */
-    // setAttribute: (attr: BoardAttributes) => {
-    //     initBoard();
-    //     _jsxBoard().setAttribute(attr);
-    //     _jsxBoard().update()
-    // },
-
-    /** Zooms into the board by the factors board.attr.zoom.factorX and board.attr.zoom.factorY
-     * and applies the zoom. The zoom operation is centered at x, y. */
-    zoomIn: (x: number, y: number) => { return _jsxBoard().zoomIn(x, y) },
-
-    /** Zooms out of the board by the factors board.attr.zoom.factorX and board.attr.zoom.factorY and applies the zoom.*/
-    zoomOut: (x: number, y: number): any => { return _jsxBoard().zoomOut(x, y) },
-
-    /** Sets the zoom level to fX resp fY.*/
-    setZoom: (fX: number, fY: number): any => { return _jsxBoard().setZoom(fX, fY) },
-
-    /** Reset the zoom level to the original zoom level from initBoard(); Additionally, if the board as been initialized with a boundingBox(which is the default ), restore the viewport to the original viewport during initialization.*/
-    zoom100: (): any => { return _jsxBoard().zoom100() },
-
-
-    // these are on the JXG object, but we keep them here for simplicity
-
-    /** Set the bounding box of the board. */
-    setBoundingBox: (box: number[], keepAspectRatio: Boolean = false, setZoom?: 'reset' | 'keep' | 'update'): Object => { return _jsxBoard().setBoundingBox(box, keepAspectRatio, setZoom) },
-
-    /** Get the bounding box of the board. */
-    getBoundingBox: (): number[] => { return _jsxBoard().getBoundingBox() },
-
-    /** set Katex as default for board (names, labels, everything).  useKatex() need only be set ONCE, no way to unset. the text element has a 'useKatex' attribute that lets you turn Katex on and off for individual text fields. */
-    useKatex: () => { (window as any).JXG.Options.text.useKatex = true },
-
-    /** Add all possible event handlers to the board object that move objects, i.e. */
-    addEventHandlers: (): any => { return _jsxBoard().addEventHandlers() },
-
-    /**    Register keyboard event handlers. */
-    addKeyboardEventHandlers: (): any => { return _jsxBoard().addKeyboardEventHandlers() },
-
-    /** Adds a grid to the board according to the settings given in board.options. For more control, use the TSX.grid object.*/
-    addGrid: (): any => { return _jsxBoard().addGrid() },
-
-    /** Event handlers for the board (rather than for individual elements).
-    *```js
-    *    TSX.board.on('pointerdown',pointerDown)
-    *    //equivalent to:   addEventListener("pointerdown", pointerDown)
-    *```
-    */
-    on: (event: string, handler: Function) => _jsxBoard().on(event, handler),
-
-    /** given a PointerEvent (eg: TSX.on('down', (e:Event)=> ... ), returns the mouse coordinates [x,y] in JSXGraph coordinates.  */
-    getMouseCoords: (e: Event): number[] => {
-        let cPos = _jsxBoard().getCoordsTopLeftCorner(e)
-        let absPos = (window as any).JXG.getPosition(e)
-        let dx = absPos[0] - cPos[0]
-        let dy = absPos[1] - cPos[1]
-
-        let coords = new (window as any).JXG.Coords(2, [dx, dy], _jsxBoard());
-        return [coords.usrCoords[1], coords.usrCoords[2]]
-    },
-
-
-
-
-
-
-    // /** Add fullscreen events which update the CSS transformation matrix to correct the mouse/ touch / pointer positions in case of CSS transformations..*/
-    // addFullscreenEventHandlers: (): any => { return _jsxBoard().addFullscreenEventHandlers() },
-
-    // /** Add user activity to the array 'board.userLog'.*/
-    // addLogEntry: (type: string, obj: Object, pos: number): any => { return _jsxBoard().addLogEntry(type, obj, pos) },
-
-    // /** Registers mouse move, down and wheel event handlers.*/
-    // addMouseEventHandlers: (): any => { return _jsxBoard().addMouseEventHandlers() },
-
-    // /** Registers pointer event handlers.*/
-    // addPointerEventHandlers: (): any => { return _jsxBoard().addPointerEventHandlers() },
-
-    // /** Add resize related event handlers*/
-    // addResizeEventHandlers: (): any => { return _jsxBoard().addResizeEventHandlers() },
-
-    // /** Register touch start and move and gesture start and change event handlers.*/
-    // addTouchEventHandlers: (): any => { return _jsxBoard().addTouchEventHandlers() },
-
-    // /** Registers pointer event handlers.*/
-    // addWheelEventHandlers: (): any => { return _jsxBoard().addWheelEventHandlers() },
-
-    // /** General purpose animation function.*/
-    // animate: (): any => { return _jsxBoard().animate() },
-
-    // /** Apply update on all objects with the new zoom - factors.*/
-    // applyZoom: (): any => { return _jsxBoard().applyZoom() },
-
-    // /** Calculates adequate snap sizes.*/
-    // calculateSnapSizes: (): any => { return _jsxBoard().calculateSnapSizes() },
-
-    // /** Delete the elements drawn as part of a trace of an element.*/
-    // clearTraces: (): any => { return _jsxBoard().clearTraces() },
-
-    // /** Handler for click on down arrow in the navigation bar*/
-    // clickDownArrow: (): any => { return _jsxBoard().clickDownArrow() },
-
-    // /** Handler for click on left arrow in the navigation bar*/
-    // clickLeftArrow: (): any => { return _jsxBoard().clickLeftArrow() },
-
-    // /** Handler for click on right arrow in the navigation bar*/
-    // clickRightArrow: (): any => { return _jsxBoard().clickRightArrow() },
-
-    // /** Handler for click on up arrow in the navigation bar*/
-    // clickUpArrow: (): any => { return _jsxBoard().clickUpArrow() },
-
-    // /** Creates a new geometric element of type elementType.*/
-    // create: (elementType: string, parents: string, attributes: Object): any => { return _jsxBoard().create(elementType, parents, attributes) },
-
-    // /** Deprecated name for JXG.Board.create.*/
-    // createElement: (): any => { return _jsxBoard().createElement() },
-
-    // /** Function to animate a curve rolling on another curve.*/
-    // createRoulette: (c1: Object, c2: Object, start_c1: number, stepsize: number, direction: number, time: number, pointlist: Object[]): any => { return _jsxBoard().createRoulette(c1, c2, start_c1, stepsize, direction, time, pointlist) },
-
-    // /** Remove highlighting of all elements.*/
-    // dehighlightAll: (): any => { return _jsxBoard().dehighlightAll() },
-
-    // /** Initializes color blindness simulation.*/
-    // emulateColorblindness: (deficiency: string): any => { return _jsxBoard().emulateColorblindness(deficiency) },
-
-    // /** After construction of the object the visibility is set and the label is constructed if necessary.*/
-    // finalizeAdding: (obj:Object): any => { return _jsxBoard().finalizeAdding(obj) },
-
-    // /** If fullscreen mode is toggled, the possible CSS transformations which are applied to the JSXGraph canvas have to be reread.*/
-    // fullscreenListener: (evt: Event): any => { return _jsxBoard().fullscreenListener(evt) },
-
-    // /** Runs through all elements and calls their update() method and update the conditions.*/
-    // fullUpdate: (): any => { return _jsxBoard().fullUpdate() },
-
-    // /** Generates unique id for a board.*/
-    // generateId: (): any => { return _jsxBoard().generateId() },
-
-    // /** Generates an unique name for the given object.*/
-    // generateName: (object: Object): any => { return _jsxBoard().generateName(object) },
-
-    // /** Triggered on iOS / Safari while the user inputs a gesture(e.g.*/
-    // gestureChangeListener: (evt: Event): any => { return _jsxBoard().gestureChangeListener(evt) },
-
-    // /** Called by iOS / Safari as soon as the user starts a gesture.*/
-    // gestureStartListener: (evt: Event): any => { return _jsxBoard().gestureStartListener(evt) },
-
-    // /** Collects all elements under current mouse position.*/
-    // getAllObjectsUnderMouse: (evt: Event): any => { return _jsxBoard().getAllObjectsUnderMouse(evt) },
-
-    // /** Collects all elements under current mouse position plus current user coordinates of mouse cursor.*/
-    // getAllUnderMouse: (evt: Event): any => { return _jsxBoard().getAllUnderMouse(evt) },
-
-    // /** Calculates mouse coordinates relative to the boards container.*/
-    // getCoordsTopLeftCorner: (): any => { return _jsxBoard().getCoordsTopLeftCorner() },
-
-    // /** Get the position of the pointing device in screen coordinates, relative to the upper left corner of the host tag.*/
-    // getMousePosition: (e: Event, i: number): any => { return _jsxBoard().getMousePosition(e, i) },
-
-    // /** This method calculates the user coords of the current mouse coordinates.*/
-    // getUsrCoordsOfMouse: (evt: Event): any => { return _jsxBoard().getUsrCoordsOfMouse(evt) },
-
-    // /** Checks if the given point is inside the boundingbox.*/
-    // hasPoint: (x:number,y:number): any => { return _jsxBoard().hasPoint(x, y) },
-
-    // /** Changes the text of the info box to what is provided via text.*/
-    // highlightCustomInfobox: (text:string,el:Object): any => { return _jsxBoard().highlightCustomInfobox(text, el) },
-
-    // /** Changes the text of the info box to show the given coordinates.*/
-    // highlightInfobox: (x:number,y:number,el?:Object): any => { return _jsxBoard().highlightInfobox(x, y, el) },
-
-    // /** Initialize some objects which are contained in every GEONExT construction by default, but are not contained in the gxt files.*/
-    // initGeonextBoard: (): any => { return _jsxBoard().initGeonextBoard() },
-
-    // /** Initialize the info box object which is used to display the coordinates of points near the mouse pointer,*/
-    // initInfobox: (attributes:Object): any => { return _jsxBoard().initInfobox(attributes) },
-
-    // /** Collects all elements below the current mouse pointer and fulfilling the following constraints: isDraggable, visible, not fixed, not frozen*/
-    // initMoveObject: (x:number,y:number,evt:Event,type:string): any => { return _jsxBoard().initMoveObject(x, y, evt, type) },
-
-    // /** Initiate moving the origin.. This is used in mouseDown and touchStart listeners. */
-    // initMoveOrigin: (x:number,y:number): any => { return _jsxBoard().initMoveOrigin(x, y) },
-
-    // /** Allow moving of JSXGraph elements with arrow keys.*/
-    // keyDownListener: (evt: Event): any => { return _jsxBoard().keyDownListener(evt) },
-
-    // /** Event listener for SVG elements getting focus.*/
-    // keyFocusInListener: (evt: Event): any => { return _jsxBoard().keyFocusInListener(evt) },
-
-    // /** Event listener for SVG elements losing focus.*/
-    // keyFocusOutListener: (): any => { return _jsxBoard().keyFocusOutListener(evt) },
-
-    // /** Migrate the dependency properties of the point src to the point dest and delete the point src.*/
-    // migratePoint: (): any => { return _jsxBoard().migratePoint(src, dest, copyName) },
-
-    // /** This method is called by the browser when the mouse device clicks on the screen.*/
-    // mouseClickListener: (evt: Event): any => { return _jsxBoard().mouseClickListener(evt) },
-
-    // /** This method is called by the browser when the mouse device double clicks on the screen.*/
-    // mouseDblClickListener: (evt: Event): any => { return _jsxBoard().mouseDblClickListener(evt) },
-
-    // /** This method is called by the browser when the mouse button is clicked.*/
-    // mouseDownListener: (evt: Event): any => { return _jsxBoard().mouseDownListener(evt) },
-
-    // /** This method is called by the browser when the mouse is moved.*/
-    // mouseMoveListener: (evt: Event): any => { return _jsxBoard().mouseMoveListener(evt) },
-
-    // /** This method is called by the browser when the mouse button is released.*/
-    // mouseUpListener: (evt: Event): any => { return _jsxBoard().mouseUpListener(evt) },
-
-    // /** Handler for mouse wheel events.*/
-    // mouseWheelListener: (evt: Event): any => { return _jsxBoard().mouseWheelListener(evt) },
-
-    // /** Moves an object.*/
-    // moveObject: (x:number,y:number,o:Object,evt:Event,type:string): any => { return _jsxBoard().moveObject(x, y, o, evt, type) },
-
-    // /** Moves the origin and initializes an update of all elements.*/
-    // moveOrigin: (): any => { return _jsxBoard().moveOrigin(x, y, diff) },
-
-    // /** This method is called by the browser when a pointer device clicks on the screen. */
-    // pointerClickListener: (evt: Event): any => { return _jsxBoard().pointerClickListener(evt) },
-
-    // /**     This method is called by the browser when a pointer device double clicks on the screen.*/
-    // pointerDblClickListener: (evt: Event): any => { return _jsxBoard().pointerDblClickListener(evt) },
-
-    // /** This method is called by the browser when a pointing device is pressed on the screen.*/
-    // pointerDownListener: (): any => { return _jsxBoard().pointerDownListener(evt, object, allowDefaultEventHandling) },
-
-    // /** Triggered by the pointerleave event.*/
-    // pointerLeaveListener: (evt: Event): any => { return _jsxBoard().pointerLeaveListener(evt) },
-
-    // /** Called periodically by the browser while the user moves a pointing device across the screen.*/
-    // pointerMoveListener: (evt: Event): any => { return _jsxBoard().pointerMoveListener(evt) },
-
-    // /** Triggered as soon as the user stops touching the device with at least one finger.*/
-    // pointerUpListener: (evt: Event): any => { return _jsxBoard().pointerUpListener(evt) },
-
-    // /** Sets for all objects the needsUpdate flag to 'true'.*/
-    // prepareUpdate: (): any => { return _jsxBoard().prepareUpdate(drag) },
-
-    // /** Update the container before and after printing.*/
-    // printListener: (): any => { return _jsxBoard().printListener(evt) },
-
-    // /** Wrapper for printListener to be used in mediaQuery matches.*/
-    // printListenerMatch: (): any => { return _jsxBoard().printListenerMatch(mql) },
-
-    // /** Removes the ancestors of an object an the object itself from board and renderer.*/
-    // removeAncestors: (): any => { return _jsxBoard().removeAncestors(object) },
-
-    // /** Deletes a board from the list of dependent boards.*/
-    // removeChild: (): any => { return _jsxBoard().removeChild(board) },
-
-    // /** Remove all event handlers from the board object*/
-    // removeEventHandlers: (): any => { return _jsxBoard().removeEventHandlers() },
-
-    // /** Remove all registered event handlers regarding fullscreen mode.*/
-    // removeFullscreenEventHandlers: (): any => { return _jsxBoard().removeFullscreenEventHandlers() },
-
-    // /** Removes all grids assigned to this board.*/
-    // removeGrids: (): any => { return _jsxBoard().removeGrids() },
-
-    // /** Please use JXG.Board.off instead.*/
-    // removeHook: (): any => { return _jsxBoard().removeHook(id) },
-
-    // /** Remove all registered touch event handlers.*/
-    // removeKeyboardEventHandlers: (): any => { return _jsxBoard().removeKeyboardEventHandlers() },
-
-    // /** De - register mouse event handlers.*/
-    // removeMouseEventHandlers: (): any => { return _jsxBoard().removeMouseEventHandlers() },
-
-    // /** Removes object from board and renderer.*/
-    // removeObject: (): any => { return _jsxBoard().removeObject(object, saveMethod) },
-
-    // /** Remove MSPointer * Event handlers.*/
-    // removePointerEventHandlers: (): any => { return _jsxBoard().removePointerEventHandlers() },
-
-    // /** Remove resize related event handlers*/
-    // removeResizeEventHandlers: (): any => { return _jsxBoard().removeResizeEventHandlers() },
-
-    // /** Remove all registered touch event handlers.*/
-    // removeTouchEventHandlers: (): any => { return _jsxBoard().removeTouchEventHandlers() },
-
-    // /** Change the height and width of the board's container.*/
-    // resizeContainer: (canvasWidth: number, canvasHeight: number, dontset: Boolean, dontSetBoundingBox: Boolean): any => { return _jsxBoard().resizeContainer(canvasWidth, canvasHeight, dontset, dontSetBoundingBox) },
-
-    // /** Fallback solutions if there is no resizeObserver available in the browser.*/
-    // resizeListener: (): any => { return _jsxBoard().resizeListener() },
-
-    // /** Listener to watch for scroll events.*/
-    // scrollListener: (evt: Event): any => { return _jsxBoard().scrollListener(evt) },
-
-    // /** Select a single or multiple elements at once.*/
-    // select: (): any => { return _jsxBoard().select(str, onlyByIdOrName) },
-
-    // /** Sets an arbitrary number of attributes.*/
-    // setAttribute: (): any => { return _jsxBoard().setAttribute(attributes) },
-
-    // /** Set the bounding box of the board.*/
-    // setBoundingBox: (): any => { return _jsxBoard().setBoundingBox(bbox, keepaspectratio, setZoom) },
-
-    // /** Composes an id for an element.*/
-    // setId: (): any => { return _jsxBoard().setId(obj, type) },
-
-    // /** Lists the dependencies graph in a new HTML - window.*/
-    // showDependencies: (): any => { return _jsxBoard().showDependencies() },
-
-    // /** Lists the XML code of the construction in a new HTML - window.*/
-    // showXML: (): any => { return _jsxBoard().showXML() },
-
-    // /** Watch for changes of the visibility of the JSXGraph container element.*/
-    // startIntersectionObserver: (): any => { return _jsxBoard().startIntersectionObserver() },
-
-    // /** Start observer which reacts to size changes of the JSXGraph container div element.*/
-    // startResizeObserver: (): any => { return _jsxBoard().startResizeObserver() },
-
-    // /** Start selection mode.*/
-    // startSelectionMode: (): any => { return _jsxBoard().startSelectionMode() },
-
-    // /** Cancels all running animations.*/
-    // stopAllAnimation: (): any => { return _jsxBoard().stopAllAnimation() },
-
-    // /** Stop the intersection observer*/
-    // stopIntersectionObserver: (): any => { return _jsxBoard().stopIntersectionObserver() },
-
-    // /** Stops the resize observer.*/
-    // stopResizeObserver: (): any => { return _jsxBoard().stopResizeObserver() },
-
-    // /** Finalize the selection: disable selection mode and return _jsxBoard(). the coordinates of the selection rectangle.*/
-    // stopSelectionMode: (): any => { return _jsxBoard().stopSelectionMode() },
-
-    // /** Suppresses the default event handling.*/
-    // suppressDefault: (): any => { return _jsxBoard().suppressDefault(e) },
-
-    // /** Stop updates of the board.*/
-    // suspendUpdate: (): any => { return _jsxBoard().suspendUpdate() },
-
-    // /** Expand the JSXGraph construction to fullscreen.*/
-    // toFullscreen: (): any => { return _jsxBoard().toFullscreen(id) },
-
-    // /** Triggered as soon as the user stops touching the device with at least one finger.*/
-    // touchEndListener: (evt: Event): any => { return _jsxBoard().touchEndListener(evt) },
-
-    // /** Called periodically by the browser while the user moves his fingers across the device.*/
-    // touchMoveListener: (evt: Event): any => { return _jsxBoard().touchMoveListener(evt) },
-
-    // /** This method is called by the browser when a finger touches the surface of the touch - device.*/
-    // touchStartListener: (evt: Event): any => { return _jsxBoard().touchStartListener(evt) },
-
-    // /** Moves elements in multitouch mode.*/
-    // twoFingerMove: (): any => { return _jsxBoard().twoFingerMove(p1, p2, o, evt) },
-
-    // /** Moves, rotates and scales a line or polygon with two fingers.*/
-    // twoFingerTouchObject: (): any => { return _jsxBoard().twoFingerTouchObject(tar, drag, id) },
-
-    // /** Enable updates of the board.*/
-    // unsuspendUpdate: (): any => { return _jsxBoard().unsuspendUpdate() },
-
-    // /** Runs through most elements and calls their update() method and update the conditions.*/
-    // update: (): any => { return _jsxBoard().update(drag) },
-
-    // /** updates conditions*/
-    // updateConditions: (): any => { return _jsxBoard().updateConditions() },
-    // /** Update the width and height of the JSXGraph container div element.*/
-    // updateContainerDims: (): any => { return _jsxBoard().updateContainerDims(width, height) },
-
-    // /** Update the coords object of all elements which possess this property.*/
-    // updateCoords: (): any => { return _jsxBoard().updateCoords() },
-
-    // /** Update CSS transformations of type scaling.*/
-    // updateCSSTransforms: (): any => { return _jsxBoard().updateCSSTransforms() },
-
-    // /** Runs through all elements and calls their update() method.*/
-    // updateElements: (): any => { return _jsxBoard().updateElements(drag) },
-
-    // /** Runs through all hooked functions and calls them.*/
-    // updateHooks: (): any => { return _jsxBoard().updateHooks(m) },
-
-    // /** Updates and displays a little info box to show coordinates of current selected points.*/
-    // updateInfobox: (): any => { return _jsxBoard().updateInfobox(el) },
-
-    // /** Runs through all elements and calls their update() method.*/
-    // updateRenderer: (): any => { return _jsxBoard().updateRenderer() },
-
-    // /** Runs through all elements and calls their update() method.*/
-    // updateRendererCanvas: (): any => { return _jsxBoard().updateRendererCanvas() },
-
-
-    // /** Zooms the board so every visible point is shown.*/
-    // zoomAllPoints: (): any => { return _jsxBoard().zoomAllPoints() },
-
-    // /** Reset the bounding box and the zoom level to 100 % such that a given set of elements is within the board's viewport.*/
-    // zoomElements: (elements: any): any => { return _jsxBoard().zoomElements(elements) },
-
-
-
-
-
-    /////////////////////////////////////////////////
-    //////////// view3d methods  ////////////////////
-    /////////////////////////////////////////////////
-
-
-
-    // intersectionLineCube(p, dir, r)
-    // Intersect a ray with the bounding cube of the 3D view.
-
-    // intersectionPlanePlane(plane1, plane2, d)
-
-    // isInCube(p, polyhedron)
-    // Test if coordinates are inside of the bounding cube.
-
-    // previousView()
-    // Changes view to the previous view stored in the attribute `values`.
-
-    // project2DTo3DPlane(point2d, normal, foot)
-    // Project a 2D coordinate to the plane defined by point "foot" and the normal vector `normal`.
-
-    // project2DTo3DVertical(point2d, base_c3d)
-    // Project a 2D coordinate to a new 3D position by keeping the 3D x, y coordinates and changing only the z coordinate.
-
-    // project3DTo2D(x, y, z)
-    // Project 3D coordinates to 2D board coordinates The 3D coordinates are provides as three numbers x, y, z or one array of length 3.
-
-    // project3DToCube(c3d)
-    // Limit 3D coordinates to the bounding cube.
-
-    // projectScreenToSegment(pScr, end0, end1)
-    // Project a point on the screen to the nearest point, in screen distance, on a line segment in 3d space.
-
-    // select(str, onlyByIdOrName)
-    // Select a single or multiple elements at once.
-
-    // setCurrentView(n)
-    // Changes view to the determined view stored in the attribute `values`.
-
-    /** Sets camera view to the given values. */
-    /** Sets camera view to the given values. */
-    setView: (az: number, el: number, r?: number) => {
-        console.log('setview from function 527')
-        return _jsxView3d().setView(az, el, r)
-    },
-
-
-    // animateAzimuth:()=> _jsxView3d().animateAzimuth(),
-
-    // worldToFocal(pWorld, homog)
-    // Map world coordinates to focal coordinates.
-
-}
-
-
-
-
-
-
-
-
-
-
-
-// this is the second header file.  It includes stuff that can't be put in header.ts file because definitions are not yet available.
-
-
-// mesh.visible allows 'inherit' but can't do that here because typescript knows that Curve.visible does NOT allow it.
-interface MeshAttributes extends CurveAttributes {
-    /** A Mesh3D is attached to a Plane3D. */
-    visible?: Boolean|Function
-}
-
-// for point.visit() and point.moveTo()
-interface VisitAttributes{
-    callback?:Function,
-    effect?: "==" | "<>" | "<" | ">"
-    repeat?:number,
-}
-
-
-/** Initialize a board other than jxgbox */
-export function initBoard(canvas: string='', attributes?: BoardAttributes): Object {   // a JSXGraph board object
-        return (window as any).TSXGlobal.jInitBoard(canvas,attributes);
-    }
-
-
-/** legacy create for 2D elements */
-export function create(element: string, params: any[], attributes: Object = {}) {
-initBoard()
-if (element.toLowerCase().includes('3d'))    // 3D
-    return _jsxView3d().create(element, params, attributes);
-else
-    return _jsxBoard().create(element, params, attributes);
-}
-
-
-
-
-
-
-
-
-
- export interface BoardAttributes  {
- /** Location of the coordinate axes or 'axis gizmo'. */
- axesPosition?: 'none'| 'center'| 'border'
- /** Time (in msec) between two animation steps. */
- animationDelay?: number
- /** Show default axis. */
- axis?: Boolean
- /** Bounding box of the visible area in user coordinates. */
- boundingBox?: number[]
- /** Enable browser scrolling on touch interfaces if the user double taps into an empty region of the board. */
- browserPan?: Boolean
- /** Maximum time delay (in msec) between two clicks to be considered as double click. */
- clickDelay?: number
- /** If false (default), JSXGraph follows the JavaScript standard and fires before a dblclick event two click events. */
- dblClickSuppressClick?: Boolean
- /** Attributes for the default axes in case of the attribute axis:true in JXG.JSXGraph#initBoard. */
- defaultAxes?: {x?:AxisAttributes,y?:AxisAttributes}
- /** Supply the document object. */
- document?: Object|Boolean
- /** Attribute(s) to control the fullscreen icon. */
- fullscreen?: {symbol?:string,scale?:number}
- /** Support for internationalization of number formatting. */
- intl?: {enabled?:Boolean,locale?:string}
- /** If set to true, the ratio between horizontal and vertical unit sizes stays constant - independent of size changes of the hosting HTML div element. */
- keepAspectRatio?: Boolean
- /** Control using the keyboard to change the construction. */
- keyboard?: {enabled?:Boolean, dy?: number, panShift?: Boolean, panCtrl?:Boolean}
- /** If enabled, user activities are logged in array "board.userLog". */
- logging?: Boolean
- /** Maximal bounding box of the visible area in user coordinates. */
- maxBoundingBox?: [number,number,number,number]
- /** Maximum frame rate of the board, i.e. */
- maxFrameRate?: number
- /** Maximum number of digits in automatic label generation. */
- maxNameLength?: number
- /** Change redraw strategy in SVG rendering engine. */
- minimizeReflow?: string
- /** Element which listens to move events of the pointing device. */
- moveTarget?: string
- /** A number that will be added to the absolute position of the board used in mouse coordinate calculations in JXG.Board#getCoordsTopLeftCorner. */
- offsetX?: number
- /** A number that will be added to the absolute position of the board used in mouse coordinate calculations in JXG.Board#getCoordsTopLeftCorner. */
- offsetY?: number
- /** Control the possibilities for panning interaction (i.e. */
- pan?: {enabled?:Boolean, needTwoFingers?:Boolean, needShift?:Boolean}
- /** Allow user interaction by registering pointer events (including mouse and touch events), fullscreen, keyboard, resize, and zoom events. */
- registerEvents?:{fullscreen?:Boolean,keyboard?:Boolean,pointer?:Boolean,resize?:Boolean,wheel?:Boolean}
- /** Default rendering engine. */
- renderer?: string
- /** Control if JSXGraph reacts to resizing of the JSXGraph container element by the user / browser. */
- resize?: {enable?:Boolean,throttle?:number}
- /** Attributes to control the screenshot function. */
- screenshot?: ScreenShotAttributes
- /** Control th=> e possibilities for a selection rectangle. */
- selection?: SelectionAttributes
- /** Show a button which allows to clear all traces of a board. */
- showClearTraces?: Boolean
- /** Show copyright string in canvas. */
- showCopyright?: Boolean
- /** Show a button in the navigation bar to start fullscreen mode. */
- showFullscreen?: Boolean
- /** If true, the infobox is shown on mouse/pen over for all points which have set their attribute showInfobox to `inherit`. */
- showInfobox?: Boolean
- /** Display of navigation arrows and zoom buttons in the navigation bar. */
- showNavigation?: Boolean
- /** Show a button in the navigation bar to force reload of a construction. */
- showReload?: Boolean
- /** Show a button in the navigation bar to enable screenshots. */
- showScreenshot?: Boolean
- /** Display of zoom buttons in the navigation bar. */
- showZoom?: Boolean
- /** If true the first element of the set JXG.board.objects having hasPoint==true is taken as drag element. */
- takeFirst?: Boolean
- /** If true, when read from a file or string - the size of the div can be changed by the construction text. */
- takeSizeFromFile?: Boolean
- /** Set a visual theme for a board. */
- theme?: string
- /** Title string for the board. */
- title?: string
- /** Control the possibilities for zoom interaction. */
- zoom?: ZoomAttributes
- /** Zoom factor in horizontal direction. */
- zoomX?: number
- /** Zoom factor in vertical direction. */
- zoomY?: number
- }
 
  export interface GeometryElementAttributes  {
  /** If true, the infobox is shown on mouse/pen over for all points which have set their attribute showInfobox to `inherit`. */
  showInfobox?: Boolean
+ /** Sets an arbitrary number of attributes. */
+ setAttribute?:Object
  /** ARIA settings for the element. */
  aria?: AriaAttributes
  /** Apply CSS classes to an element in non-highlighted view. */
@@ -1310,6 +456,199 @@ else
   trace?: Boolean
  /** Extra visual properties for traces of an element */
   traceAttributes?: PointAttributes
+}
+ 
+
+ export interface GeometryElement  {    // fields and methods
+
+ //// fields 
+ /** missing description */
+ x: GeometryElement; 
+ /** missing description */
+ y: GeometryElement; 
+ /** missing description */
+ elType: String; 
+ /** missing description */
+ name: String; 
+ /** missing description */
+ isDraggable: Boolean; 
+
+ //// methods 
+ /** missing description */
+ removeAllTicks(): Object; 
+ /** missing description */
+ addChild(): GeometryElement; 
+ /** missing description */
+ addParents(parents:GeometryElement[]): Object; 
+ /** missing description */
+ addRotation(): String; 
+ /** missing description */
+ addTicks(): String; 
+ /** missing description */
+ animate(): GeometryElement; 
+ /** missing description */
+ bounds(): number[]; 
+ /** missing description */
+ clearTrace(): GeometryElement; 
+ /** missing description */
+ cloneToBackground(): GeometryElement; 
+ /** missing description */
+ createLabel(): boolean; 
+ /** missing description */
+ formatNumberLocale(): string|number; 
+ /** missing description */
+ generatePolynomial(): number[]; 
+ /** missing description */
+ getAttribute(): Object; 
+ /** missing description */
+ getAttributes(): Object; 
+ /** missing description */
+ getName(): String; 
+ /** missing description */
+ getParents(): number[]; 
+ /** missing description */
+ getProperty(): number[]; 
+ /** missing description */
+ getType(): String; 
+ /** missing description */
+ handleSnapToGrid(): GeometryElement; 
+ /** missing description */
+ hide(): GeometryElement; 
+ /** missing description */
+ hideElement(): GeometryElement; 
+ /** missing description */
+ labelColor(): currentBoard; 
+ /** missing description */
+ noHighlight(): currentBoard; 
+ /** missing description */
+ remove(): Object; 
+ /** missing description */
+ removeChild(): Object; 
+ /** missing description */
+ removeEvent(): number; 
+ /** missing description */
+ removeTicks(): Object; 
+ /** missing description */
+ setArrow(): GeometryElement; 
+ /** missing description */
+ setAttribute(attrs:GeometryElementAttributes): void; 
+ /** missing description */
+ setLabel(txt:string): Object; 
+ /** missing description */
+ setLabelText(): Object; 
+ /** missing description */
+ setName(): Object; 
+ /** missing description */
+ setParents(): Object; 
+ /** missing description */
+ setPositionDirectly(method:number, coords:NumberFunction[], prevCoords?: NumberFunction[]): Point; 
+ /** missing description */
+ setProperty(): GeometryElement; 
+ /** missing description */
+ show(): GeometryElement; 
+ /** missing description */
+ showElement(): GeometryElement; 
+ /** missing description */
+ snapToPoints(): GeometryElement; 
+ /** missing description */
+ useLocale(): Boolean; 
+ /** missing description */
+ on(event:string,handler:Function): any; 
+ }
+
+ export interface BoardAttributes  {
+ /** Location of the coordinate axes or 'axis gizmo'. */
+ axesPosition?: 'none'| 'center'| 'border'
+ /** Time (in msec) between two animation steps. */
+ animationDelay?: number
+ /** Show default axis. */
+ axis?: Boolean
+ /** Bounding box of the visible area in user coordinates. */
+ boundingBox?: number[]
+ /** Enable browser scrolling on touch interfaces if the user double taps into an empty region of the board. */
+ browserPan?: Boolean
+ /** Maximum time delay (in msec) between two clicks to be considered as double click. */
+ clickDelay?: number
+ /** If false (default), JSXGraph follows the JavaScript standard and fires before a dblclick event two click events. */
+ dblClickSuppressClick?: Boolean
+ /** Attributes for the default axes in case of the attribute axis:true in JXG.JSXGraph#initBoard. */
+ defaultAxes?: {x?:AxisAttributes,y?:AxisAttributes}
+ /** Supply the document object. */
+ document?: Object|Boolean
+ /** Attribute(s) to control the fullscreen icon. */
+ fullscreen?: {symbol?:string,scale?:number}
+ /** Support for internationalization of number formatting. */
+ intl?: {enabled?:Boolean,locale?:string}
+ /** If set to true, the ratio between horizontal and vertical unit sizes stays constant - independent of size changes of the hosting HTML div element. */
+ keepAspectRatio?: Boolean
+ /** Control using the keyboard to change the construction. */
+ keyboard?: {enabled?:Boolean, dy?: number, panShift?: Boolean, panCtrl?:Boolean}
+ /** If enabled, user activities are logged in array "board.userLog". */
+ logging?: Boolean
+ /** Maximal bounding box of the visible area in user coordinates. */
+ maxBoundingBox?: [number,number,number,number]
+ /** Maximum frame rate of the board, i.e. */
+ maxFrameRate?: number
+ /** Maximum number of digits in automatic label generation. */
+ maxNameLength?: number
+ /** Change redraw strategy in SVG rendering engine. */
+ minimizeReflow?: string
+ /** Element which listens to move events of the pointing device. */
+ moveTarget?: string
+ /** A number that will be added to the absolute position of the board used in mouse coordinate calculations in JXG.Board#getCoordsTopLeftCorner. */
+ offsetX?: number
+ /** A number that will be added to the absolute position of the board used in mouse coordinate calculations in JXG.Board#getCoordsTopLeftCorner. */
+ offsetY?: number
+ /** Control the possibilities for panning interaction (i.e. */
+ pan?: {enabled?:Boolean, needTwoFingers?:Boolean, needShift?:Boolean}
+ /** Allow user interaction by registering pointer events (including mouse and touch events), fullscreen, keyboard, resize, and zoom events. */
+ registerEvents?:{fullscreen?:Boolean,keyboard?:Boolean,pointer?:Boolean,resize?:Boolean,wheel?:Boolean}
+ /** Default rendering engine. */
+ renderer?: string
+ /** Control if JSXGraph reacts to resizing of the JSXGraph container element by the user / browser. */
+ resize?: {enable?:Boolean,throttle?:number}
+ /** Attributes to control the screenshot function. */
+ screenshot?: ScreenShotAttributes
+ /** Control th=> e possibilities for a selection rectangle. */
+ selection?: SelectionAttributes
+ /** Show a button which allows to clear all traces of a board. */
+ showClearTraces?: Boolean
+ /** Show copyright string in canvas. */
+ showCopyright?: Boolean
+ /** Show a button in the navigation bar to start fullscreen mode. */
+ showFullscreen?: Boolean
+ /** If true, the infobox is shown on mouse/pen over for all points which have set their attribute showInfobox to `inherit`. */
+ showInfobox?: Boolean
+ /** Display of navigation arrows and zoom buttons in the navigation bar. */
+ showNavigation?: Boolean
+ /** Show a button in the navigation bar to force reload of a construction. */
+ showReload?: Boolean
+ /** Show a button in the navigation bar to enable screenshots. */
+ showScreenshot?: Boolean
+ /** Display of zoom buttons in the navigation bar. */
+ showZoom?: Boolean
+ /** If true the first element of the set JXG.board.objects having hasPoint==true is taken as drag element. */
+ takeFirst?: Boolean
+ /** If true, when read from a file or string - the size of the div can be changed by the construction text. */
+ takeSizeFromFile?: Boolean
+ /** Set a visual theme for a board. */
+ theme?: string
+ /** Title string for the board. */
+ title?: string
+ /** Control the possibilities for zoom interaction. */
+ zoom?: ZoomAttributes
+ /** Zoom factor in horizontal direction. */
+ zoomX?: number
+ /** Zoom factor in vertical direction. */
+ zoomY?: number
+}
+ 
+
+ export interface Board  {    // fields and methods
+
+ //// fields 
+
+ //// methods 
  }
 
  export interface PointAttributes extends GeometryElementAttributes {
@@ -1323,6 +662,38 @@ else
   snapToGrid?: Boolean
  /** This attribute was used to determined the point layout. It was derived from GEONExT and was replaced by Point#face and Point#size. */
   style?: number
+}
+ 
+
+ export interface Point extends GeometryElement {   // fields and methods
+
+ //// fields 
+
+ //// methods 
+ /** missing description */
+ setAttribute(attrs:PointAttributes): void; 
+ /** missing description */
+ coords(): number[]; 
+ /** missing description */
+ startAnimation(direction:number,stepCount:number,delayMSec:number): void; 
+ /** missing description */
+ stopAnimation(): any; 
+ /** missing description */
+ Dist(toPoint:Point|pointAddr): number; 
+ /** missing description */
+ face(style:'cross'|'circle'|'square'|'plus'|'minus'|'diamond'): Boolean; 
+ /** missing description */
+ update(): number[]; 
+ /** missing description */
+ X(): number; 
+ /** missing description */
+ Y(): number; 
+ /** missing description */
+ Z(): number; 
+ /** missing description */
+ moveTo(p:number[]|Function[],time?:number, options?:VisitAttributes): Promise<any>; 
+ /** missing description */
+ visit(p:number[]|Function[],time?:number,options?: VisitAttributes): Promise<any>; 
  }
 
  export interface LineAttributes extends GeometryElementAttributes {
@@ -1354,6 +725,42 @@ else
   touchFirstPoint?: Boolean
  /** If set to true, Line#lastArrow is set to true and the point is visible, the arrow head will just touch the circle line of the start point of the line. */
   touchLastPoint?: Boolean
+}
+ 
+
+ export interface Line extends GeometryElement {   // fields and methods
+
+ //// fields 
+ /** missing description */
+ defaultTicks: Ticks; 
+ /** missing description */
+ parentPolygon: Polygon; 
+ /** missing description */
+ point1: Point; 
+ /** missing description */
+ point2: Point; 
+ /** missing description */
+ ticks: number[]; 
+
+ //// methods 
+ /** missing description */
+ getAngle(): number; 
+ /** missing description */
+ getRise(): number; 
+ /** missing description */
+ getSlope(): number; 
+ /** missing description */
+ hasPoint(): Boolean; 
+ /** missing description */
+ L(): number; 
+ /** missing description */
+ Slope(): number; 
+ /** missing description */
+ X(): number; 
+ /** missing description */
+ Y(): number; 
+ /** missing description */
+ Z(): number; 
  }
 
  export interface GeometryElement3DAttributes extends GeometryElementAttributes {
@@ -1383,6 +790,32 @@ else
  point1?:Point3DAttributes
  /** Attributes for second point (an object) */
  point2?:Point3DAttributes
+}
+ 
+
+ export interface GeometryElement3D extends GeometryElement {   // fields and methods
+
+ //// fields 
+ /** missing description */
+ element2D: number[]; 
+ /** missing description */
+ is3D: Boolean; 
+ /** missing description */
+ view: any; 
+ /** missing description */
+ strokeColor: String; 
+ /** missing description */
+ strokeWidth: number; 
+ /** missing description */
+ size: number; 
+ /** missing description */
+ fillColor: String; 
+ /** missing description */
+ visible: Boolean; 
+
+ //// methods 
+ /** missing description */
+ setAttribute(attrs:GeometryElement3DAttributes): void; 
  }
 
  export interface View3DAttributes extends GeometryElement3DAttributes {
@@ -1444,24 +877,53 @@ else
  zPlaneRearXAxis?: Object
  /** Attributes of the 3D y-axis on the 3D plane orthogonal to the z-axis at the ”rear” of the cube. */
  zPlaneRearYAxis?: Object
+}
+ 
+
+ export interface View3D extends GeometryElement3D {   // fields and methods
+
+ //// fields 
+ /** missing description */
+ defaultAxes: Object; 
+ /** missing description */
+ matrix3D: Object; 
+
+ //// methods 
+ /** missing description */
+ setView(azimuth:number,elevation:number,radius?:number): View3D; 
+ /** missing description */
+ animateAzimuth(): Object; 
+ /** missing description */
+ create(): Object; 
+ /** missing description */
+ intersectionLineCube(): number[]; 
+ /** missing description */
+ intersectionPlanePlane(): number[]; 
+ /** missing description */
+ isInCube(): number[]; 
+ /** missing description */
+ project2DTo3DPlane(): number[]; 
+ /** missing description */
+ project2DTo3DVertical(): number[]; 
+ /** missing description */
+ project3DTo2D(): number[]; 
+ /** missing description */
+ project3DToCube(): GeometryElement3D|Composition; 
+ /** missing description */
+ select(): GeometryElement3D|Composition; 
+ /** missing description */
+ stopAzimuth(): any; 
  }
 
  export interface currentBoardAttributes  {
- }
+}
+ 
 
- export interface InfoboxAttributes  {
- /** Horizontal offset in pixel of the infobox text from its anchor point. */
-  distanceX?: number
- /** Vertical offset in pixel of the infobox text from its anchor point. */
-  distanceY?: number
- /** Internationalization support for infobox text. */
-  intl?: object
- }
+ export interface currentBoard  {    // fields and methods
 
- export interface CAttributes  {
- }
+ //// fields 
 
- export interface CAAttributes  {
+ //// methods 
  }
 
  export interface ChartAttributes extends GeometryElementAttributes {
@@ -1475,6 +937,32 @@ else
  colorArray?: string[]
  /**  */
  label?: LabelAttributes
+}
+ 
+
+ export interface Chart extends GeometryElement {   // fields and methods
+
+ //// fields 
+ /** missing description */
+ elements: any[]; 
+
+ //// methods 
+ /** missing description */
+ drawBar(): any[]; 
+ /** missing description */
+ drawFit(): Curve; 
+ /** missing description */
+ drawLine(): Curve; 
+ /** missing description */
+ drawPie(): Object; 
+ /** missing description */
+ drawPoints(): number[]; 
+ /** missing description */
+ drawRadar(): Object; 
+ /** missing description */
+ drawSpline(): Curve; 
+ /** missing description */
+ updateDataArray(): Chart; 
  }
 
  export interface CircleAttributes extends GeometryElementAttributes {
@@ -1488,18 +976,132 @@ else
   point?: PointAttributes
  /** Attributes for center point. */
   point2?: PointAttributes
+}
+ 
+
+ export interface Circle extends GeometryElement {   // fields and methods
+
+ //// fields 
+ /** missing description */
+ center: Point; 
+ /** missing description */
+ circle: Circle; 
+ /** missing description */
+ line: Line; 
+ /** missing description */
+ method: string; 
+ /** missing description */
+ point2: Point; 
+ /** missing description */
+ radius: number; 
+
+ //// methods 
+ /** missing description */
+ Area(): number; 
+ /** missing description */
+ Perimeter(): number; 
+ /** missing description */
+ Radius(): number; 
+ /** missing description */
+ X(): number; 
+ /** missing description */
+ Y(): number; 
+ /** missing description */
+ Z(): number; 
  }
 
  export interface Circle3DAttributes extends GeometryElement3DAttributes {
+}
+ 
+
+ export interface Circle3D extends GeometryElement3D {   // fields and methods
+
+ //// fields 
+
+ //// methods 
  }
 
  export interface ComplexAttributes  {
+}
+ 
+
+ export interface Complex  {    // fields and methods
+
+ //// fields 
+ /** missing description */
+ absval: number; 
+ /** missing description */
+ angle: number; 
+ /** missing description */
+ imaginary: number; 
+ /** missing description */
+ isComplex: Boolean; 
+ /** missing description */
+ real: number; 
+
+ //// methods 
+ /** missing description */
+ add(): Complex; 
+ /** missing description */
+ conj(): Complex; 
+ /** missing description */
+ div(): Complex; 
+ /** missing description */
+ mult(): Complex; 
+ /** missing description */
+ sub(): Complex; 
+ /** missing description */
+ toString(): String; 
  }
 
  export interface CompositionAttributes  {
+}
+ 
+
+ export interface Composition  {    // fields and methods
+
+ //// fields 
+
+ //// methods 
+ /** missing description */
+ add(): Boolean; 
+ /** missing description */
+ fullUpdate(): Boolean; 
+ /** missing description */
+ highlight(): Boolean; 
+ /** missing description */
+ noHighlight(): Boolean; 
+ /** missing description */
+ prepareUpdate(): Boolean; 
+ /** missing description */
+ remove(): Boolean; 
+ /** missing description */
+ setParents(): any; 
+ /** missing description */
+ updateRenderer(): Point; 
  }
 
  export interface CoordsAttributes  {
+}
+ 
+
+ export interface Coords  {    // fields and methods
+
+ //// fields 
+ /** missing description */
+ currentBoard: currentBoard; 
+ /** missing description */
+ emitter: boolean; 
+ /** missing description */
+ scrCoords: number[]; 
+ /** missing description */
+ usrCoords: number[]; 
+
+ //// methods 
+ /** missing description */
+ isReal(): Boolean; 
+ /** missing description */
+ setCoordinates(): Coords; 
  }
 
  export interface CurveAttributes extends GeometryElementAttributes {
@@ -1529,20 +1131,184 @@ else
   recursionDepthHigh?: number
  /** number of points used for plotting triggered by move events in case (i.e. lower quality plotting but fast) Curve#doAdvancedPlot is true. */
   recursionDepthLow?: number
+}
+ 
+
+ export interface Curve extends GeometryElement {   // fields and methods
+
+ //// fields 
+ /** missing description */
+ dataX: number[]; 
+ /** missing description */
+ dataY: number[]; 
+ /** missing description */
+ ticks: number[]; 
+
+ //// methods 
+ /** missing description */
+ addTransform(base:GeometryElement,transforms:Transform[]): Curve; 
+ /** missing description */
+ allocatePoints(): number[]; 
+ /** missing description */
+ generateTerm(): number[]; 
+ /** missing description */
+ hasPoint(): Boolean; 
+ /** missing description */
+ maxX(): number; 
+ /** missing description */
+ minX(): number; 
+ /** missing description */
+ moveTo(): Curve; 
+ /** missing description */
+ notifyParents(): Curve; 
+ /** missing description */
+ update(): Curve; 
+ /** missing description */
+ updateCurve(): Curve; 
+ /** missing description */
+ updateDataArray(func:Function): void; 
+ /** missing description */
+ updateRenderer() : Curve; 
+ /** missing description */
+ updateTransform(): Point; 
+ /** missing description */
+ X(): number; 
+ /** missing description */
+ Y(): number; 
+ /** missing description */
+ Z(): number; 
  }
 
- export interface Curve3DAttributes extends CurveAttributes {
+ export interface Curve3DAttributes extends GeometryElement3DAttributes {
+}
+ 
+
+ export interface Curve3D extends GeometryElement3D {   // fields and methods
+
+ //// fields 
+
+ //// methods 
+ /** missing description */
+ addTransform(other:ParametricSurface3D,transforms:Transform3D[]): Curve3D; 
+ /** missing description */
+ updateTransform(): void; 
+ /** missing description */
+ evalF(u:number): void; 
+ /** missing description */
+ F(u:number): void; 
+ /** missing description */
+ updateCoords(): void; 
+ /** missing description */
+ X(u:number): number; 
+ /** missing description */
+ Y(u:number): number; 
+ /** missing description */
+ Z(u:number): number; 
  }
 
  export interface DumpAttributes  {
+}
+ 
+
+ export interface Dump  {    // fields and methods
+
+ //// fields 
+
+ //// methods 
+ /** missing description */
+ addMarkers(): Dump; 
+ /** missing description */
+ arrayToParamStr(): Dump; 
+ /** missing description */
+ deleteMarkers(): Dump; 
+ /** missing description */
+ dump(): Dump; 
+ /** missing description */
+ minimizeObject(): Dump; 
+ /** missing description */
+ prepareAttributes(): Dump; 
+ /** missing description */
+ str(): Dump; 
+ /** missing description */
+ toJavaScript(): Dump; 
+ /** missing description */
+ toJCAN(): Dump; 
+ /** missing description */
+ toJessie(): Dump; 
  }
 
  export interface ForeignObjectAttributes extends GeometryElementAttributes {
  /** List of attractor elements. If the distance of the ForeignObject is less than attractorDistance the ForeignObject is made to glider of this element. */
   attractors?: Element[]
+}
+ 
+
+ export interface ForeignObject extends GeometryElement {   // fields and methods
+
+ //// fields 
+ /** missing description */
+ content: number[]; 
+ /** missing description */
+ size: number[]; 
+
+ //// methods 
+ /** missing description */
+ H(): number; 
+ /** missing description */
+ hasPoint(): Boolean; 
+ /** missing description */
+ setSize(): ForeignObject; 
+ /** missing description */
+ W(): number; 
  }
 
  export interface GroupAttributes extends CompositionAttributes {
+}
+ 
+
+ export interface Group extends Composition {   // fields and methods
+
+ //// fields 
+ /** missing description */
+ coords: Object; 
+
+ //// methods 
+ /** missing description */
+ addGroup(group:Group): Group; 
+ /** missing description */
+ addParents(parents:GeometryElement[]): Object; 
+ /** missing description */
+ addPoint(point:Point|pointAddr|Image): Group; 
+ /** missing description */
+ addPoints(points:Point[]): Group; 
+ /** missing description */
+ addRotationPoint(point:Point): Group; 
+ /** missing description */
+ addScalePoint(point:Point,direction:number|Function): Group; 
+ /** missing description */
+ addTranslationPoint(point:Point): Group; 
+ /** missing description */
+ getParents(): number[]; 
+ /** missing description */
+ removePoint(point:Point): Group; 
+ /** missing description */
+ removeRotationPoint(point:Point): Group; 
+ /** missing description */
+ removeScalePoint(point:Point): Group; 
+ /** missing description */
+ removeTranslationPoint(point:Point): Group; 
+ /** missing description */
+ setRotationCenter(pivot:Point|pointAddr|"centroid"): Group; 
+ /** missing description */
+ setRotationPoints(points:Point|Point[]): Group; 
+ /** missing description */
+ setScaleCenter(point:Point|pointAddr): Group; 
+ /** missing description */
+ setScalePoints(points:Point|Point[]): Group; 
+ /** missing description */
+ setTranslationPoints(points:Point|Point[]): Group; 
+ /** missing description */
+ ungroup(): Group; 
  }
 
  export interface ImageAttributes extends GeometryElementAttributes {
@@ -1558,6 +1324,26 @@ else
   snapSizeX?: number
  /** Defines together with Image#snapSizeX the grid the image snaps on to. The image will only snap on integer multiples to snapSizeX in x and snapSizeY in y direction. If this value is equal to or less than 0, it will use the grid displayed by the major ticks of the default ticks of the default y axes of the currentBoard. */
   snapSizeY?: number
+}
+ 
+
+ export interface Image extends GeometryElement {   // fields and methods
+
+ //// fields 
+ /** missing description */
+ size: number[]; 
+ /** missing description */
+ url: string; 
+
+ //// methods 
+ /** missing description */
+ H(): number; 
+ /** missing description */
+ hasPoint(): Boolean; 
+ /** missing description */
+ setSize(): GeometryElement; 
+ /** missing description */
+ W(): number; 
  }
 
  export interface ImplicitcurveAttributes extends GeometryElementAttributes {
@@ -1573,12 +1359,36 @@ else
   h_max?:number
  /** Half of the box size (in user units) to search for existing line segments in the quadtree. */
   qdt_box?:number
+}
+ 
+
+ export interface Implicitcurve extends GeometryElement {   // fields and methods
+
+ //// fields 
+
+ //// methods 
  }
 
  export interface IntersectionCircle3DAttributes extends GeometryElement3DAttributes {
+}
+ 
+
+ export interface IntersectionCircle3D extends GeometryElement3D {   // fields and methods
+
+ //// fields 
+
+ //// methods 
  }
 
  export interface IntersectionLine3DAttributes extends GeometryElement3DAttributes {
+}
+ 
+
+ export interface IntersectionLine3D extends GeometryElement3D {   // fields and methods
+
+ //// fields 
+
+ //// methods 
  }
 
  export interface Line3DAttributes extends GeometryElement3DAttributes {
@@ -1592,6 +1402,24 @@ else
  straightFirst?:Boolean
  /** If the 3D line is defined by two points and if this attribute is true, the 3D line stretches infinitely in direction of its second point. */
  straightLast?:Boolean
+}
+ 
+
+ export interface Line3D extends GeometryElement3D {   // fields and methods
+
+ //// fields 
+ /** missing description */
+ direction: number[]|Function; 
+ /** missing description */
+ point: Point3D; 
+ /** missing description */
+ point1: Point3D; 
+ /** missing description */
+ point2: Point3D; 
+ /** missing description */
+ range: number[]; 
+
+ //// methods 
  }
 
  export interface Plane3DAttributes extends GeometryElement3DAttributes {
@@ -1607,6 +1435,42 @@ else
  point3?:Point3DAttributes
  /** If the second parameter and the third parameter are given as arrays or functions and threePoints:true then the second and third parameter are interpreted as point coordinates and not as directions, i.e. */
  threePoints?:Boolean
+}
+ 
+
+ export interface Plane3D extends GeometryElement3D {   // fields and methods
+
+ //// fields 
+ /** missing description */
+ d: number[]; 
+ /** missing description */
+ direction1: number[]|Function; 
+ /** missing description */
+ direction2: number[]|Function; 
+ /** missing description */
+ normal: number[]; 
+ /** missing description */
+ point: Point3D; 
+ /** missing description */
+ range1: number[]; 
+ /** missing description */
+ range2: number[]; 
+ /** missing description */
+ vec1: number[]; 
+ /** missing description */
+ vec2: number[]; 
+ /** missing description */
+ vec3: number[]; 
+
+ //// methods 
+ /** missing description */
+ F(u:number, v:number): number[]; 
+ /** missing description */
+ X(u:number, v:number): number; 
+ /** missing description */
+ Y(u:number, v:number): number; 
+ /** missing description */
+ Z(u:number, v:number): number; 
  }
 
  export interface Point3DAttributes extends GeometryElement3DAttributes {
@@ -1614,6 +1478,26 @@ else
  size?: number|Function
  /** If true the element is fixed and can not be dragged around. The element will be repositioned on zoom and moveOrigin events. */
  fixed?: Boolean
+}
+ 
+
+ export interface Point3D extends GeometryElement3D {   // fields and methods
+
+ //// fields 
+ /** missing description */
+ slide: GeometryElement3D; 
+
+ //// methods 
+ /** missing description */
+ setPosition(coords:number[],noEvent:boolean): Point3D; 
+ /** missing description */
+ X(): number; 
+ /** missing description */
+ Y(): number; 
+ /** missing description */
+ Z(): number; 
+ /** missing description */
+ moveTo(p:number[]|Function,time?:number,options?:MoveToOptions): Promise<any>; 
  }
 
  export interface PolygonAttributes extends GeometryElementAttributes {
@@ -1629,9 +1513,33 @@ else
   vertices?: GeometryElementAttributes
  /** Is the polygon bordered by lines? */
   withLines?: Boolean
+}
+ 
+
+ export interface Polygon extends GeometryElement {   // fields and methods
+
+ //// fields 
+ /** missing description */
+ borders: Line[]; 
+ /** missing description */
+ vertices: Point[]; 
+
+ //// methods 
+ /** missing description */
+ hasPoint(x:number,y:number): Boolean; 
+ /** missing description */
+ updateRenderer(): Polygon; 
  }
 
  export interface Polygon3DAttributes extends GeometryElement3DAttributes {
+}
+ 
+
+ export interface Polygon3D extends GeometryElement3D {   // fields and methods
+
+ //// fields 
+
+ //// methods 
  }
 
  export interface TextAttributes extends GeometryElementAttributes {
@@ -1689,9 +1597,59 @@ else
   useMathJax?: Boolean
  /** Control the attribute ”checked” of the HTML checkbox. */
   checked?: Boolean
+}
+ 
+
+ export interface Text extends GeometryElement {   // fields and methods
+
+ //// fields 
+ /** missing description */
+ size: number[]; 
+
+ //// methods 
+ /** missing description */
+ setAttribute(attrs:TextAttributes): Object; 
+ /** missing description */
+ bounds(): number[]; 
+ /** missing description */
+ crudeSizeEstimate(): number[]; 
+ /** missing description */
+ getAnchorX(): number; 
+ /** missing description */
+ getAnchorY(): number; 
+ /** missing description */
+ getSize(): number[]; 
+ /** missing description */
+ replaceSub(): string; 
+ /** missing description */
+ replaceSup(): string; 
+ /** missing description */
+ setAutoPosition(): Text; 
+ /** missing description */
+ setCoords(x:number,y:number): object; 
+ /** missing description */
+ setText(newText:string): Text; 
+ /** missing description */
+ setTextJessieCode(): this; 
+ /** missing description */
+ update(): this; 
+ /** missing description */
+ updateSize(): this; 
+ /** missing description */
+ utf8_decode(): string; 
  }
 
  export interface Text3DAttributes extends TextAttributes {
+}
+ 
+
+ export interface Text3D extends Text {   // fields and methods
+
+ //// fields 
+
+ //// methods 
+ /** missing description */
+ setPosition(coords:number[],noEvent:boolean): Text3D; 
  }
 
  export interface TicksAttributes extends GeometryElementAttributes {
@@ -1747,11 +1705,36 @@ else
   type?: String
  /** Use the unicode character 0x2212, i.e. the HTML entity &minus; as minus sign. That is −1 instead of -1. */
   useUnicodeMinus?: Boolean
- }
+}
+ 
 
- export interface TurtleAttributes extends GeometryElementAttributes {
- /** Attributes for the turtle arrow. */
-  arrow?: Curve
+ export interface Ticks extends GeometryElement {   // fields and methods
+
+ //// fields 
+ /** missing description */
+ equidistant: Boolean; 
+ /** missing description */
+ fixedTicks: number[]; 
+ /** missing description */
+ labelCounter: number; 
+ /** missing description */
+ labels: number[]; 
+ /** missing description */
+ labelsData: number[]; 
+ /** missing description */
+ line: Line; 
+ /** missing description */
+ ticks: number[]; 
+
+ //// methods 
+ /** missing description */
+ beautifyScientificNotationLabel(): String; 
+ /** missing description */
+ hasPoint(): Boolean; 
+ /** missing description */
+ setPositionDirectly(): Point; 
+ /** missing description */
+ updateRenderer(): Ticks; 
  }
 
  export interface SectorAttributes extends CurveAttributes {
@@ -1767,6 +1750,26 @@ else
   radiusPoint?: PointAttributes
  /** Type of sector. Possible values are 'minor', 'major', and 'auto'. */
   selection?: String
+}
+ 
+
+ export interface Sector extends Curve {   // fields and methods
+
+ //// fields 
+ /** missing description */
+ point1: Point; 
+ /** missing description */
+ point2: Point; 
+ /** missing description */
+ point3: Point; 
+ /** missing description */
+ point4: Point; 
+
+ //// methods 
+ /** missing description */
+ hasPointSector(): Boolean; 
+ /** missing description */
+ Radius(): number; 
  }
 
  export interface VectorfieldAttributes extends CurveAttributes {
@@ -1774,6 +1777,16 @@ else
   arrowhead?: Object
  /** Scaling factor of the vectors. This in contrast to slope fields, where this attribute sets the vector to the given length. */
   scale?: Object
+}
+ 
+
+ export interface Vectorfield extends Curve {   // fields and methods
+
+ //// fields 
+
+ //// methods 
+ /** missing description */
+ setF(): Object; 
  }
 
  export interface AngleAttributes extends SectorAttributes {
@@ -1795,6 +1808,22 @@ else
   type?: String
  /** Attributes for the label object of this element */
   label?: LabelAttributes
+}
+ 
+
+ export interface Angle extends Sector {   // fields and methods
+
+ //// fields 
+ /** missing description */
+ point: Point; 
+
+ //// methods 
+ /** missing description */
+ free(): Object; 
+ /** missing description */
+ setAngle(angle:number|Function): Object; 
+ /** missing description */
+ Value(): number; 
  }
 
  export interface ArcAttributes extends CurveAttributes {
@@ -1810,17 +1839,61 @@ else
   selection?: String
  /** Attributes for the label object of this element */
   label?: LabelAttributes
+}
+ 
+
+ export interface Arc extends Curve {   // fields and methods
+
+ //// fields 
+ /** missing description */
+ anglepoint: Point; 
+ /** missing description */
+ radiuspoint: Point; 
+
+ //// methods 
+ /** missing description */
+ getRadius(): number; 
+ /** missing description */
+ hasPointSector(): Boolean; 
+ /** missing description */
+ Radius(): number; 
+ /** missing description */
+ Value(): number; 
  }
 
  export interface ArrowAttributes extends LineAttributes {
+}
+ 
+
+ export interface Arrow extends Line {   // fields and methods
+
+ //// fields 
+
+ //// methods 
  }
 
  export interface ParallelAttributes extends LineAttributes {
  /** Attributes of helper point of normal. */
   point?: Point
+}
+ 
+
+ export interface Parallel extends Line {   // fields and methods
+
+ //// fields 
+
+ //// methods 
  }
 
  export interface ArrowparallelAttributes extends ParallelAttributes {
+}
+ 
+
+ export interface Arrowparallel extends Parallel {   // fields and methods
+
+ //// fields 
+
+ //// methods 
  }
 
  export interface AxisAttributes extends LineAttributes {
@@ -1830,14 +1903,40 @@ else
   point1?: PointAttributes
  /** Attributes for second point the axis. */
   point2?: PointAttributes
+}
+ 
+
+ export interface Axis extends Line {   // fields and methods
+
+ //// fields 
+ /** missing description */
+ defaultTicks: Ticks; 
+
+ //// methods 
  }
 
  export interface BezierCurveAttributes extends CurveAttributes {
+}
+ 
+
+ export interface BezierCurve extends Curve {   // fields and methods
+
+ //// fields 
+
+ //// methods 
  }
 
  export interface BisectorAttributes extends LineAttributes {
  /** Attributes for the helper point of the bisector. */
   point?: Point
+}
+ 
+
+ export interface Bisector extends Line {   // fields and methods
+
+ //// fields 
+
+ //// methods 
  }
 
  export interface BisectorlinesAttributes extends CompositionAttributes {
@@ -1845,11 +1944,29 @@ else
   line1?: Line
  /** Attributes for second line. */
   line2?: Line
+}
+ 
+
+ export interface Bisectorlines extends Composition {   // fields and methods
+
+ //// fields 
+
+ //// methods 
  }
 
  export interface ButtonAttributes extends TextAttributes {
  /** Control the attribute ”disabled” of the HTML button. */
   disabled?: Boolean|Function
+}
+ 
+
+ export interface Button extends Text {   // fields and methods
+
+ //// fields 
+ /** missing description */
+ rendNodeButton: HTMLButtonElement; 
+
+ //// methods 
  }
 
  export interface CardinalsplineAttributes extends CurveAttributes {
@@ -1859,6 +1976,14 @@ else
   isArrayOfCoordinates?: Boolean
  /** Attributes for the points generated by Cardinalspline in cases createPoints is set to true */
   points?: Object
+}
+ 
+
+ export interface Cardinalspline extends Curve {   // fields and methods
+
+ //// fields 
+
+ //// methods 
  }
 
  export interface CheckboxAttributes extends TextAttributes {
@@ -1866,22 +1991,68 @@ else
   checked?: Boolean
  /** Control the attribute ”disabled” of the HTML checkbox. */
   disabled?: Boolean
+}
+ 
+
+ export interface Checkbox extends Text {   // fields and methods
+
+ //// fields 
+
+ //// methods 
+ /** missing description */
+ Value(): Boolean; 
+ /** missing description */
+ onChange(action:Function): void; 
  }
 
  export interface CircumcenterAttributes extends PointAttributes {
+}
+ 
+
+ export interface Circumcenter extends Point {   // fields and methods
+
+ //// fields 
+
+ //// methods 
  }
 
  export interface CircumcircleAttributes extends CircleAttributes {
  /** Attributes for center point. */
   center?:  GeometryElementAttributes
+}
+ 
+
+ export interface Circumcircle extends Circle {   // fields and methods
+
+ //// fields 
+
+ //// methods 
  }
 
  export interface CircumcircleArcAttributes extends ArcAttributes {
  /** Attributes for center point. */
   center?: Point
+}
+ 
+
+ export interface CircumcircleArc extends Arc {   // fields and methods
+
+ //// fields 
+
+ //// methods 
  }
 
  export interface CircumcircleSectorAttributes extends SectorAttributes {
+}
+ 
+
+ export interface CircumcircleSector extends Sector {   // fields and methods
+
+ //// fields 
+ /** missing description */
+ center: Circumcenter; 
+
+ //// methods 
  }
 
  export interface CombAttributes extends CurveAttributes {
@@ -1897,6 +2068,14 @@ else
   reverse?: Boolean
  /** Width of the comb. */
   width?: number
+}
+ 
+
+ export interface Comb extends Curve {   // fields and methods
+
+ //// fields 
+
+ //// methods 
  }
 
  export interface ConicAttributes extends CurveAttributes {
@@ -1908,21 +2087,69 @@ else
   line?: LineAttributes
  /** Attributes for five points defining the conic, if some of them are given as coordinates. */
   point?: PointAttributes
+}
+ 
+
+ export interface Conic extends Curve {   // fields and methods
+
+ //// fields 
+
+ //// methods 
  }
 
  export interface CurveDifferenceAttributes extends CurveAttributes {
+}
+ 
+
+ export interface CurveDifference extends Curve {   // fields and methods
+
+ //// fields 
+
+ //// methods 
  }
 
  export interface CurveIntersectionAttributes extends CurveAttributes {
+}
+ 
+
+ export interface CurveIntersection extends Curve {   // fields and methods
+
+ //// fields 
+
+ //// methods 
  }
 
  export interface CurveUnionAttributes extends CurveAttributes {
+}
+ 
+
+ export interface CurveUnion extends Curve {   // fields and methods
+
+ //// fields 
+
+ //// methods 
  }
 
  export interface DerivativeAttributes extends CurveAttributes {
+}
+ 
+
+ export interface Derivative extends Curve {   // fields and methods
+
+ //// fields 
+
+ //// methods 
  }
 
  export interface EllipseAttributes extends ConicAttributes {
+}
+ 
+
+ export interface Ellipse extends Conic {   // fields and methods
+
+ //// fields 
+
+ //// methods 
  }
 
  export interface ParametricSurface3DAttributes extends Curve3DAttributes {
@@ -1930,21 +2157,75 @@ else
   stepsU?: number
  /** number of intervals the mesh is divided into in direction of parameter v. */
   stepsV?: number
+}
+ 
+
+ export interface ParametricSurface3D extends Curve3D {   // fields and methods
+
+ //// fields 
+
+ //// methods 
  }
 
  export interface Face3DAttributes extends CurveAttributes {
+}
+ 
+
+ export interface Face3D extends Curve {   // fields and methods
+
+ //// fields 
+ /** missing description */
+ dataX: number[]; 
+ /** missing description */
+ dataY: number[]; 
+ /** missing description */
+ dataZ: number[]; 
+
+ //// methods 
  }
 
  export interface FunctiongraphAttributes extends CurveAttributes {
+}
+ 
+
+ export interface Functiongraph extends Curve {   // fields and methods
+
+ //// fields 
+
+ //// methods 
  }
 
  export interface Functiongraph3DAttributes extends ParametricSurface3DAttributes {
+}
+ 
+
+ export interface Functiongraph3D extends ParametricSurface3D {   // fields and methods
+
+ //// fields 
+
+ //// methods 
  }
 
  export interface GliderAttributes extends PointAttributes {
+}
+ 
+
+ export interface Glider extends Point {   // fields and methods
+
+ //// fields 
+
+ //// methods 
  }
 
  export interface Glider3DAttributes extends Point3DAttributes {
+}
+ 
+
+ export interface Glider3D extends Point3D {   // fields and methods
+
+ //// fields 
+
+ //// methods 
  }
 
  export interface GridAttributes extends CurveAttributes {
@@ -1972,25 +2253,75 @@ Instead of one value you can provide two values as an array [x, y] here. These a
   snapSizeY?: Boolean
  /**  */
   snapToGrid?: Boolean
+}
+ 
+
+ export interface Grid extends Curve {   // fields and methods
+
+ //// fields 
+
+ //// methods 
  }
 
  export interface HatchAttributes extends TicksAttributes {
+}
+ 
+
+ export interface Hatch extends Ticks {   // fields and methods
+
+ //// fields 
+ /** missing description */
+ ticksDistance: number; 
+
+ //// methods 
  }
 
  export interface HyperbolaAttributes extends ConicAttributes {
+}
+ 
+
+ export interface Hyperbola extends Conic {   // fields and methods
+
+ //// fields 
+
+ //// methods 
  }
 
  export interface IncenterAttributes extends PointAttributes {
+}
+ 
+
+ export interface Incenter extends Point {   // fields and methods
+
+ //// fields 
+
+ //// methods 
  }
 
  export interface IncircleAttributes extends CircleAttributes {
  /** Attributes of circle center. */
   center?:  GeometryElementAttributes
+}
+ 
+
+ export interface Incircle extends Circle {   // fields and methods
+
+ //// fields 
+
+ //// methods 
  }
 
  export interface InequalityAttributes extends CurveAttributes {
  /** By default an inequality is less (or equal) than. Set inverse to true will consider the inequality greater (or equal) than. */
   inverse?: Boolean
+}
+ 
+
+ export interface Inequality extends Curve {   // fields and methods
+
+ //// fields 
+
+ //// methods 
  }
 
  export interface InputAttributes extends TextAttributes {
@@ -1998,6 +2329,20 @@ Instead of one value you can provide two values as an array [x, y] here. These a
   disabled?: Boolean
  /** Control the attribute ”maxlength” of the HTML input field. */
   maxlength?: number
+}
+ 
+
+ export interface Input extends Text {   // fields and methods
+
+ //// fields 
+ /** missing description */
+ rendNodeInput: HTMLInputElement; 
+
+ //// methods 
+ /** missing description */
+ set(value:String): GeometryElement; 
+ /** missing description */
+ Value(): string; 
  }
 
  export interface IntegralAttributes extends CurveAttributes {
@@ -2011,11 +2356,37 @@ Instead of one value you can provide two values as an array [x, y] here. These a
   curveRight?: Point
  /** Attributes for integral label. */
   label?: LabelAttributes
+}
+ 
+
+ export interface Integral extends Curve {   // fields and methods
+
+ //// fields 
+ /** missing description */
+ baseLeft: Point; 
+ /** missing description */
+ baseRight: Point; 
+ /** missing description */
+ curveLeft: Point; 
+ /** missing description */
+ curveRight: Point; 
+
+ //// methods 
+ /** missing description */
+ Value(): Point; 
  }
 
  export interface IntersectionAttributes extends PointAttributes {
  /**  */
   alwaysIntersect?: Boolean
+}
+ 
+
+ export interface Intersection extends Point {   // fields and methods
+
+ //// fields 
+
+ //// methods 
  }
 
  export interface LabelAttributes extends TextAttributes {
@@ -2033,6 +2404,14 @@ Instead of one value you can provide two values as an array [x, y] here. These a
   position?: 'first'|'last'|'lft'|'rt'|'top'|'bot'|'ulft'|'urt'|'llft'|'lrt'
  /**  Display number as integer + nominator / denominator. Works together with MathJax, KaTex or as plain text. */
   toFraction?: Boolean
+}
+ 
+
+ export interface Label extends Text {   // fields and methods
+
+ //// fields 
+
+ //// methods 
  }
 
  export interface LegendAttributes extends GeometryElementAttributes {
@@ -2040,15 +2419,57 @@ Instead of one value you can provide two values as an array [x, y] here. These a
  labels?:string[]
  /** Array of legend colors */
  colors?:string[]
+}
+ 
+
+ export interface Legend extends GeometryElement {   // fields and methods
+
+ //// fields 
+ /** missing description */
+ labels: number[]; 
+ /** missing description */
+ rowHeight: number; 
+ /** missing description */
+ style: String; 
+
+ //// methods 
  }
 
  export interface LocusAttributes extends CurveAttributes {
+}
+ 
+
+ export interface Locus extends Curve {   // fields and methods
+
+ //// fields 
+ /** missing description */
+ ctime: number; 
+ /** missing description */
+ eq: String; 
+
+ //// methods 
  }
 
  export interface MajorArcAttributes extends CurveAttributes {
+}
+ 
+
+ export interface MajorArc extends Curve {   // fields and methods
+
+ //// fields 
+
+ //// methods 
  }
 
  export interface MajorSectorAttributes extends CurveAttributes {
+}
+ 
+
+ export interface MajorSector extends Curve {   // fields and methods
+
+ //// fields 
+
+ //// methods 
  }
 
  export interface MeasurementAttributes extends TextAttributes {
@@ -2070,70 +2491,240 @@ Instead of one value you can provide two values as an array [x, y] here. These a
  suffix?:string
  /** This attribute expects an object that has the dimension numbers as keys (as integer or in the form of 'dimxx') and assigns a string to each dimension. */
  units?:string
+}
+ 
+
+ export interface Measurement extends Text {   // fields and methods
+
+ //// fields 
+
+ //// methods 
  }
 
  export interface Mesh3DAttributes extends CurveAttributes {
+}
+ 
+
+ export interface Mesh3D extends Curve {   // fields and methods
+
+ //// fields 
+
+ //// methods 
  }
 
  export interface MidpointAttributes extends PointAttributes {
+}
+ 
+
+ export interface Midpoint extends Point {   // fields and methods
+
+ //// fields 
+
+ //// methods 
  }
 
  export interface MinorArcAttributes extends CurveAttributes {
+}
+ 
+
+ export interface MinorArc extends Curve {   // fields and methods
+
+ //// fields 
+
+ //// methods 
  }
 
  export interface MinorSectorAttributes extends CurveAttributes {
+}
+ 
+
+ export interface MinorSector extends Curve {   // fields and methods
+
+ //// fields 
+
+ //// methods 
  }
 
  export interface MirrorelementAttributes extends GeometryElementAttributes {
+}
+ 
+
+ export interface Mirrorelement extends GeometryElement {   // fields and methods
+
+ //// fields 
+
+ //// methods 
  }
 
  export interface MirrorpointAttributes extends PointAttributes {
+}
+ 
+
+ export interface Mirrorpoint extends Point {   // fields and methods
+
+ //// fields 
+
+ //// methods 
  }
 
  export interface NonReflexAngleAttributes extends AngleAttributes {
+}
+ 
+
+ export interface NonReflexAngle extends Angle {   // fields and methods
+
+ //// fields 
+
+ //// methods 
  }
 
  export interface NormalAttributes extends LineAttributes {
  /** Attributes of helper point of normal. */
   point?: Point
+}
+ 
+
+ export interface Normal extends Line {   // fields and methods
+
+ //// fields 
+
+ //// methods 
  }
 
  export interface OrthogonalprojectionAttributes extends PointAttributes {
+}
+ 
+
+ export interface Orthogonalprojection extends Point {   // fields and methods
+
+ //// fields 
+
+ //// methods 
  }
 
  export interface OtherIntersectionAttributes extends PointAttributes {
+}
+ 
+
+ export interface OtherIntersection extends Point {   // fields and methods
+
+ //// fields 
+
+ //// methods 
  }
 
  export interface ParabolaAttributes extends ConicAttributes {
+}
+ 
+
+ export interface Parabola extends Conic {   // fields and methods
+
+ //// fields 
+
+ //// methods 
  }
 
  export interface ParallelpointAttributes extends PointAttributes {
+}
+ 
+
+ export interface Parallelpoint extends Point {   // fields and methods
+
+ //// fields 
+
+ //// methods 
  }
 
  export interface SegmentAttributes extends LineAttributes {
+}
+ 
+
+ export interface Segment extends Line {   // fields and methods
+
+ //// fields 
+
+ //// methods 
  }
 
  export interface ParallelogramAttributes extends PolygonAttributes {
  /** Attributes of helper point of normal. */
   parallelpoint?: DisplayPoint
+}
+ 
+
+ export interface Parallelogram extends Polygon {   // fields and methods
+
+ //// fields 
+
+ //// methods 
  }
 
  export interface PerpendicularAttributes extends SegmentAttributes {
+}
+ 
+
+ export interface Perpendicular extends Segment {   // fields and methods
+
+ //// fields 
+
+ //// methods 
  }
 
  export interface PerpendicularPointAttributes extends PointAttributes {
+}
+ 
+
+ export interface PerpendicularPoint extends Point {   // fields and methods
+
+ //// fields 
+
+ //// methods 
  }
 
  export interface PerpendicularSegmentAttributes extends SegmentAttributes {
+}
+ 
+
+ export interface PerpendicularSegment extends Segment {   // fields and methods
+
+ //// fields 
+ /** missing description */
+ point: PerpendicularPoint; 
+
+ //// methods 
  }
 
  export interface PolarLineAttributes extends LineAttributes {
+}
+ 
+
+ export interface PolarLine extends Line {   // fields and methods
+
+ //// fields 
+
+ //// methods 
  }
 
  export interface PolePointAttributes extends PointAttributes {
+}
+ 
+
+ export interface PolePoint extends Point {   // fields and methods
+
+ //// fields 
+
+ //// methods 
  }
 
  export interface PolygonalChainAttributes extends PolygonAttributes {
+}
+ 
+
+ export interface PolygonalChain extends Polygon {   // fields and methods
+
+ //// fields 
+
+ //// methods 
  }
 
  export interface Polyhedron3DAttributes extends GeometryElement3DAttributes {
@@ -2141,17 +2732,55 @@ Instead of one value you can provide two values as an array [x, y] here. These a
   shader?: ShaderInterface
  /** Array of face colors. */
   fillColorArray?: string[]
+}
+ 
+
+ export interface Polyhedron3D extends GeometryElement3D {   // fields and methods
+
+ //// fields 
+ /** missing description */
+ def: number[][]; 
+ /** missing description */
+ faces: Face3D[]; 
+ /** missing description */
+ numberFaces: number; 
+
+ //// methods 
  }
 
  export interface RadicalAxisAttributes extends LineAttributes {
+}
+ 
+
+ export interface RadicalAxis extends Line {   // fields and methods
+
+ //// fields 
+
+ //// methods 
  }
 
  export interface ReflectionAttributes extends GeometryElementAttributes {
  /** Type of transformation. Possible values are 'Euclidean', 'projective'.If the value is 'Euclidean', the reflected element of a circle is again a circle, otherwise it is a conic section. */
   type?: String
+}
+ 
+
+ export interface Reflection extends GeometryElement {   // fields and methods
+
+ //// fields 
+
+ //// methods 
  }
 
  export interface ReflexAngleAttributes extends AngleAttributes {
+}
+ 
+
+ export interface ReflexAngle extends Angle {   // fields and methods
+
+ //// fields 
+
+ //// methods 
  }
 
  export interface RegularPolygonAttributes extends PolygonAttributes {
@@ -2163,14 +2792,42 @@ Instead of one value you can provide two values as an array [x, y] here. These a
   vertices?: GeometryElementAttributes
  /** Is the polygon bordered by lines? */
   withLines?: Boolean
+}
+ 
+
+ export interface RegularPolygon extends Polygon {   // fields and methods
+
+ //// fields 
+
+ //// methods 
  }
 
  export interface RiemannsumAttributes extends CurveAttributes {
+}
+ 
+
+ export interface Riemannsum extends Curve {   // fields and methods
+
+ //// fields 
+
+ //// methods 
+ /** missing description */
+ Value(): number; 
  }
 
  export interface SemicircleAttributes extends ArcAttributes {
  /** Attributes for center point of the semicircle. */
   center?: Point
+}
+ 
+
+ export interface Semicircle extends Arc {   // fields and methods
+
+ //// fields 
+ /** missing description */
+ midpoint: Midpoint; 
+
+ //// methods 
  }
 
  export interface SliderAttributes extends GliderAttributes {
@@ -2214,6 +2871,28 @@ Instead of one value you can provide two values as an array [x, y] here. These a
   withLabel?: Boolean
  /** Show slider ticks. */
   withTicks?: Boolean
+}
+ 
+
+ export interface Slider extends Glider {   // fields and methods
+
+ //// fields 
+ /** missing description */
+ _smax: number; 
+ /** missing description */
+ _smin: number; 
+
+ //// methods 
+ /** missing description */
+ setMax(value:number): Object; 
+ /** missing description */
+ setMin(value:number): Object; 
+ /** missing description */
+ setValue(value:number): Object; 
+ /** missing description */
+ Value(): number; 
+ /** missing description */
+ on(event:string, action:Function): void; 
  }
 
  export interface SlopefieldAttributes extends VectorfieldAttributes {
@@ -2221,6 +2900,16 @@ Instead of one value you can provide two values as an array [x, y] here. These a
   arrowhead?: Object
  /** Set length of the vectors in user coordinates. This in contrast to vector fields, where this attribute just scales the vector. */
   scale?: Object
+}
+ 
+
+ export interface Slopefield extends Vectorfield {   // fields and methods
+
+ //// fields 
+
+ //// methods 
+ /** missing description */
+ setF(): Object; 
  }
 
  export interface SlopetriangleAttributes extends LineAttributes {
@@ -2236,6 +2925,16 @@ Instead of one value you can provide two values as an array [x, y] here. These a
   tangent?: Line
  /** Attributes for the top point. */
   toppoint?: Point
+}
+ 
+
+ export interface Slopetriangle extends Line {   // fields and methods
+
+ //// fields 
+
+ //// methods 
+ /** missing description */
+ Value(): number; 
  }
 
  export interface SmartlabelAttributes extends TextAttributes {
@@ -2253,18 +2952,58 @@ Instead of one value you can provide two values as an array [x, y] here. These a
   suffix?: string
  /** Measurement unit appended to the output text. For areas, the unit is squared automatically. Comes directly after the measurement value. */
   unit?: string
+}
+ 
+
+ export interface Smartlabel extends Text {   // fields and methods
+
+ //// fields 
+
+ //// methods 
  }
 
  export interface Sphere3DAttributes extends GeometryElement3DAttributes {
+}
+ 
+
+ export interface Sphere3D extends GeometryElement3D {   // fields and methods
+
+ //// fields 
+
+ //// methods 
  }
 
  export interface SplineAttributes extends CurveAttributes {
+}
+ 
+
+ export interface Spline extends Curve {   // fields and methods
+
+ //// fields 
+
+ //// methods 
  }
 
  export interface StepfunctionAttributes extends CurveAttributes {
+}
+ 
+
+ export interface Stepfunction extends Curve {   // fields and methods
+
+ //// fields 
+
+ //// methods 
  }
 
  export interface TangentAttributes extends LineAttributes {
+}
+ 
+
+ export interface Tangent extends Line {   // fields and methods
+
+ //// fields 
+
+ //// methods 
  }
 
  export interface TangentToAttributes extends LineAttributes {
@@ -2272,6 +3011,14 @@ Instead of one value you can provide two values as an array [x, y] here. These a
   point?: PointAttributes
  /** Attributes for the polar line of the tangentTo construction. */
   polar?: PolarLineAttributes
+}
+ 
+
+ export interface TangentTo extends Line {   // fields and methods
+
+ //// fields 
+
+ //// methods 
  }
 
  export interface TapemeasureAttributes extends SegmentAttributes {
@@ -2293,205 +3040,199 @@ Instead of one value you can provide two values as an array [x, y] here. These a
   withLabel?: Boolean
  /** Show tape measure ticks. */
   withTicks?: Boolean
+}
+ 
+
+ export interface Tapemeasure extends Segment {   // fields and methods
+
+ //// fields 
+
+ //// methods 
+ /** missing description */
+ Value(): number; 
  }
 
  export interface TracecurveAttributes extends CurveAttributes {
  /** The number of evaluated data points. */
   numberPoints?: number
+}
+ 
+
+ export interface Tracecurve extends Curve {   // fields and methods
+
+ //// fields 
+
+ //// methods 
  }
 
  export interface TransformAttributes extends GeometryElementAttributes {
+}
+ 
+
+ export interface Transform extends GeometryElement {   // fields and methods
+
+ //// fields 
+
+ //// methods 
+ /** missing description */
+ point(fromPoint:Point,attributes:PointAttributes): Point; 
+ /** missing description */
+ applyOnce(element:GeometryElement): void; 
+ /** missing description */
+ bindTo(element:GeometryElement|GeometryElement[]): void; 
+ /** missing description */
+ setMatrix(): Transform; 
  }
 
  export interface Transform3DAttributes extends GeometryElement3DAttributes {
+}
+ 
+
+ export interface Transform3D extends GeometryElement3D {   // fields and methods
+
+ //// fields 
+
+ //// methods 
  }
 
  export interface TransformPointAttributes extends PointAttributes {
+}
+ 
+
+ export interface TransformPoint extends Point {   // fields and methods
+
+ //// fields 
+
+ //// methods 
  }
 
  export interface TransformPoint3DAttributes extends Point3DAttributes {
+}
+ 
+
+ export interface TransformPoint3D extends Point3D {   // fields and methods
+
+ //// fields 
+
+ //// methods 
  }
 
  export interface Segment3DAttributes extends Line3DAttributes {
+}
+ 
+
+ export interface Segment3D extends Line3D {   // fields and methods
+
+ //// fields 
+
+ //// methods 
  }
 
  export interface TranslateAttributes extends TransformAttributes {
+}
+ 
+
+ export interface Translate extends Transform {   // fields and methods
+
+ //// fields 
+
+ //// methods 
  }
 
  export interface RotateAttributes extends TransformAttributes {
+}
+ 
+
+ export interface Rotate extends Transform {   // fields and methods
+
+ //// fields 
+
+ //// methods 
  }
 
  export interface ScaleAttributes extends TransformAttributes {
+}
+ 
+
+ export interface Scale extends Transform {   // fields and methods
+
+ //// fields 
+
+ //// methods 
  }
 
  export interface Translate3DAttributes extends Transform3DAttributes {
+}
+ 
+
+ export interface Translate3D extends Transform3D {   // fields and methods
+
+ //// fields 
+
+ //// methods 
  }
 
  export interface Rotate3DAttributes extends Transform3DAttributes {
+}
+ 
+
+ export interface Rotate3D extends Transform3D {   // fields and methods
+
+ //// fields 
+
+ //// methods 
  }
 
  export interface RotateX3DAttributes extends Transform3DAttributes {
+}
+ 
+
+ export interface RotateX3D extends Transform3D {   // fields and methods
+
+ //// fields 
+
+ //// methods 
  }
 
  export interface RotateY3DAttributes extends Transform3DAttributes {
+}
+ 
+
+ export interface RotateY3D extends Transform3D {   // fields and methods
+
+ //// fields 
+
+ //// methods 
  }
 
  export interface RotateZ3DAttributes extends Transform3DAttributes {
+}
+ 
+
+ export interface RotateZ3D extends Transform3D {   // fields and methods
+
+ //// fields 
+
+ //// methods 
  }
 
  export interface Scale3DAttributes extends Transform3DAttributes {
+}
+ 
+
+ export interface Scale3D extends Transform3D {   // fields and methods
+
+ //// fields 
+
+ //// methods 
  }
 
 /** A wrapper for the various math routines provided by JSXGraph.  For example:
             ```js
-            TSX.JsxMath.Matrix.crossProduct(a,b)
+            let cross = JsxMath.Matrix.crossProduct(a,b)
             ```
         */
-        export interface MathIface {
- Matrix: MatrixMathIface
- Geometry: GeometryMathIface
- Numerics: NumericsMathIface
- Statistics: StatisticsMathIface
-}
-
- export interface MatrixMathIface {    // math functions
- /** Calculates the cross product of two vectors both of length three. */
- crossProduct(v1:number[],v2:number[]):number[],
- /** Generates a 4x4 matrix for 3D to 2D projections. */
- frustum(left:number,right:number,top:number,bottom:number,near:number,far:number):matAny,
- /** Generates an identity matrix of size m x n.  (Yes it is possible to have a non-square identity matrix) */
- identity(m:number,n:number):matAny,
- /** Inner product of two vectors a and b.  Inner product is a generalization of Dot product for an arbitrary vector space. */
- innerProduct(v1:number[],v2:number[]):number,
- /** Compute the inverse of an nxn matrix with Gauss elimination.  Returns [] if there is a singularity. */
- inverse(mat:matAny):matAny,
- /** Computes the product of the two matrices mat1*mat2. */
- matMatMult(mat1:matAny,mat2:matAny):matAny,
- /** Initializes a matrix as an array of rows with the given value. */
- matrix(nRows:number,mCols:number,init:number):matAny,
- /** Multiplies a vector vec to a matrix mat: mat * vec.  The matrix is a two-dimensional array of numbers. The inner arrays describe the columns, the outer ones the matrix rows. eg: [[2,1],[3,2]] where [2,1] is the first colummn. */
- matVecMult(mat:matAny,vec:number[]):number[],
- /** Generates a 4x4 matrix for 3D to 2D projections. */
- projection(fov:number,ratio:number,near:number,far:number):matAny,
- /** Transposes a matrix given as a two dimensional array. */
- transpose(mat:matAny):matAny,
- /** Initializes a vector of size n wih coefficients set to the given value. */
- vector(n:number,init:number):number[],
- } 
-
- export interface GeometryMathIface {    // math functions
- affineDistance():number[],
- affineRatio():number[],
- angle():number[],
- angleBisector():number[],
- bezierArc():number[],
- calcLabelQuadrant():number[],
- calcLineDelimitingPoints():number[],
- calcStraight():number[],
- circumcenter():number[],
- circumcenterMidpoint():number[],
- det3p():number[],
- distance():number[],
- distPointLine():number[],
- GrahamScan():number[],
- intersectionFunction():number[],
- isSameDir():number[],
- isSameDirection():number[],
- meet():number[],
- meetBezierCurveRedBlueSegments():number[],
- meetBeziersegmentBeziersegment():number[],
- meetCircleCircle():number[],
- meetCurveCurve():number[],
- meetCurveLine():number[],
- meetCurveLineContinuous():number[],
- meetCurveLineDiscrete():number[],
- meetCurveRedBlueSegments():number[],
- meetLineBoard():number[],
- meetLineCircle():number[],
- meetLineLine():number[],
- meetPathPath():number[],
- meetPolygonLine():number[],
- meetSegmentSegment():number[],
- perpendicular():number[],
- pnpoly():number[],
- projectCoordsToBeziersegment():number[],
- projectCoordsToCurve():number[],
- projectCoordsToPolygon():number[],
- projectCoordsToSegment():number[],
- projectPointToBoard():number[],
- projectPointToCircle():number[],
- projectPointToCurve():number[],
- projectPointToLine():number[],
- projectPointToPoint():number[],
- projectPointToTurtle():number[],
- rad():number[],
- reflection():number[],
- reuleauxPolygon():number[],
- rotation():number[],
- signedPolygon():number[],
- signedTriangle():number[],
- sortVertices():number[],
- trueAngle():number[],
- windingNumber():number[],
- } 
-
- export interface NumericsMathIface {    // math functions
- bezier(points:Point[]):[Function,Function,number,Function],
- bspline(points:Point[],order:number):any[],
- CardinalSpline(points:Point[],tau:number|Function):Function[],
- } 
-
- export interface StatisticsMathIface {    // math functions
- /** Generate value of a standard normal random variable with given mean and standard deviation.
-                                   See {@link https://en.wikipedia.org/wiki/Normal_distribution} */
- randomNormal(mean:number,stdDev:number):number,
- /** Generate value of a uniform distributed random variable in the interval [a, b]. */
- randomUniform(a:number,b:number):number,
- /** Generate value of a random variable with exponential distribution.
-                                    See {@link https://en.wikipedia.org/wiki/Exponential_distribution}.
-                                    Algorithm: D.E. Knuth, TAOCP 2, p. 128. */
- randomExponential(lambda:number):number,
- /** Generate value of a random variable with gamma distribution of order alpha.  Default scale is 1. Default threshold is 0.
-                        See {@link https://en.wikipedia.org/wiki/Gamma_distribution}.
-                        Algorithm: D.E. Knuth, TAOCP 2, p. 129. */
- randomGamma(shape:number,scale?:number,threshold?:number):number,
- /** Generate value of a random variable with Pareto distribution with shape gamma and scale k.
-                                   See {@link https://en.wikipedia.org/wiki/Pareto_distribution}. */
- randomPareto(shape:number,scale?:number,threshold?:number):number,
- /** Generate value of a random variable with beta distribution with shape parameters alpha and beta.
-                                    See {@link https://en.wikipedia.org/wiki/Beta_distribution}. */
- randomBeta(alpha:number,beta:number):number,
- /** Generate value of a random variable with chi-square distribution with k (>0) degrees of freedom.
-                                    See {@link https://en.wikipedia.org/wiki/Chi-squared_distribution}. */
- randomChisquare(k:number):number,
- /** Generate value of a random variable with F-distribution with d1 and d2 degrees of freedom.
-                                    See {@link https://en.wikipedia.org/wiki/F-distribution}. */
- randomF(d1:number,d2:number):number,
- /** Generate value of a random variable with Students-t-distribution with v degrees of freedom.
-                                    See {@link https://en.wikipedia.org/wiki/Student%27s_t-distribution}. */
- randomT(v:number):number,
- /** Generate values for a random variable in binomial distribution with parameters n and p
-                                    See {@link https://en.wikipedia.org/wiki/Binomial_distribution}. */
- randomBinomial(n:number,p:number):number,
- /** Generate values for a random variable in geometric distribution with propability <i>p</i>.
-                                    See {@link https://en.wikipedia.org/wiki/Geometric_distribution}. */
- randomGeometric(p:number):number,
- /** Generate values for a random variable in Poisson distribution with mean <i>mu</i>..
-                                    See {@link https://en.wikipedia.org/wiki/Poisson_distribution}. */
- randomPoisson(mu:number):number,
- /** Generate values for a random variable in hypergeometric distribution.
-                                    See {@link https://en.wikipedia.org/wiki/Hypergeometric_distribution}
-                                    Samples are drawn from a hypergeometric distribution with specified parameters, <i>good</i> (ways to make a good selection),
-                                    <i>bad</i> (ways to make a bad selection), and <i>samples</i> (number of items sampled, which is less than or equal to <i>good + bad</i>). */
- randomHypergeometric(good:number,bad:number,samples:number):number,
- /** Compute the histogram of a dataset.  Range can be false or [min(x), max(x)]. If density is true then normalize the counts by dividing by sum(counts). Returns [number[],number[]], the first array contains start value of bins, the second array countains the counts. */
- histogram(data:number[], bins?:number, range?:boolean|[number,number], density?:boolean, cumulative?:boolean):[number[],number[]],
- /** The P-th percentile ( 0 < P ≤ 100 ) of a list of N ordered values (sorted from least to greatest) is the smallest value in the list such that no more than P percent of the data is strictly less than the value and at least P percent of the data is less than or equal to that value. */
- percentile(data:number[],ranges:number[]):number[],
- } 
-
- export let JsxMath: MathIface = {Matrix :{
- // Matrix
+ export let JsxMath = {Matrix :{
  crossProduct(v1:number[],v2:number[])  { return (window as any).JXG.Math.crossProduct(v1,v2) }, 
  frustum(left:number,right:number,top:number,bottom:number,near:number,far:number)  { return (window as any).JXG.Math.frustum(left,right,top,bottom,near,far) }, 
  identity(m:number,n:number)  { return (window as any).JXG.Math.identity(m,n) }, 
@@ -2505,7 +3246,6 @@ Instead of one value you can provide two values as an array [x, y] here. These a
  vector(n:number,init:number)  { return (window as any).JXG.Math.vector(n,init) }, 
 },
 Geometry :{
- // Geometry
  affineDistance()  { return (window as any).JXG.Math.affineDistance() }, 
  affineRatio()  { return (window as any).JXG.Math.affineRatio() }, 
  angle()  { return (window as any).JXG.Math.angle() }, 
@@ -2561,13 +3301,11 @@ Geometry :{
  windingNumber()  { return (window as any).JXG.Math.windingNumber() }, 
 },
 Numerics :{
- // Numerics
  bezier(points:Point[])  { return (window as any).JXG.Math.bezier(points) }, 
  bspline(points:Point[],order:number)  { return (window as any).JXG.Math.bspline(points,order) }, 
  CardinalSpline(points:Point[],tau:number|Function)  { return (window as any).JXG.Math.CardinalSpline(points,tau) }, 
 },
 Statistics :{
- // Statistics
  randomNormal(mean:number,stdDev:number)  { return (window as any).JXG.Math.Statistics.randomNormal(mean,stdDev) }, 
  randomUniform(a:number,b:number)  { return (window as any).JXG.Math.Statistics.randomUniform(a,b) }, 
  randomExponential(lambda:number)  { return (window as any).JXG.Math.Statistics.randomExponential(lambda) }, 
@@ -2587,6 +3325,1429 @@ Statistics :{
 
 }
 
+///////  THIS FILE IS INSERTED INTO TSXGRAPH.TS DURING THE BUILD PROCESS  //////
+
+
+
+
+
+//////////////////////////////////////////////////////////////
+
+///  WE NEED A PLACE TO STORE THE BOARD AND VIEW3D OBJECTS ///
+
+//////////////////////////////////////////////////////////////
+
+
+
+
+
+
+
+
+
+
+
+/** This wraps the JSX library and the constructor is equivalent to the `initBoard()` method.
+
+ * ```js
+
+ * let TSX = new TSXBoard('jxgbox)`
+
+ * ```
+
+ * */
+
+export class TSXBoard {
+
+    private _jBoard: Object
+
+    private _jView3d: Object
+
+    private printLineNumber = 0
+
+
+
+    private currentCanvas: string = ''
+
+    private boardList = new Map<string, Object>()     // will be keyed array of boards  { 'jxgbox': jBoard, 'jxgbox2': jBoard2 }
+
+    private defaultAttrs = {}
+
+
+
+
+
+
+
+    /** Store a reference to every board in this central list. */
+
+    static get boards() { return (window as any).JXG.boards }
+
+    /** Constant: screen coordinates in pixel relative to the upper left corner of the div element. */
+
+    static get COORDS_BY_SCREEN() { return (window as any).JXG.COORDS_BY_SCREEN }
+
+    /** Constant: user coordinates relative to the coordinates system defined by the bounding box. */
+
+    static get COORDS_BY_USER() { return (window as any).JXG.COORDS_BY_USER }
+
+    /** Associative array that keeps track of all constructable elements registered via JXG.registerElement. */
+
+    static get elements() { return (window as any).JXG.elements }
+
+    /** The FileReader object bundles the file input capabilities of JSXGraph. */
+
+    static get FileReader() { return (window as any).JXG.FileReader }
+
+    /** Internet Explorer version. */
+
+    static get ieVersion() { return (window as any).JXG.ieVersion}
+
+    /** A document/window environment is available. */
+
+    static get isBrowser() { return (window as any).JXG.isBrowser() }
+
+    /** Constant: the small gray version indicator in the top left corner of every JSXGraph board (if showCopyright is not set to false on board creation). */
+
+    static get licenseText() { return (window as any).JXG.licenseText }
+
+    /** Default color palette. */
+
+    static get palette() { return (window as any).JXG.palette }
+
+    /** Bang Wong color palette, optimized for various type of color blindness. */
+
+    static get paletteWong() { return (window as any).JXG.paletteWong }
+
+    /** Store the available file readers in this structure. */
+
+    static get readers() { return (window as any).JXG.readers }
+
+    /** Holds all possible properties and the according validators for geometry elements. */
+
+    static get Validator() { return (window as any).JXG.Validator }
+
+    /** Constant: the currently used JSXGraph version. */
+
+    static get version() {
+
+        return (window as any).JXG.version
+
+    }
+
+
+
+
+
+
+
+
+
+    // this is the code for InitBoard, which is created in the wrapper.
+
+    constructor(canvas: string = 'jxgbox', attributes: Object = {}) {
+
+
+
+        this.defaultAttrs = {
+
+            keepAspectRatio: true,
+
+            name: '',
+
+            showinfobox: false,
+
+            pan: { enabled: false },
+
+            resize: { enabled: false },
+
+        };
+
+
+
+        // create the board
+
+        this._jBoard = (window as any).JXG.JSXGraph.initBoard(canvas, attributes)
+
+
+
+        let bounding = (this._jBoard as any).getBoundingBox()
+
+        // console.log(bounding, [[bounding[0], bounding[3]], Math.abs(bounding[2] - bounding[0]), Math.abs(bounding[3] - bounding[1])])
+
+
+
+        // axesPosition is immutable.  if it is set in initBoard(), then set it in view
+
+        let attrs = (this._jBoard as any).attr;
+
+        let ap = 'none'
+
+        if ('axesposition' in attrs) {
+
+            ap = attrs.axesposition;
+
+        }
+
+
+
+        //create the 3D view
+
+        this._jView3d = (this._jBoard as any).create('view3d',
+
+            [[bounding[0], bounding[3]],
+
+            [Math.abs(bounding[2] - bounding[0]), Math.abs(bounding[3] - bounding[1])],
+
+            // [box, box, box]] same size of the bounding box
+
+            [[bounding[0], bounding[2]], [bounding[3], bounding[1]], [bounding[0], bounding[2]]]],  // just guessing at z axis
+
+            {
+
+                projection: 'central',
+
+                // projection: 'parallel',
+
+                pan: { enabled: false },
+
+                trackball: { enabled: true },
+
+                axesPosition: ap,
+
+                depthOrder: {
+
+                    enabled: true,
+
+                },
+
+                depthOrderPoints: true,
+
+                xPlaneRear: { visible: false },
+
+                yPlaneRear: { visible: false }, //fillOpacity: 0.2, fillColor: 'blue' },
+
+                zPlaneRear: { visible: false },
+
+                az: { pointer: { enabled: false }, keyboard: { enabled: true, key: 'none' } },
+
+                el: { pointer: { enabled: false }, keyboard: { enabled: true, key: 'none' } },
+
+
+
+            });
+
+
+
+        (this._jView3d as any).setView(Math.PI, Math.PI / 2, 0);
+
+
+
+
+
+        // /** set Katex as default for board (names, labels, everything).  useKatex() need only be set ONCE, no way to unset. the text element has a 'useKatex' attribute that lets you turn Katex on and off for individual text fields.
+
+        // * ```js
+
+        // *     TSX.useKatex()
+
+        // * ```
+
+        // */
+
+        // static useKatex(){
+
+        //     (window as any).JXG.Options.text.useKatex = true;
+
+        // }
+
+
+
+    }
+
+
+
+
+
+
+
+    /** test for empty object {} */
+
+    isEmptyObject(obj: Object): Boolean {
+
+        for (let _var in obj) return false;  // if there is a property, it is not empty (doesn't work for dates, etc)
+
+        return true;
+
+    }
+
+
+
+
+
+
+
+    // utility to appy default attributes
+
+    defaultAttributes(attrs: Object = {}) {
+
+        for (const property in this.defaultAttrs) {
+
+            if (!attrs.hasOwnProperty(property)) {   // if the user has not specified a value for this property
+
+                (attrs as any)[property] = (this.defaultAttrs as any)[property]
+
+            }
+
+        }
+
+        return attrs
+
+    }
+
+
+
+    // utility to determine if last parameter is the attributes
+
+    isAttribute(last: any): Boolean {
+
+        return ((typeof last == 'object') &&     // must be an object
+
+            (!Array.isArray(last)) &&     // not an array (typeof treats arrays as objects)
+
+            (last !== null) &&     // null returns type 'object' - javascript bug
+
+            ('elType' in last === false))              // if has elType then a JSXGraph object
+
+    }
+
+
+
+
+
+
+
+
+
+
+
+
+
+    // /** legacy create for 2D and 3D elements.  Always TSX.create() */
+
+    // create(element: string, params: any[], attributes: Object = {}) {
+
+    //     if (element.toLowerCase().includes('3d'))    // 3D";
+
+    //         return (this._jView3d as any).create(element, params, attributes);
+
+    //     else
+
+    //         return (this._jBoard as any).create(element, params, attributes);
+
+    // }
+
+
+
+
+
+    Print(...args: any[]) {
+
+        let bbox = (this._jBoard as any).getBoundingBox()   // get every time, in case setBoundingBox()
+
+        let left = bbox[0] // align x to left border
+
+        let lineHeight = (bbox[1] - bbox[3]) / 20  //
+
+        let top = bbox[1] - (2 * lineHeight) - (this.printLineNumber * lineHeight)  // align y to top border
+
+
+
+        let helper = (stringText: string, item: any): string => {
+
+            if (typeof item == null) {
+
+                stringText += 'null, ';
+
+            } else if (item == undefined) {
+
+                stringText += 'undefined';
+
+            } else if (typeof item == 'string') {
+
+                stringText += '\'' + item + '\'';
+
+            } else if (typeof item == 'number') {
+
+                stringText += Number.isInteger(item) ? item.toString() : item.toFixed(2);
+
+            } else if (typeof item == 'boolean') {
+
+                stringText += item ? 'true' : 'false';
+
+            } else if (Array.isArray(item)) {
+
+                stringText += '['
+
+                stringText = item.reduce((acc, curr) => acc + helper('', curr), stringText)
+
+                stringText += ']'
+
+            } else if (typeof item == 'object') {
+
+                stringText += '{'
+
+                if ('elType' in item) {
+
+                    stringText += item.elType
+
+                } else if ('elV2Math' in item) {
+
+                    stringText += [item.X(), item.Y()]
+
+                }
+
+                stringText += '}'
+
+            } else {
+
+                stringText += 'UNKNOWN';
+
+            }
+
+            stringText += ', '
+
+            return stringText
+
+        }
+
+
+
+
+
+        let stringText = ''
+
+        args.forEach((argn) => {
+
+            stringText = helper(stringText, argn)
+
+        });
+
+
+
+        (this._jBoard as any).create('text', [left, top, stringText], { fontSize: 10, strokeColor: 'blue', fontUnits: 'EM' })
+
+        this.printLineNumber += 1
+
+    }
+
+
+
+
+
+
+
+
+
+    /** Set the bounding box of the board.  Returns the board.
+
+    ```js
+
+    TSX.board.setBoundingBox([-8, 8, 8, -8])
+
+    ```*/
+
+
+
+
+
+    /** Use MathJax by default. PUT THIS AT THE VERY TOP OF YOUR PROGRAM.  See: {@link https://math.meta.stackexchange.com/questions/5020/mathjax-basic-tutorial-and-quick-reference}
+
+     * ```js
+
+     * TSX.board.useMathJax()  // only needed once
+
+     * let a = TSX.point([-3, 3], { size: 4, color: 'blue', name: '\\(\\overrightarrow{a}\\)', fixed: true, label: { fontSize: 20 } });
+
+     *```
+
+     */
+
+    useMathJax() { (window as any).JXG.Options.text.useMathJax = true } // by default MathJax is true
+
+
+
+
+
+    /** sets the projection to parallel or perspective.  Possible values are 'centeral' or 'parallel'. */
+
+    projection3D(setting: 'parallel' | 'central') { (this._jView3d as any).setAttribute({ 'projection': setting }) }
+
+
+
+    // /** Adds an animation.*/
+
+    // addAnimation(element:GeometryElement) => (this._jBoard as any).addAnimation(element),
+
+
+
+    /** Add the default x- and y-axis and grid to the construction,, equivalent to using the code below.
+
+     * ```js
+
+     * TSX.axis([0,0],[1,0]);
+
+     * TSX.axis([0,0],[0,1]);
+
+     * ```
+
+     */
+
+    addAxis() {        // using _jsxBoard ensures board is created if necessary
+
+        (this._jBoard as any).create('axis', [[0, 0], [1, 0]]);
+
+        (this._jBoard as any).create('axis', [[0, 0], [0, 1]]);
+
+    }
+
+
+
+    /**  Set infobox visible / invisible. */
+
+    displayInfobox(val: Boolean) { (this._jBoard as any).displayInfobox(val) }
+
+
+
+
+
+
+
+    // animateAzimuth:()=> (this._jView3d as any).animateAzimuth(),
+
+
+
+    // worldToFocal(pWorld, homog)
+
+    // Map world coordinates to focal coordinates.
+
+
+
+
+
+    /** Sets an arbitrary number of attributes.  Use an object with key-value pairs.
+
+     * ```js
+
+     * TSX.board.setAttribute({axis:true});    // turn on the default axis
+
+     * ```
+
+     */
+
+    // setAttribute(attr: BoardAttributes) => {
+
+    //     initBoard();
+
+    //     _jsxBoard().setAttribute(attr);
+
+    //     _jsxBoard().update()
+
+    // },
+
+
+
+    /** Zooms into the board by the factors board.attr.zoom.factorX and board.attr.zoom.factorY
+
+     * and applies the zoom. The zoom operation is centered at x, y. */
+
+    zoomIn(x: number, y: number) { return (this._jBoard as any).zoomIn(x, y) }
+
+
+
+    /** Zooms out of the board by the factors board.attr.zoom.factorX and board.attr.zoom.factorY and applies the zoom.*/
+
+    zoomOut(x: number, y: number): any { return (this._jBoard as any).zoomOut(x, y) }
+
+
+
+    /** Sets the zoom level to fX resp fY.*/
+
+    setZoom(fX: number, fY: number): any { return (this._jBoard as any).setZoom(fX, fY) }
+
+
+
+    /** Reset the zoom level to the original zoom level from initBoard(); Additionally, if the board as been initialized with a boundingBox(which is the default ), restore the viewport to the original viewport during initialization.*/
+
+    zoom100(): any { return (this._jBoard as any).zoom100() }
+
+
+
+
+
+
+
+    ///////////////////////////////
+
+    //////////////////////////////
+
+    // bring in remainder from header3.txt
+
+    ///////////////////////////////
+
+    //////////////////////////////
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+    // these are on the JXG object, but we keep them here for simplicity
+
+
+
+    /** Set the bounding box of the board. */
+
+    setBoundingBox(box: number[], keepAspectRatio: Boolean = false, setZoom?: 'reset' | 'keep' | 'update'): Object { return (this._jBoard as any).setBoundingBox(box, keepAspectRatio, setZoom) }
+
+
+
+    /** Get the bounding box of the board. */
+
+    getBoundingBox(): number[] { return (this._jBoard as any).getBoundingBox() }
+
+
+
+    /** set Katex as default for board (names, labels, everything).  useKatex() need only be set ONCE, no way to unset. the text element has a 'useKatex' attribute that lets you turn Katex on and off for individual text fields. */
+
+    useKatex() { (window as any).JXG.Options.text.useKatex = true }
+
+
+
+    /** Add all possible event handlers to the board object that move objects, i.e. */
+
+    addEventHandlers(): any { return (this._jBoard as any).addEventHandlers() }
+
+
+
+    /**    Register keyboard event handlers. */
+
+    addKeyboardEventHandlers(): any { return (this._jBoard as any).addKeyboardEventHandlers() }
+
+
+
+    /** Adds a grid to the board according to the settings given in board.options. For more control, use the TSX.grid object.*/
+
+    addGrid(): any { return (this._jBoard as any).addGrid() }
+
+
+
+    /** Event handlers for the board (rather than for individual elements).
+
+    *```js
+
+    *    TSX.board.on('pointerdown',pointerDown)
+
+    *    //equivalent to:   addEventListener("pointerdown", pointerDown)
+
+    *```
+
+    */
+
+    on(event: string, handler: Function) { (this._jBoard as any).on(event, handler) }
+
+
+
+    /** given a PointerEvent (eg: TSX.on('down', (e:Event) ... ), returns the mouse coordinates [x,y] in JSXGraph coordinates.  */
+
+    getMouseCoords(e: Event): number[] {
+
+        let cPos = (this._jBoard as any).getCoordsTopLeftCorner(e)
+
+        let absPos = (window as any).JXG.getPosition(e)
+
+        let dx = absPos[0] - cPos[0]
+
+        let dy = absPos[1] - cPos[1]
+
+
+
+        let coords = new (window as any).JXG.Coords(2, [dx, dy], (this._jBoard as any));
+
+        return [coords.usrCoords[1], coords.usrCoords[2]]
+
+    }
+
+
+
+
+
+
+
+
+
+
+
+
+
+    /** Add fullscreen events which update the CSS transformation matrix to correct the mouse/ touch / pointer positions in case of CSS transformations..*/
+
+    addFullscreenEventHandlers(): any { return (this._jBoard as any).addFullscreenEventHandlers() }
+
+
+
+    /** Add user activity to the array 'board.userLog'.*/
+
+    addLogEntry(type: string, obj: Object, pos: number): any { return (this._jBoard as any).addLogEntry(type, obj, pos) }
+
+
+
+    /** Registers mouse move, down and wheel event handlers.*/
+
+    addMouseEventHandlers(): any { return (this._jBoard as any).addMouseEventHandlers() }
+
+
+
+    /** Registers pointer event handlers.*/
+
+    addPointerEventHandlers(): any { return (this._jBoard as any).addPointerEventHandlers() }
+
+
+
+    /** Add resize related event handlers*/
+
+    addResizeEventHandlers(): any { return (this._jBoard as any).addResizeEventHandlers() }
+
+
+
+    /** Register touch start and move and gesture start and change event handlers.*/
+
+    addTouchEventHandlers(): any { return (this._jBoard as any).addTouchEventHandlers() }
+
+
+
+    /** Registers pointer event handlers.*/
+
+    addWheelEventHandlers(): any { return (this._jBoard as any).addWheelEventHandlers() }
+
+
+
+    /** General purpose animation function.*/
+
+    animate(): any { return (this._jBoard as any).animate() }
+
+
+
+    /** Apply update on all objects with the new zoom - factors.*/
+
+    applyZoom(): any { return (this._jBoard as any).applyZoom() }
+
+
+
+    /** Calculates adequate snap sizes.*/
+
+    calculateSnapSizes(): any { return (this._jBoard as any).calculateSnapSizes() }
+
+
+
+    /** Delete the elements drawn as part of a trace of an element.*/
+
+    clearTraces(): any { return (this._jBoard as any).clearTraces() }
+
+
+
+    /** Handler for click on down arrow in the navigation bar*/
+
+    clickDownArrow(): any { return (this._jBoard as any).clickDownArrow() }
+
+
+
+    /** Handler for click on left arrow in the navigation bar*/
+
+    clickLeftArrow(): any { return (this._jBoard as any).clickLeftArrow() }
+
+
+
+    /** Handler for click on right arrow in the navigation bar*/
+
+    clickRightArrow(): any { return (this._jBoard as any).clickRightArrow() }
+
+
+
+    /** Handler for click on up arrow in the navigation bar*/
+
+    clickUpArrow(): any { return (this._jBoard as any).clickUpArrow() }
+
+
+
+    /** Creates a new geometric element of type elementType.*/
+
+    create(elementType: string, parents: string, attributes: Object): any { return (this._jBoard as any).create(elementType, parents, attributes) }
+
+
+
+    /** Deprecated name for JXG.Board.create.*/
+
+    createElement(): any { return (this._jBoard as any).createElement() }
+
+
+
+    /** Function to animate a curve rolling on another curve.*/
+
+    createRoulette(c1: Object, c2: Object, start_c1: number, stepsize: number, direction: number, time: number, pointlist: Object[]): any { return (this._jBoard as any).createRoulette(c1, c2, start_c1, stepsize, direction, time, pointlist) }
+
+
+
+    /** Remove highlighting of all elements.*/
+
+    dehighlightAll(): any { return (this._jBoard as any).dehighlightAll() }
+
+
+
+    /** Initializes color blindness simulation.*/
+
+    emulateColorblindness(deficiency: string): any { return (this._jBoard as any).emulateColorblindness(deficiency) }
+
+
+
+    /** After construction of the object the visibility is set and the label is constructed if necessary.*/
+
+    finalizeAdding(obj: Object): any { return (this._jBoard as any).finalizeAdding(obj) }
+
+
+
+    /** If fullscreen mode is toggled, the possible CSS transformations which are applied to the JSXGraph canvas have to be reread.*/
+
+    fullscreenListener(evt: Event): any { return (this._jBoard as any).fullscreenListener(evt) }
+
+
+
+    /** Runs through all elements and calls their update() method and update the conditions.*/
+
+    fullUpdate(): any { return (this._jBoard as any).fullUpdate() }
+
+
+
+    /** Generates unique id for a board.*/
+
+    generateId(): any { return (this._jBoard as any).generateId() }
+
+
+
+    /** Generates an unique name for the given object.*/
+
+    generateName(object: Object): any { return (this._jBoard as any).generateName(object) }
+
+
+
+    /** Triggered on iOS / Safari while the user inputs a gesture(e.g.*/
+
+    gestureChangeListener(evt: Event): any { return (this._jBoard as any).gestureChangeListener(evt) }
+
+
+
+    /** Called by iOS / Safari as soon as the user starts a gesture.*/
+
+    gestureStartListener(evt: Event): any { return (this._jBoard as any).gestureStartListener(evt) }
+
+
+
+    /** Collects all elements under current mouse position.*/
+
+    getAllObjectsUnderMouse(evt: Event): any { return (this._jBoard as any).getAllObjectsUnderMouse(evt) }
+
+
+
+    /** Collects all elements under current mouse position plus current user coordinates of mouse cursor.*/
+
+    getAllUnderMouse(evt: Event): any { return (this._jBoard as any).getAllUnderMouse(evt) }
+
+
+
+    /** Calculates mouse coordinates relative to the boards container.*/
+
+    getCoordsTopLeftCorner(): any { return (this._jBoard as any).getCoordsTopLeftCorner() }
+
+
+
+    /** Get the position of the pointing device in screen coordinates, relative to the upper left corner of the host tag.*/
+
+    getMousePosition(e: Event, i: number): any { return (this._jBoard as any).getMousePosition(e, i) }
+
+
+
+    /** This method calculates the user coords of the current mouse coordinates.*/
+
+    getUsrCoordsOfMouse(evt: Event): any { return (this._jBoard as any).getUsrCoordsOfMouse(evt) }
+
+
+
+    /** Checks if the given point is inside the boundingbox.*/
+
+    hasPoint(x: number, y: number): any { return (this._jBoard as any).hasPoint(x, y) }
+
+
+
+    /** Changes the text of the info box to what is provided via text.*/
+
+    highlightCustomInfobox(text: string, el: Object): any { return (this._jBoard as any).highlightCustomInfobox(text, el) }
+
+
+
+    /** Changes the text of the info box to show the given coordinates.*/
+
+    highlightInfobox(x: number, y: number, el?: Object): any { return (this._jBoard as any).highlightInfobox(x, y, el) }
+
+
+
+    /** Initialize some objects which are contained in every GEONExT construction by default, but are not contained in the gxt files.*/
+
+    initGeonextBoard(): any { return (this._jBoard as any).initGeonextBoard() }
+
+
+
+    /** Initialize the info box object which is used to display the coordinates of points near the mouse pointer,*/
+
+    initInfobox(attributes: Object): any { return (this._jBoard as any).initInfobox(attributes) }
+
+
+
+    /** Collects all elements below the current mouse pointer and fulfilling the following constraints: isDraggable, visible, not fixed, not frozen*/
+
+    initMoveObject(x: number, y: number, evt: Event, type: string): any { return (this._jBoard as any).initMoveObject(x, y, evt, type) }
+
+
+
+    /** Initiate moving the origin.. This is used in mouseDown and touchStart listeners. */
+
+    initMoveOrigin(x: number, y: number): any { return (this._jBoard as any).initMoveOrigin(x, y) }
+
+
+
+    /** Allow moving of JSXGraph elements with arrow keys.*/
+
+    keyDownListener(evt: Event): any { return (this._jBoard as any).keyDownListener(evt) }
+
+
+
+    /** Event listener for SVG elements getting focus.*/
+
+    keyFocusInListener(evt: Event): any { return (this._jBoard as any).keyFocusInListener(evt) }
+
+
+
+    /** Event listener for SVG elements losing focus.*/
+
+    keyFocusOutListener(evt: Event): any { return (this._jBoard as any).keyFocusOutListener(evt) }
+
+
+
+    /** Migrate the dependency properties of the point src to the point dest and delete the point src.*/
+
+    migratePoint(src: Object, dest: Object, copyName: string): any { return (this._jBoard as any).migratePoint(src, dest, copyName) }
+
+
+
+    /** This method is called by the browser when the mouse device clicks on the screen.*/
+
+    mouseClickListener(evt: Event): any { return (this._jBoard as any).mouseClickListener(evt) }
+
+
+
+    /** This method is called by the browser when the mouse device double clicks on the screen.*/
+
+    mouseDblClickListener(evt: Event): any { return (this._jBoard as any).mouseDblClickListener(evt) }
+
+
+
+    /** This method is called by the browser when the mouse button is clicked.*/
+
+    mouseDownListener(evt: Event): any { return (this._jBoard as any).mouseDownListener(evt) }
+
+
+
+    /** This method is called by the browser when the mouse is moved.*/
+
+    mouseMoveListener(evt: Event): any { return (this._jBoard as any).mouseMoveListener(evt) }
+
+
+
+    /** This method is called by the browser when the mouse button is released.*/
+
+    mouseUpListener(evt: Event): any { return (this._jBoard as any).mouseUpListener(evt) }
+
+
+
+    /** Handler for mouse wheel events.*/
+
+    mouseWheelListener(evt: Event): any { return (this._jBoard as any).mouseWheelListener(evt) }
+
+
+
+    /** Moves an object.*/
+
+    moveObject(x: number, y: number, o: Object, evt: Event, type: string): any { return (this._jBoard as any).moveObject(x, y, o, evt, type) }
+
+
+
+    /** Moves the origin and initializes an update of all elements.*/
+
+    moveOrigin(x: number, y: number): any { return (this._jBoard as any).moveOrigin(x, y) }
+
+
+
+    /** This method is called by the browser when a pointer device clicks on the screen. */
+
+    pointerClickListener(evt: Event): any { return (this._jBoard as any).pointerClickListener(evt) }
+
+
+
+    /**     This method is called by the browser when a pointer device double clicks on the screen.*/
+
+    pointerDblClickListener(evt: Event): any { return (this._jBoard as any).pointerDblClickListener(evt) }
+
+
+
+    /** This method is called by the browser when a pointing device is pressed on the screen.*/
+
+    pointerDownListener(evt: Event, object: Object, allowDefaultEventHandling: Boolean): any { return (this._jBoard as any).pointerDownListener(evt, object, allowDefaultEventHandling) }
+
+
+
+    /** Triggered by the pointerleave event.*/
+
+    pointerLeaveListener(evt: Event): any { return (this._jBoard as any).pointerLeaveListener(evt) }
+
+
+
+    /** Called periodically by the browser while the user moves a pointing device across the screen.*/
+
+    pointerMoveListener(evt: Event): any { return (this._jBoard as any).pointerMoveListener(evt) }
+
+
+
+    /** Triggered as soon as the user stops touching the device with at least one finger.*/
+
+    pointerUpListener(evt: Event): any { return (this._jBoard as any).pointerUpListener(evt) }
+
+
+
+    /** Sets for all objects the needsUpdate flag to 'true'.*/
+
+    prepareUpdate(drag: Object): any { return (this._jBoard as any).prepareUpdate(drag) }
+
+
+
+    /** Update the container before and after printing.*/
+
+    printListener(evt: Event): any { return (this._jBoard as any).printListener(evt) }
+
+
+
+    /** Wrapper for printListener to be used in mediaQuery matches.*/
+
+    printListenerMatch(mql: any): any { return (this._jBoard as any).printListenerMatch(mql) }
+
+
+
+    /** Removes the ancestors of an object an the object itself from board and renderer.*/
+
+    removeAncestors(object: Object): any { return (this._jBoard as any).removeAncestors(object) }
+
+
+
+    /** Deletes a board from the list of dependent boards.*/
+
+    removeChild(): any { return (this._jBoard as any).removeChild(this._jBoard) }
+
+
+
+    /** Remove all event handlers from the board object*/
+
+    removeEventHandlers(): any { return (this._jBoard as any).removeEventHandlers() }
+
+
+
+    /** Remove all registered event handlers regarding fullscreen mode.*/
+
+    removeFullscreenEventHandlers(): any { return (this._jBoard as any).removeFullscreenEventHandlers() }
+
+
+
+    /** Removes all grids assigned to this board.*/
+
+    removeGrids(): any { return (this._jBoard as any).removeGrids() }
+
+
+
+    /** Please use JXG.Board.off instead.*/
+
+    removeHook(id: string): any { return (this._jBoard as any).removeHook(id) }
+
+
+
+    /** Remove all registered touch event handlers.*/
+
+    removeKeyboardEventHandlers(): any { return (this._jBoard as any).removeKeyboardEventHandlers() }
+
+
+
+    /** De - register mouse event handlers.*/
+
+    removeMouseEventHandlers(): any { return (this._jBoard as any).removeMouseEventHandlers() }
+
+
+
+    /** Removes object from board and renderer.*/
+
+    removeObject(object: Object, saveMethod?: Boolean): any { return (this._jBoard as any).removeObject(object, saveMethod) }
+
+
+
+    /** Remove MSPointer * Event handlers.*/
+
+    removePointerEventHandlers(): any { return (this._jBoard as any).removePointerEventHandlers() }
+
+
+
+    /** Remove resize related event handlers*/
+
+    removeResizeEventHandlers(): any { return (this._jBoard as any).removeResizeEventHandlers() }
+
+
+
+    /** Remove all registered touch event handlers.*/
+
+    removeTouchEventHandlers(): any { return (this._jBoard as any).removeTouchEventHandlers() }
+
+
+
+    /** Change the height and width of the board's container.*/
+
+    resizeContainer(canvasWidth: number, canvasHeight: number, dontset: Boolean, dontSetBoundingBox: Boolean): any { return (this._jBoard as any).resizeContainer(canvasWidth, canvasHeight, dontset, dontSetBoundingBox) }
+
+
+
+    /** Fallback solutions if there is no resizeObserver available in the browser.*/
+
+    resizeListener(): any { return (this._jBoard as any).resizeListener() }
+
+
+
+    /** Listener to watch for scroll events.*/
+
+    scrollListener(evt: Event): any { return (this._jBoard as any).scrollListener(evt) }
+
+
+
+    /** Select a single or multiple elements at once.*/
+
+    select(str: string, onlyByIdOrName: Boolean): any { return (this._jBoard as any).select(str, onlyByIdOrName) }
+
+
+
+    /** Sets an arbitrary number of attributes.*/
+
+    setAttribute(attributes: Object): any { return (this._jBoard as any).setAttribute(attributes) }
+
+
+
+    /** Composes an id for an element.*/
+
+    setId(obj: Object, type: number): any { return (this._jBoard as any).setId(obj, type) }
+
+
+
+    /** Lists the dependencies graph in a new HTML - window.*/
+
+    showDependencies(): any { return (this._jBoard as any).showDependencies() }
+
+
+
+    /** Lists the XML code of the construction in a new HTML - window.*/
+
+    showXML(): any { return (this._jBoard as any).showXML() }
+
+
+
+    /** Watch for changes of the visibility of the JSXGraph container element.*/
+
+    startIntersectionObserver(): any { return (this._jBoard as any).startIntersectionObserver() }
+
+
+
+    /** Start observer which reacts to size changes of the JSXGraph container div element.*/
+
+    startResizeObserver(): any { return (this._jBoard as any).startResizeObserver() }
+
+
+
+    /** Start selection mode.*/
+
+    startSelectionMode(): any { return (this._jBoard as any).startSelectionMode() }
+
+
+
+    /** Cancels all running animations.*/
+
+    stopAllAnimation(): any { return (this._jBoard as any).stopAllAnimation() }
+
+
+
+    /** Stop the intersection observer*/
+
+    stopIntersectionObserver(): any { return (this._jBoard as any).stopIntersectionObserver() }
+
+
+
+    /** Stops the resize observer.*/
+
+    stopResizeObserver(): any { return (this._jBoard as any).stopResizeObserver() }
+
+
+
+    /** Finalize the selection: disable selection mode and return (this._jBoard as any). the coordinates of the selection rectangle.*/
+
+    stopSelectionMode(): any { return (this._jBoard as any).stopSelectionMode() }
+
+
+
+    /** Suppresses the default event handling.*/
+
+    suppressDefault(e: Event): any { return (this._jBoard as any).suppressDefault(e) }
+
+
+
+    /** Stop updates of the board.*/
+
+    suspendUpdate(): any { return (this._jBoard as any).suspendUpdate() }
+
+
+
+    /** Expand the JSXGraph construction to fullscreen.*/
+
+    toFullscreen(id: string): any { return (this._jBoard as any).toFullscreen(id) }
+
+
+
+    /** Triggered as soon as the user stops touching the device with at least one finger.*/
+
+    touchEndListener(evt: Event): any { return (this._jBoard as any).touchEndListener(evt) }
+
+
+
+    /** Called periodically by the browser while the user moves his fingers across the device.*/
+
+    touchMoveListener(evt: Event): any { return (this._jBoard as any).touchMoveListener(evt) }
+
+
+
+    /** This method is called by the browser when a finger touches the surface of the touch - device.*/
+
+    touchStartListener(evt: Event): any { return (this._jBoard as any).touchStartListener(evt) }
+
+
+
+    /** Moves elements in multitouch mode.*/
+
+    twoFingerMove(p1: number[], p2: number[], o: Object, evt: Event): any { return (this._jBoard as any).twoFingerMove(p1, p2, o, evt) }
+
+
+
+    /** Moves, rotates and scales a line or polygon with two fingers.*/
+
+    twoFingerTouchObject(tar: number[], drag: Object, id: string): any { return (this._jBoard as any).twoFingerTouchObject(tar, drag, id) }
+
+
+
+    /** Enable updates of the board.*/
+
+    unsuspendUpdate(): any { return (this._jBoard as any).unsuspendUpdate() }
+
+
+
+    /** Runs through most elements and calls their update() method and update the conditions.*/
+
+    update(drag?: Object): any { return (this._jBoard as any).update(drag) }
+
+
+
+    /** updates conditions*/
+
+    updateConditions(): any { return (this._jBoard as any).updateConditions() }
+
+    /** Update the width and height of the JSXGraph container div element.*/
+
+    updateContainerDims(width: number, height: number): any { return (this._jBoard as any).updateContainerDims(width, height) }
+
+
+
+    /** Update the coords object of all elements which possess this property.*/
+
+    updateCoords(): any { return (this._jBoard as any).updateCoords() }
+
+
+
+    /** Update CSS transformations of type scaling.*/
+
+    updateCSSTransforms(): any { return (this._jBoard as any).updateCSSTransforms() }
+
+
+
+    /** Runs through all elements and calls their update() method.*/
+
+    updateElements(drag?: Object): any { return (this._jBoard as any).updateElements(drag) }
+
+
+
+    /** Runs through all hooked functions and calls them.*/
+
+    updateHooks(m: any): any { return (this._jBoard as any).updateHooks(m) }
+
+
+
+    /** Updates and displays a little info box to show coordinates of current selected points.*/
+
+    updateInfobox(el: Object): any { return (this._jBoard as any).updateInfobox(el) }
+
+
+
+    /** Runs through all elements and calls their update() method.*/
+
+    updateRenderer(): any { return (this._jBoard as any).updateRenderer() }
+
+
+
+    /** Runs through all elements and calls their update() method.*/
+
+    updateRendererCanvas(): any { return (this._jBoard as any).updateRendererCanvas() }
+
+
+
+
+
+    /** Zooms the board so every visible point is shown.*/
+
+    zoomAllPoints(): any { return (this._jBoard as any).zoomAllPoints() }
+
+
+
+    /** Reset the bounding box and the zoom level to 100 % such that a given set of elements is within the board's viewport.*/
+
+    zoomElements(elements: any): any { return (this._jBoard as any).zoomElements(elements) }
+
+
+
+
+
+
+
+
+
+
+
+    /////////////////////////////////////////////////
+
+    //////////// view3d methods  ////////////////////
+
+    /////////////////////////////////////////////////
+
+
+
+
+
+
+
+    // intersectionLineCube(p, dir, r)
+
+    // Intersect a ray with the bounding cube of the 3D view.
+
+
+
+    // intersectionPlanePlane(plane1, plane2, d)
+
+
+
+    // isInCube(p, polyhedron)
+
+    // Test if coordinates are inside of the bounding cube.
+
+
+
+    // previousView()
+
+    // Changes view to the previous view stored in the attribute `values`.
+
+
+
+    // project2DTo3DPlane(point2d, normal, foot)
+
+    // Project a 2D coordinate to the plane defined by point "foot" and the normal vector `normal`.
+
+
+
+    // project2DTo3DVertical(point2d, base_c3d)
+
+    // Project a 2D coordinate to a new 3D position by keeping the 3D x, y coordinates and changing only the z coordinate.
+
+
+
+    // project3DTo2D(x, y, z)
+
+    // Project 3D coordinates to 2D board coordinates The 3D coordinates are provides as three numbers x, y, z or one array of length 3.
+
+
+
+    // project3DToCube(c3d)
+
+    // Limit 3D coordinates to the bounding cube.
+
+
+
+    // projectScreenToSegment(pScr, end0, end1)
+
+    // Project a point on the screen to the nearest point, in screen distance, on a line segment in 3d space.
+
+
+
+    // select(str, onlyByIdOrName)
+
+    // Select a single or multiple elements at once.
+
+
+
+    // setCurrentView(n)
+
+    // Changes view to the determined view stored in the attribute `values`.
+
+
+
+    /** Sets camera view to the given values. */
+
+    /** Sets camera view to the given values. */
+
+    setView(az: number, el: number, r?: number) {
+
+        return (this._jView3d as any).setView(az, el, r)
+
+    }
+
+
+
+
+
+
+
+
 
  /** Create a point. If any parent elements are functions or the attribute 'fixed' is true then point will be constrained.
             
@@ -2599,9 +4760,10 @@ TSX.point([1,2,2])  // three axis definition - [z,x,y]
 *```
             
  also create points with Intersection, Midpoint, TransformPoint, Circumcenter, Glider, TransformPoint, and others. */
- export function point(position:pointAddr, attributes: PointAttributes ={} ):Point{
- return _jsxBoard().create('point', position, defaultAttributes(attributes))
+ Point (position:pointAddr, attributes: PointAttributes ={} ):Point {
+ return (this._jBoard as any).create('point', position, this.defaultAttributes(attributes))
 }
+
 
  /** Line has two signatures. 
  *``` 
@@ -2615,7 +4777,7 @@ TSX.line(p1,[3,3])
 
 *```
  */
- export function line( p1:Point|pointAddr,p2:Point|pointAddr,attributes?:LineAttributes) : Line
+ Line( p1:Point|pointAddr,p2:Point|pointAddr,attributes?:LineAttributes) : Line
  /** Line has two signatures. 
  *``` 
 *``` 
@@ -2626,72 +4788,93 @@ TSX.line(2,3,1)   // create a line for the equation a*x+b*y+c*z = 0
 
 *```
  */
- export function line( A:number|Function,B:number|Function,C:number|Function,attributes?:LineAttributes) : Line
+ Line( A:number|Function,B:number|Function,C:number|Function,attributes?:LineAttributes) : Line
 // implementation of signature,  hidden from user
- export function line (a?:any, b?:any, c?:any, d?:any,e?:any,f?:any,g?:any,h?:any,i?:any) :Line {
+ Line (a?:any, b?:any, c?:any, d?:any,e?:any,f?:any,g?:any,h?:any,i?:any) {
    let params:any[] = []
    let attrs = {}
  if(arguments.length == 1) {
-   params = isAttribute(a)?[]:[a,];
-   attrs = isAttribute(a)? a:{};
+   params = this.isAttribute(a)?[]:[a,];
+   attrs = this.isAttribute(a)? a:{};
  }
  if(arguments.length == 2) {
-   params = isAttribute(b)?[a,]:[a,b,];
-   attrs = isAttribute(b)? b:{};
+   params = this.isAttribute(b)?[a,]:[a,b,];
+   attrs = this.isAttribute(b)? b:{};
  }
  if(arguments.length == 3) {
-   params = isAttribute(c)?[a,b,]:[a,b,c,];
-   attrs = isAttribute(c)? c:{};
+   params = this.isAttribute(c)?[a,b,]:[a,b,c,];
+   attrs = this.isAttribute(c)? c:{};
  }
  if(arguments.length == 4) {
-   params = isAttribute(d)?[a,b,c,]:[a,b,c,d,];
-   attrs = isAttribute(d)? d:{};
+   params = this.isAttribute(d)?[a,b,c,]:[a,b,c,d,];
+   attrs = this.isAttribute(d)? d:{};
  }
  if(arguments.length == 5) {
-   params = isAttribute(e)?[a,b,c,d,]:[a,b,c,d,e,];
-   attrs = isAttribute(e)? e:{};
+   params = this.isAttribute(e)?[a,b,c,d,]:[a,b,c,d,e,];
+   attrs = this.isAttribute(e)? e:{};
  }
  if(arguments.length == 6) {
-   params = isAttribute(f)?[a,b,c,d,e,]:[a,b,c,d,e,f,];
-   attrs = isAttribute(f)? f:{};
+   params = this.isAttribute(f)?[a,b,c,d,e,]:[a,b,c,d,e,f,];
+   attrs = this.isAttribute(f)? f:{};
  }
  if(arguments.length == 7) {
-   params = isAttribute(g)?[a,b,c,d,e,f,]:[a,b,c,d,e,f,g,];
-   attrs = isAttribute(g)? g:{};
+   params = this.isAttribute(g)?[a,b,c,d,e,f,]:[a,b,c,d,e,f,g,];
+   attrs = this.isAttribute(g)? g:{};
  }
  if(typeof a == 'number' || typeof a == 'function')
                              // reorder the a,b,c elements of the line
-                             return _jsxBoard().create('line', [c,a,b], defaultAttributes(d)) // as Line
+                             return (this._jBoard as any).create('line', [c,a,b], this.defaultAttributes(d)) as Line
                           else  //  two points
-                             return _jsxBoard().create('line', [a,b], defaultAttributes(c)) // as Line
+                             return (this._jBoard as any).create('line', [a,b], this.defaultAttributes(c)) as Line
              
  }
 
+ // Missing signaature array for View3D
+ // Missing signaature array for currentBoard
+
+
  /** create a chart */
- export function chart(f:number[], attributes: ChartAttributes ={} ):Chart{
-   return TSX._jsxBoard().create('chart', [f,], defaultAttributes(attributes))  as Chart
+ Chart (f:number[], attributes: ChartAttributes ={} ):Chart {
+   return (this._jBoard as any).create('chart', [f,], this.defaultAttributes(attributes))  as Chart
 }
 
 
- /** A circle can be constructed by providing a center and a point on the circle,
-                         or a center and a radius (given as a number, function, line, or circle).
-                         If the radius is a negative value, its absolute values is taken.
-                
-*```js
-                TSX.circle(P1,1])
-                TSX.circle([0,0],[1,0])
-                
-*```
-                
-Also see: Circumcircle is a circle described by three points.  An Arc is a segment of a circle. */
- export function circle(centerPoint:Point|pointAddr|Function, remotePoint:Point|pointAddr|Line|[Point|pointAddr,Point|pointAddr]|number|Function|Circle, attributes: CircleAttributes ={} ):Circle{
-  let newObject:any  // special case for circle with immediate segment eg:  circle(point,[[1,2],[3,4]]  )
-                            if (Array.isArray(remotePoint) && Array.isArray(remotePoint[0] ) && Array.isArray(remotePoint[1] )) {
-                                return _jsxBoard().create("circle", [centerPoint, remotePoint[0] ,remotePoint[1]], defaultAttributes(attributes))
-                            } else {
-                                return _jsxBoard().create("circle", [centerPoint, remotePoint], defaultAttributes(attributes))
-                            }
-}
+ Circle( centerPoint:Point|pointAddr|Function,remotePoint:Point|pointAddr|Line|number|Function|Circle,attributes?:CircleAttributes) : Circle
+ Circle( initial:Circle,transform:Transform,attributes?:CircleAttributes) : Circle
+// implementation of signature,  hidden from user
+ Circle (a?:any, b?:any, c?:any, d?:any,e?:any,f?:any,g?:any,h?:any,i?:any) {
+   let params:any[] = []
+   let attrs = {}
+ if(arguments.length == 1) {
+   params = this.isAttribute(a)?[]:[a,];
+   attrs = this.isAttribute(a)? a:{};
+ }
+ if(arguments.length == 2) {
+   params = this.isAttribute(b)?[a,]:[a,b,];
+   attrs = this.isAttribute(b)? b:{};
+ }
+ if(arguments.length == 3) {
+   params = this.isAttribute(c)?[a,b,]:[a,b,c,];
+   attrs = this.isAttribute(c)? c:{};
+ }
+ if(arguments.length == 4) {
+   params = this.isAttribute(d)?[a,b,c,]:[a,b,c,d,];
+   attrs = this.isAttribute(d)? d:{};
+ }
+ if(arguments.length == 5) {
+   params = this.isAttribute(e)?[a,b,c,d,]:[a,b,c,d,e,];
+   attrs = this.isAttribute(e)? e:{};
+ }
+ if(arguments.length == 6) {
+   params = this.isAttribute(f)?[a,b,c,d,e,]:[a,b,c,d,e,f,];
+   attrs = this.isAttribute(f)? f:{};
+ }
+ if(arguments.length == 7) {
+   params = this.isAttribute(g)?[a,b,c,d,e,f,]:[a,b,c,d,e,f,g,];
+   attrs = this.isAttribute(g)? g:{};
+ }
+   return (this._jBoard as any).create('circle', params, this.defaultAttributes(attrs))
+ }
 
 
  /** In 3D space, a circle consists of all points on a given plane with a given distance from a given point.
@@ -2704,98 +4887,105 @@ let a = TSX.point3D([-3, 0, 0])
 let circle = TSX.circle3D(a, [1, 1, 1], 2, { strokeWidth: 5, strokeColor: 'blue' })
 ```
  */
- export function circle3d(center:TSX.Point3D, normal:number[]|Function, radius:number|Function, attributes: Circle3DAttributes ={} ):Circle3D{
+ Circle3D (center:Point3D, normal:number[]|Function, radius:number|Function, attributes: Circle3DAttributes ={} ):Circle3D {
  
                 let tempNormal:number[] = (typeof normal === "function") ? normal() : normal;
                 if(tempNormal.length ===3) tempNormal.unshift(0);   // convert [a,b,c] to [0,a,b,c]
-                return _jsxView3d().create("circle3d",[center,normal,radius],attributes)
+                return (this._jView3d as any).create("circle3d",[center,normal,radius],attributes)
 }
 
- export function curve( xArray:number[]|Function,yArray:number[]|Function,attributes?:CurveAttributes) : Curve
- export function curve( xArray:number[]|Function,yArray:number[]|Function,left:NumberFunction,right:NumberFunction,attributes?:CurveAttributes) : Curve
+ // Missing signaature array for Complex
+ // Missing signaature array for Composition
+ // Missing signaature array for Coords
+
+ Curve( xArray:number[]|Function,yArray:number[]|Function,attributes?:CurveAttributes) : Curve
+ Curve( xArray:number[]|Function,yArray:number[]|Function,left:NumberFunction,right:NumberFunction,attributes?:CurveAttributes) : Curve
 // implementation of signature,  hidden from user
- export function curve (a?:any, b?:any, c?:any, d?:any,e?:any,f?:any,g?:any,h?:any,i?:any) :Curve {
+ Curve (a?:any, b?:any, c?:any, d?:any,e?:any,f?:any,g?:any,h?:any,i?:any) {
    let params:any[] = []
    let attrs = {}
  if(arguments.length == 1) {
-   params = isAttribute(a)?[]:[a,];
-   attrs = isAttribute(a)? a:{};
+   params = this.isAttribute(a)?[]:[a,];
+   attrs = this.isAttribute(a)? a:{};
  }
  if(arguments.length == 2) {
-   params = isAttribute(b)?[a,]:[a,b,];
-   attrs = isAttribute(b)? b:{};
+   params = this.isAttribute(b)?[a,]:[a,b,];
+   attrs = this.isAttribute(b)? b:{};
  }
  if(arguments.length == 3) {
-   params = isAttribute(c)?[a,b,]:[a,b,c,];
-   attrs = isAttribute(c)? c:{};
+   params = this.isAttribute(c)?[a,b,]:[a,b,c,];
+   attrs = this.isAttribute(c)? c:{};
  }
  if(arguments.length == 4) {
-   params = isAttribute(d)?[a,b,c,]:[a,b,c,d,];
-   attrs = isAttribute(d)? d:{};
+   params = this.isAttribute(d)?[a,b,c,]:[a,b,c,d,];
+   attrs = this.isAttribute(d)? d:{};
  }
  if(arguments.length == 5) {
-   params = isAttribute(e)?[a,b,c,d,]:[a,b,c,d,e,];
-   attrs = isAttribute(e)? e:{};
+   params = this.isAttribute(e)?[a,b,c,d,]:[a,b,c,d,e,];
+   attrs = this.isAttribute(e)? e:{};
  }
  if(arguments.length == 6) {
-   params = isAttribute(f)?[a,b,c,d,e,]:[a,b,c,d,e,f,];
-   attrs = isAttribute(f)? f:{};
+   params = this.isAttribute(f)?[a,b,c,d,e,]:[a,b,c,d,e,f,];
+   attrs = this.isAttribute(f)? f:{};
  }
  if(arguments.length == 7) {
-   params = isAttribute(g)?[a,b,c,d,e,f,]:[a,b,c,d,e,f,g,];
-   attrs = isAttribute(g)? g:{};
+   params = this.isAttribute(g)?[a,b,c,d,e,f,]:[a,b,c,d,e,f,g,];
+   attrs = this.isAttribute(g)? g:{};
  }
-   return TSX._jsxBoard().create('curve', params, defaultAttributes(attrs))  as Curve
+   return (this._jBoard as any).create('curve', params, this.defaultAttributes(attrs))
  }
+
  /** Three signatures: A curve in 3D is given by a function returning [x,y,z], three functions returning [x], [y],and [z], or three arrays containing coordinate points. 
  *``` 
 *``` 
  FX(u), FY(u), FZ(u) are functions returning a number, range is the array containing lower and upper bound for the range of the parameter u. range may also be a function returning an array of length two. */
- export function curve3d( Fx:(x:number)=>number,Fy:(y:number)=>number,Fz:(z:number)=>number,range:pointAddr3D,attributes?:Curve3DAttributes) : Curve3D
+ Curve3D( Fx:(x:number)=>number,Fy:(y:number)=>number,Fz:(z:number)=>number,range:pointAddr3D,attributes?:Curve3DAttributes) : Curve3D
  /** Three signatures: A curve in 3D is given by a function returning [x,y,z], three functions returning [x], [y],and [z], or three arrays containing coordinate points. 
  *``` 
 *``` 
  A function of one variable returns an array of [x,y,z] values. */
- export function curve3d( Fxyz:(x:number)=>[number,number,number]|number[],range:pointAddr3D,attributes?:Curve3DAttributes) : Curve3D
+ Curve3D( Fxyz:(x:number)=>[number,number,number]|number[],range:pointAddr3D,attributes?:Curve3DAttributes) : Curve3D
  /** Three signatures: A curve in 3D is given by a function returning [x,y,z], three functions returning [x], [y],and [z], or three arrays containing coordinate points. 
  *``` 
 *``` 
  A curve is drawn through the XYZ points described by three arrays. */
- export function curve3d( X:number[],Y:number[],Z:number[],attributes?:Curve3DAttributes) : Curve3D
+ Curve3D( X:number[],Y:number[],Z:number[],attributes?:Curve3DAttributes) : Curve3D
 // implementation of signature,  hidden from user
- export function curve3d (a?:any, b?:any, c?:any, d?:any,e?:any,f?:any,g?:any,h?:any,i?:any) :Curve3D {
+ Curve3D (a?:any, b?:any, c?:any, d?:any,e?:any,f?:any,g?:any,h?:any,i?:any) {
    let params:any[] = []
    let attrs = {}
  if(arguments.length == 1) {
-   params = isAttribute(a)?[]:[a,];
-   attrs = isAttribute(a)? a:{};
+   params = this.isAttribute(a)?[]:[a,];
+   attrs = this.isAttribute(a)? a:{};
  }
  if(arguments.length == 2) {
-   params = isAttribute(b)?[a,]:[a,b,];
-   attrs = isAttribute(b)? b:{};
+   params = this.isAttribute(b)?[a,]:[a,b,];
+   attrs = this.isAttribute(b)? b:{};
  }
  if(arguments.length == 3) {
-   params = isAttribute(c)?[a,b,]:[a,b,c,];
-   attrs = isAttribute(c)? c:{};
+   params = this.isAttribute(c)?[a,b,]:[a,b,c,];
+   attrs = this.isAttribute(c)? c:{};
  }
  if(arguments.length == 4) {
-   params = isAttribute(d)?[a,b,c,]:[a,b,c,d,];
-   attrs = isAttribute(d)? d:{};
+   params = this.isAttribute(d)?[a,b,c,]:[a,b,c,d,];
+   attrs = this.isAttribute(d)? d:{};
  }
  if(arguments.length == 5) {
-   params = isAttribute(e)?[a,b,c,d,]:[a,b,c,d,e,];
-   attrs = isAttribute(e)? e:{};
+   params = this.isAttribute(e)?[a,b,c,d,]:[a,b,c,d,e,];
+   attrs = this.isAttribute(e)? e:{};
  }
  if(arguments.length == 6) {
-   params = isAttribute(f)?[a,b,c,d,e,]:[a,b,c,d,e,f,];
-   attrs = isAttribute(f)? f:{};
+   params = this.isAttribute(f)?[a,b,c,d,e,]:[a,b,c,d,e,f,];
+   attrs = this.isAttribute(f)? f:{};
  }
  if(arguments.length == 7) {
-   params = isAttribute(g)?[a,b,c,d,e,f,]:[a,b,c,d,e,f,g,];
-   attrs = isAttribute(g)? g:{};
+   params = this.isAttribute(g)?[a,b,c,d,e,f,]:[a,b,c,d,e,f,g,];
+   attrs = this.isAttribute(g)? g:{};
  }
-   return TSX._jsxView3d().create('curve3d', params, defaultAttributes(attrs))  as Curve3D
+   return (this._jView3d as any).create('curve3d', params, this.defaultAttributes(attrs))
  }
+ // Missing signaature array for Dump
+
 
  /** This element is used to provide a constructor for arbitrary content in an SVG foreignObject container.
 ```js
@@ -2805,15 +4995,21 @@ TSX.foreignObject(
     {layer: 8, fixed: true})
 ```
               */
- export function foreignObject(content:string, position:number[], size:number[]|null=null, attributes: ForeignObjectAttributes ={} ):ForeignObject{
-   return TSX._jsxBoard().create('foreignObject', [content,position,size,], defaultAttributes(attributes))  as ForeignObject
+ ForeignObject (content:string, position:number[], size:number[]|null=null, attributes: ForeignObjectAttributes ={} ):ForeignObject {
+   return (this._jBoard as any).create('foreignObject', [content,position,size,], this.defaultAttributes(attributes))  as ForeignObject
 }
+
 
 
  /** Array of Points */
- export function group(pointArray:Point[]|Polygon, attributes: GroupAttributes ={} ):Group{
-   return TSX._jsxBoard().create('group', [pointArray,].flat(), defaultAttributes(attributes))  as Group
+ Group (pointArray:Point[]|Polygon, attributes: GroupAttributes ={} ):Group {
+ if (Array.isArray(pointArray))
+                    return (this._jBoard as any).create('group', pointArray, this.defaultAttributes(attributes))
+                else
+                    return (this._jBoard as any).create('group', [pointArray], this.defaultAttributes(attributes))
+                
 }
+
 
 
  /** Display an image.  The first element is the location URL of the image.
@@ -2830,187 +5026,204 @@ If you want to move the image, just tie the image to a point, maybe at the cente
             TSX.image('icons/moon-full-moon.png', [()=>p1.X(),()=>p1.Y()])
                 
 *``` */
- export function image(url:String|spaceIcon, lowerLeft:pointAddr, widthHeight:[number,number]=[1,1], attributes: ImageAttributes ={} ):Image{
-   return TSX._jsxBoard().create('image', [url,lowerLeft,widthHeight,], defaultAttributes(attributes))  as Image
+ Image (url:SpaceIcon, lowerLeft:pointAddr, widthHeight:[number,number]=[1,1], attributes: ImageAttributes ={} ):Image {
+   return (this._jBoard as any).create('image', [url,lowerLeft,widthHeight,], this.defaultAttributes(attributes))  as Image
 }
 
- export function implicitcurve( f:Function|String,attributes?:ImplicitcurveAttributes) : Implicitcurve
- export function implicitcurve( f:Function|String,dfx:Function|String,dfy:Function|String,attributes?:ImplicitcurveAttributes) : Implicitcurve
+
+ Implicitcurve( f:Function|String,attributes?:ImplicitcurveAttributes) : Implicitcurve
+ Implicitcurve( f:Function|String,dfx:Function|String,dfy:Function|String,attributes?:ImplicitcurveAttributes) : Implicitcurve
 // implementation of signature,  hidden from user
- export function implicitcurve (a?:any, b?:any, c?:any, d?:any,e?:any,f?:any,g?:any,h?:any,i?:any) :Implicitcurve {
+ Implicitcurve (a?:any, b?:any, c?:any, d?:any,e?:any,f?:any,g?:any,h?:any,i?:any) {
    let params:any[] = []
    let attrs = {}
  if(arguments.length == 1) {
-   params = isAttribute(a)?[]:[a,];
-   attrs = isAttribute(a)? a:{};
+   params = this.isAttribute(a)?[]:[a,];
+   attrs = this.isAttribute(a)? a:{};
  }
  if(arguments.length == 2) {
-   params = isAttribute(b)?[a,]:[a,b,];
-   attrs = isAttribute(b)? b:{};
+   params = this.isAttribute(b)?[a,]:[a,b,];
+   attrs = this.isAttribute(b)? b:{};
  }
  if(arguments.length == 3) {
-   params = isAttribute(c)?[a,b,]:[a,b,c,];
-   attrs = isAttribute(c)? c:{};
+   params = this.isAttribute(c)?[a,b,]:[a,b,c,];
+   attrs = this.isAttribute(c)? c:{};
  }
  if(arguments.length == 4) {
-   params = isAttribute(d)?[a,b,c,]:[a,b,c,d,];
-   attrs = isAttribute(d)? d:{};
+   params = this.isAttribute(d)?[a,b,c,]:[a,b,c,d,];
+   attrs = this.isAttribute(d)? d:{};
  }
  if(arguments.length == 5) {
-   params = isAttribute(e)?[a,b,c,d,]:[a,b,c,d,e,];
-   attrs = isAttribute(e)? e:{};
+   params = this.isAttribute(e)?[a,b,c,d,]:[a,b,c,d,e,];
+   attrs = this.isAttribute(e)? e:{};
  }
  if(arguments.length == 6) {
-   params = isAttribute(f)?[a,b,c,d,e,]:[a,b,c,d,e,f,];
-   attrs = isAttribute(f)? f:{};
+   params = this.isAttribute(f)?[a,b,c,d,e,]:[a,b,c,d,e,f,];
+   attrs = this.isAttribute(f)? f:{};
  }
  if(arguments.length == 7) {
-   params = isAttribute(g)?[a,b,c,d,e,f,]:[a,b,c,d,e,f,g,];
-   attrs = isAttribute(g)? g:{};
+   params = this.isAttribute(g)?[a,b,c,d,e,f,]:[a,b,c,d,e,f,g,];
+   attrs = this.isAttribute(g)? g:{};
  }
-   return TSX._jsxBoard().create('implicitcurve', params, defaultAttributes(attrs))  as Implicitcurve
+   return (this._jBoard as any).create('implicitcurve', params, this.defaultAttributes(attrs))
  }
-
- /** The circle that is the intersection of two elements (plane3d or sphere3d) in 3D. */
- export function intersectionCircle3d(sphere1:TSX.Sphere3D, sphere:TSX.Sphere3D|TSX.Plane3D, attributes: IntersectionCircle3DAttributes ={} ):IntersectionCircle3D{
-   return TSX._jsxView3d().create('intersectioncircle3d', [sphere1,sphere,], defaultAttributes(attributes))  as IntersectionCircle3D
-}
 
 
  /** The circle that is the intersection of two elements (plane3d or sphere3d) in 3D. */
- export function intersectionLine3d(plane1:TSX.Sphere3D, plane2:TSX.Plane3D, attributes: IntersectionLine3DAttributes ={} ):IntersectionLine3D{
-   return TSX._jsxView3d().create('intersectionline3d', [plane1,plane2,], defaultAttributes(attributes))  as IntersectionLine3D
+ IntersectionCircle3D (sphere1:Sphere3D, sphere:Sphere3D|Plane3D, attributes: IntersectionCircle3DAttributes ={} ):IntersectionCircle3D {
+   return (this._jView3d as any).create('intersectioncircle3d', [sphere1,sphere,], this.defaultAttributes(attributes))  as IntersectionCircle3D
 }
+
+
+
+ /** The circle that is the intersection of two elements (plane3d or sphere3d) in 3D. */
+ IntersectionLine3D (plane1:Sphere3D, plane2:Plane3D, attributes: IntersectionLine3DAttributes ={} ):IntersectionLine3D {
+   return (this._jView3d as any).create('intersectionline3d', [plane1,plane2,], this.defaultAttributes(attributes))  as IntersectionLine3D
+}
+
 
  /** Two signatures: A line in 3D is given by two points, or one point and a direction vector. 
  *``` 
 *``` 
  The 3D line is defined by two 3D points (Point3D): The points can be either existing points or coordinate arrays of the form [x, y, z]. */
- export function line3d( point1:Point3D|pointAddr3D,point2:Point3D|pointAddr3D,attributes?:Line3DAttributes) : Line3D
+ Line3D( point1:Point3D|pointAddr3D,point2:Point3D|pointAddr3D,attributes?:Line3DAttributes) : Line3D
  /** Two signatures: A line in 3D is given by two points, or one point and a direction vector. 
  *``` 
 *``` 
  The 3D line is defined by a point (or coordinate array [x, y, z]) a direction given as array [x, y, z] and an optional range given as array [s, e]. The default value for the range is [-Infinity, Infinity]. */
- export function line3d( point:Point3D|pointAddr3D,direction:Line3D|pointAddr3D,range:number[]|pointAddr,attributes?:Line3DAttributes) : Line3D
+ Line3D( point:Point3D|pointAddr3D,direction:Line3D|pointAddr3D,range:number[]|pointAddr,attributes?:Line3DAttributes) : Line3D
 // implementation of signature,  hidden from user
- export function line3d (a?:any, b?:any, c?:any, d?:any,e?:any,f?:any,g?:any,h?:any,i?:any) :Line3D {
+ Line3D (a?:any, b?:any, c?:any, d?:any,e?:any,f?:any,g?:any,h?:any,i?:any) {
    let params:any[] = []
    let attrs = {}
  if(arguments.length == 1) {
-   params = isAttribute(a)?[]:[a,];
-   attrs = isAttribute(a)? a:{};
+   params = this.isAttribute(a)?[]:[a,];
+   attrs = this.isAttribute(a)? a:{};
  }
  if(arguments.length == 2) {
-   params = isAttribute(b)?[a,]:[a,b,];
-   attrs = isAttribute(b)? b:{};
+   params = this.isAttribute(b)?[a,]:[a,b,];
+   attrs = this.isAttribute(b)? b:{};
  }
  if(arguments.length == 3) {
-   params = isAttribute(c)?[a,b,]:[a,b,c,];
-   attrs = isAttribute(c)? c:{};
+   params = this.isAttribute(c)?[a,b,]:[a,b,c,];
+   attrs = this.isAttribute(c)? c:{};
  }
  if(arguments.length == 4) {
-   params = isAttribute(d)?[a,b,c,]:[a,b,c,d,];
-   attrs = isAttribute(d)? d:{};
+   params = this.isAttribute(d)?[a,b,c,]:[a,b,c,d,];
+   attrs = this.isAttribute(d)? d:{};
  }
  if(arguments.length == 5) {
-   params = isAttribute(e)?[a,b,c,d,]:[a,b,c,d,e,];
-   attrs = isAttribute(e)? e:{};
+   params = this.isAttribute(e)?[a,b,c,d,]:[a,b,c,d,e,];
+   attrs = this.isAttribute(e)? e:{};
  }
  if(arguments.length == 6) {
-   params = isAttribute(f)?[a,b,c,d,e,]:[a,b,c,d,e,f,];
-   attrs = isAttribute(f)? f:{};
+   params = this.isAttribute(f)?[a,b,c,d,e,]:[a,b,c,d,e,f,];
+   attrs = this.isAttribute(f)? f:{};
  }
  if(arguments.length == 7) {
-   params = isAttribute(g)?[a,b,c,d,e,f,]:[a,b,c,d,e,f,g,];
-   attrs = isAttribute(g)? g:{};
+   params = this.isAttribute(g)?[a,b,c,d,e,f,]:[a,b,c,d,e,f,g,];
+   attrs = this.isAttribute(g)? g:{};
  }
-   return TSX._jsxView3d().create('line3d', params, defaultAttributes(attrs))  as Line3D
- }
- export function plane3d( point:Point3D|number[]|Function,direction1:number[]|Function,direction2:number[]|Function,range1?:pointAddr,range2?:pointAddr,attributes?:Plane3DAttributes) : Plane3D
- export function plane3d( point:Point3D|number[]|Function,direction1:number[]|Function|Function[],direction2:number[]|Function|Function[],range1?:pointAddr,range2?:pointAddr,attributes?:Plane3DAttributes) : Plane3D
- export function plane3d( point1:Point3D,point2:Point3D,point3:Point3D,range1?:pointAddr,range2?:pointAddr,attributes?:Plane3DAttributes) : Plane3D
- export function plane3d( point1:Point3D,point2:Point3D,point3:Point3D,attributes?:Plane3DAttributes) : Plane3D
-// implementation of signature,  hidden from user
- export function plane3d (a?:any, b?:any, c?:any, d?:any,e?:any,f?:any,g?:any,h?:any,i?:any) :Plane3D {
-   let params:any[] = []
-   let attrs = {}
- if(arguments.length == 1) {
-   params = isAttribute(a)?[]:[a,];
-   attrs = isAttribute(a)? a:{};
- }
- if(arguments.length == 2) {
-   params = isAttribute(b)?[a,]:[a,b,];
-   attrs = isAttribute(b)? b:{};
- }
- if(arguments.length == 3) {
-   params = isAttribute(c)?[a,b,]:[a,b,c,];
-   attrs = isAttribute(c)? c:{};
- }
- if(arguments.length == 4) {
-   params = isAttribute(d)?[a,b,c,]:[a,b,c,d,];
-   attrs = isAttribute(d)? d:{};
- }
- if(arguments.length == 5) {
-   params = isAttribute(e)?[a,b,c,d,]:[a,b,c,d,e,];
-   attrs = isAttribute(e)? e:{};
- }
- if(arguments.length == 6) {
-   params = isAttribute(f)?[a,b,c,d,e,]:[a,b,c,d,e,f,];
-   attrs = isAttribute(f)? f:{};
- }
- if(arguments.length == 7) {
-   params = isAttribute(g)?[a,b,c,d,e,f,]:[a,b,c,d,e,f,g,];
-   attrs = isAttribute(g)? g:{};
- }
-   return TSX._jsxView3d().create('plane3d', params, defaultAttributes(attrs))  as Plane3D
- }
- export function point3d( xyz:NumberFunction[],attributes?:Point3DAttributes) : Point3D
- export function point3d( fn:()=> number[]|[number,number,number],attributes?:Point3DAttributes) : Point3D
-// implementation of signature,  hidden from user
- export function point3d (a?:any, b?:any, c?:any, d?:any,e?:any,f?:any,g?:any,h?:any,i?:any) :Point3D {
-   let params:any[] = []
-   let attrs = {}
- if(arguments.length == 1) {
-   params = isAttribute(a)?[]:[a,];
-   attrs = isAttribute(a)? a:{};
- }
- if(arguments.length == 2) {
-   params = isAttribute(b)?[a,]:[a,b,];
-   attrs = isAttribute(b)? b:{};
- }
- if(arguments.length == 3) {
-   params = isAttribute(c)?[a,b,]:[a,b,c,];
-   attrs = isAttribute(c)? c:{};
- }
- if(arguments.length == 4) {
-   params = isAttribute(d)?[a,b,c,]:[a,b,c,d,];
-   attrs = isAttribute(d)? d:{};
- }
- if(arguments.length == 5) {
-   params = isAttribute(e)?[a,b,c,d,]:[a,b,c,d,e,];
-   attrs = isAttribute(e)? e:{};
- }
- if(arguments.length == 6) {
-   params = isAttribute(f)?[a,b,c,d,e,]:[a,b,c,d,e,f,];
-   attrs = isAttribute(f)? f:{};
- }
- if(arguments.length == 7) {
-   params = isAttribute(g)?[a,b,c,d,e,f,]:[a,b,c,d,e,f,g,];
-   attrs = isAttribute(g)? g:{};
- }
-   return TSX._jsxView3d().create('point3d', params, defaultAttributes(attrs))  as Point3D
+   return (this._jView3d as any).create('line3d', params, this.defaultAttributes(attrs))
  }
 
+ Plane3D( point:Point3D|number[]|Function,direction1:number[]|Function,direction2:number[]|Function,range1?:pointAddr,range2?:pointAddr,attributes?:Plane3DAttributes) : Plane3D
+ Plane3D( point:Point3D|number[]|Function,direction1:number[]|Function|Function[],direction2:number[]|Function|Function[],range1?:pointAddr,range2?:pointAddr,attributes?:Plane3DAttributes) : Plane3D
+ Plane3D( point1:Point3D,point2:Point3D,point3:Point3D,range1?:pointAddr,range2?:pointAddr,attributes?:Plane3DAttributes) : Plane3D
+ Plane3D( point1:Point3D,point2:Point3D,point3:Point3D,attributes?:Plane3DAttributes) : Plane3D
+// implementation of signature,  hidden from user
+ Plane3D (a?:any, b?:any, c?:any, d?:any,e?:any,f?:any,g?:any,h?:any,i?:any) {
+   let params:any[] = []
+   let attrs = {}
+ if(arguments.length == 1) {
+   params = this.isAttribute(a)?[]:[a,];
+   attrs = this.isAttribute(a)? a:{};
+ }
+ if(arguments.length == 2) {
+   params = this.isAttribute(b)?[a,]:[a,b,];
+   attrs = this.isAttribute(b)? b:{};
+ }
+ if(arguments.length == 3) {
+   params = this.isAttribute(c)?[a,b,]:[a,b,c,];
+   attrs = this.isAttribute(c)? c:{};
+ }
+ if(arguments.length == 4) {
+   params = this.isAttribute(d)?[a,b,c,]:[a,b,c,d,];
+   attrs = this.isAttribute(d)? d:{};
+ }
+ if(arguments.length == 5) {
+   params = this.isAttribute(e)?[a,b,c,d,]:[a,b,c,d,e,];
+   attrs = this.isAttribute(e)? e:{};
+ }
+ if(arguments.length == 6) {
+   params = this.isAttribute(f)?[a,b,c,d,e,]:[a,b,c,d,e,f,];
+   attrs = this.isAttribute(f)? f:{};
+ }
+ if(arguments.length == 7) {
+   params = this.isAttribute(g)?[a,b,c,d,e,f,]:[a,b,c,d,e,f,g,];
+   attrs = this.isAttribute(g)? g:{};
+ }
+   return (this._jView3d as any).create('plane3d', params, this.defaultAttributes(attrs))
+ }
+
+ Point3D( xyz:NumberFunction[],attributes?:Point3DAttributes) : Point3D
+ Point3D( fn:()=> number[]|[number,number,number],attributes?:Point3DAttributes) : Point3D
+// implementation of signature,  hidden from user
+ Point3D (a?:any, b?:any, c?:any, d?:any,e?:any,f?:any,g?:any,h?:any,i?:any) {
+   let params:any[] = []
+   let attrs = {}
+ if(arguments.length == 1) {
+   params = this.isAttribute(a)?[]:[a,];
+   attrs = this.isAttribute(a)? a:{};
+ }
+ if(arguments.length == 2) {
+   params = this.isAttribute(b)?[a,]:[a,b,];
+   attrs = this.isAttribute(b)? b:{};
+ }
+ if(arguments.length == 3) {
+   params = this.isAttribute(c)?[a,b,]:[a,b,c,];
+   attrs = this.isAttribute(c)? c:{};
+ }
+ if(arguments.length == 4) {
+   params = this.isAttribute(d)?[a,b,c,]:[a,b,c,d,];
+   attrs = this.isAttribute(d)? d:{};
+ }
+ if(arguments.length == 5) {
+   params = this.isAttribute(e)?[a,b,c,d,]:[a,b,c,d,e,];
+   attrs = this.isAttribute(e)? e:{};
+ }
+ if(arguments.length == 6) {
+   params = this.isAttribute(f)?[a,b,c,d,e,]:[a,b,c,d,e,f,];
+   attrs = this.isAttribute(f)? f:{};
+ }
+ if(arguments.length == 7) {
+   params = this.isAttribute(g)?[a,b,c,d,e,f,]:[a,b,c,d,e,f,g,];
+   attrs = this.isAttribute(g)? g:{};
+ }
+   return (this._jView3d as any).create('point3d', params, this.defaultAttributes(attrs))
+ }
+
+
  /** Array of Points */
- export function polygon(pointArray:Point[]|pointAddr[]|Function, attributes: PolygonAttributes ={} ):Polygon{
-   return TSX._jsxBoard().create('polygon', [pointArray,].flat(), defaultAttributes(attributes))  as Polygon
+ Polygon (vertices:Point[]|pointAddr[]|Function, attributes: PolygonAttributes ={} ):Polygon {
+ if (typeof vertices === 'function')
+                              return (this._jBoard as any).create('polygon', [vertices], this.defaultAttributes(attributes))
+                           else
+                              return (this._jBoard as any).create('polygon', vertices/*.flat()*/, this.defaultAttributes(attributes))
+                  
 }
+
 
 
  /** A polygon is a sequence of points connected by lines, with the last point connecting back to the first one. The points are given by a list of Point3D objects or a list of coordinate arrays. Each two consecutive points of the list define a line. */
- export function polygon3d(vertices:Point3D[]|pointAddr3D[]|Function, attributes: Polygon3DAttributes ={} ):Polygon3D{
-   return TSX._jsxView3d().create('polygon3d', [vertices,], defaultAttributes(attributes))  as Polygon3D
+ Polygon3D (vertices:Point3D[]|pointAddr3D[]|Function, attributes: Polygon3DAttributes ={} ):Polygon3D {
+ if (typeof vertices === 'function')
+                            return (this._jBoard as any).create('polygon3d', [vertices], this.defaultAttributes(attributes))
+                         else
+                            return (this._jBoard as any).create('polygon3d', vertices/*.flat()*/, this.defaultAttributes(attributes))
+                        
 }
+
 
 
  /** Display a message
@@ -3021,102 +5234,104 @@ TSX.text([0, 4], () => 'BD ' + B.distance(D).toFixed(2))
 TSX.text([-4, 2], '\pm\sqrt{a^2 + b^2}', { useKatex: true })
                                 
 *``` */
- export function text(position:Point|pointAddr, label:String|Function, attributes: TextAttributes ={} ):Text{
+ Text (position:Point|pointAddr, label:string|Function, attributes: TextAttributes ={} ):Text {
  (position as any).push(label);
-                        return _jsxBoard().create('text', position,defaultAttributes(attributes));
+                        return (this._jBoard as any).create('text', position,this.defaultAttributes(attributes));
 }
 
- export function text3d( position:Point3D|number[]|Function,text:string|Function,attributes?:Text3DAttributes) : Text3D
- export function text3d( position:Point3D|number[]|Function,text:string|Function,slide:GeometryElement3D,attributes?:Text3DAttributes) : Text3D
+
+ Text3D( position:Point3D|number[]|Function,text:string|Function,attributes?:Text3DAttributes) : Text3D
+ Text3D( position:Point3D|number[]|Function,text:string|Function,slide:GeometryElement3D,attributes?:Text3DAttributes) : Text3D
 // implementation of signature,  hidden from user
- export function text3d (a?:any, b?:any, c?:any, d?:any,e?:any,f?:any,g?:any,h?:any,i?:any) :Text3D {
+ Text3D (a?:any, b?:any, c?:any, d?:any,e?:any,f?:any,g?:any,h?:any,i?:any) {
    let params:any[] = []
    let attrs = {}
  if(arguments.length == 1) {
-   params = isAttribute(a)?[]:[a,];
-   attrs = isAttribute(a)? a:{};
+   params = this.isAttribute(a)?[]:[a,];
+   attrs = this.isAttribute(a)? a:{};
  }
  if(arguments.length == 2) {
-   params = isAttribute(b)?[a,]:[a,b,];
-   attrs = isAttribute(b)? b:{};
+   params = this.isAttribute(b)?[a,]:[a,b,];
+   attrs = this.isAttribute(b)? b:{};
  }
  if(arguments.length == 3) {
-   params = isAttribute(c)?[a,b,]:[a,b,c,];
-   attrs = isAttribute(c)? c:{};
+   params = this.isAttribute(c)?[a,b,]:[a,b,c,];
+   attrs = this.isAttribute(c)? c:{};
  }
  if(arguments.length == 4) {
-   params = isAttribute(d)?[a,b,c,]:[a,b,c,d,];
-   attrs = isAttribute(d)? d:{};
+   params = this.isAttribute(d)?[a,b,c,]:[a,b,c,d,];
+   attrs = this.isAttribute(d)? d:{};
  }
  if(arguments.length == 5) {
-   params = isAttribute(e)?[a,b,c,d,]:[a,b,c,d,e,];
-   attrs = isAttribute(e)? e:{};
+   params = this.isAttribute(e)?[a,b,c,d,]:[a,b,c,d,e,];
+   attrs = this.isAttribute(e)? e:{};
  }
  if(arguments.length == 6) {
-   params = isAttribute(f)?[a,b,c,d,e,]:[a,b,c,d,e,f,];
-   attrs = isAttribute(f)? f:{};
+   params = this.isAttribute(f)?[a,b,c,d,e,]:[a,b,c,d,e,f,];
+   attrs = this.isAttribute(f)? f:{};
  }
  if(arguments.length == 7) {
-   params = isAttribute(g)?[a,b,c,d,e,f,]:[a,b,c,d,e,f,g,];
-   attrs = isAttribute(g)? g:{};
+   params = this.isAttribute(g)?[a,b,c,d,e,f,]:[a,b,c,d,e,f,g,];
+   attrs = this.isAttribute(g)? g:{};
  }
- return _jsxView3d().create('text3d',[params].flat(),defaultAttributes(attrs))
+   return (this._jView3d as any).create('text3d', params, this.defaultAttributes(attrs))
  }
+
 
  /** Ticks are used as distance markers on a line or curve. They are mainly used for axis elements and slider elements.  */
- export function ticks(line:Line, attributes: TicksAttributes ={} ):Ticks{
-   return TSX._jsxBoard().create('ticks', [line,], defaultAttributes(attributes))  as Ticks
+ Ticks (line:Line, attributes: TicksAttributes ={} ):Ticks {
+   return (this._jBoard as any).create('ticks', [line,], this.defaultAttributes(attributes))  as Ticks
 }
 
 
- /** A circular sector is a subarea of the area enclosed by a circle. It is enclosed by two radii and an arc. */
- export function sector(P1:Point|pointAddr, P2:Point|pointAddr, P3:Point|pointAddr, attributes: SectorAttributes ={} ):Sector{
-   return TSX._jsxBoard().create('sector', [P1,P2,P3,], defaultAttributes(attributes))  as Sector
+ Sector (P1:Point|pointAddr, P2:Point|pointAddr, P3:Point|pointAddr, attributes: SectorAttributes ={} ):Sector {
+   return (this._jBoard as any).create('sector', [P1,P2,P3,], this.defaultAttributes(attributes))  as Sector
 }
 
 
- /** Vector field. Plot a vector field either given by two functions f1(x, y) and f2(x,y) or by a function f(x, y) returning an array of size 2. */
- export function vectorfield(fxfy:Function[], horizontalMesh:number[]=[-6,25,6], verticalMesh:number[]=[-6,25,6], attributes: VectorfieldAttributes ={} ):Vectorfield{
-   return TSX._jsxBoard().create('vectorfield', [fxfy,horizontalMesh,verticalMesh,], defaultAttributes(attributes))  as Vectorfield
+ Vectorfield (fxfy:Function[], horizontalMesh:number[]=[-6,25,6], verticalMesh:number[]=[-6,25,6], attributes: VectorfieldAttributes ={} ):Vectorfield {
+   return (this._jBoard as any).create('vectorfield', [fxfy,horizontalMesh,verticalMesh,], this.defaultAttributes(attributes))  as Vectorfield
 }
 
- export function angle( from:Point|pointAddr,around:Point|pointAddr,to:Point|pointAddr,attributes?:AngleAttributes) : Angle
- export function angle( line1:Line|[Point|pointAddr,Point|pointAddr],line2:Line|[Point|pointAddr,Point|pointAddr],direction1:[number,number],direction2:[number,number],attributes?:AngleAttributes) : Angle
- export function angle( line1:Line|[Point|pointAddr,Point|pointAddr],line2:Line|[Point|pointAddr,Point|pointAddr],dirPlusMinus1:number,dirPlusMinus2:number,attributes?:AngleAttributes) : Angle
+
+ Angle( from:Point|pointAddr,around:Point|pointAddr,to:Point|pointAddr,attributes?:AngleAttributes) : Angle
+ Angle( line1:Line|[Point|pointAddr,Point|pointAddr],line2:Line|[Point|pointAddr,Point|pointAddr],direction1:[number,number],direction2:[number,number],attributes?:AngleAttributes) : Angle
+ Angle( line1:Line|[Point|pointAddr,Point|pointAddr],line2:Line|[Point|pointAddr,Point|pointAddr],dirPlusMinus1:number,dirPlusMinus2:number,attributes?:AngleAttributes) : Angle
 // implementation of signature,  hidden from user
- export function angle (a?:any, b?:any, c?:any, d?:any,e?:any,f?:any,g?:any,h?:any,i?:any) :Angle {
+ Angle (a?:any, b?:any, c?:any, d?:any,e?:any,f?:any,g?:any,h?:any,i?:any) {
    let params:any[] = []
    let attrs = {}
  if(arguments.length == 1) {
-   params = isAttribute(a)?[]:[a,];
-   attrs = isAttribute(a)? a:{};
+   params = this.isAttribute(a)?[]:[a,];
+   attrs = this.isAttribute(a)? a:{};
  }
  if(arguments.length == 2) {
-   params = isAttribute(b)?[a,]:[a,b,];
-   attrs = isAttribute(b)? b:{};
+   params = this.isAttribute(b)?[a,]:[a,b,];
+   attrs = this.isAttribute(b)? b:{};
  }
  if(arguments.length == 3) {
-   params = isAttribute(c)?[a,b,]:[a,b,c,];
-   attrs = isAttribute(c)? c:{};
+   params = this.isAttribute(c)?[a,b,]:[a,b,c,];
+   attrs = this.isAttribute(c)? c:{};
  }
  if(arguments.length == 4) {
-   params = isAttribute(d)?[a,b,c,]:[a,b,c,d,];
-   attrs = isAttribute(d)? d:{};
+   params = this.isAttribute(d)?[a,b,c,]:[a,b,c,d,];
+   attrs = this.isAttribute(d)? d:{};
  }
  if(arguments.length == 5) {
-   params = isAttribute(e)?[a,b,c,d,]:[a,b,c,d,e,];
-   attrs = isAttribute(e)? e:{};
+   params = this.isAttribute(e)?[a,b,c,d,]:[a,b,c,d,e,];
+   attrs = this.isAttribute(e)? e:{};
  }
  if(arguments.length == 6) {
-   params = isAttribute(f)?[a,b,c,d,e,]:[a,b,c,d,e,f,];
-   attrs = isAttribute(f)? f:{};
+   params = this.isAttribute(f)?[a,b,c,d,e,]:[a,b,c,d,e,f,];
+   attrs = this.isAttribute(f)? f:{};
  }
  if(arguments.length == 7) {
-   params = isAttribute(g)?[a,b,c,d,e,f,]:[a,b,c,d,e,f,g,];
-   attrs = isAttribute(g)? g:{};
+   params = this.isAttribute(g)?[a,b,c,d,e,f,]:[a,b,c,d,e,f,g,];
+   attrs = this.isAttribute(g)? g:{};
  }
-   return TSX._jsxBoard().create('angle', params, defaultAttributes(attrs))  as Angle
+   return (this._jBoard as any).create('angle', params, this.defaultAttributes(attrs))
  }
+
 
  /** Create a circular Arc defined by three points (because a circle can be defined by three points - see circumcircle).
                             
@@ -3126,9 +5341,10 @@ TSX.text([-4, 2], '\pm\sqrt{a^2 + b^2}', { useKatex: true })
 *```
                             
  To create an arc with origin, startpoint, and angle, look at MajorArc/MinorArc. */
- export function arc(origin:Point|pointAddr, from:Point|pointAddr, to:Point|pointAddr, attributes: ArcAttributes ={} ):Arc{
-   return TSX._jsxBoard().create('arc', [origin,from,to,], defaultAttributes(attributes))  as Arc
+ Arc (origin:Point|pointAddr, from:Point|pointAddr, to:Point|pointAddr, attributes: ArcAttributes ={} ):Arc {
+   return (this._jBoard as any).create('arc', [origin,from,to,], this.defaultAttributes(attributes))  as Arc
 }
+
 
 
  /** Arrow defined by two points (like a Segment) with arrow at P2
@@ -3140,57 +5356,61 @@ TSX.text([-4, 2], '\pm\sqrt{a^2 + b^2}', { useKatex: true })
 *```
                             
  */
- export function arrow(p1:Point|pointAddr, p2:Point|pointAddr, attributes: ArrowAttributes ={} ):Arrow{
-   return TSX._jsxBoard().create('arrow', [p1,p2,], defaultAttributes(attributes))  as Arrow
+ Arrow (p1:Point|pointAddr, p2:Point|pointAddr, attributes: ArrowAttributes ={} ):Arrow {
+   return (this._jBoard as any).create('arrow', [p1,p2,], this.defaultAttributes(attributes))  as Arrow
 }
 
- export function parallel( line:Line|[Point,Point],point:Point|pointAddr,attributes?:ParallelAttributes) : Parallel
- export function parallel( lineP1:Point|pointAddr,lineP2:Point|pointAddr,Point:Point|pointAddr,attributes?:ParallelAttributes) : Parallel
+
+ Parallel( line:Line|[Point,Point],point:Point|pointAddr,attributes?:ParallelAttributes) : Parallel
+ Parallel( lineP1:Point|pointAddr,lineP2:Point|pointAddr,Point:Point|pointAddr,attributes?:ParallelAttributes) : Parallel
 // implementation of signature,  hidden from user
- export function parallel (a?:any, b?:any, c?:any, d?:any,e?:any,f?:any,g?:any,h?:any,i?:any) :Parallel {
+ Parallel (a?:any, b?:any, c?:any, d?:any,e?:any,f?:any,g?:any,h?:any,i?:any) {
    let params:any[] = []
    let attrs = {}
  if(arguments.length == 1) {
-   params = isAttribute(a)?[]:[a,];
-   attrs = isAttribute(a)? a:{};
+   params = this.isAttribute(a)?[]:[a,];
+   attrs = this.isAttribute(a)? a:{};
  }
  if(arguments.length == 2) {
-   params = isAttribute(b)?[a,]:[a,b,];
-   attrs = isAttribute(b)? b:{};
+   params = this.isAttribute(b)?[a,]:[a,b,];
+   attrs = this.isAttribute(b)? b:{};
  }
  if(arguments.length == 3) {
-   params = isAttribute(c)?[a,b,]:[a,b,c,];
-   attrs = isAttribute(c)? c:{};
+   params = this.isAttribute(c)?[a,b,]:[a,b,c,];
+   attrs = this.isAttribute(c)? c:{};
  }
  if(arguments.length == 4) {
-   params = isAttribute(d)?[a,b,c,]:[a,b,c,d,];
-   attrs = isAttribute(d)? d:{};
+   params = this.isAttribute(d)?[a,b,c,]:[a,b,c,d,];
+   attrs = this.isAttribute(d)? d:{};
  }
  if(arguments.length == 5) {
-   params = isAttribute(e)?[a,b,c,d,]:[a,b,c,d,e,];
-   attrs = isAttribute(e)? e:{};
+   params = this.isAttribute(e)?[a,b,c,d,]:[a,b,c,d,e,];
+   attrs = this.isAttribute(e)? e:{};
  }
  if(arguments.length == 6) {
-   params = isAttribute(f)?[a,b,c,d,e,]:[a,b,c,d,e,f,];
-   attrs = isAttribute(f)? f:{};
+   params = this.isAttribute(f)?[a,b,c,d,e,]:[a,b,c,d,e,f,];
+   attrs = this.isAttribute(f)? f:{};
  }
  if(arguments.length == 7) {
-   params = isAttribute(g)?[a,b,c,d,e,f,]:[a,b,c,d,e,f,g,];
-   attrs = isAttribute(g)? g:{};
+   params = this.isAttribute(g)?[a,b,c,d,e,f,]:[a,b,c,d,e,f,g,];
+   attrs = this.isAttribute(g)? g:{};
  }
-   return TSX._jsxBoard().create('parallel', params, defaultAttributes(attrs))  as Parallel
+   return (this._jBoard as any).create('parallel', params, this.defaultAttributes(attrs))
  }
 
+
  /** Create an Arrow parallel to a segment. The constructed arrow contains p3 and has the same slope as the line through p1 and p2. */
- export function arrowparallel(p1:Point|pointAddr, p2:Point|pointAddr, p3:Point|pointAddr, attributes: ArrowparallelAttributes ={} ):Arrowparallel{
-   return TSX._jsxBoard().create('arrowparallel', [p1,p2,p3,], defaultAttributes(attributes))  as Arrowparallel
+ Arrowparallel (p1:Point|pointAddr, p2:Point|pointAddr, p3:Point|pointAddr, attributes: ArrowparallelAttributes ={} ):Arrowparallel {
+   return (this._jBoard as any).create('arrowparallel', [p1,p2,p3,], this.defaultAttributes(attributes))  as Arrowparallel
 }
+
 
 
  /** Create an Axis with two points (like a Line) */
- export function axis(p1:Point|pointAddr, p2:Point|pointAddr, attributes: AxisAttributes ={} ):Axis{
-   return TSX._jsxBoard().create('axis', [p1,p2,], defaultAttributes(attributes))  as Axis
+ Axis (p1:Point|pointAddr, p2:Point|pointAddr, attributes: AxisAttributes ={} ):Axis {
+   return (this._jBoard as any).create('axis', [p1,p2,], this.defaultAttributes(attributes))  as Axis
 }
+
 
 
  /** A cubic bezier curve.  The input is 3k + 1 points; those at positions k mod 3 = 0 (eg: 0, 3, 6 are the data points, the two points between each data points are the control points.
@@ -3213,21 +5433,24 @@ TSX.text([-4, 2], '\pm\sqrt{a^2 + b^2}', { useKatex: true })
 *```
 
                  */
- export function bezierCurve(points:Point[], attributes: BezierCurveAttributes ={} ):Curve{
-  return _jsxBoard().create('curve', (window as any).JXG.Math.Numerics.bezier(points), defaultAttributes(attributes));
+ BezierCurve (points:Point[], attributes: BezierCurveAttributes ={} ):BezierCurve {
+  return (this._jBoard as any).create('curve', (window as any).JXG.Math.Numerics.bezier(points), this.defaultAttributes(attributes));
 }
+
 
 
  /** Bisect an Angle defined with three points A,B,C, and divides the angle ABC into two equal sized parts. */
- export function bisector(A:Point|pointAddr, B:Point|pointAddr, C:Point|pointAddr, attributes: BisectorAttributes ={} ):Bisector{
-   return TSX._jsxBoard().create('bisector', [A,B,C,], defaultAttributes(attributes))  as Bisector
+ Bisector (A:Point|pointAddr, B:Point|pointAddr, C:Point|pointAddr, attributes: BisectorAttributes ={} ):Bisector {
+   return (this._jBoard as any).create('bisector', [A,B,C,], this.defaultAttributes(attributes))  as Bisector
 }
+
 
 
  /** Bisect a Line defined with two points */
- export function bisectorlines(l1:Line, l2:Line, attributes: BisectorlinesAttributes ={} ):Bisectorlines{
-   return TSX._jsxBoard().create('bisectorlines', [l1,l2,], defaultAttributes(attributes))  as Bisectorlines
+ Bisectorlines (l1:Line, l2:Line, attributes: BisectorlinesAttributes ={} ):Bisectorlines {
+   return (this._jBoard as any).create('bisectorlines', [l1,l2,], this.defaultAttributes(attributes))  as Bisectorlines
 }
+
 
 
  /** Create a button.
@@ -3241,180 +5464,180 @@ TSX.text([-4, 2], '\pm\sqrt{a^2 + b^2}', { useKatex: true })
     TSX.circle([0, 0], 1, { visible: () => toggleValue });  // sees update
 ```
  */
- export function button(position:pointAddr, label:String|Function, handler:Function, attributes: ButtonAttributes ={} ):Button{
+ Button (position:pointAddr, label:string|Function, handler:Function, attributes: ButtonAttributes ={} ):Button {
  (position as any).push(label,handler);  // position is already array, eg: [1,2], just use it as params
-                        return _jsxBoard().create('button', position, defaultAttributes(attributes)) as Button;
+                        return (this._jBoard as any).create('button', position, this.defaultAttributes(attributes)) as Button;
 }
 
 
- /** This element is used to provide a constructor for cardinal spline curves. Create a dynamic cardinal spline interpolated curve given by sample points p_1 to p_n. */
- export function cardinalspline(data:Point[]|number[][], funct:Function, splineType:`uniform`|`centripetal`, attributes: CardinalsplineAttributes ={} ):Curve{
-   return TSX._jsxBoard().create('cardinalspline', [data,funct,splineType,], defaultAttributes(attributes))  as Cardinalspline
+ Cardinalspline (data:Point[]|number[][], funct:Function, splineType:`uniform`|`centripetal`, attributes: CardinalsplineAttributes ={} ):Cardinalspline {
+   return (this._jBoard as any).create('cardinalspline', [data,funct,splineType,], this.defaultAttributes(attributes))  as Cardinalspline
 }
 
 
- /** This element is used to provide a constructor for special texts containing a form checkbox element. For this element, the attribute ”display” has to have the value 'html' (which is the default). The underlying HTML checkbox element can be accessed through the sub-object 'rendNodeCheck', e.g. to add event listeners. */
- export function checkbox(position:pointAddr, label:String|Function, attributes: CheckboxAttributes ={} ):Checkbox{
+ Checkbox (position:pointAddr, label:string|Function, attributes: CheckboxAttributes ={} ):Checkbox {
  (position as any).push(label);
-                        return _jsxBoard().create('checkbox', position,defaultAttributes(attributes));
+                        return (this._jBoard as any).create('checkbox', position,this.defaultAttributes(attributes));
 }
+
 
 
  /** Creates a Point at the center of a circle defined by 3 points */
- export function circumcenter(p1:Point|pointAddr, p2:Point|pointAddr, p3:Point|pointAddr, attributes: CircumcenterAttributes ={} ):Circumcenter{
-   return TSX._jsxBoard().create('circumcenter', [p1,p2,p3,], defaultAttributes(attributes))  as Circumcenter
+ Circumcenter (p1:Point|pointAddr, p2:Point|pointAddr, p3:Point|pointAddr, attributes: CircumcenterAttributes ={} ):Circumcenter {
+   return (this._jBoard as any).create('circumcenter', [p1,p2,p3,], this.defaultAttributes(attributes))  as Circumcenter
 }
+
 
 
  /** Draw a circle defined by 3 points */
- export function circumcircle(p1:Point|pointAddr, p2:Point|pointAddr, p3:Point|pointAddr, attributes: CircumcircleAttributes ={} ):Circumcircle{
-   return TSX._jsxBoard().create('circumcircle', [p1,p2,p3,], defaultAttributes(attributes))  as Circumcircle
+ Circumcircle (p1:Point|pointAddr, p2:Point|pointAddr, p3:Point|pointAddr, attributes: CircumcircleAttributes ={} ):Circumcircle {
+   return (this._jBoard as any).create('circumcircle', [p1,p2,p3,], this.defaultAttributes(attributes))  as Circumcircle
 }
+
 
 
  /** Draw an arc from P1 to P3 (missing P3 to P1) defined by 3 points */
- export function circumcircleArc(p1:Point|pointAddr, p2:Point|pointAddr, p3:Point|pointAddr, attributes: CircumcircleArcAttributes ={} ):CircumcircleArc{
-   return TSX._jsxBoard().create('circumcircleArc', [p1,p2,p3,], defaultAttributes(attributes))  as CircumcircleArc
+ CircumcircleArc (p1:Point|pointAddr, p2:Point|pointAddr, p3:Point|pointAddr, attributes: CircumcircleArcAttributes ={} ):CircumcircleArc {
+   return (this._jBoard as any).create('circumcircleArc', [p1,p2,p3,], this.defaultAttributes(attributes))  as CircumcircleArc
 }
+
 
 
  /** Creates a CircumCenter and draws a sector from P1 to P3 (missing P3 to P1) defined by 3 points */
- export function circumcircleSector(p1:Point|pointAddr, p2:Point|pointAddr, p3:Point|pointAddr, attributes: CircumcircleSectorAttributes ={} ):CircumcircleSector{
-   return TSX._jsxBoard().create('circumcircleSector', [p1,p2,p3,], defaultAttributes(attributes))  as CircumcircleSector
+ CircumcircleSector (p1:Point|pointAddr, p2:Point|pointAddr, p3:Point|pointAddr, attributes: CircumcircleSectorAttributes ={} ):CircumcircleSector {
+   return (this._jBoard as any).create('circumcircleSector', [p1,p2,p3,], this.defaultAttributes(attributes))  as CircumcircleSector
 }
 
 
- /** A comb to display domains of inequalities. */
- export function comb(p1:Point|pointAddr, p2:Point|pointAddr, attributes: CombAttributes ={} ):Comb{
-   return TSX._jsxBoard().create('comb', [p1,p2,], defaultAttributes(attributes))  as Comb
+ Comb (p1:Point|pointAddr, p2:Point|pointAddr, attributes: CombAttributes ={} ):Comb {
+   return (this._jBoard as any).create('comb', [p1,p2,], this.defaultAttributes(attributes))  as Comb
 }
+
 
  /** Create a generic conic section either by five points or the six numeric coefficients of the general conic's equation.  
  *``` 
 *``` 
  Just as two (distinct) points determine a line, five points (no three collinear) determine a conic. */
- export function conic( A:Point|pointAddr,B:Point|pointAddr,C:Point|pointAddr,D:Point|pointAddr,E:Point|pointAddr,attributes?:ConicAttributes) : Conic
+ Conic( A:Point|pointAddr,B:Point|pointAddr,C:Point|pointAddr,D:Point|pointAddr,E:Point|pointAddr,attributes?:ConicAttributes) : Conic
  /** Create a generic conic section either by five points or the six numeric coefficients of the general conic's equation.  
  *``` 
 *``` 
  Build a plane algebraic curve from six numbers that satisfies Ax^2 + Bxy + Cy^2 + Dx + Ey + F = 0, and A,B,C not all zero.  This might be a circle, ellipse, parabola, or hyperbola. */
- export function conic( A:number,B:number,C:number,D:number,E:number,F:number,attributes?:ConicAttributes) : Conic
+ Conic( A:number,B:number,C:number,D:number,E:number,F:number,attributes?:ConicAttributes) : Conic
 // implementation of signature,  hidden from user
- export function conic (a?:any, b?:any, c?:any, d?:any,e?:any,f?:any,g?:any,h?:any,i?:any) :Conic {
+ Conic (a?:any, b?:any, c?:any, d?:any,e?:any,f?:any,g?:any,h?:any,i?:any) {
    let params:any[] = []
    let attrs = {}
  if(arguments.length == 1) {
-   params = isAttribute(a)?[]:[a,];
-   attrs = isAttribute(a)? a:{};
+   params = this.isAttribute(a)?[]:[a,];
+   attrs = this.isAttribute(a)? a:{};
  }
  if(arguments.length == 2) {
-   params = isAttribute(b)?[a,]:[a,b,];
-   attrs = isAttribute(b)? b:{};
+   params = this.isAttribute(b)?[a,]:[a,b,];
+   attrs = this.isAttribute(b)? b:{};
  }
  if(arguments.length == 3) {
-   params = isAttribute(c)?[a,b,]:[a,b,c,];
-   attrs = isAttribute(c)? c:{};
+   params = this.isAttribute(c)?[a,b,]:[a,b,c,];
+   attrs = this.isAttribute(c)? c:{};
  }
  if(arguments.length == 4) {
-   params = isAttribute(d)?[a,b,c,]:[a,b,c,d,];
-   attrs = isAttribute(d)? d:{};
+   params = this.isAttribute(d)?[a,b,c,]:[a,b,c,d,];
+   attrs = this.isAttribute(d)? d:{};
  }
  if(arguments.length == 5) {
-   params = isAttribute(e)?[a,b,c,d,]:[a,b,c,d,e,];
-   attrs = isAttribute(e)? e:{};
+   params = this.isAttribute(e)?[a,b,c,d,]:[a,b,c,d,e,];
+   attrs = this.isAttribute(e)? e:{};
  }
  if(arguments.length == 6) {
-   params = isAttribute(f)?[a,b,c,d,e,]:[a,b,c,d,e,f,];
-   attrs = isAttribute(f)? f:{};
+   params = this.isAttribute(f)?[a,b,c,d,e,]:[a,b,c,d,e,f,];
+   attrs = this.isAttribute(f)? f:{};
  }
  if(arguments.length == 7) {
-   params = isAttribute(g)?[a,b,c,d,e,f,]:[a,b,c,d,e,f,g,];
-   attrs = isAttribute(g)? g:{};
+   params = this.isAttribute(g)?[a,b,c,d,e,f,]:[a,b,c,d,e,f,g,];
+   attrs = this.isAttribute(g)? g:{};
  }
-   return TSX._jsxBoard().create('conic', params, defaultAttributes(attrs))  as Conic
+   return (this._jBoard as any).create('conic', params, this.defaultAttributes(attrs))
  }
 
- /** Difference of two closed path elements. The elements may be of type curve, circle, polygon, inequality. If one element is a curve, it has to be closed. The resulting element is of type curve. */
- export function curveDifference(curve1:GeometryElement, curve2:GeometryElement, attributes: CurveDifferenceAttributes ={} ):CurveDifference{
-   return TSX._jsxBoard().create('curveDifference', [curve1,curve2,], defaultAttributes(attributes))  as CurveDifference
+ CurveDifference (curve1:GeometryElement, curve2:GeometryElement, attributes: CurveDifferenceAttributes ={} ):CurveDifference {
+   return (this._jBoard as any).create('curveDifference', [curve1,curve2,], this.defaultAttributes(attributes))  as CurveDifference
 }
 
 
- /** Intersection of two closed path elements. The elements may be of type curve, circle, polygon, inequality. If one element is a curve, it has to be closed. The resulting element is of type curve. */
- export function curveIntersection(curve1:GeometryElement, curve2:GeometryElement, attributes: CurveIntersectionAttributes ={} ):CurveIntersection{
-   return TSX._jsxBoard().create('curveIntersection', [curve1,curve2,], defaultAttributes(attributes))  as CurveIntersection
+ CurveIntersection (curve1:GeometryElement, curve2:GeometryElement, attributes: CurveIntersectionAttributes ={} ):CurveIntersection {
+   return (this._jBoard as any).create('curveIntersection', [curve1,curve2,], this.defaultAttributes(attributes))  as CurveIntersection
 }
 
 
- /** Union of two closed path elements. The elements may be of type curve, circle, polygon, inequality. If one element is a curve, it has to be closed. The resulting element is of type curve. */
- export function curveUnion(curve1:GeometryElement, curve2:GeometryElement, attributes: CurveUnionAttributes ={} ):CurveUnion{
-   return TSX._jsxBoard().create('curveUnion', [curve1,curve2,], defaultAttributes(attributes))  as CurveUnion
+ CurveUnion (curve1:GeometryElement, curve2:GeometryElement, attributes: CurveUnionAttributes ={} ):CurveUnion {
+   return (this._jBoard as any).create('curveUnion', [curve1,curve2,], this.defaultAttributes(attributes))  as CurveUnion
 }
 
 
- /** This element is used to provide a constructor for the graph showing the (numerical) derivative of a given curve. */
- export function derivative(curve:Curve, attributes: DerivativeAttributes ={} ):Derivative{
-   return TSX._jsxBoard().create('derivative', [curve,], defaultAttributes(attributes))  as Derivative
+ Derivative (curve:Curve, attributes: DerivativeAttributes ={} ):Derivative {
+   return (this._jBoard as any).create('derivative', [curve,], this.defaultAttributes(attributes))  as Derivative
 }
+
 
  /** Two methods to create an ellipse;An ellipse is given by two points (the foci) and a third point on the ellipse or the length of the major axis.
                         Start and End are optional parameters for the curve start (default 0) and end (default 2*PI).  
  *``` 
 *``` 
  Two points plus a radius */
- export function ellipse( p1:Point|pointAddr,p2:Point|pointAddr,radius:Point|pointAddr|number|Function,attributes?:EllipseAttributes) : Ellipse
+ Ellipse( p1:Point|pointAddr,p2:Point|pointAddr,radius:Point|pointAddr|number|Function,attributes?:EllipseAttributes) : Ellipse
  /** Two methods to create an ellipse;An ellipse is given by two points (the foci) and a third point on the ellipse or the length of the major axis.
                         Start and End are optional parameters for the curve start (default 0) and end (default 2*PI).  
  *``` 
 *``` 
  Two points plus a radius, with start and end  */
- export function ellipse( p1:Point|pointAddr,p2:Point|pointAddr,radius:Point|pointAddr|number|Function,start?:number|Function,end?:number|Function,attributes?:EllipseAttributes) : Ellipse
+ Ellipse( p1:Point|pointAddr,p2:Point|pointAddr,radius:Point|pointAddr|number|Function,start?:number|Function,end?:number|Function,attributes?:EllipseAttributes) : Ellipse
  /** Two methods to create an ellipse;An ellipse is given by two points (the foci) and a third point on the ellipse or the length of the major axis.
                         Start and End are optional parameters for the curve start (default 0) and end (default 2*PI).  
  *``` 
 *``` 
  Three Points */
- export function ellipse( focalPoint1:Point|pointAddr,focalPoint2:Point|pointAddr,outerPoint:Point|pointAddr,attributes?:EllipseAttributes) : Ellipse
+ Ellipse( focalPoint1:Point|pointAddr,focalPoint2:Point|pointAddr,outerPoint:Point|pointAddr,attributes?:EllipseAttributes) : Ellipse
  /** Two methods to create an ellipse;An ellipse is given by two points (the foci) and a third point on the ellipse or the length of the major axis.
                         Start and End are optional parameters for the curve start (default 0) and end (default 2*PI).  
  *``` 
 *``` 
  Three Points, with  start and end. */
- export function ellipse( focalPoint1:Point|pointAddr,focalPoint2:Point|pointAddr,outerPoint:Point|pointAddr,start?:number|Function,end?:number|Function,attributes?:EllipseAttributes) : Ellipse
+ Ellipse( focalPoint1:Point|pointAddr,focalPoint2:Point|pointAddr,outerPoint:Point|pointAddr,start?:number|Function,end?:number|Function,attributes?:EllipseAttributes) : Ellipse
 // implementation of signature,  hidden from user
- export function ellipse (a?:any, b?:any, c?:any, d?:any,e?:any,f?:any,g?:any,h?:any,i?:any) :Ellipse {
+ Ellipse (a?:any, b?:any, c?:any, d?:any,e?:any,f?:any,g?:any,h?:any,i?:any) {
    let params:any[] = []
    let attrs = {}
  if(arguments.length == 1) {
-   params = isAttribute(a)?[]:[a,];
-   attrs = isAttribute(a)? a:{};
+   params = this.isAttribute(a)?[]:[a,];
+   attrs = this.isAttribute(a)? a:{};
  }
  if(arguments.length == 2) {
-   params = isAttribute(b)?[a,]:[a,b,];
-   attrs = isAttribute(b)? b:{};
+   params = this.isAttribute(b)?[a,]:[a,b,];
+   attrs = this.isAttribute(b)? b:{};
  }
  if(arguments.length == 3) {
-   params = isAttribute(c)?[a,b,]:[a,b,c,];
-   attrs = isAttribute(c)? c:{};
+   params = this.isAttribute(c)?[a,b,]:[a,b,c,];
+   attrs = this.isAttribute(c)? c:{};
  }
  if(arguments.length == 4) {
-   params = isAttribute(d)?[a,b,c,]:[a,b,c,d,];
-   attrs = isAttribute(d)? d:{};
+   params = this.isAttribute(d)?[a,b,c,]:[a,b,c,d,];
+   attrs = this.isAttribute(d)? d:{};
  }
  if(arguments.length == 5) {
-   params = isAttribute(e)?[a,b,c,d,]:[a,b,c,d,e,];
-   attrs = isAttribute(e)? e:{};
+   params = this.isAttribute(e)?[a,b,c,d,]:[a,b,c,d,e,];
+   attrs = this.isAttribute(e)? e:{};
  }
  if(arguments.length == 6) {
-   params = isAttribute(f)?[a,b,c,d,e,]:[a,b,c,d,e,f,];
-   attrs = isAttribute(f)? f:{};
+   params = this.isAttribute(f)?[a,b,c,d,e,]:[a,b,c,d,e,f,];
+   attrs = this.isAttribute(f)? f:{};
  }
  if(arguments.length == 7) {
-   params = isAttribute(g)?[a,b,c,d,e,f,]:[a,b,c,d,e,f,g,];
-   attrs = isAttribute(g)? g:{};
+   params = this.isAttribute(g)?[a,b,c,d,e,f,]:[a,b,c,d,e,f,g,];
+   attrs = this.isAttribute(g)? g:{};
  }
-   return TSX._jsxBoard().create('ellipse', params, defaultAttributes(attrs))  as Ellipse
+   return (this._jBoard as any).create('ellipse', params, this.defaultAttributes(attrs))
  }
+
  /** A 3D parametric surface visualizes a map (u, v) → [X(u, v), Y(u, v), Z(u, v)]. 
  *``` 
 *``` 
@@ -3423,7 +5646,7 @@ TSX.text([-4, 2], '\pm\sqrt{a^2 + b^2}', { useKatex: true })
 - rangeV is the array containing lower and upper bound for the range of parameter v.
 
 rangeU and rangeV may also be functions returning an array of length two. */
- export function parametricSurface3d( FX:(u:number,v:number)=> number,FY:(u:number,v:number)=> number,FZ:(u:number,v:number)=> number,rangeU:number[]|(()=>number[]),rangeV:number[]|(()=>number[]),attributes?:ParametricSurface3DAttributes) : ParametricSurface3D
+ ParametricSurface3D( FX:(u:number,v:number)=> number,FY:(u:number,v:number)=> number,FZ:(u:number,v:number)=> number,rangeU:number[]|(()=>number[]),rangeV:number[]|(()=>number[]),attributes?:ParametricSurface3DAttributes) : ParametricSurface3D
  /** A 3D parametric surface visualizes a map (u, v) → [X(u, v), Y(u, v), Z(u, v)]. 
  *``` 
 *``` 
@@ -3432,214 +5655,216 @@ rangeU and rangeV may also be functions returning an array of length two. */
 - rangeV is the array containing lower and upper bound for the range of parameter v.
 
 rangeU and rangeV may also be functions returning an array of length two. */
- export function parametricSurface3d( F:(u:number,v:number)=> number[],rangeU:number[]|(()=>number[]),rangeV:number[]|(()=>number[]),attributes?:ParametricSurface3DAttributes) : ParametricSurface3D
+ ParametricSurface3D( F:(u:number,v:number)=> number[],rangeU:number[]|(()=>number[]),rangeV:number[]|(()=>number[]),attributes?:ParametricSurface3DAttributes) : ParametricSurface3D
 // implementation of signature,  hidden from user
- export function parametricSurface3d (a?:any, b?:any, c?:any, d?:any,e?:any,f?:any,g?:any,h?:any,i?:any) :ParametricSurface3D {
+ ParametricSurface3D (a?:any, b?:any, c?:any, d?:any,e?:any,f?:any,g?:any,h?:any,i?:any) {
    let params:any[] = []
    let attrs = {}
  if(arguments.length == 1) {
-   params = isAttribute(a)?[]:[a,];
-   attrs = isAttribute(a)? a:{};
+   params = this.isAttribute(a)?[]:[a,];
+   attrs = this.isAttribute(a)? a:{};
  }
  if(arguments.length == 2) {
-   params = isAttribute(b)?[a,]:[a,b,];
-   attrs = isAttribute(b)? b:{};
+   params = this.isAttribute(b)?[a,]:[a,b,];
+   attrs = this.isAttribute(b)? b:{};
  }
  if(arguments.length == 3) {
-   params = isAttribute(c)?[a,b,]:[a,b,c,];
-   attrs = isAttribute(c)? c:{};
+   params = this.isAttribute(c)?[a,b,]:[a,b,c,];
+   attrs = this.isAttribute(c)? c:{};
  }
  if(arguments.length == 4) {
-   params = isAttribute(d)?[a,b,c,]:[a,b,c,d,];
-   attrs = isAttribute(d)? d:{};
+   params = this.isAttribute(d)?[a,b,c,]:[a,b,c,d,];
+   attrs = this.isAttribute(d)? d:{};
  }
  if(arguments.length == 5) {
-   params = isAttribute(e)?[a,b,c,d,]:[a,b,c,d,e,];
-   attrs = isAttribute(e)? e:{};
+   params = this.isAttribute(e)?[a,b,c,d,]:[a,b,c,d,e,];
+   attrs = this.isAttribute(e)? e:{};
  }
  if(arguments.length == 6) {
-   params = isAttribute(f)?[a,b,c,d,e,]:[a,b,c,d,e,f,];
-   attrs = isAttribute(f)? f:{};
+   params = this.isAttribute(f)?[a,b,c,d,e,]:[a,b,c,d,e,f,];
+   attrs = this.isAttribute(f)? f:{};
  }
  if(arguments.length == 7) {
-   params = isAttribute(g)?[a,b,c,d,e,f,]:[a,b,c,d,e,f,g,];
-   attrs = isAttribute(g)? g:{};
+   params = this.isAttribute(g)?[a,b,c,d,e,f,]:[a,b,c,d,e,f,g,];
+   attrs = this.isAttribute(g)? g:{};
  }
-   return TSX._jsxView3d().create('parametricsurface3d', params, defaultAttributes(attrs))  as ParametricSurface3D
+   return (this._jView3d as any).create('parametricsurface3d', params, this.defaultAttributes(attrs))
  }
+
+
 
  /** Functiongraph visualizes a map x → f(x).  It is a wrapper for element Curve. The graph is drawn for x in the interval [a,b] default -10 to 10.
 ```js
 let f = TSX.functiongraph((x: number) => 3 * Math.pow(x, 2))
 ``` */
- export function functiongraph(funct:(x:number)=>number, leftBorder?:number, rightBorder?:number, attributes: FunctiongraphAttributes ={} ):Curve{
-   return TSX._jsxBoard().create('functiongraph', [funct,leftBorder,rightBorder,], defaultAttributes(attributes))  as Functiongraph
+ Functiongraph (funct:(x:number)=>number, leftBorder?:number, rightBorder?:number, attributes: FunctiongraphAttributes ={} ):Functiongraph {
+   return (this._jBoard as any).create('functiongraph', [funct,leftBorder,rightBorder,], this.defaultAttributes(attributes))  as Functiongraph
 }
+
 
 
  /** A 3D functiongraph visualizes a map (x, y) → f(x, y).  */
- export function functiongraph3d(xyFunction:(x:number,y:number)=>number, xRange:NumberFunction[], yRange:NumberFunction[], attributes: Functiongraph3DAttributes ={} ):Functiongraph3D{
-   return TSX._jsxView3d().create('functiongraph3d', [xyFunction,xRange,yRange,], defaultAttributes(attributes))  as Functiongraph3D
+ Functiongraph3D (xyFunction:(x:number,y:number)=>number, xRange:NumberFunction[], yRange:NumberFunction[], attributes: Functiongraph3DAttributes ={} ):Functiongraph3D {
+   return (this._jView3d as any).create('functiongraph3d', [xyFunction,xRange,yRange,], this.defaultAttributes(attributes))  as Functiongraph3D
 }
 
- export function glider( hostElement:GeometryElement,attributes?:GliderAttributes) : Glider
- export function glider( hostElement:GeometryElement,initialPosition:number[],attributes?:GliderAttributes) : Glider
+
+ Glider( hostElement:GeometryElement,attributes?:GliderAttributes) : Glider
+ Glider( hostElement:GeometryElement,initialPosition:number[],attributes?:GliderAttributes) : Glider
 // implementation of signature,  hidden from user
- export function glider (a?:any, b?:any, c?:any, d?:any,e?:any,f?:any,g?:any,h?:any,i?:any) :Glider {
+ Glider (a?:any, b?:any, c?:any, d?:any,e?:any,f?:any,g?:any,h?:any,i?:any) {
    let params:any[] = []
    let attrs = {}
  if(arguments.length == 1) {
-   params = isAttribute(a)?[]:[a,];
-   attrs = isAttribute(a)? a:{};
+   params = this.isAttribute(a)?[]:[a,];
+   attrs = this.isAttribute(a)? a:{};
  }
  if(arguments.length == 2) {
-   params = isAttribute(b)?[a,]:[a,b,];
-   attrs = isAttribute(b)? b:{};
+   params = this.isAttribute(b)?[a,]:[a,b,];
+   attrs = this.isAttribute(b)? b:{};
  }
  if(arguments.length == 3) {
-   params = isAttribute(c)?[a,b,]:[a,b,c,];
-   attrs = isAttribute(c)? c:{};
+   params = this.isAttribute(c)?[a,b,]:[a,b,c,];
+   attrs = this.isAttribute(c)? c:{};
  }
  if(arguments.length == 4) {
-   params = isAttribute(d)?[a,b,c,]:[a,b,c,d,];
-   attrs = isAttribute(d)? d:{};
+   params = this.isAttribute(d)?[a,b,c,]:[a,b,c,d,];
+   attrs = this.isAttribute(d)? d:{};
  }
  if(arguments.length == 5) {
-   params = isAttribute(e)?[a,b,c,d,]:[a,b,c,d,e,];
-   attrs = isAttribute(e)? e:{};
+   params = this.isAttribute(e)?[a,b,c,d,]:[a,b,c,d,e,];
+   attrs = this.isAttribute(e)? e:{};
  }
  if(arguments.length == 6) {
-   params = isAttribute(f)?[a,b,c,d,e,]:[a,b,c,d,e,f,];
-   attrs = isAttribute(f)? f:{};
+   params = this.isAttribute(f)?[a,b,c,d,e,]:[a,b,c,d,e,f,];
+   attrs = this.isAttribute(f)? f:{};
  }
  if(arguments.length == 7) {
-   params = isAttribute(g)?[a,b,c,d,e,f,]:[a,b,c,d,e,f,g,];
-   attrs = isAttribute(g)? g:{};
+   params = this.isAttribute(g)?[a,b,c,d,e,f,]:[a,b,c,d,e,f,g,];
+   attrs = this.isAttribute(g)? g:{};
  }
  params = b? [b[0]??0,b[1]??0,a]:[0,0,a]
-                         return _jsxBoard().create('glider', params ,defaultAttributes(attrs));
+                         return (this._jBoard as any).create('glider', params ,this.defaultAttributes(attrs));
  }
+
 
  /** Glider3D is an alias for JSXGraph's Point3D(). */
- export function glider3d(element:Curve3D|Line3D|Sphere3D, initial:number[]=[0,0,0], attributes: Glider3DAttributes ={} ):Point3D{
- return _jsxView3d().create("point3d",[initial,element],attributes)
+ Glider3D (element:Curve3D|Line3D|Sphere3D, initial:number[]=[0,0,0], attributes: Glider3DAttributes ={} ):Glider3D {
+ return (this._jView3d as any).create("point3d",[initial,element],attributes)
 }
 
- export function grid( axis1:Axis,axis2:Axis,attributes?:GridAttributes) : Grid
- export function grid( attributes?:GridAttributes) : Grid
+
+ Grid( axis1:Axis,axis2:Axis,attributes?:GridAttributes) : Grid
+ Grid( attributes?:GridAttributes) : Grid
 // implementation of signature,  hidden from user
- export function grid (a?:any, b?:any, c?:any, d?:any,e?:any,f?:any,g?:any,h?:any,i?:any) :Grid {
+ Grid (a?:any, b?:any, c?:any, d?:any,e?:any,f?:any,g?:any,h?:any,i?:any) {
    let params:any[] = []
    let attrs = {}
  if(arguments.length == 1) {
-   params = isAttribute(a)?[]:[a,];
-   attrs = isAttribute(a)? a:{};
+   params = this.isAttribute(a)?[]:[a,];
+   attrs = this.isAttribute(a)? a:{};
  }
  if(arguments.length == 2) {
-   params = isAttribute(b)?[a,]:[a,b,];
-   attrs = isAttribute(b)? b:{};
+   params = this.isAttribute(b)?[a,]:[a,b,];
+   attrs = this.isAttribute(b)? b:{};
  }
  if(arguments.length == 3) {
-   params = isAttribute(c)?[a,b,]:[a,b,c,];
-   attrs = isAttribute(c)? c:{};
+   params = this.isAttribute(c)?[a,b,]:[a,b,c,];
+   attrs = this.isAttribute(c)? c:{};
  }
  if(arguments.length == 4) {
-   params = isAttribute(d)?[a,b,c,]:[a,b,c,d,];
-   attrs = isAttribute(d)? d:{};
+   params = this.isAttribute(d)?[a,b,c,]:[a,b,c,d,];
+   attrs = this.isAttribute(d)? d:{};
  }
  if(arguments.length == 5) {
-   params = isAttribute(e)?[a,b,c,d,]:[a,b,c,d,e,];
-   attrs = isAttribute(e)? e:{};
+   params = this.isAttribute(e)?[a,b,c,d,]:[a,b,c,d,e,];
+   attrs = this.isAttribute(e)? e:{};
  }
  if(arguments.length == 6) {
-   params = isAttribute(f)?[a,b,c,d,e,]:[a,b,c,d,e,f,];
-   attrs = isAttribute(f)? f:{};
+   params = this.isAttribute(f)?[a,b,c,d,e,]:[a,b,c,d,e,f,];
+   attrs = this.isAttribute(f)? f:{};
  }
  if(arguments.length == 7) {
-   params = isAttribute(g)?[a,b,c,d,e,f,]:[a,b,c,d,e,f,g,];
-   attrs = isAttribute(g)? g:{};
+   params = this.isAttribute(g)?[a,b,c,d,e,f,]:[a,b,c,d,e,f,g,];
+   attrs = this.isAttribute(g)? g:{};
  }
-   return TSX._jsxBoard().create('grid', params, defaultAttributes(attrs))  as Grid
+   return (this._jBoard as any).create('grid', params, this.defaultAttributes(attrs))
  }
 
- /** Hatches can be used to mark congruent lines or curves. */
- export function hatch(line:Line|[Point|pointAddr,Point|pointAddr], numberHatches:number, attributes: HatchAttributes ={} ):Hatch{
-   return TSX._jsxBoard().create('hatch', [line,numberHatches,], defaultAttributes(attributes))  as Hatch
+ Hatch (line:Line|[Point|pointAddr,Point|pointAddr], numberHatches:number, attributes: HatchAttributes ={} ):Hatch {
+   return (this._jBoard as any).create('hatch', [line,numberHatches,], this.defaultAttributes(attributes))  as Hatch
 }
 
 
- /** This element is used to provide a constructor for an hyperbola. An hyperbola is given by two points (the foci) and a third point on the hyperbola or the length of the major axis. */
- export function hyperbola(point1:Point|pointAddr, point2:Point|pointAddr, point3:Point|pointAddr|number, start:number=-3.14, end:number=3.14, attributes: HyperbolaAttributes ={} ):Hyperbola{
-   return TSX._jsxBoard().create('hyperbola', [point1,point2,point3,start,end,], defaultAttributes(attributes))  as Hyperbola
+ Hyperbola (point1:Point|pointAddr, point2:Point|pointAddr, point3:Point|pointAddr|number, start:number=-3.14, end:number=3.14, attributes: HyperbolaAttributes ={} ):Hyperbola {
+   return (this._jBoard as any).create('hyperbola', [point1,point2,point3,start,end,], this.defaultAttributes(attributes))  as Hyperbola
 }
 
 
- /** Constructs the incenter of the triangle described by the three given points. https://mathworld.wolfram.com/Incenter.html */
- export function incenter(p1:Point|pointAddr, p2:Point|pointAddr, p3:Point|pointAddr, attributes: IncenterAttributes ={} ):Incenter{
-   return TSX._jsxBoard().create('incenter', [p1,p2,p3,], defaultAttributes(attributes))  as Incenter
+ Incenter (p1:Point|pointAddr, p2:Point|pointAddr, p3:Point|pointAddr, attributes: IncenterAttributes ={} ):Incenter {
+   return (this._jBoard as any).create('incenter', [p1,p2,p3,], this.defaultAttributes(attributes))  as Incenter
 }
 
 
- /** An incircle is given by three points. */
- export function incircle(p1:Point|pointAddr, p2:Point|pointAddr, p3:Point|pointAddr, attributes: IncircleAttributes ={} ):Incircle{
-   return TSX._jsxBoard().create('incircle', [p1,p2,p3,], defaultAttributes(attributes))  as Incircle
+ Incircle (p1:Point|pointAddr, p2:Point|pointAddr, p3:Point|pointAddr, attributes: IncircleAttributes ={} ):Incircle {
+   return (this._jBoard as any).create('incircle', [p1,p2,p3,], this.defaultAttributes(attributes))  as Incircle
 }
 
 
- /** Creates an area indicating the solution of a linear inequality or an inequality of a function graph, i.e. an inequality of type y */
- export function inequality(boundaryLine:Line|[Point|pointAddr,Point|pointAddr]|Curve, attributes: InequalityAttributes ={} ):Inequality{
-   return TSX._jsxBoard().create('inequality', [boundaryLine,], defaultAttributes(attributes))  as Inequality
+ Inequality (boundaryLine:Line|[Point|pointAddr,Point|pointAddr]|Curve, attributes: InequalityAttributes ={} ):Inequality {
+   return (this._jBoard as any).create('inequality', [boundaryLine,], this.defaultAttributes(attributes))  as Inequality
 }
 
 
- /** This element is used to provide a constructor for special texts containing a HTML form input element. If the width of element is set with the attribute ”cssStyle”, the width of the label must be added. For this element, the attribute ”display” has to have the value 'html' (which is the default). The underlying HTML input field can be accessed through the sub-object 'rendNodeInput', e.g. to add event listeners. */
- export function input(position:Point|pointAddr, label:String|Function, initial:String="", attributes: InputAttributes ={} ):Input{
+ Input (position:Point|pointAddr, label:string|Function, initial:String="", attributes: InputAttributes ={} ):Input {
  (position as any).push(label,initial);
-                        return _jsxBoard().create('input', position,defaultAttributes(attributes));
+                        return (this._jBoard as any).create('input', position,this.defaultAttributes(attributes));
 }
 
 
- /** This element is used to visualize the integral of a given curve over a given interval. */
- export function integral(range:number[], curve:Curve, attributes: IntegralAttributes ={} ):Integral{
-   return TSX._jsxBoard().create('integral', [range,curve,], defaultAttributes(attributes))  as Integral
+ Integral (range:number[], curve:Curve, attributes: IntegralAttributes ={} ):Integral {
+   return (this._jBoard as any).create('integral', [range,curve,], this.defaultAttributes(attributes))  as Integral
 }
 
- export function intersection( element1:Line|Circle|Curve|Polygon|PolygonalChain,element2:Line|Circle|Curve|Polygon|PolygonalChain,i?:number|Function,attributes?:IntersectionAttributes) : Intersection
- export function intersection( element1:Line|Circle|Curve|Polygon|PolygonalChain,element2:Line|Circle|Curve|Polygon|PolygonalChain,attributes?:IntersectionAttributes) : Intersection
+
+ Intersection( element1:Line|Circle|Curve|Polygon|PolygonalChain,element2:Line|Circle|Curve|Polygon|PolygonalChain,i?:number|Function,attributes?:IntersectionAttributes) : Intersection
+ Intersection( element1:Line|Circle|Curve|Polygon|PolygonalChain,element2:Line|Circle|Curve|Polygon|PolygonalChain,attributes?:IntersectionAttributes) : Intersection
 // implementation of signature,  hidden from user
- export function intersection (a?:any, b?:any, c?:any, d?:any,e?:any,f?:any,g?:any,h?:any,i?:any) :Intersection {
+ Intersection (a?:any, b?:any, c?:any, d?:any,e?:any,f?:any,g?:any,h?:any,i?:any) {
    let params:any[] = []
    let attrs = {}
  if(arguments.length == 1) {
-   params = isAttribute(a)?[]:[a,];
-   attrs = isAttribute(a)? a:{};
+   params = this.isAttribute(a)?[]:[a,];
+   attrs = this.isAttribute(a)? a:{};
  }
  if(arguments.length == 2) {
-   params = isAttribute(b)?[a,]:[a,b,];
-   attrs = isAttribute(b)? b:{};
+   params = this.isAttribute(b)?[a,]:[a,b,];
+   attrs = this.isAttribute(b)? b:{};
  }
  if(arguments.length == 3) {
-   params = isAttribute(c)?[a,b,]:[a,b,c,];
-   attrs = isAttribute(c)? c:{};
+   params = this.isAttribute(c)?[a,b,]:[a,b,c,];
+   attrs = this.isAttribute(c)? c:{};
  }
  if(arguments.length == 4) {
-   params = isAttribute(d)?[a,b,c,]:[a,b,c,d,];
-   attrs = isAttribute(d)? d:{};
+   params = this.isAttribute(d)?[a,b,c,]:[a,b,c,d,];
+   attrs = this.isAttribute(d)? d:{};
  }
  if(arguments.length == 5) {
-   params = isAttribute(e)?[a,b,c,d,]:[a,b,c,d,e,];
-   attrs = isAttribute(e)? e:{};
+   params = this.isAttribute(e)?[a,b,c,d,]:[a,b,c,d,e,];
+   attrs = this.isAttribute(e)? e:{};
  }
  if(arguments.length == 6) {
-   params = isAttribute(f)?[a,b,c,d,e,]:[a,b,c,d,e,f,];
-   attrs = isAttribute(f)? f:{};
+   params = this.isAttribute(f)?[a,b,c,d,e,]:[a,b,c,d,e,f,];
+   attrs = this.isAttribute(f)? f:{};
  }
  if(arguments.length == 7) {
-   params = isAttribute(g)?[a,b,c,d,e,f,]:[a,b,c,d,e,f,g,];
-   attrs = isAttribute(g)? g:{};
+   params = this.isAttribute(g)?[a,b,c,d,e,f,]:[a,b,c,d,e,f,g,];
+   attrs = this.isAttribute(g)? g:{};
  }
- return _jsxBoard().create('intersection', params, defaultAttributes(attrs)) as Point
+ return (this._jBoard as any).create('intersection', params, this.defaultAttributes(attrs)) as Point
  }
+
+
 
  /** Creates a Legend for a Chart Element
                                 
@@ -3650,29 +5875,27 @@ let f = TSX.functiongraph((x: number) => 3 * Math.pow(x, 2))
 *```
                                 
  */
- export function legend(lowerLeft:pointAddr, labels:string[], colors:string[], attributes: LegendAttributes ={} ):Legend{
+ Legend (lowerLeft:pointAddr, labels:string[], colors:string[], attributes: LegendAttributes ={} ):Legend {
  attributes['labels']=labels;
                 attributes['colors']=colors
-                return _jsxBoard().create('legend', lowerLeft,defaultAttributes(attributes));
+                return (this._jBoard as any).create('legend', lowerLeft,this.defaultAttributes(attributes));
 }
 
 
- /** This element is used to visualize the locus of a given dependent point. */
- export function locus(point:Point, attributes: LocusAttributes ={} ):Locus{
-   return TSX._jsxBoard().create('locus', [point,], defaultAttributes(attributes))  as Locus
+ Locus (point:Point, attributes: LocusAttributes ={} ):Locus {
+   return (this._jBoard as any).create('locus', [point,], this.defaultAttributes(attributes))  as Locus
 }
 
 
- /** A major arc is a segment of the circumference of a circle having measure greater than or equal to 180 degrees (pi radians). It is defined by a center, one point that defines the radius, and a third point that defines the angle of the arc. */
- export function majorArc(p1:Point|pointAddr, p2:Point|pointAddr, p3:Point|pointAddr, attributes: MajorArcAttributes ={} ):MajorArc{
-   return TSX._jsxBoard().create('majorArc', [p1,p2,p3,], defaultAttributes(attributes))  as MajorArc
+ MajorArc (p1:Point|pointAddr, p2:Point|pointAddr, p3:Point|pointAddr, attributes: MajorArcAttributes ={} ):MajorArc {
+   return (this._jBoard as any).create('majorArc', [p1,p2,p3,], this.defaultAttributes(attributes))  as MajorArc
 }
 
 
- /** A major sector is a sector of a circle having measure greater than or equal to 180 degrees (pi radians). It is defined by a center, one point that defines the radius, and a third point that defines the angle of the sector. */
- export function majorSector(p1:Point|pointAddr, p2:Point|pointAddr, p3:Point|pointAddr, attributes: MajorSectorAttributes ={} ):MajorSector{
-   return TSX._jsxBoard().create('majorSector', [p1,p2,p3,], defaultAttributes(attributes))  as MajorSector
+ MajorSector (p1:Point|pointAddr, p2:Point|pointAddr, p3:Point|pointAddr, attributes: MajorSectorAttributes ={} ):MajorSector {
+   return (this._jBoard as any).create('majorSector', [p1,p2,p3,], this.defaultAttributes(attributes))  as MajorSector
 }
+
 
 
  /** Display measurements of geometric properties and the arithmetic operations of measurements. Under the hood this is a text element which has a method Value. The text to be displayed is the result of the evaluation of a prefix expression, see JXG.PrefixParser.
@@ -3683,7 +5906,7 @@ let f = TSX.functiongraph((x: number) => 3 * Math.pow(x, 2))
  TSX.measurement([4, 3], 'Radius', c, { prefix: 'radius: ', baseUnit: 'cm' });
 ```
  */
- export function measurement(locn:Point|pointAddr, measure:string, element:GeometryElement, attributes: MeasurementAttributes ={} ):Measurement{
+ Measurement (locn:Point|pointAddr, measure:string, element:GeometryElement, attributes: MeasurementAttributes ={} ):Measurement {
  let x:any=0,y:any=0;
                 if(Array.isArray(locn)){
                    x = locn[0];
@@ -3692,149 +5915,148 @@ let f = TSX.functiongraph((x: number) => 3 * Math.pow(x, 2))
                     x = locn.X();
                     y = locn.Y();
                 };
-            return _jsxBoard().create('measurement', [x,y,[measure,element]], attributes)
+            return (this._jBoard as any).create('measurement', [x,y,[measure,element]], attributes)
 }
 
- export function mesh3d( point:Point3D|number[]|Function,direction1:number[]|Function,direction2:number[]|Function,range1?:pointAddr,range2?:pointAddr,attributes?:Mesh3DAttributes) : Mesh3D
- export function mesh3d( point:Point3D|number[]|Function,direction1:number[]|Function|Function[],direction2:number[]|Function|Function[],range1?:pointAddr,range2?:pointAddr,attributes?:Mesh3DAttributes) : Mesh3D
- export function mesh3d( point1:Point3D,point2:Point3D,point3:Point3D,range1?:pointAddr,range2?:pointAddr,attributes?:Mesh3DAttributes) : Mesh3D
- export function mesh3d( point1:Point3D,point2:Point3D,point3:Point3D,attributes?:Mesh3DAttributes) : Mesh3D
+
+ Mesh3D( point:Point3D|number[]|Function,direction1:number[]|Function,direction2:number[]|Function,range1?:pointAddr,range2?:pointAddr,attributes?:Mesh3DAttributes) : Mesh3D
+ Mesh3D( point:Point3D|number[]|Function,direction1:number[]|Function|Function[],direction2:number[]|Function|Function[],range1?:pointAddr,range2?:pointAddr,attributes?:Mesh3DAttributes) : Mesh3D
+ Mesh3D( point1:Point3D,point2:Point3D,point3:Point3D,range1?:pointAddr,range2?:pointAddr,attributes?:Mesh3DAttributes) : Mesh3D
+ Mesh3D( point1:Point3D,point2:Point3D,point3:Point3D,attributes?:Mesh3DAttributes) : Mesh3D
 // implementation of signature,  hidden from user
- export function mesh3d (a?:any, b?:any, c?:any, d?:any,e?:any,f?:any,g?:any,h?:any,i?:any) :Mesh3D {
+ Mesh3D (a?:any, b?:any, c?:any, d?:any,e?:any,f?:any,g?:any,h?:any,i?:any) {
    let params:any[] = []
    let attrs = {}
  if(arguments.length == 1) {
-   params = isAttribute(a)?[]:[a,];
-   attrs = isAttribute(a)? a:{};
+   params = this.isAttribute(a)?[]:[a,];
+   attrs = this.isAttribute(a)? a:{};
  }
  if(arguments.length == 2) {
-   params = isAttribute(b)?[a,]:[a,b,];
-   attrs = isAttribute(b)? b:{};
+   params = this.isAttribute(b)?[a,]:[a,b,];
+   attrs = this.isAttribute(b)? b:{};
  }
  if(arguments.length == 3) {
-   params = isAttribute(c)?[a,b,]:[a,b,c,];
-   attrs = isAttribute(c)? c:{};
+   params = this.isAttribute(c)?[a,b,]:[a,b,c,];
+   attrs = this.isAttribute(c)? c:{};
  }
  if(arguments.length == 4) {
-   params = isAttribute(d)?[a,b,c,]:[a,b,c,d,];
-   attrs = isAttribute(d)? d:{};
+   params = this.isAttribute(d)?[a,b,c,]:[a,b,c,d,];
+   attrs = this.isAttribute(d)? d:{};
  }
  if(arguments.length == 5) {
-   params = isAttribute(e)?[a,b,c,d,]:[a,b,c,d,e,];
-   attrs = isAttribute(e)? e:{};
+   params = this.isAttribute(e)?[a,b,c,d,]:[a,b,c,d,e,];
+   attrs = this.isAttribute(e)? e:{};
  }
  if(arguments.length == 6) {
-   params = isAttribute(f)?[a,b,c,d,e,]:[a,b,c,d,e,f,];
-   attrs = isAttribute(f)? f:{};
+   params = this.isAttribute(f)?[a,b,c,d,e,]:[a,b,c,d,e,f,];
+   attrs = this.isAttribute(f)? f:{};
  }
  if(arguments.length == 7) {
-   params = isAttribute(g)?[a,b,c,d,e,f,]:[a,b,c,d,e,f,g,];
-   attrs = isAttribute(g)? g:{};
+   params = this.isAttribute(g)?[a,b,c,d,e,f,]:[a,b,c,d,e,f,g,];
+   attrs = this.isAttribute(g)? g:{};
  }
-   return TSX._jsxView3d().create('mesh3d', params, defaultAttributes(attrs))  as Mesh3D
+   return (this._jView3d as any).create('mesh3d', params, this.defaultAttributes(attrs))
  }
- export function midpoint( p1:Point,p2:Point,attributes?:MidpointAttributes) : Midpoint
- export function midpoint( line:Line,attributes?:MidpointAttributes) : Midpoint
+
+ Midpoint( p1:Point,p2:Point,attributes?:MidpointAttributes) : Midpoint
+ Midpoint( line:Line,attributes?:MidpointAttributes) : Midpoint
 // implementation of signature,  hidden from user
- export function midpoint (a?:any, b?:any, c?:any, d?:any,e?:any,f?:any,g?:any,h?:any,i?:any) :Midpoint {
+ Midpoint (a?:any, b?:any, c?:any, d?:any,e?:any,f?:any,g?:any,h?:any,i?:any) {
    let params:any[] = []
    let attrs = {}
  if(arguments.length == 1) {
-   params = isAttribute(a)?[]:[a,];
-   attrs = isAttribute(a)? a:{};
+   params = this.isAttribute(a)?[]:[a,];
+   attrs = this.isAttribute(a)? a:{};
  }
  if(arguments.length == 2) {
-   params = isAttribute(b)?[a,]:[a,b,];
-   attrs = isAttribute(b)? b:{};
+   params = this.isAttribute(b)?[a,]:[a,b,];
+   attrs = this.isAttribute(b)? b:{};
  }
  if(arguments.length == 3) {
-   params = isAttribute(c)?[a,b,]:[a,b,c,];
-   attrs = isAttribute(c)? c:{};
+   params = this.isAttribute(c)?[a,b,]:[a,b,c,];
+   attrs = this.isAttribute(c)? c:{};
  }
  if(arguments.length == 4) {
-   params = isAttribute(d)?[a,b,c,]:[a,b,c,d,];
-   attrs = isAttribute(d)? d:{};
+   params = this.isAttribute(d)?[a,b,c,]:[a,b,c,d,];
+   attrs = this.isAttribute(d)? d:{};
  }
  if(arguments.length == 5) {
-   params = isAttribute(e)?[a,b,c,d,]:[a,b,c,d,e,];
-   attrs = isAttribute(e)? e:{};
+   params = this.isAttribute(e)?[a,b,c,d,]:[a,b,c,d,e,];
+   attrs = this.isAttribute(e)? e:{};
  }
  if(arguments.length == 6) {
-   params = isAttribute(f)?[a,b,c,d,e,]:[a,b,c,d,e,f,];
-   attrs = isAttribute(f)? f:{};
+   params = this.isAttribute(f)?[a,b,c,d,e,]:[a,b,c,d,e,f,];
+   attrs = this.isAttribute(f)? f:{};
  }
  if(arguments.length == 7) {
-   params = isAttribute(g)?[a,b,c,d,e,f,]:[a,b,c,d,e,f,g,];
-   attrs = isAttribute(g)? g:{};
+   params = this.isAttribute(g)?[a,b,c,d,e,f,]:[a,b,c,d,e,f,g,];
+   attrs = this.isAttribute(g)? g:{};
  }
-   return TSX._jsxBoard().create('midpoint', params, defaultAttributes(attrs))  as Midpoint
+   return (this._jBoard as any).create('midpoint', params, this.defaultAttributes(attrs))
  }
 
- /** A minor arc is a segment of the circumference of a circle having measure less than or equal to 180 degrees (pi radians). It is defined by a center, one point that defines the radius, and a third point that defines the angle of the arc. */
- export function minorArc(p1:Point|pointAddr, p2:Point|pointAddr, p3:Point|pointAddr, attributes: MinorArcAttributes ={} ):MinorArc{
-   return TSX._jsxBoard().create('minorArc', [p1,p2,p3,], defaultAttributes(attributes))  as MinorArc
+ MinorArc (p1:Point|pointAddr, p2:Point|pointAddr, p3:Point|pointAddr, attributes: MinorArcAttributes ={} ):MinorArc {
+   return (this._jBoard as any).create('minorArc', [p1,p2,p3,], this.defaultAttributes(attributes))  as MinorArc
 }
 
 
- /** A minor sector is a sector of a circle having measure less than or equal to 180 degrees (pi radians). It is defined by a center, one point that defines the radius, and a third point that defines the angle of the sector. */
- export function minorSector(p1:Point|pointAddr, p2:Point|pointAddr, p3:Point|pointAddr, attributes: MinorSectorAttributes ={} ):MinorSector{
-   return TSX._jsxBoard().create('minorSector', [p1,p2,p3,], defaultAttributes(attributes))  as MinorSector
+ MinorSector (p1:Point|pointAddr, p2:Point|pointAddr, p3:Point|pointAddr, attributes: MinorSectorAttributes ={} ):MinorSector {
+   return (this._jBoard as any).create('minorSector', [p1,p2,p3,], this.defaultAttributes(attributes))  as MinorSector
 }
 
 
- /**  */
- export function mirrorelement(element:Point|Line|Circle|Curve|Polygon, acrossPoint:Point|pointAddr, attributes: MirrorelementAttributes ={} ):Mirrorelement{
-   return TSX._jsxBoard().create('mirrorelement', [element,acrossPoint,], defaultAttributes(attributes))  as Mirrorelement
+ Mirrorelement (element:Point|Line|Circle|Curve|Polygon, acrossPoint:Point|pointAddr, attributes: MirrorelementAttributes ={} ):Mirrorelement {
+   return (this._jBoard as any).create('mirrorelement', [element,acrossPoint,], this.defaultAttributes(attributes))  as Mirrorelement
 }
 
 
- /** A mirror point will be constructed. */
- export function mirrorpoint(p1:Point, p2:Point, attributes: MirrorpointAttributes ={} ):Mirrorpoint{
-   return TSX._jsxBoard().create('mirrorpoint', [p1,p2,], defaultAttributes(attributes))  as Mirrorpoint
+ Mirrorpoint (p1:Point, p2:Point, attributes: MirrorpointAttributes ={} ):Mirrorpoint {
+   return (this._jBoard as any).create('mirrorpoint', [p1,p2,], this.defaultAttributes(attributes))  as Mirrorpoint
 }
 
 
- /** A non-reflex angle is the acute or obtuse instance of an angle. It is defined by a center, one point that defines the radius, and a third point that defines the angle of the sector. */
- export function nonReflexAngle(point1:Point, point2:Point, point3:Point, attributes: NonReflexAngleAttributes ={} ):NonReflexAngle{
-   return TSX._jsxBoard().create('nonReflexAngle', [point1,point2,point3,], defaultAttributes(attributes))  as NonReflexAngle
+ NonReflexAngle (point1:Point, point2:Point, point3:Point, attributes: NonReflexAngleAttributes ={} ):NonReflexAngle {
+   return (this._jBoard as any).create('nonReflexAngle', [point1,point2,point3,], this.defaultAttributes(attributes))  as NonReflexAngle
 }
 
- export function normal( object:Line|Circle|Curve,point:Point,attributes?:NormalAttributes) : Normal
- export function normal( glider:Glider,attributes?:NormalAttributes) : Normal
+
+ Normal( object:Line|Circle|Curve,point:Point,attributes?:NormalAttributes) : Normal
+ Normal( glider:Glider,attributes?:NormalAttributes) : Normal
 // implementation of signature,  hidden from user
- export function normal (a?:any, b?:any, c?:any, d?:any,e?:any,f?:any,g?:any,h?:any,i?:any) :Normal {
+ Normal (a?:any, b?:any, c?:any, d?:any,e?:any,f?:any,g?:any,h?:any,i?:any) {
    let params:any[] = []
    let attrs = {}
  if(arguments.length == 1) {
-   params = isAttribute(a)?[]:[a,];
-   attrs = isAttribute(a)? a:{};
+   params = this.isAttribute(a)?[]:[a,];
+   attrs = this.isAttribute(a)? a:{};
  }
  if(arguments.length == 2) {
-   params = isAttribute(b)?[a,]:[a,b,];
-   attrs = isAttribute(b)? b:{};
+   params = this.isAttribute(b)?[a,]:[a,b,];
+   attrs = this.isAttribute(b)? b:{};
  }
  if(arguments.length == 3) {
-   params = isAttribute(c)?[a,b,]:[a,b,c,];
-   attrs = isAttribute(c)? c:{};
+   params = this.isAttribute(c)?[a,b,]:[a,b,c,];
+   attrs = this.isAttribute(c)? c:{};
  }
  if(arguments.length == 4) {
-   params = isAttribute(d)?[a,b,c,]:[a,b,c,d,];
-   attrs = isAttribute(d)? d:{};
+   params = this.isAttribute(d)?[a,b,c,]:[a,b,c,d,];
+   attrs = this.isAttribute(d)? d:{};
  }
  if(arguments.length == 5) {
-   params = isAttribute(e)?[a,b,c,d,]:[a,b,c,d,e,];
-   attrs = isAttribute(e)? e:{};
+   params = this.isAttribute(e)?[a,b,c,d,]:[a,b,c,d,e,];
+   attrs = this.isAttribute(e)? e:{};
  }
  if(arguments.length == 6) {
-   params = isAttribute(f)?[a,b,c,d,e,]:[a,b,c,d,e,f,];
-   attrs = isAttribute(f)? f:{};
+   params = this.isAttribute(f)?[a,b,c,d,e,]:[a,b,c,d,e,f,];
+   attrs = this.isAttribute(f)? f:{};
  }
  if(arguments.length == 7) {
-   params = isAttribute(g)?[a,b,c,d,e,f,]:[a,b,c,d,e,f,g,];
-   attrs = isAttribute(g)? g:{};
+   params = this.isAttribute(g)?[a,b,c,d,e,f,]:[a,b,c,d,e,f,g,];
+   attrs = this.isAttribute(g)? g:{};
  }
-   return TSX._jsxBoard().create('normal', params, defaultAttributes(attrs))  as Normal
+   return (this._jBoard as any).create('normal', params, this.defaultAttributes(attrs))
  }
+
 
  /** An `orthogonalprojection` is a locked point determined by projecting a point orthogonally onto a line.
 ```js
@@ -3842,135 +6064,137 @@ let s1 = TSX.segment(p1, p2)
 let p3 = TSX.point([0, -1])
 TSX.orthogonalprojection(p3, s1)
 ``` */
- export function orthogonalprojection(point:Point|pointAddr, line:Line|[Point|pointAddr,Point|pointAddr], attributes: OrthogonalprojectionAttributes ={} ):Orthogonalprojection{
-   return TSX._jsxBoard().create('orthogonalprojection', [point,line,], defaultAttributes(attributes))  as Orthogonalprojection
+ Orthogonalprojection (point:Point|pointAddr, line:Line|[Point|pointAddr,Point|pointAddr], attributes: OrthogonalprojectionAttributes ={} ):Orthogonalprojection {
+   return (this._jBoard as any).create('orthogonalprojection', [point,line,], this.defaultAttributes(attributes))  as Orthogonalprojection
 }
 
 
- /** This element is used to provide a constructor for the ”other” intersection point. */
- export function otherIntersection(element1:Line|Circle, element2:Line|Circle, firstIntersection:Point, attributes: OtherIntersectionAttributes ={} ):Point{
-  return _jsxBoard().create('otherintersection', [element1,element2,firstIntersection], attributes)
+ OtherIntersection (element1:Line|Circle, element2:Line|Circle, firstIntersection:Point, attributes: OtherIntersectionAttributes ={} ):OtherIntersection {
+  return (this._jBoard as any).create('otherintersection', [element1,element2,firstIntersection], attributes)
 }
 
 
- /** This element is used to provide a constructor for a parabola. A parabola is given by one point (the focus) and a line (the directrix). */
- export function parabola(focalPoint:Point|pointAddr, line:Line|[Point|pointAddr,Point|pointAddr], attributes: ParabolaAttributes ={} ):Parabola{
-   return TSX._jsxBoard().create('parabola', [focalPoint,line,], defaultAttributes(attributes))  as Parabola
+ Parabola (focalPoint:Point|pointAddr, line:Line|[Point|pointAddr,Point|pointAddr], attributes: ParabolaAttributes ={} ):Parabola {
+   return (this._jBoard as any).create('parabola', [focalPoint,line,], this.defaultAttributes(attributes))  as Parabola
 }
 
- export function parallelpoint( line:Line|[Point,Point],point:Point|pointAddr,attributes?:ParallelpointAttributes) : Parallelpoint
- export function parallelpoint( P1:Point,P2:Point,P3:Point,attributes?:ParallelpointAttributes) : Parallelpoint
+
+ Parallelpoint( line:Line|[Point,Point],point:Point|pointAddr,attributes?:ParallelpointAttributes) : Parallelpoint
+ Parallelpoint( P1:Point,P2:Point,P3:Point,attributes?:ParallelpointAttributes) : Parallelpoint
 // implementation of signature,  hidden from user
- export function parallelpoint (a?:any, b?:any, c?:any, d?:any,e?:any,f?:any,g?:any,h?:any,i?:any) :Parallelpoint {
+ Parallelpoint (a?:any, b?:any, c?:any, d?:any,e?:any,f?:any,g?:any,h?:any,i?:any) {
    let params:any[] = []
    let attrs = {}
  if(arguments.length == 1) {
-   params = isAttribute(a)?[]:[a,];
-   attrs = isAttribute(a)? a:{};
+   params = this.isAttribute(a)?[]:[a,];
+   attrs = this.isAttribute(a)? a:{};
  }
  if(arguments.length == 2) {
-   params = isAttribute(b)?[a,]:[a,b,];
-   attrs = isAttribute(b)? b:{};
+   params = this.isAttribute(b)?[a,]:[a,b,];
+   attrs = this.isAttribute(b)? b:{};
  }
  if(arguments.length == 3) {
-   params = isAttribute(c)?[a,b,]:[a,b,c,];
-   attrs = isAttribute(c)? c:{};
+   params = this.isAttribute(c)?[a,b,]:[a,b,c,];
+   attrs = this.isAttribute(c)? c:{};
  }
  if(arguments.length == 4) {
-   params = isAttribute(d)?[a,b,c,]:[a,b,c,d,];
-   attrs = isAttribute(d)? d:{};
+   params = this.isAttribute(d)?[a,b,c,]:[a,b,c,d,];
+   attrs = this.isAttribute(d)? d:{};
  }
  if(arguments.length == 5) {
-   params = isAttribute(e)?[a,b,c,d,]:[a,b,c,d,e,];
-   attrs = isAttribute(e)? e:{};
+   params = this.isAttribute(e)?[a,b,c,d,]:[a,b,c,d,e,];
+   attrs = this.isAttribute(e)? e:{};
  }
  if(arguments.length == 6) {
-   params = isAttribute(f)?[a,b,c,d,e,]:[a,b,c,d,e,f,];
-   attrs = isAttribute(f)? f:{};
+   params = this.isAttribute(f)?[a,b,c,d,e,]:[a,b,c,d,e,f,];
+   attrs = this.isAttribute(f)? f:{};
  }
  if(arguments.length == 7) {
-   params = isAttribute(g)?[a,b,c,d,e,f,]:[a,b,c,d,e,f,g,];
-   attrs = isAttribute(g)? g:{};
+   params = this.isAttribute(g)?[a,b,c,d,e,f,]:[a,b,c,d,e,f,g,];
+   attrs = this.isAttribute(g)? g:{};
  }
-   return TSX._jsxBoard().create('parallelpoint', params, defaultAttributes(attrs))  as Parallelpoint
+   return (this._jBoard as any).create('parallelpoint', params, this.defaultAttributes(attrs))
  }
- export function segment( P1:Point|pointAddr,P2:Point|pointAddr,attributes?:SegmentAttributes) : Segment
- export function segment( P1:Point|pointAddr,P2:Point|pointAddr,length:number|Function,attributes?:SegmentAttributes) : Segment
+
+ Segment( P1:Point|pointAddr,P2:Point|pointAddr,attributes?:SegmentAttributes) : Segment
+ Segment( P1:Point|pointAddr,P2:Point|pointAddr,length:number|Function,attributes?:SegmentAttributes) : Segment
 // implementation of signature,  hidden from user
- export function segment (a?:any, b?:any, c?:any, d?:any,e?:any,f?:any,g?:any,h?:any,i?:any) :Segment {
+ Segment (a?:any, b?:any, c?:any, d?:any,e?:any,f?:any,g?:any,h?:any,i?:any) {
    let params:any[] = []
    let attrs = {}
  if(arguments.length == 1) {
-   params = isAttribute(a)?[]:[a,];
-   attrs = isAttribute(a)? a:{};
+   params = this.isAttribute(a)?[]:[a,];
+   attrs = this.isAttribute(a)? a:{};
  }
  if(arguments.length == 2) {
-   params = isAttribute(b)?[a,]:[a,b,];
-   attrs = isAttribute(b)? b:{};
+   params = this.isAttribute(b)?[a,]:[a,b,];
+   attrs = this.isAttribute(b)? b:{};
  }
  if(arguments.length == 3) {
-   params = isAttribute(c)?[a,b,]:[a,b,c,];
-   attrs = isAttribute(c)? c:{};
+   params = this.isAttribute(c)?[a,b,]:[a,b,c,];
+   attrs = this.isAttribute(c)? c:{};
  }
  if(arguments.length == 4) {
-   params = isAttribute(d)?[a,b,c,]:[a,b,c,d,];
-   attrs = isAttribute(d)? d:{};
+   params = this.isAttribute(d)?[a,b,c,]:[a,b,c,d,];
+   attrs = this.isAttribute(d)? d:{};
  }
  if(arguments.length == 5) {
-   params = isAttribute(e)?[a,b,c,d,]:[a,b,c,d,e,];
-   attrs = isAttribute(e)? e:{};
+   params = this.isAttribute(e)?[a,b,c,d,]:[a,b,c,d,e,];
+   attrs = this.isAttribute(e)? e:{};
  }
  if(arguments.length == 6) {
-   params = isAttribute(f)?[a,b,c,d,e,]:[a,b,c,d,e,f,];
-   attrs = isAttribute(f)? f:{};
+   params = this.isAttribute(f)?[a,b,c,d,e,]:[a,b,c,d,e,f,];
+   attrs = this.isAttribute(f)? f:{};
  }
  if(arguments.length == 7) {
-   params = isAttribute(g)?[a,b,c,d,e,f,]:[a,b,c,d,e,f,g,];
-   attrs = isAttribute(g)? g:{};
+   params = this.isAttribute(g)?[a,b,c,d,e,f,]:[a,b,c,d,e,f,g,];
+   attrs = this.isAttribute(g)? g:{};
  }
-   return TSX._jsxBoard().create('segment', params, defaultAttributes(attrs))  as Segment
+   return (this._jBoard as any).create('segment', params, this.defaultAttributes(attrs))
  }
 
- /**  */
- export function parallelogram(p1:Point|pointAddr, p2:Point|pointAddr, p3:Point|pointAddr, attributes: ParallelogramAttributes ={} ):Parallelogram{
-   return TSX._jsxBoard().create('parallelogram', [p1,p2,p3,], defaultAttributes(attributes))  as Parallelogram
+ Parallelogram (p1:Point|pointAddr, p2:Point|pointAddr, p3:Point|pointAddr, attributes: ParallelogramAttributes ={} ):Parallelogram {
+   return (this._jBoard as any).create('parallelogram', [p1,p2,p3,], this.defaultAttributes(attributes))  as Parallelogram
 }
+
 
 
  /** Create a line orthogonal to a given line and containing a given point. If you want a Perpendicular to a Curve, look at Normal(). */
- export function perpendicular(line:Line|[Point|pointAddr,Point|pointAddr], point:Point|pointAddr, attributes: PerpendicularAttributes ={} ):Perpendicular{
-   return TSX._jsxBoard().create('perpendicular', [line,point,], defaultAttributes(attributes))  as Perpendicular
+ Perpendicular (line:Line|[Point|pointAddr,Point|pointAddr], point:Point|pointAddr, attributes: PerpendicularAttributes ={} ):Perpendicular {
+   return (this._jBoard as any).create('perpendicular', [line,point,], this.defaultAttributes(attributes))  as Perpendicular
 }
+
 
 
  /** Create a point on a line where a perpendicular to a given point would intersect that line. */
- export function perpendicularPoint(line:Line|[Point|pointAddr,Point|pointAddr], point:Point|pointAddr, attributes: PerpendicularPointAttributes ={} ):PerpendicularPoint{
-   return TSX._jsxBoard().create('perpendicularPoint', [line,point,], defaultAttributes(attributes))  as PerpendicularPoint
+ PerpendicularPoint (line:Line|[Point|pointAddr,Point|pointAddr], point:Point|pointAddr, attributes: PerpendicularPointAttributes ={} ):PerpendicularPoint {
+   return (this._jBoard as any).create('perpendicularPoint', [line,point,], this.defaultAttributes(attributes))  as PerpendicularPoint
 }
+
 
 
  /** Create a segment orthogonal to a given line and containing a given point.  If you want a Perpendicular to a Curve, look at Normal(). */
- export function perpendicularSegment(line:Line|[Point|pointAddr,Point|pointAddr], point:Point|pointAddr, attributes: PerpendicularSegmentAttributes ={} ):PerpendicularSegment{
-   return TSX._jsxBoard().create('perpendicularSegment', [line,point,], defaultAttributes(attributes))  as PerpendicularSegment
+ PerpendicularSegment (line:Line|[Point|pointAddr,Point|pointAddr], point:Point|pointAddr, attributes: PerpendicularSegmentAttributes ={} ):PerpendicularSegment {
+   return (this._jBoard as any).create('perpendicularSegment', [line,point,], this.defaultAttributes(attributes))  as PerpendicularSegment
 }
 
 
- /** This element is used to provide a constructor for the polar line of a point with respect to a conic or a circle. */
- export function polarLine(conic:Conic|Circle, point:Point, attributes: PolarLineAttributes ={} ):PolarLine{
-   return TSX._jsxBoard().create('polarLine', [conic,point,], defaultAttributes(attributes))  as PolarLine
+ PolarLine (conic:Conic|Circle, point:Point, attributes: PolarLineAttributes ={} ):PolarLine {
+   return (this._jBoard as any).create('polarLine', [conic,point,], this.defaultAttributes(attributes))  as PolarLine
 }
 
 
- /** This element is used to provide a constructor for the pole point of a line with respect to a conic or a circle. */
- export function polePoint(conic:Conic|Circle, line:Line, attributes: PolePointAttributes ={} ):PolePoint{
-   return TSX._jsxBoard().create('polePoint', [conic,line,], defaultAttributes(attributes))  as PolePoint
+ PolePoint (conic:Conic|Circle, line:Line, attributes: PolePointAttributes ={} ):PolePoint {
+   return (this._jBoard as any).create('polePoint', [conic,line,], this.defaultAttributes(attributes))  as PolePoint
 }
+
 
 
  /** Array of Points */
- export function polygonalChain(pointArray:Point[]|pointAddr[], attributes: PolygonalChainAttributes ={} ):PolygonalChain{
-   return TSX._jsxBoard().create('polygonalChain', [pointArray,].flat(), defaultAttributes(attributes))  as PolygonalChain
+ PolygonalChain (pointArray:Point[]|pointAddr[], attributes: PolygonalChainAttributes ={} ):PolygonalChain {
+   return (this._jBoard as any).create('polygonalChain', [pointArray,], this.defaultAttributes(attributes))  as PolygonalChain
 }
+
 
 
  /** A polyhedron in a 3D view consists of faces. Faces can be 0-, 1- or 2-dimensional.
@@ -4001,47 +6225,46 @@ let faceArray = [  // each triangular face connects three vertex points
     }
 });
 ``` */
- export function polyhedron3d(vertexList:(TSX.Point3D|TSX.pointAddr3D)[], faceArray:number[][], attributes: Polyhedron3DAttributes ={} ):Polyhedron3D{
-   return TSX._jsxView3d().create('polyhedron3d', [vertexList,faceArray,], defaultAttributes(attributes))  as Polyhedron3D
+ Polyhedron3D (vertexList:(Point3D|pointAddr3D)[], faceArray:number[][], attributes: Polyhedron3DAttributes ={} ):Polyhedron3D {
+   return (this._jView3d as any).create('polyhedron3d', [vertexList,faceArray,], this.defaultAttributes(attributes))  as Polyhedron3D
 }
 
 
- /** This element is used to provide a constructor for the radical axis with respect to two circles with distinct centers. The angular bisector of the polar lines of the circle centers with respect to the other circle is always the radical axis. The radical axis passes through the intersection points when the circles intersect. When a circle about the midpoint of circle centers, passing through the circle centers, intersects the circles, the polar lines pass through those intersection points. */
- export function radicalAxis(circle1:Circle, circle2:Circle, attributes: RadicalAxisAttributes ={} ):RadicalAxis{
-   return TSX._jsxBoard().create('radicalAxis', [circle1,circle2,], defaultAttributes(attributes))  as RadicalAxis
+ RadicalAxis (circle1:Circle, circle2:Circle, attributes: RadicalAxisAttributes ={} ):RadicalAxis {
+   return (this._jBoard as any).create('radicalAxis', [circle1,circle2,], this.defaultAttributes(attributes))  as RadicalAxis
 }
+
 
 
  /** A reflected element (point, polygon, line or curve) from an object of the same type and a line of reflection. */
- export function reflection(object:Point|Line|Curve|Polygon, reflectLine:Line, attributes: ReflectionAttributes ={} ):Reflection{
-   return TSX._jsxBoard().create('reflection', [object,reflectLine,], defaultAttributes(attributes))  as Reflection
+ Reflection (object:Point|Line|Circle|Curve|Polygon|Arc|Sector, reflectLine:Line, attributes: ReflectionAttributes ={} ):Reflection {
+   return (this._jBoard as any).create('reflection', [object,reflectLine,], this.defaultAttributes(attributes))  as Reflection
 }
 
 
- /** A reflex angle is the neither acute nor obtuse instance of an angle. It is defined by a center, one point that defines the radius, and a third point that defines the angle of the sector. */
- export function reflexAngle(point1:Point, point2:Point, point3:Point, attributes: ReflexAngleAttributes ={} ):ReflexAngle{
-   return TSX._jsxBoard().create('reflexAngle', [point1,point2,point3,], defaultAttributes(attributes))  as ReflexAngle
+ ReflexAngle (point1:Point, point2:Point, point3:Point, attributes: ReflexAngleAttributes ={} ):ReflexAngle {
+   return (this._jBoard as any).create('reflexAngle', [point1,point2,point3,], this.defaultAttributes(attributes))  as ReflexAngle
 }
 
 
- /** Constructs a regular polygon. It needs two points which define the base line and the number of vertices. */
- export function regularPolygon(P1:Point|pointAddr, P2:Point|pointAddr, nVertices:number, attributes: RegularPolygonAttributes ={} ):RegularPolygon{
-   return TSX._jsxBoard().create('regularPolygon', [P1,P2,nVertices,], defaultAttributes(attributes))  as RegularPolygon
+ RegularPolygon (P1:Point|pointAddr, P2:Point|pointAddr, nVertices:number, attributes: RegularPolygonAttributes ={} ):RegularPolygon {
+   return (this._jBoard as any).create('regularPolygon', [P1,P2,nVertices,], this.defaultAttributes(attributes))  as RegularPolygon
 }
+
 
 
  /** Visualize the Riemann sum which is an approximation of an integral by a finite sum. It is realized as a special curve. The returned element has the method Value() which returns the sum of the areas of the bars.
 
                         In case of type 'simpson' and 'trapezoidal', the horizontal line approximating the function value is replaced by a parabola or a secant. IN case of 'simpson', the parabola is approximated visually by a polygonal chain of fixed step width. */
- export function riemannsum(funct:Function|number[], nBars:Function|number, type:'left'|'right'|'middle'|'lower'|'upper'|'random'|'simpson'|'trapezoidal' = 'simpson', leftBorder?:number|Function, rightBorder?:number|Function, attributes: RiemannsumAttributes ={} ):Riemannsum{
-   return TSX._jsxBoard().create('riemannsum', [funct,nBars,type,leftBorder,rightBorder,], defaultAttributes(attributes))  as Riemannsum
+ Riemannsum (funct:Function|number[], nBars:Function|number, type:'left'|'right'|'middle'|'lower'|'upper'|'random'|'simpson'|'trapezoidal' = 'simpson', leftBorder?:number|Function, rightBorder?:number|Function, attributes: RiemannsumAttributes ={} ):Riemannsum {
+   return (this._jBoard as any).create('riemannsum', [funct,nBars,type,leftBorder,rightBorder,], this.defaultAttributes(attributes))  as Riemannsum
 }
 
 
- /** A semicircle is a special arc defined by two points. The arc hits both points. */
- export function semicircle(P1:Point|pointAddr, P2:Point|pointAddr, attributes: SemicircleAttributes ={} ):Semicircle{
-   return TSX._jsxBoard().create('semicircle', [P1,P2,], defaultAttributes(attributes))  as Semicircle
+ Semicircle (P1:Point|pointAddr, P2:Point|pointAddr, attributes: SemicircleAttributes ={} ):Semicircle {
+   return (this._jBoard as any).create('semicircle', [P1,P2,], this.defaultAttributes(attributes))  as Semicircle
 }
+
 
 
  /** An input widget for choosing values from a given range of numbers.  Parameters are startpoint, endpoint,
@@ -4061,101 +6284,103 @@ let faceArray = [  // each triangular face connects three vertex points
             postLabel: ' meters'        // this is a suffix
         
 *``` */
- export function slider(StartPoint:Point|pointAddr, EndPoint:Point|pointAddr, minimum_initial_maximum:[number,number,number], attributes: SliderAttributes ={} ):Slider{
-   return TSX._jsxBoard().create('slider', [StartPoint,EndPoint,minimum_initial_maximum,], defaultAttributes(attributes))  as Slider
+ Slider (StartPoint:Point|pointAddr, EndPoint:Point|pointAddr, minimum_initial_maximum:[number,number,number], attributes: SliderAttributes ={} ):Slider {
+   return (this._jBoard as any).create('slider', [StartPoint,EndPoint,minimum_initial_maximum,], this.defaultAttributes(attributes))  as Slider
 }
 
 
- /** Slope field. Plot a slope field given by a function f(x, y) returning a number. */
- export function slopefield(func:Function, xData:NumberFunction[], yData:NumberFunction[], attributes: SlopefieldAttributes ={} ):Slopefield{
-   return TSX._jsxBoard().create('slopefield', [func,xData,yData,], defaultAttributes(attributes))  as Slopefield
+ Slopefield (func:Function, xData:NumberFunction[], yData:NumberFunction[], attributes: SlopefieldAttributes ={} ):Slopefield {
+   return (this._jBoard as any).create('slopefield', [func,xData,yData,], this.defaultAttributes(attributes))  as Slopefield
 }
 
- export function slopetriangle( tangent:Point | Tangent,attributes?:SlopetriangleAttributes) : Slopetriangle
- export function slopetriangle( line:Line,point:Point,attributes?:SlopetriangleAttributes) : Slopetriangle
+
+ Slopetriangle( tangent:Point | Tangent,attributes?:SlopetriangleAttributes) : Slopetriangle
+ Slopetriangle( line:Line,point:Point,attributes?:SlopetriangleAttributes) : Slopetriangle
 // implementation of signature,  hidden from user
- export function slopetriangle (a?:any, b?:any, c?:any, d?:any,e?:any,f?:any,g?:any,h?:any,i?:any) :Slopetriangle {
+ Slopetriangle (a?:any, b?:any, c?:any, d?:any,e?:any,f?:any,g?:any,h?:any,i?:any) {
    let params:any[] = []
    let attrs = {}
  if(arguments.length == 1) {
-   params = isAttribute(a)?[]:[a,];
-   attrs = isAttribute(a)? a:{};
+   params = this.isAttribute(a)?[]:[a,];
+   attrs = this.isAttribute(a)? a:{};
  }
  if(arguments.length == 2) {
-   params = isAttribute(b)?[a,]:[a,b,];
-   attrs = isAttribute(b)? b:{};
+   params = this.isAttribute(b)?[a,]:[a,b,];
+   attrs = this.isAttribute(b)? b:{};
  }
  if(arguments.length == 3) {
-   params = isAttribute(c)?[a,b,]:[a,b,c,];
-   attrs = isAttribute(c)? c:{};
+   params = this.isAttribute(c)?[a,b,]:[a,b,c,];
+   attrs = this.isAttribute(c)? c:{};
  }
  if(arguments.length == 4) {
-   params = isAttribute(d)?[a,b,c,]:[a,b,c,d,];
-   attrs = isAttribute(d)? d:{};
+   params = this.isAttribute(d)?[a,b,c,]:[a,b,c,d,];
+   attrs = this.isAttribute(d)? d:{};
  }
  if(arguments.length == 5) {
-   params = isAttribute(e)?[a,b,c,d,]:[a,b,c,d,e,];
-   attrs = isAttribute(e)? e:{};
+   params = this.isAttribute(e)?[a,b,c,d,]:[a,b,c,d,e,];
+   attrs = this.isAttribute(e)? e:{};
  }
  if(arguments.length == 6) {
-   params = isAttribute(f)?[a,b,c,d,e,]:[a,b,c,d,e,f,];
-   attrs = isAttribute(f)? f:{};
+   params = this.isAttribute(f)?[a,b,c,d,e,]:[a,b,c,d,e,f,];
+   attrs = this.isAttribute(f)? f:{};
  }
  if(arguments.length == 7) {
-   params = isAttribute(g)?[a,b,c,d,e,f,]:[a,b,c,d,e,f,g,];
-   attrs = isAttribute(g)? g:{};
+   params = this.isAttribute(g)?[a,b,c,d,e,f,]:[a,b,c,d,e,f,g,];
+   attrs = this.isAttribute(g)? g:{};
  }
-   return TSX._jsxBoard().create('slopetriangle', params, defaultAttributes(attrs))  as Slopetriangle
+   return (this._jBoard as any).create('slopetriangle', params, this.defaultAttributes(attrs))
  }
+
  /** Customized text elements for displaying measurements of JSXGraph elements, Examples are length of a segment, perimeter or area of a circle or polygon (including polygonal chain), slope of a line, value of an angle, and coordinates of a point. */
- export function smartlabel( parent:Point|Line|Circle|Polygon|Angle,attributes?:SmartlabelAttributes) : Smartlabel
+ Smartlabel( parent:Point|Line|Circle|Polygon|Angle,attributes?:SmartlabelAttributes) : Smartlabel
  /** Customized text elements for displaying measurements of JSXGraph elements, Examples are length of a segment, perimeter or area of a circle or polygon (including polygonal chain), slope of a line, value of an angle, and coordinates of a point. */
- export function smartlabel( parent:Point|Line|Circle|Polygon|Angle,Txt:string|Function,attributes?:SmartlabelAttributes) : Smartlabel
+ Smartlabel( parent:Point|Line|Circle|Polygon|Angle,Txt:string|Function,attributes?:SmartlabelAttributes) : Smartlabel
 // implementation of signature,  hidden from user
- export function smartlabel (a?:any, b?:any, c?:any, d?:any,e?:any,f?:any,g?:any,h?:any,i?:any) :Smartlabel {
+ Smartlabel (a?:any, b?:any, c?:any, d?:any,e?:any,f?:any,g?:any,h?:any,i?:any) {
    let params:any[] = []
    let attrs = {}
  if(arguments.length == 1) {
-   params = isAttribute(a)?[]:[a,];
-   attrs = isAttribute(a)? a:{};
+   params = this.isAttribute(a)?[]:[a,];
+   attrs = this.isAttribute(a)? a:{};
  }
  if(arguments.length == 2) {
-   params = isAttribute(b)?[a,]:[a,b,];
-   attrs = isAttribute(b)? b:{};
+   params = this.isAttribute(b)?[a,]:[a,b,];
+   attrs = this.isAttribute(b)? b:{};
  }
  if(arguments.length == 3) {
-   params = isAttribute(c)?[a,b,]:[a,b,c,];
-   attrs = isAttribute(c)? c:{};
+   params = this.isAttribute(c)?[a,b,]:[a,b,c,];
+   attrs = this.isAttribute(c)? c:{};
  }
  if(arguments.length == 4) {
-   params = isAttribute(d)?[a,b,c,]:[a,b,c,d,];
-   attrs = isAttribute(d)? d:{};
+   params = this.isAttribute(d)?[a,b,c,]:[a,b,c,d,];
+   attrs = this.isAttribute(d)? d:{};
  }
  if(arguments.length == 5) {
-   params = isAttribute(e)?[a,b,c,d,]:[a,b,c,d,e,];
-   attrs = isAttribute(e)? e:{};
+   params = this.isAttribute(e)?[a,b,c,d,]:[a,b,c,d,e,];
+   attrs = this.isAttribute(e)? e:{};
  }
  if(arguments.length == 6) {
-   params = isAttribute(f)?[a,b,c,d,e,]:[a,b,c,d,e,f,];
-   attrs = isAttribute(f)? f:{};
+   params = this.isAttribute(f)?[a,b,c,d,e,]:[a,b,c,d,e,f,];
+   attrs = this.isAttribute(f)? f:{};
  }
  if(arguments.length == 7) {
-   params = isAttribute(g)?[a,b,c,d,e,f,]:[a,b,c,d,e,f,g,];
-   attrs = isAttribute(g)? g:{};
+   params = this.isAttribute(g)?[a,b,c,d,e,f,]:[a,b,c,d,e,f,g,];
+   attrs = this.isAttribute(g)? g:{};
  }
-   return TSX._jsxBoard().create('smartlabel', params, defaultAttributes(attrs))  as Smartlabel
+   return (this._jBoard as any).create('smartlabel', params, this.defaultAttributes(attrs))
  }
+
 
  /**  sphere consists of all points with a given distance from a given point. The given point is called the center, and the given distance is called the radius. */
- export function sphere3d(center:Point3D|pointAddr3D, radius:Point3D|number|pointAddr3D, attributes: Sphere3DAttributes ={} ):Sphere3D{
-   return TSX._jsxView3d().create('sphere3d', [center,radius,], defaultAttributes(attributes))  as Sphere3D
+ Sphere3D (center:Point3D|pointAddr3D, radius:Point3D|number|pointAddr3D, attributes: Sphere3DAttributes ={} ):Sphere3D {
+   return (this._jView3d as any).create('sphere3d', [center,radius,], this.defaultAttributes(attributes))  as Sphere3D
 }
 
 
- /** This element is used to provide a constructor for (natural) cubic spline curves. Create a dynamic spline interpolated curve given by sample points p_1 to p_n. */
- export function spline(points:Point[]|number[][], attributes: SplineAttributes ={} ):Curve{
- return _jsxBoard().create('spline', points, defaultAttributes(attributes))
+ Spline (points:Point[]|number[][], attributes: SplineAttributes ={} ):Spline {
+ return (this._jBoard as any).create('spline', points, this.defaultAttributes(attributes))
 }
+
 
 
  /** A step function is a function graph that is piecewise constant. In case the data points should be updated after creation time, they can be accessed by curve.xterm and curve.yterm.
@@ -4163,63 +6388,68 @@ let faceArray = [  // each triangular face connects three vertex points
 let  curve = TSX.stepfunction([0,1,2,3,4,5], [1,3,0,2,2,1]);
 ```
  */
- export function stepfunction(X:number[], Y:number[], attributes: StepfunctionAttributes ={} ):Stepfunction{
-   return TSX._jsxBoard().create('stepfunction', [X,Y,], defaultAttributes(attributes))  as Stepfunction
+ Stepfunction (X:number[], Y:number[], attributes: StepfunctionAttributes ={} ):Stepfunction {
+   return (this._jBoard as any).create('stepfunction', [X,Y,], this.defaultAttributes(attributes))  as Stepfunction
 }
 
- export function tangent( point:Glider,attributes?:TangentAttributes) : Tangent
- export function tangent( point:Point,curve:Line|Circle|Curve,attributes?:TangentAttributes) : Tangent
+
+ Tangent( point:Glider,attributes?:TangentAttributes) : Tangent
+ Tangent( point:Point,curve:Line|Circle|Curve,attributes?:TangentAttributes) : Tangent
 // implementation of signature,  hidden from user
- export function tangent (a?:any, b?:any, c?:any, d?:any,e?:any,f?:any,g?:any,h?:any,i?:any) :Tangent {
+ Tangent (a?:any, b?:any, c?:any, d?:any,e?:any,f?:any,g?:any,h?:any,i?:any) {
    let params:any[] = []
    let attrs = {}
  if(arguments.length == 1) {
-   params = isAttribute(a)?[]:[a,];
-   attrs = isAttribute(a)? a:{};
+   params = this.isAttribute(a)?[]:[a,];
+   attrs = this.isAttribute(a)? a:{};
  }
  if(arguments.length == 2) {
-   params = isAttribute(b)?[a,]:[a,b,];
-   attrs = isAttribute(b)? b:{};
+   params = this.isAttribute(b)?[a,]:[a,b,];
+   attrs = this.isAttribute(b)? b:{};
  }
  if(arguments.length == 3) {
-   params = isAttribute(c)?[a,b,]:[a,b,c,];
-   attrs = isAttribute(c)? c:{};
+   params = this.isAttribute(c)?[a,b,]:[a,b,c,];
+   attrs = this.isAttribute(c)? c:{};
  }
  if(arguments.length == 4) {
-   params = isAttribute(d)?[a,b,c,]:[a,b,c,d,];
-   attrs = isAttribute(d)? d:{};
+   params = this.isAttribute(d)?[a,b,c,]:[a,b,c,d,];
+   attrs = this.isAttribute(d)? d:{};
  }
  if(arguments.length == 5) {
-   params = isAttribute(e)?[a,b,c,d,]:[a,b,c,d,e,];
-   attrs = isAttribute(e)? e:{};
+   params = this.isAttribute(e)?[a,b,c,d,]:[a,b,c,d,e,];
+   attrs = this.isAttribute(e)? e:{};
  }
  if(arguments.length == 6) {
-   params = isAttribute(f)?[a,b,c,d,e,]:[a,b,c,d,e,f,];
-   attrs = isAttribute(f)? f:{};
+   params = this.isAttribute(f)?[a,b,c,d,e,]:[a,b,c,d,e,f,];
+   attrs = this.isAttribute(f)? f:{};
  }
  if(arguments.length == 7) {
-   params = isAttribute(g)?[a,b,c,d,e,f,]:[a,b,c,d,e,f,g,];
-   attrs = isAttribute(g)? g:{};
+   params = this.isAttribute(g)?[a,b,c,d,e,f,]:[a,b,c,d,e,f,g,];
+   attrs = this.isAttribute(g)? g:{};
  }
-   return TSX._jsxBoard().create('tangent', params, defaultAttributes(attrs))  as Tangent
+   return (this._jBoard as any).create('tangent', params, this.defaultAttributes(attrs))
  }
+
 
  /** Construct the tangent line through a point to a conic or a circle. There will be either two, one or no such tangent, depending if the point is outside of the conic, on the conic, or inside of the conic. Similar to the intersection of a line with a circle, the specific tangent can be chosen with a third (optional) parameter number. */
- export function tangentTo(conic:Conic|Circle, point:Point|pointAddr, N:number=0, attributes: TangentToAttributes ={} ):TangentTo{
-   return TSX._jsxBoard().create('tangentTo', [conic,point,N,], defaultAttributes(attributes))  as TangentTo
+ TangentTo (conic:Conic|Circle, point:Point|pointAddr, N:number=0, attributes: TangentToAttributes ={} ):TangentTo {
+   return (this._jBoard as any).create('tangentTo', [conic,point,N,], this.defaultAttributes(attributes))  as TangentTo
 }
 
 
- /** A tape measure can be used to measure distances between points. */
- export function tapemeasure(P1:Point|pointAddr, P2:Point|pointAddr, attributes: TapemeasureAttributes ={} ):Tapemeasure{
-   return TSX._jsxBoard().create('tapemeasure', [P1,P2,], defaultAttributes(attributes))  as Tapemeasure
+ Tapemeasure (P1:Point|pointAddr, P2:Point|pointAddr, attributes: TapemeasureAttributes ={} ):Tapemeasure {
+   return (this._jBoard as any).create('tapemeasure', [P1,P2,], this.defaultAttributes(attributes))  as Tapemeasure
 }
+
 
 
  /** This element is used to provide a constructor for trace curve (simple locus curve).  Given a glider (or slider) and a point controlled by the glider, this element draws the curve that the point will follow when the glider is manipulated.  Use the {trace:true} attribute on the point to mark breadcrumbs along this curve. */
- export function tracecurve(glider:Glider, point:Point, attributes: TracecurveAttributes ={} ):Tracecurve{
-   return TSX._jsxBoard().create('tracecurve', [glider,point,], defaultAttributes(attributes))  as Tracecurve
+ Tracecurve (glider:Glider, point:Point, attributes: TracecurveAttributes ={} ):Tracecurve {
+   return (this._jBoard as any).create('tracecurve', [glider,point,], this.defaultAttributes(attributes))  as Tracecurve
 }
+
+ // Missing signaature array for Transform
+ // Missing signaature array for Transform3D
 
 
  /** Create a new point from an existing point and a concatenation of transforms. This is a powerful way of creating complex constructions that can be rotated, scaled, and translated.  An alternative to using Groups.
@@ -4241,9 +6471,10 @@ let  curve = TSX.stepfunction([0,1,2,3,4,5], [1,3,0,2,2,1]);
      let shapeb = TSX.transformPoint(b,[rot,scale,trans],{color:'blue'})
      TSX.segment(shapea,shapeb)
 ~~~             */
- export function transformPoint(point:Point, transform:Transform|Transform[], attributes: TransformPointAttributes ={} ):Point{
-  return _jsxBoard().create('point', [point,transform],defaultAttributes(attributes))
+ TransformPoint (point:Point, transform:Transform|Transform[], attributes: TransformPointAttributes ={} ):TransformPoint {
+  return (this._jBoard as any).create('point', [point,transform],this.defaultAttributes(attributes))
 }
+
 
 
  /** Create a new point from an existing point and a concatenation of transforms. This is a powerful way of creating complex constructions that can be rotated, scaled, and translated.  An alternative to using Groups.
@@ -4265,2329 +6496,149 @@ let  curve = TSX.stepfunction([0,1,2,3,4,5], [1,3,0,2,2,1]);
      let shapeb = TSX.transformPoint(b,[rot,scale,trans],{color:'blue'})
      TSX.segment(shapea,shapeb)
 ~~~             */
- export function transformPoint3d(point:Point3D, transform:Transform3D|Transform3D[], attributes: TransformPoint3DAttributes ={} ):Point3D{
-  return _jsxView3d().create('point3d', [point,transform],defaultAttributes(attributes))
+ TransformPoint3D (point:Point3D, transform:Transform3D|Transform3D[], attributes: TransformPoint3DAttributes ={} ):TransformPoint3D {
+  return (this._jView3d as any).create('point3d', [point,transform],this.defaultAttributes(attributes))
 }
 
- export function segment3d( P1:Point|pointAddr,P2:Point|pointAddr,attributes?:Segment3DAttributes) : Segment3D
- export function segment3d( P1:Point|pointAddr,P2:Point|pointAddr,length:number|Function,attributes?:Segment3DAttributes) : Segment3D
+
+ Segment3D( P1:Point|pointAddr,P2:Point|pointAddr,attributes?:Segment3DAttributes) : Segment3D
+ Segment3D( P1:Point|pointAddr,P2:Point|pointAddr,length:number|Function,attributes?:Segment3DAttributes) : Segment3D
 // implementation of signature,  hidden from user
- export function segment3d (a?:any, b?:any, c?:any, d?:any,e?:any,f?:any,g?:any,h?:any,i?:any) :Segment3D {
+ Segment3D (a?:any, b?:any, c?:any, d?:any,e?:any,f?:any,g?:any,h?:any,i?:any) {
    let params:any[] = []
    let attrs = {}
  if(arguments.length == 1) {
-   params = isAttribute(a)?[]:[a,];
-   attrs = isAttribute(a)? a:{};
+   params = this.isAttribute(a)?[]:[a,];
+   attrs = this.isAttribute(a)? a:{};
  }
  if(arguments.length == 2) {
-   params = isAttribute(b)?[a,]:[a,b,];
-   attrs = isAttribute(b)? b:{};
+   params = this.isAttribute(b)?[a,]:[a,b,];
+   attrs = this.isAttribute(b)? b:{};
  }
  if(arguments.length == 3) {
-   params = isAttribute(c)?[a,b,]:[a,b,c,];
-   attrs = isAttribute(c)? c:{};
+   params = this.isAttribute(c)?[a,b,]:[a,b,c,];
+   attrs = this.isAttribute(c)? c:{};
  }
  if(arguments.length == 4) {
-   params = isAttribute(d)?[a,b,c,]:[a,b,c,d,];
-   attrs = isAttribute(d)? d:{};
+   params = this.isAttribute(d)?[a,b,c,]:[a,b,c,d,];
+   attrs = this.isAttribute(d)? d:{};
  }
  if(arguments.length == 5) {
-   params = isAttribute(e)?[a,b,c,d,]:[a,b,c,d,e,];
-   attrs = isAttribute(e)? e:{};
+   params = this.isAttribute(e)?[a,b,c,d,]:[a,b,c,d,e,];
+   attrs = this.isAttribute(e)? e:{};
  }
  if(arguments.length == 6) {
-   params = isAttribute(f)?[a,b,c,d,e,]:[a,b,c,d,e,f,];
-   attrs = isAttribute(f)? f:{};
+   params = this.isAttribute(f)?[a,b,c,d,e,]:[a,b,c,d,e,f,];
+   attrs = this.isAttribute(f)? f:{};
  }
  if(arguments.length == 7) {
-   params = isAttribute(g)?[a,b,c,d,e,f,]:[a,b,c,d,e,f,g,];
-   attrs = isAttribute(g)? g:{};
+   params = this.isAttribute(g)?[a,b,c,d,e,f,]:[a,b,c,d,e,f,g,];
+   attrs = this.isAttribute(g)? g:{};
  }
-   return TSX._jsxView3d().create('segment3d', params, defaultAttributes(attrs))  as Segment3D
+   return (this._jView3d as any).create('segment3d', params, this.defaultAttributes(attrs))
  }
 
+
  /** Create a Transform object with Translate properties. */
- export function translate(dx:number|Function, dy:number|Function, attributes: TranslateAttributes ={} ):Transform{
- return _jsxBoard().create('transform', [dx,dy], {type:'translate'})
+ Translate (dx:number|Function, dy:number|Function, attributes: TranslateAttributes ={} ):Translate {
+ return (this._jBoard as any).create('transform', [dx,dy], {type:'translate'})
 }
+
 
 
  /** Create a Transform object with Rotate properties. */
- export function rotate(angle:number|Function, around:Point|pointAddr, attributes: RotateAttributes ={} ):Transform{
- return _jsxBoard().create('Transform', [angle,around], {type:'rotate'})
+ Rotate (angle:number|Function, around:Point|pointAddr, attributes: RotateAttributes ={} ):Rotate {
+ return (this._jBoard as any).create('Transform', [angle,around], {type:'rotate'})
 }
+
 
 
  /** Create a Transform object with Scale properties.  Scaling is relative to [0,0]. */
- export function scale(xMultiplier:number|Function, yMultiplier:number|Function, attributes: ScaleAttributes ={} ):Transform{
- return _jsxBoard().create('transform', [xMultiplier,yMultiplier], {type:'scale'})
+ Scale (xMultiplier:number|Function, yMultiplier:number|Function, attributes: ScaleAttributes ={} ):Scale {
+ return (this._jBoard as any).create('transform', [xMultiplier,yMultiplier], {type:'scale'})
 }
+
 
 
  /** Create a Transform3D object with Translate properties. */
- export function translate3d(dx:number|Function, dy:number|Function, dz:number|Function, attributes: Translate3DAttributes ={} ):Transform3D{
- return _jsxView3d().create('transform3d', [dx,dy,dz], {type:'translate'})
+ Translate3D (dx:number|Function, dy:number|Function, dz:number|Function, attributes: Translate3DAttributes ={} ):Translate3D {
+ return (this._jView3d as any).create('transform3d', [dx,dy,dz], {type:'translate'})
 }
+
 
 
  /** Create a Transform3D object with Rotate properties around the normal vector N. */
- export function rotate3d(angle:number|Function, n:number[], attributes: Rotate3DAttributes ={} ):Transform3D{
- return _jsxView3d().create('transform3d', [angle,n], {type:'rotate'})
+ Rotate3D (angle:number|Function, n:number[], attributes: Rotate3DAttributes ={} ):Rotate3D {
+ return (this._jView3d as any).create('transform3d', [angle,n], {type:'rotate'})
 }
+
 
 
  /** Create a Transform3D object with Rotate properties around the X axis. */
- export function rotateX3d(angle:number|Function, attributes: RotateX3DAttributes ={} ):Transform3D{
- return _jsxView3d().create('transform3d', [angle], {type:'rotateX'})
+ RotateX3D (angle:number|Function, attributes: RotateX3DAttributes ={} ):RotateX3D {
+ return (this._jView3d as any).create('transform3d', [angle], {type:'rotateX'})
 }
+
 
 
  /** Create a Transform3D object with Rotate properties around the Y axis. */
- export function rotateY3d(angle:number|Function, attributes: RotateY3DAttributes ={} ):Transform3D{
- return _jsxView3d().create('transform3d', [angle], {type:'rotateY'})
+ RotateY3D (angle:number|Function, attributes: RotateY3DAttributes ={} ):RotateY3D {
+ return (this._jView3d as any).create('transform3d', [angle], {type:'rotateY'})
 }
+
 
 
  /** Create a Transform3D object with Rotate properties around the Z axis. */
- export function rotateZ3d(angle:number|Function, attributes: RotateZ3DAttributes ={} ):Transform3D{
- return _jsxView3d().create('transform3d', [angle], {type:'rotateZ'})
+ RotateZ3D (angle:number|Function, attributes: RotateZ3DAttributes ={} ):RotateZ3D {
+ return (this._jView3d as any).create('transform3d', [angle], {type:'rotateZ'})
 }
+
 
 
  /** Create a Transform object with Scale properties.  Scaling is relative to [0,0,0]. */
- export function scale3d(xMultiplier:number|Function, yMultiplier:number|Function, zMultiplier:number|Function, attributes: Scale3DAttributes ={} ):Transform3D{
- return _jsxView3d().create('transform3d', [xMultiplier,yMultiplier,zMultiplier], {type:'scale'})
+ Scale3D (xMultiplier:number|Function, yMultiplier:number|Function, zMultiplier:number|Function, attributes: Scale3DAttributes ={} ):Scale3D {
+ return (this._jView3d as any).create('transform3d', [xMultiplier,yMultiplier,zMultiplier], {type:'scale'})
 }
 
+ // Missing signaature array for Matrix
+ // Missing signaature array for Geometry
+ // Missing signaature array for Numerics
+ // Missing signaature array for Statistics
+}///////////////////////////
+////// header2.text ///////
+///////////////////////////
 
- export class GeometryElement{
 
- /**  */
- public get x():GeometryElement {
-  return _jsxBoard().x as GeometryElement
-}
-
- /**  */
- public get y():GeometryElement {
-  return _jsxBoard().y as GeometryElement
-}
-
- /**  */
- public get elType():String {
-  return _jsxBoard().elType as String
-}
-
- /**  */
- public get name():String {
-  return _jsxBoard().name as String
-}
-
- /**  */
- public get isDraggable():Boolean {
-  return _jsxBoard().isDraggable as Boolean
-}
- public set isDraggable(param:Boolean) {
-  _jsxBoard().isDraggable = param
-}
-
- /** Removes all ticks from a line or curve. */
- removeAllTicks(): Object {
-  return  this.removeAllTicks() as Object
-}
-
- /** Add an element as a child to the current element. */
- addChild(): GeometryElement {
-  return  this.addChild() as GeometryElement
-}
-
- /** Adds ids of elements to the array this.parents. */
- addParents(parents:GeometryElement[]): Object {
-  return  this.addParents(parents) as Object
-}
-
- /** Rotate texts or images by a given degree. */
- addRotation(): String {
-  return  this.addRotation() as String
-}
-
- /** Adds ticks to this line or curve. */
- addTicks(): String {
-  return  this.addTicks() as String
-}
-
- /** Animates properties for that object like stroke or fill color, opacity and maybe even more later. */
- animate(): GeometryElement {
-  return  this.animate() as GeometryElement
-}
-
- /** Dimensions of the smallest rectangle enclosing the element. */
- bounds(): number[] {
-  return  this.bounds() as number[]
-}
-
- /** Removes all objects generated by the trace function. */
- clearTrace(): GeometryElement {
-  return  this.clearTrace() as GeometryElement
-}
-
- /** Copy the element to background. */
- cloneToBackground(): GeometryElement {
-  return  this.cloneToBackground() as GeometryElement
-}
-
- /** Creates a label element for this geometry element. */
- createLabel(): boolean {
-  return  this.createLabel() as boolean
-}
-
- /** Format a number according to the locale set in the attribute ”intl”. */
- formatNumberLocale(): String|number {
-  return  this.formatNumberLocale() as String|number
-}
-
- /** Array of strings containing the polynomials defining the element. */
- generatePolynomial(): number[] {
-  return  this.generatePolynomial() as number[]
-}
-
- /** Get the value of the property key. */
- getAttribute(): Object {
-  return  this.getAttribute() as Object
-}
-
- /** Retrieve a copy of the current visProp. */
- getAttributes(): Object {
-  return  this.getAttributes() as Object
-}
-
- /** Returns the elements name. */
- getName(): String {
-  return  this.getName() as String
-}
-
- /** List of the element ids resp. */
- getParents(): number[] {
-  return  this.getParents() as number[]
-}
-
- /** Deprecated alias for JXG.GeometryElement#getAttribute. */
- getProperty(): number[] {
-  return  this.getProperty() as number[]
-}
-
- /** The type of the element as used in JXG.Board#create. */
- getType(): String {
-  return  this.getType() as String
-}
-
- /** Move an element to its nearest grid point. */
- handleSnapToGrid(): GeometryElement {
-  return  this.handleSnapToGrid() as GeometryElement
-}
-
- /** Hide the element. */
- hide(): GeometryElement {
-  return  this.hide() as GeometryElement
-}
-
- /** Hide the element. */
- hideElement(): GeometryElement {
-  return  this.hideElement() as GeometryElement
-}
-
- /**  */
- labelColor(): currentBoard {
-  return  this.labelColor() as currentBoard
-}
-
- /** Uses the ”normal” properties of the element. */
- noHighlight(): currentBoard {
-  return  this.noHighlight() as currentBoard
-}
-
- /** Removes the element from the construction. */
- remove(): Object {
-  return  this.remove() as Object
-}
-
- /** Remove an element as a child from the current element. */
- removeChild(): Object {
-  return  this.removeChild() as Object
-}
-
- /** Alias of JXG.EventEmitter.off. */
- removeEvent(): number {
-  return  this.removeEvent() as number
-}
-
- /** Removes ticks identified by parameter named tick from this line or curve. */
- removeTicks(): Object {
-  return  this.removeTicks() as Object
-}
-
- /** Determines whether the element has arrows at start or end of the arc. */
- setArrow(): GeometryElement {
-  return  this.setArrow() as GeometryElement
-}
-
- /** Sets an arbitrary number of attributes. */
- setAttribute(attrs:GeometryElementAttributes): void {
-  return  this.setAttribute(attrs) as void
-}
-
- /** Sets a label and its text If label doesn't exist, it creates one */
- setLabel(txt:string): Object {
-  return  this.setLabel(txt) as Object
-}
-
- /** Updates the element's label text, strips all html. */
- setLabelText(): Object {
-  return  this.setLabelText() as Object
-}
-
- /** Updates the element's label text and the element's attribute ”name”, strips all html. */
- setName(): Object {
-  return  this.setName() as Object
-}
-
- /** Sets ids of elements to the array this.parents. */
- setParents(): Object {
-  return  this.setParents() as Object
-}
-
- /** Moves an element by the difference of two coordinates.  Valid values for method are TSX.COORDS_BY_USER and TSX.COORDS_BY_SCREEN */
- setPositionDirectly(method:number, coords:NumberFunction[], prevCoords?: NumberFunction[]): Point {
-  return  this.setPositionDirectly(method,coords,prevCoords) as Point
-}
-
- /** Deprecated alias for JXG.GeometryElement#setAttribute. */
- setProperty(): GeometryElement {
-  return  this.setProperty() as GeometryElement
-}
-
- /** Make the element visible. */
- show(): GeometryElement {
-  return  this.show() as GeometryElement
-}
-
- /** Make the element visible. */
- showElement(): GeometryElement {
-  return  this.showElement() as GeometryElement
-}
-
- /** Snaps the element to points. */
- snapToPoints(): GeometryElement {
-  return  this.snapToPoints() as GeometryElement
-}
-
- /** Checks if locale is enabled in the attribute. */
- useLocale(): Boolean {
-  return  this.useLocale() as Boolean
-}
-
- /**  */
- on(event:string,handler:Function): any {
-  return  this.on(event,handler) as any
-}
-}
-
- export class GeometryElement3D extends GeometryElement {
-
- /**  */
- public get element2D():number[] {
-  return _jsxBoard().element2D as number[]
-}
-
- /**  */
- public get is3D():Boolean {
-  return _jsxBoard().is3D as Boolean
-}
-
- /**  */
- public get view():any {
-  return _jsxBoard().view as any
-}
-
- /**  */
- public get strokeColor():String {
-  return _jsxBoard().strokeColor as String
-}
-
- /**  */
- public get strokeWidth():number {
-  return _jsxBoard().strokeWidth as number
-}
-
- /**  */
- public get size():number {
-  return _jsxBoard().size as number
-}
-
- /**  */
- public get fillColor():String {
-  return _jsxBoard().fillColor as String
-}
-
- /**  */
- public get visible():Boolean {
-  return _jsxBoard().visible as Boolean
-}
-
- /**  */
- setAttribute(attrs:GeometryElement3DAttributes): void {
-  return  this.setAttribute(attrs) as void
-}
-}
-
- export class Board extends GeometryElement {
-}
-
- export class Point extends GeometryElement {
-
- /**  */
- coords(): number[] {
-  return  this.coords() as number[]
-}
-
- /**  */
- startAnimation(direction:number,stepCount:number,delayMSec:number): void {
-  return  this.startAnimation(direction,stepCount,delayMSec) as void
-}
-
- /**  */
- stopAnimation(): any {
-  return  this.stopAnimation() as any
-}
-
- /** Calculates Euclidean distance for two Points, eg:  p1.Dist(p2) */
- Dist(toPoint:Point|pointAddr): number {
-  return  this.Dist(toPoint) as number
-}
-
- /** Set the face of a point element. */
- face(style:'cross'|'circle'|'square'|'plus'|'minus'|'diamond'): Boolean {
-  return  this.face(style) as Boolean
-}
-
- /** Updates the position of the point. */
- update(): number[] {
-  return  this.update() as number[]
-}
-
- /**  */
- X(): number {
-  return  this.X() as number
-}
-
- /**  */
- Y(): number {
-  return  this.Y() as number
-}
-
- /**  */
- Z(): number {
-  return  this.Z() as number
-}
-
- /** Moves an element towards coordinates, optionally tweening over time.  Time is in ms.  WATCH OUT, there
-                        is no AWAIT for the tween to finish, a second moveTo() starts immediately. Thats GOOD if you
-                        want to move two different points at the same time, BAD if you want to move the same point repeatedly.  EG:
-                        
-```js 
-
-P.moveTo([A.X(), A.Y()], 5000)
-
-``` */
- moveTo(p:number[]|Function[],time:number=0, options?:VisitAttributes): Promise<any> {
-  return  this.moveTo(p,time,options) as Promise<any>
-}
-
- /** Moves an element towards coordinates, optionally tweening over time.  Time is in ms.  WATCH OUT, there
-                        is no AWAIT for the tween to finish, a second moveTo() starts immediately. Thats GOOD if you
-                        want to move two different points at the same time, BAD if you want to move the same point repeatedly.  EG:
-                        
-```js 
-
-P.moveTo([A.X(), A.Y()], 5000)
-
-``` */
- visit(p:number[]|Function[],time:number=0,options?: VisitAttributes): Promise<any> {
-  return  this.visit(p,time,options) as Promise<any>
-}
-                    /** Point location in vector form [n,n] */
-                    XY(): [number,number] {
-                    return [this.X() as number,this.Y() as number]
-                    }
-                
-}
-
- export class Line extends GeometryElement {
-
- /**  */
- public get defaultTicks():Ticks {
-  return _jsxBoard().defaultTicks as Ticks
-}
-
- /**  */
- public get parentPolygon():Polygon {
-  return _jsxBoard().parentPolygon as Polygon
-}
-
- /** Attributes for first defining point of the line. */
- public get point1():Point {
-  return _jsxBoard().point1 as Point
-}
-
- /** Attributes for second defining point of the line. */
- public get point2():Point {
-  return _jsxBoard().point2 as Point
-}
-
- /** Attributes for ticks of the line. */
- public get ticks():number[] {
-  return _jsxBoard().ticks as number[]
-}
-
- /** Determines the angle between the positive x axis and the line. */
- getAngle(): number {
-  return  this.getAngle() as number
-}
-
- /** Calculates the y intersect of the line. */
- getRise(): number {
-  return  this.getRise() as number
-}
-
- /** Alias for line.Slope */
- getSlope(): number {
-  return  this.getSlope() as number
-}
-
- /** Checks whether (x,y) is near the line. */
- hasPoint(): Boolean {
-  return  this.hasPoint() as Boolean
-}
-
- /** The distance between the two points defining the line. */
- L(): number {
-  return  this.L() as number
-}
-
- /** Calculates the slope of the line. */
- Slope(): number {
-  return  this.Slope() as number
-}
-
- /** Treat the line as parametric curve in homogeneous coordinates, where the parameter t runs from 0 to 1. */
- X(): number {
-  return  this.X() as number
-}
-
- /** Treat the line as parametric curve in homogeneous coordinates. */
- Y(): number {
-  return  this.Y() as number
-}
-
- /** Treat the line as parametric curve in homogeneous coordinates. */
- Z(): number {
-  return  this.Z() as number
-}
-}
-
- export class View3D extends GeometryElement3D {
-
- /**  */
- public get defaultAxes():Object {
-  return _jsxBoard().defaultAxes as Object
-}
-
- /**  */
- public get matrix3D():Object {
-  return _jsxBoard().matrix3D as Object
-}
-
- /**  */
- setView(azimuth:number,elevation:number,radius?:number): View3D {
-  return  this.setView(azimuth,elevation,radius) as View3D
-}
-
- /**  */
- animateAzimuth(): Object {
-  return  this.animateAzimuth() as Object
-}
-
- /** Creates a new 3D element of type elementType. */
- create(): Object {
-  return  this.create() as Object
-}
-
- /** Intersect a ray with the bounding cube of the 3D view. */
- intersectionLineCube(): number[] {
-  return  this.intersectionLineCube() as number[]
-}
-
- /**  */
- intersectionPlanePlane(): number[] {
-  return  this.intersectionPlanePlane() as number[]
-}
-
- /** Test if coordinates are inside of the bounding cube. */
- isInCube(): number[] {
-  return  this.isInCube() as number[]
-}
-
- /** Project a 2D coordinate to the plane defined by point ”foot” and the normal vector `normal`. */
- project2DTo3DPlane(): number[] {
-  return  this.project2DTo3DPlane() as number[]
-}
-
- /** Project a 2D coordinate to a new 3D position by keeping the 3D x, y coordinates and changing only the z coordinate. */
- project2DTo3DVertical(): number[] {
-  return  this.project2DTo3DVertical() as number[]
-}
-
- /** Project 3D coordinates to 2D board coordinates The 3D coordinates are provides as three numbers x, y, z or one array of length 3. */
- project3DTo2D(): number[] {
-  return  this.project3DTo2D() as number[]
-}
-
- /** Limit 3D coordinates to the bounding cube. */
- project3DToCube(): GeometryElement3D|Composition {
-  return  this.project3DToCube() as GeometryElement3D|Composition
-}
-
- /** Select a single or multiple elements at once. */
- select(): GeometryElement3D|Composition {
-  return  this.select() as GeometryElement3D|Composition
-}
-
- /**  */
- stopAzimuth(): any {
-  return  this.stopAzimuth() as any
-}
-}
-
- export class currentBoard{
-}
-
- export class Infobox{
-}
-
- export class CA{
-
- /** f = map (x) -> x*sin(x); Usages: h = D(f, x); h = map (x) -> D(f, x); or D(x^2, x); */
- expandDerivatives(): any {
-  return  this.expandDerivatives() as any
-}
-
- /** Declare all subnodes as math nodes, i.e recursively set node.isMath = true; */
- setMath(): any {
-  return  this.setMath() as any
-}
-}
-
- export class Chart extends GeometryElement {
-
- /**  */
- public get elements():any[] {
-  return _jsxBoard().elements as any[]
-}
-
- /** Create bar chart defined by two data arrays. */
- drawBar(): any[] {
-  return  this.drawBar() as any[]
-}
-
- /** Create line chart where the curve is given by a regression polynomial defined by two data arrays. */
- drawFit(): Curve {
-  return  this.drawFit() as Curve
-}
-
- /** Create line chart defined by two data arrays. */
- drawLine(): Curve {
-  return  this.drawLine() as Curve
-}
-
- /** Create pie chart. */
- drawPie(): Object {
-  return  this.drawPie() as Object
-}
-
- /** Create chart consisting of JSXGraph points. */
- drawPoints(): number[] {
-  return  this.drawPoints() as number[]
-}
-
- /** Create radar chart. */
- drawRadar(): Object {
-  return  this.drawRadar() as Object
-}
-
- /** Create line chart that consists of a natural spline curve defined by two data arrays. */
- drawSpline(): Curve {
-  return  this.drawSpline() as Curve
-}
-
- /** Template for dynamic charts update. */
- updateDataArray(): Chart {
-  return  this.updateDataArray() as Chart
-}
-}
-
- export class Circle extends GeometryElement {
-
- /** Attributes for center point. */
- public get center():Point {
-  return _jsxBoard().center as Point
-}
-
- /**  */
- public get circle():Circle {
-  return _jsxBoard().circle as Circle
-}
-
- /**  */
- public get line():Line {
-  return _jsxBoard().line as Line
-}
-
- /**  */
- public get method():string {
-  return _jsxBoard().method as string
-}
-
- /** Attributes for center point. */
- public get point2():Point {
-  return _jsxBoard().point2 as Point
-}
-
- /**  */
- public get radius():number {
-  return _jsxBoard().radius as number
-}
-
- /** Circle area */
- Area(): number {
-  return  this.Area() as number
-}
-
- /** Perimeter (circumference) of circle. */
- Perimeter(): number {
-  return  this.Perimeter() as number
-}
-
- /** Calculates the radius of the circle. */
- Radius(): number {
-  return  this.Radius() as number
-}
-
- /** Treats the circle as parametric curve and calculates its X coordinate. */
- X(): number {
-  return  this.X() as number
-}
-
- /** Treats the circle as parametric curve and calculates its Y coordinate. */
- Y(): number {
-  return  this.Y() as number
-}
-
- /** Treat the circle as parametric curve and calculates its Z coordinate. */
- Z(): number {
-  return  this.Z() as number
-}
-}
-
- export class Circle3D extends GeometryElement3D {
-}
-
- export class Complex{
-
- /**  */
- public get absval():number {
-  return _jsxBoard().absval as number
-}
-
- /**  */
- public get angle():number {
-  return _jsxBoard().angle as number
-}
-
- /**  */
- public get imaginary():number {
-  return _jsxBoard().imaginary as number
-}
-
- /**  */
- public get isComplex():Boolean {
-  return _jsxBoard().isComplex as Boolean
-}
-
- /**  */
- public get real():number {
-  return _jsxBoard().real as number
-}
-
- /** Add another complex number to this complex number. */
- add(): Complex {
-  return  this.add() as Complex
-}
-
- /** Conjugate a complex number in place. */
- conj(): Complex {
-  return  this.conj() as Complex
-}
-
- /** Divide this complex number by the given complex number. */
- div(): Complex {
-  return  this.div() as Complex
-}
-
- /** Multiply another complex number to this complex number. */
- mult(): Complex {
-  return  this.mult() as Complex
-}
-
- /** Subtract another complex number from this complex number. */
- sub(): Complex {
-  return  this.sub() as Complex
-}
-
- /** Converts a complex number into a string. */
- toString(): String {
-  return  this.toString() as String
-}
-}
-
- export class Composition{
-
- /** Adds an element to the composition container. */
- add(): Boolean {
-  return  this.add() as Boolean
-}
-
- /** Invokes fullUpdate for every stored element with a fullUpdate method and hands over the given arguments. */
- fullUpdate(): Boolean {
-  return  this.fullUpdate() as Boolean
-}
-
- /** Invokes highlight for every stored element with a highlight method and hands over the given arguments. */
- highlight(): Boolean {
-  return  this.highlight() as Boolean
-}
-
- /** Invokes noHighlight for every stored element with a noHighlight method and hands over the given arguments. */
- noHighlight(): Boolean {
-  return  this.noHighlight() as Boolean
-}
-
- /** Invokes prepareUpdate for every stored element with a prepareUpdate method and hands over the given arguments. */
- prepareUpdate(): Boolean {
-  return  this.prepareUpdate() as Boolean
-}
-
- /** Remove an element from the composition container. */
- remove(): Boolean {
-  return  this.remove() as Boolean
-}
-
- /** Invokes setParents for every stored element with a setParents method and hands over the given arguments. */
- setParents(): any {
-  return  this.setParents() as any
-}
-
- /** Invokes updateRenderer for every stored element with a updateRenderer method and hands over the given arguments. */
- updateRenderer(): Point {
-  return  this.updateRenderer() as Point
-}
-}
-
- export class Coords{
-
- /**  */
- public get currentBoard():currentBoard {
-  return _jsxBoard().currentBoard as currentBoard
-}
-
- /**  */
- public get emitter():boolean {
-  return _jsxBoard().emitter as boolean
-}
-
- /**  */
- public get scrCoords():number[] {
-  return _jsxBoard().scrCoords as number[]
-}
-
- /**  */
- public get usrCoords():number[] {
-  return _jsxBoard().usrCoords as number[]
-}
-
- /** Test if one of the usrCoords is NaN or the coordinates are infinite. */
- isReal(): Boolean {
-  return  this.isReal() as Boolean
-}
-
- /** Set coordinates by either user coordinates or screen coordinates and recalculate the other one. */
- setCoordinates(): Coords {
-  return  this.setCoordinates() as Coords
-}
-}
-
- export class Curve extends GeometryElement {
-
- /**  */
- public get dataX():number[] {
-  return _jsxBoard().dataX as number[]
-}
- public set dataX(param:number[]) {
-  _jsxBoard().dataX = param
-}
-
- /**  */
- public get dataY():number[] {
-  return _jsxBoard().dataY as number[]
-}
- public set dataY(param:number[]) {
-  _jsxBoard().dataY = param
-}
-
- /**  */
- public get ticks():number[] {
-  return _jsxBoard().ticks as number[]
-}
-
- /** Allocate points in the Coords array this.points */
- allocatePoints(): number[] {
-  return  this.allocatePoints() as number[]
-}
-
- /** Converts the JavaScript/JessieCode/GEONExT syntax of the defining function term into JavaScript. */
- generateTerm(): number[] {
-  return  this.generateTerm() as number[]
-}
-
- /** Gives the default value of the right bound for the curve. */
- maxX(): number {
-  return  this.maxX() as number
-}
-
- /** Gives the default value of the left bound for the curve. */
- minX(): number {
-  return  this.minX() as number
-}
-
- /** Shift the curve by the vector 'where'. */
- moveTo(): Curve {
-  return  this.moveTo() as Curve
-}
-
- /** Finds dependencies in a given term and notifies the parents by adding the dependent object to the found objects child elements. */
- notifyParents(): Curve {
-  return  this.notifyParents() as Curve
-}
-
- /** Computes the curve path */
- updateCurve(): Curve {
-  return  this.updateCurve() as Curve
-}
-
- /** For dynamic dataplots updateCurve can be used to compute new entries for the arrays JXG.Curve#dataX and JXG.Curve#dataY. */
- updateDataArray(func:Function): void {
-  return  this.updateDataArray(func) as void
-}
-
- /** Updates the visual contents of the curve. */
- updateRenderer() : Curve {
-  return  this.updateRenderer() as Curve
-}
-
- /** Applies the transformations of the curve to the given point p. */
- updateTransform(): Point {
-  return  this.updateTransform() as Point
-}
-
- /** The parametric function which defines the x-coordinate of the curve. */
- X(): number {
-  return  this.X() as number
-}
-
- /** The parametric function which defines the y-coordinate of the curve. */
- Y(): number {
-  return  this.Y() as number
-}
-
- /** Treat the curve as curve with homogeneous coordinates. */
- Z(): number {
-  return  this.Z() as number
-}
-}
-
- export class Curve3D extends Curve {
-
- /**  */
- addTransform(other:ParametricSurface3D,transforms:Transform3D[]): Curve3D {
-  return  this.addTransform(other,transforms) as Curve3D
-}
-
- /** Function which maps u to x; i.e. */
- X(): number {
-  return  this.X() as number
-}
-
- /** Function which maps u to y; i.e. */
- Y(): number {
-  return  this.Y() as number
-}
-
- /** Function which maps u to z; i.e. */
- Z(): number {
-  return  this.Z() as number
-}
-}
-
- export class Dump{
-
- /** Adds markers to every element of the board */
- addMarkers(): Dump {
-  return  this.addMarkers() as Dump
-}
-
- /** Converts an array of different values into a parameter string that can be used by the code generators. */
- arrayToParamStr(): Dump {
-  return  this.arrayToParamStr() as Dump
-}
-
- /** Removes markers from every element on the board. */
- deleteMarkers(): Dump {
-  return  this.deleteMarkers() as Dump
-}
-
- /** Generate a save-able structure with all elements. */
- dump(): Dump {
-  return  this.dump() as Dump
-}
-
- /** Eliminate default values given by JXG.Options from the attributes object. */
- minimizeObject(): Dump {
-  return  this.minimizeObject() as Dump
-}
-
- /** Prepare the attributes object for an element to be dumped as JavaScript or JessieCode code. */
- prepareAttributes(): Dump {
-  return  this.prepareAttributes() as Dump
-}
-
- /** Stringifies a string, i.e. */
- str(): Dump {
-  return  this.str() as Dump
-}
-
- /** Saves the construction in board to JavaScript. */
- toJavaScript(): Dump {
-  return  this.toJavaScript() as Dump
-}
-
- /** Converts a JavaScript object into a JCAN (JessieCode Attribute Notation) string. */
- toJCAN(): Dump {
-  return  this.toJCAN() as Dump
-}
-
- /** Saves the construction in board to JessieCode. */
- toJessie(): Dump {
-  return  this.toJessie() as Dump
-}
-}
-
- export class ForeignObject extends GeometryElement {
-
- /**  */
- public get content():number[] {
-  return _jsxBoard().content as number[]
-}
-
- /**  */
- public get size():number[] {
-  return _jsxBoard().size as number[]
-}
-
- /** Returns the height of the foreignObject in user coordinates. */
- H(): number {
-  return  this.H() as number
-}
-
- /** Checks whether (x,y) is over or near the image; */
- hasPoint(): Boolean {
-  return  this.hasPoint() as Boolean
-}
-
- /** Set the width and height of the foreignObject. */
- setSize(): ForeignObject {
-  return  this.setSize() as ForeignObject
-}
-
- /** Returns the width of the foreignObject in user coordinates. */
- W(): number {
-  return  this.W() as number
-}
-}
-
- export class Group extends Composition {
-
- /**  */
- public get coords():Object {
-  return _jsxBoard().coords as Object
-}
-
- /** Adds all points in a group to this group. */
- addGroup(group:Group): Group {
-  return  this.addGroup(group) as Group
-}
-
- /** Adds ids of elements to the array this.parents. */
- addParents(parents:GeometryElement[]): Object {
-  return  this.addParents(parents) as Object
-}
-
- /** Adds an Point to this group. */
- addPoint(point:Point|pointAddr|Image): Group {
-  return  this.addPoint(point) as Group
-}
-
- /** Adds multiple points to this group. */
- addPoints(points:Point[]): Group {
-  return  this.addPoints(points) as Group
-}
-
- /** Adds a point to the set of rotation points of the group. */
- addRotationPoint(point:Point): Group {
-  return  this.addRotationPoint(point) as Group
-}
-
- /** Adds a point to the set of the scale points of the group. */
- addScalePoint(point:Point,direction:number|Function): Group {
-  return  this.addScalePoint(point,direction) as Group
-}
-
- /** Adds a point to the set of the translation points of the group. */
- addTranslationPoint(point:Point): Group {
-  return  this.addTranslationPoint(point) as Group
-}
-
- /** List of the element ids resp. */
- getParents(): number[] {
-  return  this.getParents() as number[]
-}
-
- /** Removes a point from the group. */
- removePoint(point:Point): Group {
-  return  this.removePoint(point) as Group
-}
-
- /** Removes the rotation property from a point of the group. */
- removeRotationPoint(point:Point): Group {
-  return  this.removeRotationPoint(point) as Group
-}
-
- /** Removes the scaling property from a point of the group. */
- removeScalePoint(point:Point): Group {
-  return  this.removeScalePoint(point) as Group
-}
-
- /** Removes the translation property from a point of the group. */
- removeTranslationPoint(point:Point): Group {
-  return  this.removeTranslationPoint(point) as Group
-}
-
- /** Sets the center of rotation for the group. */
- setRotationCenter(pivot:Point|pointAddr|"centroid"): Group {
-  return  this.setRotationCenter(pivot) as Group
-}
-
- /** Sets the rotation points of the group. */
- setRotationPoints(points:Point|Point[]): Group {
-  return  this.setRotationPoints(points) as Group
-}
-
- /** Sets the center of scaling for the group. */
- setScaleCenter(point:Point|pointAddr): Group {
-  return  this.setScaleCenter(point) as Group
-}
-
- /** Sets the scale points of the group. */
- setScalePoints(points:Point|Point[]): Group {
-  return  this.setScalePoints(points) as Group
-}
-
- /** Sets the translation points of the group. */
- setTranslationPoints(points:Point|Point[]): Group {
-  return  this.setTranslationPoints(points) as Group
-}
-
- /** Releases all elements of this group. */
- ungroup(): Group {
-  return  this.ungroup() as Group
-}
-}
-
- export class Image extends GeometryElement {
-
- /**  */
- public get size():number[] {
-  return _jsxBoard().size as number[]
-}
-
- /**  */
- public get url():string {
-  return _jsxBoard().url as string
-}
-
- /** Returns the height of the image in user coordinates. */
- H(): number {
-  return  this.H() as number
-}
-
- /** Checks whether (x,y) is over or near the image; */
- hasPoint(): Boolean {
-  return  this.hasPoint() as Boolean
-}
-
- /** Set the width and height of the image. */
- setSize(): GeometryElement {
-  return  this.setSize() as GeometryElement
-}
-
- /** Returns the width of the image in user coordinates. */
- W(): number {
-  return  this.W() as number
-}
-}
-
- export class Implicitcurve extends GeometryElement {
-}
-
- export class IntersectionCircle3D extends GeometryElement3D {
-}
-
- export class IntersectionLine3D extends GeometryElement3D {
-}
-
- export class Line3D extends GeometryElement3D {
-
- /**  */
- public get direction():number[]|Function {
-  return _jsxBoard().direction as number[]|Function
-}
-
- /**  */
- public get point():Point3D {
-  return _jsxBoard().point as Point3D
-}
-
- /**  */
- public get point1():Point3D {
-  return _jsxBoard().point1 as Point3D
-}
-
- /**  */
- public get point2():Point3D {
-  return _jsxBoard().point2 as Point3D
-}
-
- /**  */
- public get range():number[] {
-  return _jsxBoard().range as number[]
-}
-}
-
- export class Plane3D extends GeometryElement3D {
-
- /**  */
- public get d():number[] {
-  return _jsxBoard().d as number[]
-}
-
- /**  */
- public get direction1():number[]|Function {
-  return _jsxBoard().direction1 as number[]|Function
-}
-
- /**  */
- public get direction2():number[]|Function {
-  return _jsxBoard().direction2 as number[]|Function
-}
-
- /**  */
- public get normal():number[] {
-  return _jsxBoard().normal as number[]
-}
-
- /**  */
- public get point():Point3D {
-  return _jsxBoard().point as Point3D
-}
-
- /**  */
- public get range1():number[] {
-  return _jsxBoard().range1 as number[]
-}
-
- /**  */
- public get range2():number[] {
-  return _jsxBoard().range2 as number[]
-}
-
- /**  */
- public get vec1():number[] {
-  return _jsxBoard().vec1 as number[]
-}
-
- /**  */
- public get vec2():number[] {
-  return _jsxBoard().vec2 as number[]
-}
-
- /**  */
- public get vec3():number[] {
-  return _jsxBoard().vec3 as number[]
-}
-
- /** Get coordinate array [x, y, z] of a point on the plane for parameters (u, v). */
- F(u:number, v:number): number[] {
-  return  this.F(u, v) as number[]
-}
-
- /** Get x-coordinate of a point on the plane for parameters (u, v). */
- X(u:number, v:number): number {
-  return  this.X(u, v) as number
-}
-
- /** Get y-coordinate of a point on the plane for parameters (u, v). */
- Y(u:number, v:number): number {
-  return  this.Y(u, v) as number
-}
-
- /** Get z-coordinate of a point on the plane for parameters (u, v). */
- Z(u:number, v:number): number {
-  return  this.Z(u, v) as number
-}
-}
-
- export class Point3D extends GeometryElement3D {
-
- /**  */
- public get slide():GeometryElement3D {
-  return _jsxBoard().slide as GeometryElement3D
-}
-
- /** Set the position of a 3D point. */
- setPosition(coords:number[],noEvent:boolean=true): Point3D {
-  return  this.setPosition(coords,noEvent) as Point3D
-}
-
- /** Get x-coordinate of a 3D point. */
- X(): number {
-  return  this.X() as number
-}
-
- /** Get y-coordinate of a 3D point. */
- Y(): number {
-  return  this.Y() as number
-}
-
- /** Get z-coordinate of a 3D point. */
- Z(): number {
-  return  this.Z() as number
-}
-
- /** Moves an element towards coordinates, optionally tweening over time.  Time is in ms.    EG:
-                        
-```js 
-
-P.moveTo([A.X(), A.Y()], 5000)
-
-``` */
- moveTo(p:number[]|Function,time:number=0,options?:MoveToOptions): Promise<any> {
-  return  this.moveTo(p,time,options) as Promise<any>
-}
-}
-
- export class Polygon extends GeometryElement {
-
- /** Attributes for the polygon border lines. */
- public get borders():Line[] {
-  return _jsxBoard().borders as Line[]
-}
-
- /** Attributes for the polygon vertices. */
- public get vertices():Point[] {
-  return _jsxBoard().vertices as Point[]
-}
-
- /** Checks whether (x,y) is near the polygon. */
- hasPoint(x:number,y:number): Boolean {
-  return  this.hasPoint(x,y) as Boolean
-}
-
- /** Uses the boards renderer to update the polygon. */
- updateRenderer(): Polygon {
-  return  this.updateRenderer() as Polygon
-}
-}
-
- export class Polygon3D extends GeometryElement3D {
-}
-
- export class Text extends GeometryElement {
-
- /**  */
- public get size():number[] {
-  return _jsxBoard().size as number[]
-}
-
- /**  */
- setAttribute(attrs:TextAttributes): void {
-  return  this.setAttribute(attrs) as void
-}
-
- /** Returns the bounding box of the text element in user coordinates as an array of length 4: [upper left x, upper left y, lower right x, lower right y]. */
- bounds(): number[] {
-  return  this.bounds() as number[]
-}
-
- /** A very crude estimation of the dimensions of the textbox in case nothing else is available. */
- crudeSizeEstimate(): number[] {
-  return  this.crudeSizeEstimate() as number[]
-}
-
- /** Returns the value of the attribute ”anchorX”. */
- getAnchorX(): number {
-  return  this.getAnchorX() as number
-}
-
- /** Returns the value of the attribute ”anchorY”. */
- getAnchorY(): number {
-  return  this.getAnchorY() as number
-}
-
- /** Return the width of the text element. */
- getSize(): number[] {
-  return  this.getSize() as number[]
-}
-
- /** Replace _{} by <sub> */
- replaceSub(): string {
-  return  this.replaceSub() as string
-}
-
- /** Replace ^{} by <sup> */
- replaceSup(): string {
-  return  this.replaceSup() as string
-}
-
- /** Sets the offset of a label element to the position with the least number of overlaps with other elements, while retaining the distance to its anchor element. */
- setAutoPosition(): Text {
-  return  this.setAutoPosition() as Text
-}
-
- /** Move the text to new coordinates. */
- setCoords(x:number,y:number): object {
-  return  this.setCoords(x,y) as object
-}
-
- /** Defines new content. */
- setText(newText:string): Text {
-  return  this.setText(newText) as Text
-}
-
- /** Defines new content but converts < and > to HTML entities before updating the DOM. */
- setTextJessieCode(): this {
-  return  this.setTextJessieCode() as this
-}
-
- /** Evaluates the text. */
- update(): this {
-  return  this.update() as this
-}
-
- /** Recompute the width and the height of the text box. */
- updateSize(): this {
-  return  this.updateSize() as this
-}
-
- /** Decode unicode entities into characters. */
- utf8_decode(): string {
-  return  this.utf8_decode() as string
-}
-}
-
- export class Text3D extends Text {
-
- /** Set the position of a 3D point. If `noEvent` true, then no events are triggered. */
- setPosition(coords:number[],noEvent:boolean=false): Text3D {
-  return  this.setPosition(coords,noEvent) as Text3D
-}
-}
-
- export class Ticks extends GeometryElement {
-
- /**  */
- public get equidistant():Boolean {
-  return _jsxBoard().equidistant as Boolean
-}
-
- /**  */
- public get fixedTicks():number[] {
-  return _jsxBoard().fixedTicks as number[]
-}
-
- /**  */
- public get labelCounter():number {
-  return _jsxBoard().labelCounter as number
-}
-
- /** User defined labels for special ticks. */
- public get labels():number[] {
-  return _jsxBoard().labels as number[]
-}
-
- /**  */
- public get labelsData():number[] {
-  return _jsxBoard().labelsData as number[]
-}
-
- /**  */
- public get line():Line {
-  return _jsxBoard().line as Line
-}
-
- /**  */
- public get ticks():number[] {
-  return _jsxBoard().ticks as number[]
-}
-
- /** Formats label texts to make labels displayed in scientific notation look beautiful. */
- beautifyScientificNotationLabel(): String {
-  return  this.beautifyScientificNotationLabel() as String
-}
-
- /** Checks whether (x,y) is near the line. */
- hasPoint(): Boolean {
-  return  this.hasPoint() as Boolean
-}
-
- /** Sets x and y coordinate of the tick. */
- setPositionDirectly(): Point {
-  return  this.setPositionDirectly() as Point
-}
-
- /** Uses the boards renderer to update the arc. */
- updateRenderer(): Ticks {
-  return  this.updateRenderer() as Ticks
-}
-}
-
- export class Turtle extends GeometryElement {
-
- /** Move the turtle backwards. */
- back(): Turtle {
-  return  this.back() as Turtle
-}
-
- /** Alias for JXG.Turtle#back */
- bk(): Turtle {
-  return  this.bk() as Turtle
-}
-
- /** Removes the turtle curve from the board. */
- clean(): Turtle {
-  return  this.clean() as Turtle
-}
-
- /** Removes the turtle completely and resets it to its initial position and direction. */
- clearScreen(): Turtle {
-  return  this.clearScreen() as Turtle
-}
-
- /** Alias for JXG.Turtle#clearScreen */
- cs(): number {
-  return  this.cs() as number
-}
-
- /** The ”co”-coordinate of the turtle curve at position t is returned. */
- evalAt(): number {
-  return  this.evalAt() as number
-}
-
- /** Alias for JXG.Turtle#forward */
- fd(): Turtle {
-  return  this.fd() as Turtle
-}
-
- /** Move the turtle forward. */
- forward(): Turtle {
-  return  this.forward() as Turtle
-}
-
- /** Get most recently set turtle color. */
- getHighlightPenColor(): Boolean {
-  return  this.getHighlightPenColor() as Boolean
-}
-
- /** Get most recently set turtle color. */
- getPenColor(): Boolean {
-  return  this.getPenColor() as Boolean
-}
-
- /** Get most recently set turtle size (in pixel). */
- getPenSize(): Boolean {
-  return  this.getPenSize() as Boolean
-}
-
- /** Checks whether (x,y) is near the curve. */
- hasPoint(): Boolean {
-  return  this.hasPoint() as Boolean
-}
-
- /** Sets the visibility of the turtle head to false, */
- hideTurtle(): Turtle {
-  return  this.hideTurtle() as Turtle
-}
-
- /** Moves the turtle to position [0,0]. */
- home(): Turtle {
-  return  this.home() as Turtle
-}
-
- /** Alias for JXG.Turtle#hideTurtle */
- ht(): Turtle {
-  return  this.ht() as Turtle
-}
-
- /** Rotate the turtle direction to the right. */
- left(): Turtle {
-  return  this.left() as Turtle
-}
-
- /** Rotates the turtle into a new direction. */
- lookTo(): Turtle {
-  return  this.lookTo() as Turtle
-}
-
- /** Alias for JXG.Turtle#left */
- lt(): Turtle {
-  return  this.lt() as Turtle
-}
-
- /** Gives the upper bound of the parameter if the turtle is treated as parametric curve. */
- maxX(): Turtle {
-  return  this.maxX() as Turtle
-}
-
- /** Gives the lower bound of the parameter if the turtle is treated as parametric curve. */
- minX(): Turtle {
-  return  this.minX() as Turtle
-}
-
- /** Moves the turtle to a given coordinate pair. */
- moveTo(): Turtle {
-  return  this.moveTo() as Turtle
-}
-
- /** Alias for JXG.Turtle#penDown */
- pd(): Turtle {
-  return  this.pd() as Turtle
-}
-
- /** Pen down, continues visible drawing */
- penDown(): Turtle {
-  return  this.penDown() as Turtle
-}
-
- /** Pen up, stops visible drawing */
- penUp(): Turtle {
-  return  this.penUp() as Turtle
-}
-
- /** Alias for JXG.Turtle#popTurtle */
- pop(): Turtle {
-  return  this.pop() as Turtle
-}
-
- /** Gets the last position of the turtle on the stack, sets the turtle to this position and removes this position from the stack. */
- popTurtle(): Turtle {
-  return  this.popTurtle() as Turtle
-}
-
- /** Alias for JXG.Turtle#penUp */
- pu(): Turtle {
-  return  this.pu() as Turtle
-}
-
- /** Alias for JXG.Turtle#pushTurtle */
- push(): Turtle {
-  return  this.push() as Turtle
-}
-
- /** Pushes the position of the turtle on the stack. */
- pushTurtle(): Turtle {
-  return  this.pushTurtle() as Turtle
-}
-
- /** Rotate the turtle direction to the right */
- right(): Turtle {
-  return  this.right() as Turtle
-}
-
- /** Alias for JXG.Turtle#right */
- rt(): Turtle {
-  return  this.rt() as Turtle
-}
-
- /** Sets the highlight pen color. */
- setHighlightPenColor(): Turtle {
-  return  this.setHighlightPenColor() as Turtle
-}
-
- /** Sets the pen color. */
- setPenColor(): Turtle {
-  return  this.setPenColor() as Turtle
-}
-
- /** Sets the pen size. */
- setPenSize(): Turtle {
-  return  this.setPenSize() as Turtle
-}
-
- /** Moves the turtle without drawing to a new position */
- setPos(): Turtle {
-  return  this.setPos() as Turtle
-}
-
- /** Sets the visibility of the turtle head to true, */
- showTurtle(): Turtle {
-  return  this.showTurtle() as Turtle
-}
-
- /** Alias for JXG.Turtle#showTurtle */
- st(): number {
-  return  this.st() as number
-}
-
- /** if t is not supplied the x-coordinate of the turtle is returned. */
- X(): number {
-  return  this.X() as number
-}
-
- /** if t is not supplied the y-coordinate of the turtle is returned. */
- Y(): number {
-  return  this.Y() as number
-}
-
- /**  */
- Z(): number {
-  return  this.Z() as number
-}
-}
-
- export class Sector extends Curve {
-
- /**  */
- public get point1():Point {
-  return _jsxBoard().point1 as Point
-}
-
- /**  */
- public get point2():Point {
-  return _jsxBoard().point2 as Point
-}
-
- /**  */
- public get point3():Point {
-  return _jsxBoard().point3 as Point
-}
-
- /**  */
- public get point4():Point {
-  return _jsxBoard().point4 as Point
-}
-
- /** Checks whether (x,y) is within the area defined by the sector. */
- hasPointSector(): Boolean {
-  return  this.hasPointSector() as Boolean
-}
-
- /** Returns the radius of the sector. */
- Radius(): number {
-  return  this.Radius() as number
-}
-}
-
- export class Vectorfield extends Curve {
-
- /** Set the defining functions of vector field. */
- setF(): Object {
-  return  this.setF() as Object
-}
-}
-
- export class Angle extends Sector {
-
- /**  */
- public get point():Point {
-  return _jsxBoard().point as Point
-}
-
- /** Frees an angle from a prescribed value. */
- free(): Object {
-  return  this.free() as Object
-}
-
- /** Set an angle to a prescribed value given in radians. */
- setAngle(angle:number|Function): Object {
-  return  this.setAngle(angle) as Object
-}
-
- /** Returns the value of the angle. */
- Value(): number {
-  return  this.Value() as number
-}
-}
-
- export class Arc extends Curve {
-
- /**  */
- public get anglepoint():Point {
-  return _jsxBoard().anglepoint as Point
-}
-
- /**  */
- public get radiuspoint():Point {
-  return _jsxBoard().radiuspoint as Point
-}
-
- /**  */
- getRadius(): number {
-  return  this.getRadius() as number
-}
-
- /** Checks whether (x,y) is within the sector defined by the arc. */
- hasPointSector(): Boolean {
-  return  this.hasPointSector() as Boolean
-}
 
- /** Determines the arc's current radius. */
- Radius(): number {
-  return  this.Radius() as number
-}
-
- /** Returns the length of the arc or the value of the angle spanned by the arc. */
- Value(): number {
-  return  this.Value() as number
-}
-}
-
- export class Arrow extends Line {
-}
-
- export class Parallel extends Line {
-}
-
- export class Arrowparallel extends Parallel {
-}
-
- export class Axis extends Line {
-
- /**  */
- public get defaultTicks():Ticks {
-  return _jsxBoard().defaultTicks as Ticks
-}
-}
-
- export class BezierCurve extends Curve {
-}
-
- export class Bisector extends Line {
-}
-
- export class Bisectorlines extends Composition {
-}
-
- export class Button extends Text {
-
- /**  */
- public get rendNodeButton():HTMLButtonElement {
-  return _jsxBoard().rendNodeButton as HTMLButtonElement
-}
-
- /**  */
- setAttribute(attrs:ButtonAttributes): void {
-  return  this.setAttribute(attrs) as void
-}
-}
-
- export class Cardinalspline extends Curve {
-}
-
- export class Checkbox extends Text {
-
- /**  */
- setAttribute(attrs:CheckboxAttributes): void {
-  return  this.setAttribute(attrs) as void
-}
-
- /** Returns the value of the checkbox element */
- Value(): Boolean {
-  return  this.Value() as Boolean
-}
-
- /**  */
- onChange(action:Function): void {
-  (window as any).JXG.addEvent((this as any).rendNodeCheckbox,`change`,action) as void
-}
-}
-
- export class Circumcenter extends Point {
-}
-
- export class Circumcircle extends Circle {
-}
-
- export class CircumcircleArc extends Arc {
-}
-
- export class CircumcircleSector extends Sector {
-
- /**  */
- public get center():Circumcenter {
-  return _jsxBoard().center as Circumcenter
-}
-}
-
- export class Comb extends Curve {
-}
-
- export class Conic extends Curve {
-}
-
- export class CurveDifference extends Curve {
-}
-
- export class CurveIntersection extends Curve {
-}
-
- export class CurveUnion extends Curve {
-}
-
- export class Derivative extends Curve {
-}
-
- export class Ellipse extends Conic {
-}
-
- export class ParametricSurface3D extends Curve3D {
-}
-
- export class Face3D extends Curve {
-
- /**  */
- public get dataX():number[] {
-  return _jsxBoard().dataX as number[]
-}
-
- /**  */
- public get dataY():number[] {
-  return _jsxBoard().dataY as number[]
-}
-
- /**  */
- public get dataZ():number[] {
-  return _jsxBoard().dataZ as number[]
-}
-}
-
- export class Functiongraph extends Curve {
-}
-
- export class Functiongraph3D extends ParametricSurface3D {
-}
-
- export class Glider extends Point {
-}
-
- export class Glider3D extends Point3D {
-}
-
- export class Grid extends Curve {
-}
-
- export class Hatch extends Ticks {
-
- /**  */
- public get ticksDistance():number {
-  return _jsxBoard().ticksDistance as number
-}
-}
-
- export class Hyperbola extends Conic {
-}
-
- export class Incenter extends Point {
-}
-
- export class Incircle extends Circle {
-}
-
- export class Inequality extends Curve {
-}
-
- export class Input extends Text {
-
- /**  */
- public get rendNodeInput():HTMLInputElement {
-  return _jsxBoard().rendNodeInput as HTMLInputElement
-}
-
- /** Sets value of the input element. */
- set(value:String): GeometryElement {
-  return  this.set(value) as GeometryElement
-}
-
- /** Returns the value (content) of the input element */
- Value(): string {
-  return  this.Value() as string
-}
-}
-
- export class Integral extends Curve {
-
- /** Attributes of the (left) base point of the integral. */
- public get baseLeft():Point {
-  return _jsxBoard().baseLeft as Point
-}
-
- /** Attributes of the (right) base point of the integral. */
- public get baseRight():Point {
-  return _jsxBoard().baseRight as Point
-}
-
- /** Attributes of the (left) starting point of the integral. */
- public get curveLeft():Point {
-  return _jsxBoard().curveLeft as Point
-}
-
- /** Attributes of the (right) end point of the integral. */
- public get curveRight():Point {
-  return _jsxBoard().curveRight as Point
-}
-
- /** Returns the current value of the integral. */
- Value(): Point {
-  return  this.Value() as Point
-}
-}
-
- export class Intersection extends Point {
-}
-
- export class Label extends Text {
-}
-
- export class Legend extends GeometryElement {
-
- /**  */
- public get labels():number[] {
-  return _jsxBoard().labels as number[]
-}
-
- /**  */
- public get rowHeight():number {
-  return _jsxBoard().rowHeight as number
-}
-
- /**  */
- public get style():String {
-  return _jsxBoard().style as String
-}
-}
-
- export class Locus extends Curve {
-
- /**  */
- public get ctime():number {
-  return _jsxBoard().ctime as number
-}
-
- /**  */
- public get eq():String {
-  return _jsxBoard().eq as String
-}
-}
-
- export class MajorArc extends Curve {
-}
-
- export class MajorSector extends Curve {
-}
-
- export class Measurement extends Text {
-}
-
- export class Mesh3D extends Curve {
-}
-
- export class Midpoint extends Point {
-}
-
- export class MinorArc extends Curve {
-}
-
- export class MinorSector extends Curve {
-}
-
- export class Mirrorelement extends GeometryElement {
-}
-
- export class Mirrorpoint extends Point {
-}
-
- export class NonReflexAngle extends Angle {
-}
-
- export class Normal extends Line {
-}
-
- export class Orthogonalprojection extends Point {
-}
-
- export class OtherIntersection extends Point {
-}
-
- export class Parabola extends Conic {
-}
-
- export class Parallelpoint extends Point {
-}
-
- export class Segment extends Line {
-}
-
- export class Parallelogram extends Polygon {
-}
-
- export class Perpendicular extends Segment {
-}
-
- export class PerpendicularPoint extends Point {
-}
-
- export class PerpendicularSegment extends Segment {
-
- /**  */
- public get point():PerpendicularPoint {
-  return _jsxBoard().point as PerpendicularPoint
-}
-}
-
- export class PolarLine extends Line {
-}
-
- export class PolePoint extends Point {
-}
-
- export class PolygonalChain extends Polygon {
-}
-
- export class Polyhedron3D extends GeometryElement3D {
-
- /**  */
- public get def():number[][] {
-  return _jsxBoard().def as number[][]
-}
-
- /**  */
- public get faces():Face3D[] {
-  return _jsxBoard().faces as Face3D[]
-}
-
- /**  */
- public get numberFaces():number {
-  return _jsxBoard().numberFaces as number
-}
-}
-
- export class RadicalAxis extends Line {
-}
-
- export class Reflection extends GeometryElement {
-}
-
- export class ReflexAngle extends Angle {
-}
+// this is the second header file.  It includes stuff that can't be put in header.ts file because definitions are not yet available.
 
- export class RegularPolygon extends Polygon {
-}
-
- export class Riemannsum extends Curve {
-
- /** Returns the value of the Riemann sum, i.e. */
- Value(): number {
-  return  this.Value() as number
-}
-}
-
- export class Semicircle extends Arc {
-
- /**  */
- public get midpoint():Midpoint {
-  return _jsxBoard().midpoint as Midpoint
-}
-}
-
- export class Slider extends Glider {
-
- /** Sets the maximum value of the slider. */
- setMax(value:number): Object {
-  return  this.setMax(value) as Object
-}
-
- /** Sets the minimum value of the slider. */
- setMin(value:number): Object {
-  return  this.setMin(value) as Object
-}
-
- /** Sets the value of the slider. */
- setValue(value:number): Object {
-  return  this.setValue(value) as Object
-}
-
- /** Returns the current slider value. */
- Value(): number {
-  return  this.Value() as number
-}
-
- /**  */
- on(event:string, action:Function): void {
-  this.on(`event`,action) as void
-}
-}
-
- export class Slopefield extends Vectorfield {
-
- /** Set the defining functions of slope field. */
- setF(): Object {
-  return  this.setF() as Object
-}
-}
-
- export class Slopetriangle extends Line {
-
- /** Returns the value of the slope triangle, that is the slope of the tangent. */
- Value(): number {
-  return  this.Value() as number
-}
-}
-
- export class Smartlabel extends Text {
-}
-
- export class Sphere3D extends GeometryElement3D {
-}
-
- export class Spline extends Curve {
-}
-
- export class Stepfunction extends Curve {
-}
-
- export class Tangent extends Line {
-}
-
- export class TangentTo extends Line {
-}
-
- export class Tapemeasure extends Segment {
-
- /** Returns the length of the tape measure. */
- Value(): number {
-  return  this.Value() as number
-}
-}
-
- export class Tracecurve extends Curve {
-}
-
- export class Transform extends GeometryElement {
 
- /** Create a new Point from a Point and Transform.  Translation just requires dx and dy.
-                            Rotation requires a point to rotate around, and a rotation transform around that point, and
-                            a remote point that sets both the radius and the initial angle of the rotation.
-                            
-Example: Given a rotation transform controlled by a slider, create a rotating point using the transform method Point() and the
-                            radius point.
-```js
-    let slid = TSX.slider([-4,0],[-2,0],[-20,0,20])  // controls rotation
-    let c = TSX.point([-1,-1],{name:'c'})     //center
-    let rot = TSX.rotate(()=>slid.Value(),c)  // rotation around c
-    let initial = TSX.point([-1,1],{name:'initial'})
-    let d = rot.point(initial,{name:'rotation around c'})  // new point
-    TSX.segment(c,d)    // to illustrate
-``` */
- point(fromPoint:Point,attributes:PointAttributes={}): Point {
-  return _jsxBoard().create('point',[fromPoint, this],defaultAttributes(attributes)) as Point
-}
-
- /**  */
- applyOnce(element:GeometryElement): void {
-  return  this.applyOnce(element) as void
-}
-
- /**  Binds a transformation to a GeometryElement or an array of elements. In every update of the GeometryElement(s), the transformation is executed. That means, in order to immediately apply the transformation, a call of currentBoard.update() has to follow. */
- bindTo(element:GeometryElement|GeometryElement[]): void {
-  return  this.bindTo(element) as void
-}
 
- /**  */
- setMatrix(): Transform {
-  return  this.setMatrix() as Transform
-}
-}
 
- export class Transform3D extends GeometryElement3D {
-}
 
- export class TransformPoint extends Point {
+// mesh.visible allows 'inherit' but can't do that here because typescript knows that Curve.visible does NOT allow it.
+interface MeshAttributes extends CurveAttributes {
+    /** A Mesh3D is attached to a Plane3D. */
+    visible?: Boolean|Function
 }
 
- export class TransformPoint3D extends Point3D {
+// for point.visit() and point.moveTo()
+interface VisitAttributes{
+    callback?:Function,
+    effect?: "==" | "<>" | "<" | ">"
+    repeat?:number,
 }
 
- export class Segment3D extends Line3D {
-}
 
- export class Translate extends Transform {
-}
+/** Initialize a board other than jxgbox */
+function initBoard(canvas: string='', attributes?: BoardAttributes): Object {   // a JSXGraph board object
+        return (window as any).TSXGlobal.jInitBoard(canvas,attributes);
+    }
 
- export class Rotate extends Transform {
-}
 
- export class Scale extends Transform {
-}
 
- export class Translate3D extends Transform3D {
-}
 
- export class Rotate3D extends Transform3D {
-}
 
- export class RotateX3D extends Transform3D {
-}
 
- export class RotateY3D extends Transform3D {
-}
 
- export class RotateZ3D extends Transform3D {
-}
 
- export class Scale3D extends Transform3D {
-}}
