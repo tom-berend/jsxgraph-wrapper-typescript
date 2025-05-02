@@ -33,13 +33,13 @@ app.all('*', function (req, res) {
         const fileText = fs.readFileSync(req.url.slice(1), 'utf8');
         res.setHeader('content-type', 'text/css');
         res.send(fileText)
-    } else if (req.url.slice(0, 5) == '/lib/' && req.url.slice(-5) == '.woff') {
-        const fileText = fs.readFileSync(req.url.slice(1));
-        res.setHeader('content-type', 'text/woff');
-        res.send(fileText)
     } else if (req.url.slice(0, 5) == '/lib/' && req.url.slice(-6) == '.woff2') {
         const fileText = fs.readFileSync(req.url.slice(1));
         res.setHeader('content-type', 'text/woff2');
+        res.send(fileText)
+    } else if (req.url.slice(0, 5) == '/lib/' && req.url.slice(-5) == '.woff') {
+        const fileText = fs.readFileSync(req.url.slice(1));
+        res.setHeader('content-type', 'text/woff');
         res.send(fileText)
 
         // default js comes from dist file, otherwise thing is assumed html
@@ -66,6 +66,7 @@ function buttons() {
     return ret;
 }
 
+/**  create list of files in src directory */
 function fileList() {
     let ret = ''
     ret += '<html><body>'
@@ -85,12 +86,13 @@ function makeHTML(file) {
     let ret = '';
 
     ret += `<!DOCTYPE html>
-<html lang="en">
-<link rel="icon" href="data:;base64,iVBORw0KGgo=">
+<html>
 
 <head>
-    <meta charset="utf-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0">
+<link rel="icon" href="data:;base64,iVBORw0KGgo=">
+    <meta charset="utf-8">
+    <meta name="viewport" initial-scale=1.0, maximum-scale=1.0">
+    <meta title='demo KaTeX'>
 `;
 
 
@@ -121,6 +123,7 @@ function makeHTML(file) {
 
     ret += `</head>
     <body>
+
     <script>
     window.WebFontConfig = {
         custom: {
@@ -135,7 +138,7 @@ function makeHTML(file) {
 
     ret += `\n` + buttons();
     ret += '\n<div id="jxgbox" class="jxgbox" style="width:600px; height:600px;"></div>';   // create the jxgbox div
-    ret += `\n<script src = 'http://localhost:3000${file}' type = 'module' defer>  </script> `;
+    ret += `\n<script src = 'http://localhost:3000${file}' type = 'module'>  </script> `;
 
 
     // standard footer
