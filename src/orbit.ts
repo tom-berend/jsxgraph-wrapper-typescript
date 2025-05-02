@@ -7,7 +7,7 @@ orbit()
 
 
 function orbit() {
-    let TSX = new TSXBoard('jxgbox',{boundingBox:[-1, 5, 5, -1]})
+    let TSX = new TSXBoard('jxgbox', { boundingBox: [-1, 5, 5, -1] })
     TSX.useKatex()    // going to use Katex for all labels
 
 
@@ -25,8 +25,8 @@ function orbit() {
     let radius = TSX.Segment(origin, glider, { lastArrow: true, touchLastPoint: true })
     let minorArc = TSX.MinorArc(origin, TSX.Midpoint(yAxis, { name: '', opacity: 0 }), TSX.Midpoint(radius, { name: '', opacity: 0 }), { firstArrow: true, lastArrow: true })
 
-    let arcRad = TSX.Intersection(minorArc, radius, { opacity: 0, name: '\\vec{r}', label: { offset: [-30, 10], fontSize: 20 } })
-    let axisRad = TSX.Intersection(minorArc, yAxis, { name: 'ω', opacity: 0, label: { offset: [0, 40], fontSize: 20 } })
+    let arcRad = TSX.Intersection(minorArc, radius, { opacity: 0, name: '\\vec{r}', label: { offset: [-30, 10], fontSize: 20, useKatex: true } })
+    let axisRad = TSX.Intersection(minorArc, yAxis, { name: 'ω', opacity: 0, label: { offset: [0, 40], fontSize: 20, useKatex: true } })
 
 
     // we want a tangent line at the glider point.  Easy to use 'perpendicularSegment, but no control over length
@@ -37,7 +37,7 @@ function orbit() {
         {
             withLabel: true,
             name: '\\vec{V}_T=r \\omega',
-            label: { position: 'top', fontSize: 20 },
+            label: { position: 'top', fontSize: 20,useKatex:true },
             strokeWidth: 3,
             lastArrow: { type: 2, size: 8 }
         }
