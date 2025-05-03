@@ -1,14 +1,13 @@
 # jsxgraph-wrapper-typescript
 
-**A thin TypeScript wrapper over JSXGraph to maximize VSCode scaffolding.**
+## A thin TypeScript wrapper over JSXGraph to maximize VSCode scaffolding.
 
-[JSXGraph](https://jsxgraph.uni-bayreuth.de/wp/index.html) is amazing for creating geometry constructions, writing games, building dashboards, and teaching coding.  But building a JSXGraph construction is finicky.
+[JSXGraph](https://jsxgraph.uni-bayreuth.de/wp/index.html) is amazing for creating geometry constructions, writing games, building dashboards, and teaching coding.
 
-[VSCode](https://code.visualstudio.com/) could provide scaffolding, type-checking,
-syntax checking, and object discovery, but JSXGraph's syntax doesn't co-operate.  JSXGraph constructions use a
+But building a JSXGraph construction is finicky. JSXGraph constructions use a
 single 'create()' function, with over 100 overloads, requiring frequent references to the [API Reference](https://jsxgraph.org/docs/index.html) and debugging with the browser console.
 
-This wrapper provides a more-typical [TypeScript](https://www.typescriptlang.org/) interface, optimized for scaffolding with VSCode.  The syntax is familiar if you already know JSXGraph, and delightful if you don't.
+This wrapper provides a more-typical [TypeScript](https://www.typescriptlang.org/) interface, optimized for scaffolding with VSCode.  It provides type-checking, syntax checking, and object discovery, The syntax is familiar if you already know JSXGraph, and delightful if you don't.
 
 
 | **JSXGraph**    | **TSXGraph** | comment |
@@ -29,8 +28,13 @@ A wrapper approach is different from providing a d.ts file. The wrapper changes 
 
 ## Quick Start Workflow
 
-This package includes a quick-start workflow.  It looks for source files in the `/src` directory.
+This package includes two quick-start workflows.  They both look for source files in the `/src` directory.
 
+If you already have a local webserver (eg: XAMPP), then simply clone this respository, `npm i` to install the dev dependencies, `tsc -w` to compile and watch the sample programs (in the src directory), and then point your browser to the directory you have clones this repository into.
+
+If you want to use the VSCode debugger, edit the `.vscode/launch.json` file with this directory.
+
+If you don't have a local webserver, then clone this directory and:
 
 ```
 npm i
@@ -41,7 +45,7 @@ Browse to `http://localhost:3000`.   Add or edit `.ts` files in `/src` and refre
 
 When you are ready to move your constructions, the `.js` files you have created are in the `dist\src` directory.  If you don't want to use this workflow, just copy `tsxgraph.ts` to your own workflow.
 
-JSXGraph is constantly evolving.  This wrapper was built around JSXGraph 1.11 beta.
+JSXGraph is constantly evolving.  This wrapper was built around JSXGraph 1.11.
 
 
 This package includes **Space Icons** by [Good Stuff No Nonsense](https://goodstuffnononsense.com/), licensed under CC BY 4.0.
