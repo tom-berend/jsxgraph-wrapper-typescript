@@ -1,4 +1,4 @@
-import { TSXBoard } from "../lib/tsxgraph.js"    // note: we need the '.js'
+import { TSXBoard, JsxMath } from "../lib/tsxgraph.js"    // note: we need the '.js'
 
 // easier to call the orbit function from here than from JS.  TS programs tend to be longer and more complex.
 
