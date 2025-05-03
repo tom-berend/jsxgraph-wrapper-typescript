@@ -8,7 +8,9 @@
     "scripts": {
         "comment": "We use pm2 to run the express webserver in background.  browse to http://localhost:3000",
         "start": "pm2 start webserver.js & tsc -w",
-        "stop": "pm2 kill"
+        "stop": "pm2 kill",
+        "comment2": "Or, if you already have a web server with PHP, browse to http://localhost/path_to_your_directory",
+        "watch": "tsc -w"
     },
     "devDependencies": {
         "express": "^4.21.1",
