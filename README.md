@@ -30,9 +30,10 @@ A wrapper approach is different from providing a d.ts file. The wrapper changes 
 
 This package includes two quick-start workflows.  They both look for source files in the `/src` directory.
 
-If you already have a local webserver (eg: XAMPP), then simply clone this respository, `npm i` to install the dev dependencies, `tsc -w` to compile and watch the sample programs (in the src directory), and then point your browser to the directory you have clones this repository into.
+If you already have a local webserver (eg: XAMPP), then simply clone this respository, `npm i` to install the dev dependencies, `tsc -w` to compile and watch the sample programs (in the src directory), and then point your browser to the directory you have cloned this repository into.
 
-If you want to use the VSCode debugger, edit the `.vscode/launch.json` file with this directory.
+If you want to use the VSCode debugger, edit the `.vscode/launch.json` file to point at your repository directory URL.
+
 
 If you don't have a local webserver, then clone this directory and:
 
@@ -40,7 +41,7 @@ If you don't have a local webserver, then clone this directory and:
 npm i
 npm run start
 ```
-Browse to `http://localhost:3000`.   Add or edit `.ts` files in `/src` and refresh your browser.
+Browse to `http://localhost:3000`.   Add or edit `.ts` files in `/src` and refresh your browser.  This workflow does not support the VSCode debugger.
 
 
 When you are ready to move your constructions, the `.js` files you have created are in the `dist\src` directory.  If you don't want to use this workflow, just copy `tsxgraph.ts` to your own workflow.

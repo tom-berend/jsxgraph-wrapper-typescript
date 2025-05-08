@@ -21,7 +21,7 @@
         //    DEALINGS IN THE SOFTWARE.
         //
         /////////////////////////////////////////////////////////////////////////////
-        //   Generated on May 1, 2025, 12:14 pm
+        //   Generated on May 7, 2025, 10:44 am
 
      // match JSXGraph definition for JXG_Point3D, etc
         type NumberFunction = Number | Function
@@ -33,7 +33,7 @@
     keepAspectRatio: true,
     name: '', showinfobox: false,
     pan: { enabled: false },
-    resize: { enabled: false },
+    resize: { enabled: false }
 }
 
 
@@ -185,11 +185,11 @@ export interface ZoomAttributes {
 /**
 *  Constant: user coordinates relative to the coordinates system defined by the bounding box.
 */
- const COORDS_BY_USER = 0x0001
+const COORDS_BY_USER = 0x0001
 /**
 *  Constant: screen coordinates in pixel relative to the upper left corner of the div element.
 */
- const COORDS_BY_SCREEN = 0x0002
+const COORDS_BY_SCREEN = 0x0002
 
 
 // export interface JSXMathAttributes {
@@ -262,7 +262,7 @@ const board = TXG.TSXGraph.initBoard('jxgbox', { axis: true });
 
 
 
- export type SpaceIcon =
+export type SpaceIcon =
     'icons/alien-1.png' |
     'icons/alien-2.png' |
     'icons/alien-3.png' |
@@ -654,14 +654,38 @@ const board = TXG.TSXGraph.initBoard('jxgbox', { axis: true });
  export interface PointAttributes extends GeometryElementAttributes {
  /** If the distance of the point to one of its attractors is less than this number the point will be a glider on this attracting element. If set to zero nothing happens. */
   attractorDistance?: number
+ /** List of attractor elements. If the distance of the point is less than attractorDistance the point is made to glider of this element. */
+  attractors?: Element[]
+ /** Unit for attractorDistance and snatchDistance, used for magnetized points and for snapToPoints. Possible values are 'screen' and 'user'. */
+  attractorUnit?: String
  /** If set to true, the point will only snap to (possibly invisibly) grid points when within Point#attractorDistance of such a grid point.The coordinates of the grid points are either integer multiples of snapSizeX and snapSizeY (given in user coordinates, not pixels) or are the intersection points of the major ticks of the boards default axes in case that snapSizeX, snapSizeY are negative. */
   attractToGrid?: Boolean
+ /** List of elements which are ignored by snapToPoints. */
+  ignoredSnapToPoints?: Element[]
+ /** Truncating rule for the digits in the infobox.'auto': done automatically by JXG.autoDigits() 'none': no truncation number: truncate after ”number digits” with JXG.toFixed() */
+  infoboxDigits?: String| number
  /** If true, the infobox is shown on mouse/pen over, if false not. If the value is 'inherit', the value of JXG.currentBoard#showInfobox is taken. */
   showInfobox?: Boolean
+ /** There are different point styles which differ in appearance. */
+  face?: 'o'|'line'|'point'|'cross'| 'plus' | 'minus' | 'divide'| 'diamond'| 'triangledown' | 'triangleleft' | 'triangleright'| 'triangleup' | 'square' |'circle' | string
+ /** Size of a point, either in pixel or user coordinates. Means radius resp. half the width of a point (depending on the face). */
+  size?: number
+ /** Unit for size. Possible values are 'screen' and 'user. */
+  sizeUnit?: String
+ /** Defines together with Point#snapSizeY the grid the point snaps on to. It is given in user coordinates, not in pixels. The point will only snap on integer multiples to snapSizeX in x and snapSizeY in y direction. If this value is equal to or less than 0, it will use the grid displayed by the major ticks of the default ticks of the default x axes of the currentBoard. */
+  snapSizeX?: number
+ /** Defines together with Point#snapSizeX the grid the point snaps on to. It is given in user coordinates, not in pixels. The point will only snap on integer multiples to snapSizeX in x and snapSizeY in y direction. If this value is equal to or less than 0, it will use the grid displayed by the major ticks of the default ticks of the default y axes of the currentBoard. */
+  snapSizeY?: number
  /** If set to true, the point will snap to a grid of integer multiples of Point#snapSizeX and Point#snapSizeY (in user coordinates).The coordinates of the grid points are either integer multiples of snapSizeX and snapSizeY (given in user coordinates, not pixels) or are the intersection points of the major ticks of the boards default axes in case that snapSizeX, snapSizeY are negative. */
   snapToGrid?: Boolean
+ /** If set to true, the point will snap to the nearest point in distance of Point#attractorDistance. */
+  snapToPoints?: Boolean
+ /** If the distance of the point to one of its attractors is at least this number the point will be released from being a glider on the attracting element. If set to zero nothing happens. */
+  snatchDistance?: number
  /** This attribute was used to determined the point layout. It was derived from GEONExT and was replaced by Point#face and Point#size. */
   style?: number
+ /** If true, the point size changes on zoom events. */
+  zoom?: Boolean
 }
  
 
@@ -682,6 +706,8 @@ const board = TXG.TSXGraph.initBoard('jxgbox', { axis: true });
  Dist(toPoint:Point|pointAddr): number; 
  /** missing description */
  face(style:'cross'|'circle'|'square'|'plus'|'minus'|'diamond'): Boolean; 
+ /** missing description */
+ isOn(el:GeometryElement,tol:number): Boolean; 
  /** missing description */
  update(): number[]; 
  /** missing description */
@@ -3027,9 +3053,9 @@ Instead of one value you can provide two values as an array [x, y] here. These a
  /** Attributes for the tape measure label. */
   label?: LabelAttributes
  /** Attributes for first helper point defining the tape measure position. */
-  point1?: LineAttributes
+  point1?: PointAttributes
  /** Attributes for second helper point defining the tape measure position. */
-  point2?: LineAttributes
+  point2?: PointAttributes
  /** The precision of the tape measure value displayed in the optional text. Replaced by the attribute digits */
   precision?: number
  /** Text rotation in degrees. */
@@ -5011,25 +5037,42 @@ TSX.foreignObject(
 }
 
 
-
- /** Display an image.  The first element is the location URL of the image.
-                A collection of space icons is provided, press CTRL+I to show the list.
-                The second parameter sets the lower left point of the image.
-                The optional third parameter sets the size multiplier of the image, default is [1,1].
-                
-If you want to move the image, just tie the image to a point, maybe at the center of the image.
-                 For more flexibility, see TSX.Rotate() and TSX.Translate()
-                
-*```js
-            TSX.image('icons/earth.png', [0, 0],[2,2])
-            let p1 = TSX.point([3, 2], { opacity: .1 })
-            TSX.image('icons/moon-full-moon.png', [()=>p1.X(),()=>p1.Y()])
-                
-*``` */
- Image (url:SpaceIcon, lowerLeft:pointAddr, widthHeight:[number,number]=[1,1], attributes: ImageAttributes ={} ):Image {
-   return (this._jBoard as any).create('image', [url,lowerLeft,widthHeight,], this.defaultAttributes(attributes))  as Image
-}
-
+ Image( url:SpaceIcon,lowerLeft:pointAddr,widthHeight:[number,number],attributes?:ImageAttributes) : Image
+ Image( url:string,lowerLeft:pointAddr,widthHeight:[number,number],attributes?:ImageAttributes) : Image
+// implementation of signature,  hidden from user
+ Image (a?:any, b?:any, c?:any, d?:any,e?:any,f?:any,g?:any,h?:any,i?:any) {
+   let params:any[] = []
+   let attrs = {}
+ if(arguments.length == 1) {
+   params = this.isAttribute(a)?[]:[a,];
+   attrs = this.isAttribute(a)? a:{};
+ }
+ if(arguments.length == 2) {
+   params = this.isAttribute(b)?[a,]:[a,b,];
+   attrs = this.isAttribute(b)? b:{};
+ }
+ if(arguments.length == 3) {
+   params = this.isAttribute(c)?[a,b,]:[a,b,c,];
+   attrs = this.isAttribute(c)? c:{};
+ }
+ if(arguments.length == 4) {
+   params = this.isAttribute(d)?[a,b,c,]:[a,b,c,d,];
+   attrs = this.isAttribute(d)? d:{};
+ }
+ if(arguments.length == 5) {
+   params = this.isAttribute(e)?[a,b,c,d,]:[a,b,c,d,e,];
+   attrs = this.isAttribute(e)? e:{};
+ }
+ if(arguments.length == 6) {
+   params = this.isAttribute(f)?[a,b,c,d,e,]:[a,b,c,d,e,f,];
+   attrs = this.isAttribute(f)? f:{};
+ }
+ if(arguments.length == 7) {
+   params = this.isAttribute(g)?[a,b,c,d,e,f,]:[a,b,c,d,e,f,g,];
+   attrs = this.isAttribute(g)? g:{};
+ }
+   return (this._jBoard as any).create('image', params, this.defaultAttributes(attrs))
+ }
 
  Implicitcurve( f:Function|String,attributes?:ImplicitcurveAttributes) : Implicitcurve
  Implicitcurve( f:Function|String,dfx:Function|String,dfy:Function|String,attributes?:ImplicitcurveAttributes) : Implicitcurve
