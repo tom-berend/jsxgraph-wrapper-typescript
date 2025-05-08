@@ -35,7 +35,14 @@ If you already have a local webserver (eg: XAMPP), then simply clone this respos
 If you want to use the VSCode debugger, edit the `.vscode/launch.json` file to point at your repository directory URL.
 
 
-If you don't have a local webserver, then clone this directory and:
+If you have a local webserver, then clone this directory and run
+```
+npm i
+tsc -w
+```
+and then browse to the directory you cloned. Your browser will find index.php there.
+
+if you don't have a local webserver, run
 
 ```
 npm i
