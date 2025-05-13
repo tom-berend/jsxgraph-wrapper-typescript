@@ -21,7 +21,7 @@
         //    DEALINGS IN THE SOFTWARE.
         //
         /////////////////////////////////////////////////////////////////////////////
-        //   Generated on May 11, 2025, 2:28 pm
+        //   Generated on May 12, 2025, 9:13 pm
 
      // match JSXGraph definition for JXG_Point3D, etc
         type NumberFunction = Number | Function
@@ -484,6 +484,8 @@ export type SpaceIcon =
  addRotation(): String; 
  /** missing description */
  addTicks(): String; 
+ /** missing description */
+ addTransform(element:GeometryElement,transforms:any|any[]): GeometryElement; 
  /** missing description */
  animate(): GeometryElement; 
  /** missing description */
