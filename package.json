@@ -3,7 +3,7 @@
     "author": "Tom Berend",
     "email": "tom.berend@cheeseandcrackers.ca",
     "description": "A thin TypeScript wrapper over JSXGraph to maximize scaffolding with VSCode.",
-    "version": "2.0.1",
+    "version": "2.0.2",
     "licence": "MIT",
     "scripts": {
         "comment": "We use pm2 to run the express webserver in background.  browse to http://localhost:3000",
@@ -16,5 +16,10 @@
         "express": "^4.21.1",
         "pm2": "^5.4.2",
         "typescript": "^5.6.2"
+    },
+    "dependencies": {
+        "jsxgraph": "^1.11.1",
+        "katex": "^0.16.22",
+        "webfontloader": "^1.6.28"
     }
 }

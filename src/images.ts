@@ -10,7 +10,7 @@ try {
     // modify point p1's position to drag the moon around)
     let p1 = TSX.Point([3, 2], { opacity: .1 })  // set to opacity 0 for invisible
 
-    TSX.Image('icons/moon-full-moon.png', [() => p1.X(), () => p1.Y()])
+    TSX.Image('icons/moon-full-moon.png', [() => p1.X(), () => p1.Y()],[1,1])
     throw ('some custom error')
 
 } catch (err:any) {

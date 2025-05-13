@@ -21,7 +21,7 @@
         //    DEALINGS IN THE SOFTWARE.
         //
         /////////////////////////////////////////////////////////////////////////////
-        //   Generated on May 7, 2025, 10:44 am
+        //   Generated on May 11, 2025, 2:28 pm
 
      // match JSXGraph definition for JXG_Point3D, etc
         type NumberFunction = Number | Function
@@ -517,9 +517,9 @@ export type SpaceIcon =
  /** missing description */
  hideElement(): GeometryElement; 
  /** missing description */
- labelColor(): currentBoard; 
+ labelColor(): Board; 
  /** missing description */
- noHighlight(): currentBoard; 
+ noHighlight(): Board; 
  /** missing description */
  remove(): Object; 
  /** missing description */
@@ -669,7 +669,7 @@ export type SpaceIcon =
  /** There are different point styles which differ in appearance. */
   face?: 'o'|'line'|'point'|'cross'| 'plus' | 'minus' | 'divide'| 'diamond'| 'triangledown' | 'triangleleft' | 'triangleright'| 'triangleup' | 'square' |'circle' | string
  /** Size of a point, either in pixel or user coordinates. Means radius resp. half the width of a point (depending on the face). */
-  size?: number
+  size?: number|Function
  /** Unit for size. Possible values are 'screen' and 'user. */
   sizeUnit?: String
  /** Defines together with Point#snapSizeY the grid the point snaps on to. It is given in user coordinates, not in pixels. The point will only snap on integer multiples to snapSizeX in x and snapSizeY in y direction. If this value is equal to or less than 0, it will use the grid displayed by the major ticks of the default ticks of the default x axes of the currentBoard. */
@@ -941,17 +941,6 @@ export type SpaceIcon =
  stopAzimuth(): any; 
  }
 
- export interface currentBoardAttributes  {
-}
- 
-
- export interface currentBoard  {    // fields and methods
-
- //// fields 
-
- //// methods 
- }
-
  export interface ChartAttributes extends GeometryElementAttributes {
  /** Select type of chart. */
  chartStyle?: `bar`|`line`
@@ -1115,7 +1104,7 @@ export type SpaceIcon =
 
  //// fields 
  /** missing description */
- currentBoard: currentBoard; 
+ currentBoard: Board; 
  /** missing description */
  emitter: boolean; 
  /** missing description */
@@ -4856,7 +4845,6 @@ TSX.line(2,3,1)   // create a line for the equation a*x+b*y+c*z = 0
  }
 
  // Missing signaature array for View3D
- // Missing signaature array for currentBoard
 
 
  /** create a chart */
@@ -5249,10 +5237,10 @@ TSX.foreignObject(
 
  /** Array of Points */
  Polygon (vertices:Point[]|pointAddr[]|Function, attributes: PolygonAttributes ={} ):Polygon {
- if (typeof vertices === 'function')
+   if (typeof vertices === 'function')
                               return (this._jBoard as any).create('polygon', [vertices], this.defaultAttributes(attributes))
                            else
-                              return (this._jBoard as any).create('polygon', vertices/*.flat()*/, this.defaultAttributes(attributes))
+                              return (this._jBoard as any).create('polygon', vertices, this.defaultAttributes(attributes))
                   
 }
 
@@ -5261,9 +5249,9 @@ TSX.foreignObject(
  /** A polygon is a sequence of points connected by lines, with the last point connecting back to the first one. The points are given by a list of Point3D objects or a list of coordinate arrays. Each two consecutive points of the list define a line. */
  Polygon3D (vertices:Point3D[]|pointAddr3D[]|Function, attributes: Polygon3DAttributes ={} ):Polygon3D {
  if (typeof vertices === 'function')
-                            return (this._jBoard as any).create('polygon3d', [vertices], this.defaultAttributes(attributes))
+                            return (this._jView3d as any).create('polygon3d', [vertices], this.defaultAttributes(attributes))
                          else
-                            return (this._jBoard as any).create('polygon3d', vertices/*.flat()*/, this.defaultAttributes(attributes))
+                            return (this._jView3d as any).create('polygon3d', vertices, this.defaultAttributes(attributes))
                         
 }
 

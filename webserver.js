@@ -23,26 +23,29 @@ app.get('/lib/tsxgraph.js', (req, res) => {
 });
 
 app.all('*', function (req, res) {
-    console.log(req.url)
-    // if we are asked for something from lib
-    if (req.url.slice(0, 5) == '/lib/' && req.url.slice(-3) == '.js') {
+
+    // if we are asked for something from node_modules, find the right mime type
+    let nmText = '/node_modules/'
+    let nmLen = nmText.length
+
+    if (req.url.slice(0, nmLen) == nmText && req.url.slice(-3) == '.js') {
         const fileText = fs.readFileSync(req.url.slice(1), 'utf8');
         res.setHeader('content-type', 'text/javascript');
         res.send(fileText)
-    } else if (req.url.slice(0, 5) == '/lib/' && req.url.slice(-4) == '.css') {
+    } else if (req.url.slice(0, nmLen) == nmText && req.url.slice(-4) == '.css') {
         const fileText = fs.readFileSync(req.url.slice(1), 'utf8');
         res.setHeader('content-type', 'text/css');
         res.send(fileText)
-    } else if (req.url.slice(0, 5) == '/lib/' && req.url.slice(-6) == '.woff2') {
+    } else if (req.url.slice(0, nmLen) == nmText && req.url.slice(-6) == '.woff2') {
         const fileText = fs.readFileSync(req.url.slice(1));
         res.setHeader('content-type', 'text/woff2');
         res.send(fileText)
-    } else if (req.url.slice(0, 5) == '/lib/' && req.url.slice(-5) == '.woff') {
+    } else if (req.url.slice(0, nmLen) == nmText && req.url.slice(-5) == '.woff') {
         const fileText = fs.readFileSync(req.url.slice(1));
         res.setHeader('content-type', 'text/woff');
         res.send(fileText)
 
-        // default js comes from dist file, otherwise thing is assumed html
+        // default js comes from dist file, default png from images.
     } else if (req.url.slice(-3) == '.js') {
         const fileText = fs.readFileSync(`./dist/src/${req.url}`, 'utf8');
         res.setHeader('content-type', 'text/javascript');
@@ -52,6 +55,7 @@ app.all('*', function (req, res) {
         res.setHeader('content-type', 'image/png');
         res.send(fileText)
 
+        // otherwise thing is assumed html.  could replicate & extend above code if mime is important.
 
     } else {
         res.setHeader('content-type', 'text/html');
@@ -62,7 +66,7 @@ app.all('*', function (req, res) {
 
 function buttons() {
     let ret = ''
-    ret += `<button type='button' onclick="window.location.href = 'http://localhost:3000';">Home</button><br><br>`;
+    ret += `<button type='button' onclick="window.location.href = 'http://localhost:${port.toString()}';">Home</button><br><br>`;
     return ret;
 }
 
@@ -96,28 +100,15 @@ function makeHTML(file) {
 `;
 
 
-    // use these to fetch from jsdelivr
 
-    // ret +=
-    // `<script src="https://cdn.jsdelivr.net/npm/katex@0.16.11/dist/katex.min.js"></script>
-    // <link href="https://cdn.jsdelivr.net/npm/katex@0.16.11/dist/katex.min.css" rel="stylesheet">
-
-    // <script src="https://cdn.jsdelivr.net/npm/jsxgraph@1.10.0/distrib/jsxgraphcore.min.js"></script>
-    // <link href="https://cdn.jsdelivr.net/npm/jsxgraph@1.10.0/distrib/jsxgraph.min.css" rel="stylesheet">
-
-    // <script src="https://cdn.jsdelivr.net/npm/webfontloader@1.6.28/webfontloader.min.js"></script>`;
-
-
-
-    // use these to fetch from local drive - MUCH faster for development
     ret += `
-    <script src="lib/katex.min.js"></script>
-    <link href="lib/katex.min.css" rel="stylesheet">
+    <script src="node_modules/katex/dist/katex.min.js"></script>
+    <link href="node_modules/katex/dist/katex.min.css" rel="stylesheet">
 
-    <script src="lib/jsxgraphcore.js"></script>
-    <link href="lib/jsxgraph.css" rel="stylesheet">
+    <script src="node_modules/jsxgraph/distrib/jsxgraphcore.js"></script>
+    <link href="node_modules/jsxgraph/distrib/jsxgraph.css" rel="stylesheet">
 
-    <script src="lib/webfontloader.min.js"></script>`;
+    <script src="node_modules/webfontloader/webfontloader.js"></script>`;
 
 
 
@@ -138,7 +129,7 @@ function makeHTML(file) {
 
     ret += `\n` + buttons();
     ret += '\n<div id="jxgbox" class="jxgbox" style="width:600px; height:600px;"></div>';   // create the jxgbox div
-    ret += `\n<script src = 'http://localhost:3000${file}' type = 'module'>  </script> `;
+    ret += `\n<script src = 'http://localhost:${port.toString()}/${file}' type = 'module'>  </script> `;
 
 
     // standard footer

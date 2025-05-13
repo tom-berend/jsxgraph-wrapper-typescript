@@ -1,15 +1,13 @@
 import { TSXBoard, JsxMath } from "../lib/tsxgraph.js"    // note: we need the '.js'
 
-// easier to call the orbit function from here than from JS.  TS programs tend to be longer and more complex.
 
+let TSX = new TSXBoard('jxgbox', { boundingBox: [-1, 5, 5, -1] })
 orbit()
 
 
 
 function orbit() {
-    let TSX = new TSXBoard('jxgbox', { boundingBox: [-1, 5, 5, -1] })
     TSX.useKatex()    // going to use Katex for all labels
-
 
     let origin = TSX.Point([0, 0])
 

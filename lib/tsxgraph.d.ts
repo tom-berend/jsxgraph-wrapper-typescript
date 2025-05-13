@@ -289,9 +289,9 @@ export interface GeometryElement {
     /** missing description */
     hideElement(): GeometryElement;
     /** missing description */
-    labelColor(): currentBoard;
+    labelColor(): Board;
     /** missing description */
-    noHighlight(): currentBoard;
+    noHighlight(): Board;
     /** missing description */
     remove(): Object;
     /** missing description */
@@ -460,7 +460,7 @@ export interface PointAttributes extends GeometryElementAttributes {
     /** There are different point styles which differ in appearance. */
     face?: 'o' | 'line' | 'point' | 'cross' | 'plus' | 'minus' | 'divide' | 'diamond' | 'triangledown' | 'triangleleft' | 'triangleright' | 'triangleup' | 'square' | 'circle' | string;
     /** Size of a point, either in pixel or user coordinates. Means radius resp. half the width of a point (depending on the face). */
-    size?: number;
+    size?: number | Function;
     /** Unit for size. Possible values are 'screen' and 'user. */
     sizeUnit?: String;
     /** Defines together with Point#snapSizeY the grid the point snaps on to. It is given in user coordinates, not in pixels. The point will only snap on integer multiples to snapSizeX in x and snapSizeY in y direction. If this value is equal to or less than 0, it will use the grid displayed by the major ticks of the default ticks of the default x axes of the currentBoard. */
@@ -704,10 +704,6 @@ export interface View3D extends GeometryElement3D {
     /** missing description */
     stopAzimuth(): any;
 }
-export interface currentBoardAttributes {
-}
-export interface currentBoard {
-}
 export interface ChartAttributes extends GeometryElementAttributes {
     /** Select type of chart. */
     chartStyle?: `bar` | `line`;
@@ -832,7 +828,7 @@ export interface CoordsAttributes {
 }
 export interface Coords {
     /** missing description */
-    currentBoard: currentBoard;
+    currentBoard: Board;
     /** missing description */
     emitter: boolean;
     /** missing description */

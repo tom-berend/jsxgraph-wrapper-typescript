@@ -58,7 +58,7 @@ if (empty($_REQUEST)) {
         return; // all done
     } else {
         $html .= "\n<button href =button type='button' onclick='window.location.href = \"? \";'>Home</button>&nbsp;";
-        $html .= "\n<button href =button type='button' onclick='window.location.href = \"?makehtml&$file \";'>Make HTML</button><br><br>";
+        $html .= "\n<button href =button type='button' onclick='window.location.href = \"?makehtml&$file \";'>HTML Boilerplate</button><br><br>";
         $file = str_replace('_js', '.js', $file);
         $html .= htmlBody($file);
     }
@@ -75,12 +75,20 @@ function htmlHeader()
 <head>
     <meta charset='utf-8' />
 
-    <link rel='stylesheet' href='lib/katex.min.css' />
-    <script type='text/javascript' src='lib/katex.min.js'></script>
+    <!--  ---------------- use this to fetch files from JSDelivr
+     <script src='https://cdn.jsdelivr.net/npm/katex@0.16.11/dist/katex.min.js'></script>
+     <link href='https://cdn.jsdelivr.net/npm/katex@0.16.11/dist/katex.min.css' rel='stylesheet'>
+    <script src='https://cdn.jsdelivr.net/npm/jsxgraph@1.10.0/distrib/jsxgraphcore.min.js'></script>
+     <link href='https://cdn.jsdelivr.net/npm/jsxgraph@1.10.0/distrib/jsxgraph.min.css' rel='stylesheet'>
+    <script src='https://cdn.jsdelivr.net/npm/webfontloader@1.6.28/webfontloader.min.js'></script>`;
+    ------------------ -->
 
+    <link rel='stylesheet' href='node_modules/katex/dist/katex.min.css' />
+    <script type='text/javascript' src='node_modules/katex/dist/katex.min.js'></script>
+    <link rel='stylesheet' type='text/css' href='node_modules/jsxgraph/distrib/jsxgraph.css' />
+    <script type='text/javascript' src='node_modules/jsxgraph/distrib/jsxgraphcore.js'></script>
+    <script defer src='node_modules/webfontloader/webfontloader.js'></script>
 
-    <link rel='stylesheet' type='text/css' href='lib/jsxgraph.css' />
-    <script type='text/javascript' src='lib/jsxgraphcore.js'></script>
 
 </head>
 <body>
@@ -95,7 +103,6 @@ function htmlHeader()
             },
         };
     </script>
-    <script defer src='lib/webfontloader.min.js'></script>
 
 ";
 
@@ -106,11 +113,14 @@ function htmlBody($file)
 {
     return "
         <div id='jxgbox' class='jxgbox' style='width:600px; height:600px'></div>
+
+        <!--  ------ fix up the directory here   ------ -->
         <script src='dist/src/$file' type='module'>  </script>";
 }
 function htmlFooter()
 {
     $html = "
+
   </body>
 </html>";
 
