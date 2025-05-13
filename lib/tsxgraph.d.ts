@@ -257,6 +257,8 @@ export interface GeometryElement {
     /** missing description */
     addTicks(): String;
     /** missing description */
+    addTransform(element: GeometryElement, transforms: any | any[]): GeometryElement;
+    /** missing description */
     animate(): GeometryElement;
     /** missing description */
     bounds(): number[];
