@@ -21,7 +21,7 @@
         //    DEALINGS IN THE SOFTWARE.
         //
         /////////////////////////////////////////////////////////////////////////////
-        //   Generated on May 12, 2025, 9:13 pm
+        //   Generated on May 13, 2025, 12:47 pm
 
      // match JSXGraph definition for JXG_Point3D, etc
         type NumberFunction = Number | Function
@@ -3250,93 +3250,321 @@ Instead of one value you can provide two values as an array [x, y] here. These a
             ```
         */
  export let JsxMath = {Matrix :{
- crossProduct(v1:number[],v2:number[])  { return (window as any).JXG.Math.crossProduct(v1,v2) }, 
- frustum(left:number,right:number,top:number,bottom:number,near:number,far:number)  { return (window as any).JXG.Math.frustum(left,right,top,bottom,near,far) }, 
- identity(m:number,n:number)  { return (window as any).JXG.Math.identity(m,n) }, 
- innerProduct(v1:number[],v2:number[])  { return (window as any).JXG.Math.innerProduct(v1,v2) }, 
- inverse(mat:matAny)  { return (window as any).JXG.Math.inverse(mat) }, 
- matMatMult(mat1:matAny,mat2:matAny)  { return (window as any).JXG.Math.matMatMult(mat1,mat2) }, 
- matrix(nRows:number,mCols:number,init:number)  { return (window as any).JXG.Math.matrix(nRows,mCols,init) }, 
- matVecMult(mat:matAny,vec:number[])  { return (window as any).JXG.Math.matVecMult(mat,vec) }, 
- projection(fov:number,ratio:number,near:number,far:number)  { return (window as any).JXG.Math.projection(fov,ratio,near,far) }, 
- transpose(mat:matAny)  { return (window as any).JXG.Math.transpose(mat) }, 
- vector(n:number,init:number)  { return (window as any).JXG.Math.vector(n,init) }, 
+ /** Calculates the cross product of two vectors both of length three. */ 
+ crossProduct(v1:number[],v2:number[]):number[]  { return (window as any).JXG.Math.crossProduct(v1,v2) }, 
+ /** Generates a 4x4 matrix for 3D to 2D projections. */ 
+ frustum(left:number,right:number,top:number,bottom:number,near:number,far:number):number[][]  { return (window as any).JXG.Math.frustum(left,right,top,bottom,near,far) }, 
+ /** Generates an identity matrix of size m x n.  (Yes it is possible to have a non-square identity matrix) */ 
+ identity(m:number,n:number):number[][]  { return (window as any).JXG.Math.identity(m,n) }, 
+ /** Inner product of two vectors a and b.  Inner product is a generalization of Dot product for an arbitrary vector space. */ 
+ innerProduct(v1:number[],v2:number[]):number[]  { return (window as any).JXG.Math.innerProduct(v1,v2) }, 
+ /** Compute the inverse of an nxn matrix with Gauss elimination.  Returns [] if there is a singularity. */ 
+ inverse(mat:number[][]):number[][]  { return (window as any).JXG.Math.inverse(mat) }, 
+ /** Computes the product of the two matrices mat1*mat2. */ 
+ matMatMult(mat1:number[][],mat2:number[][]):number[][]  { return (window as any).JXG.Math.matMatMult(mat1,mat2) }, 
+ /** Initializes a matrix as an array of rows with the given value. */ 
+ matrix(nRows:number,mCols:number,init:number):number[][]  { return (window as any).JXG.Math.matrix(nRows,mCols,init) }, 
+ /** Multiplies a vector vec to a matrix mat: mat * vec.  The matrix is a two-dimensional array of numbers. The inner arrays describe the columns, the outer ones the matrix rows. eg: [[2,1],[3,2]] where [2,1] is the first colummn. */ 
+ matVecMult(mat:matAny,vec:number[]):number[]  { return (window as any).JXG.Math.matVecMult(mat,vec) }, 
+ /** Generates a 4x4 matrix for 3D to 2D projections. */ 
+ projection(fov:number,ratio:number,near:number,far:number):number[][]  { return (window as any).JXG.Math.projection(fov,ratio,near,far) }, 
+ /** Transposes a matrix given as a two dimensional array. */ 
+ transpose(mat:matAny):number[][]  { return (window as any).JXG.Math.transpose(mat) }, 
+ /** Initializes a vector of size n wih coefficients set to the given value. */ 
+ vector(n:number,init:number):number[]  { return (window as any).JXG.Math.vector(n,init) }, 
 },
 Geometry :{
+ /**  */ 
  affineDistance()  { return (window as any).JXG.Math.affineDistance() }, 
+ /**  */ 
  affineRatio()  { return (window as any).JXG.Math.affineRatio() }, 
+ /**  */ 
  angle()  { return (window as any).JXG.Math.angle() }, 
+ /**  */ 
  angleBisector()  { return (window as any).JXG.Math.angleBisector() }, 
+ /**  */ 
  bezierArc()  { return (window as any).JXG.Math.bezierArc() }, 
+ /**  */ 
  calcLabelQuadrant()  { return (window as any).JXG.Math.calcLabelQuadrant() }, 
+ /**  */ 
  calcLineDelimitingPoints()  { return (window as any).JXG.Math.calcLineDelimitingPoints() }, 
+ /**  */ 
  calcStraight()  { return (window as any).JXG.Math.calcStraight() }, 
+ /**  */ 
  circumcenter()  { return (window as any).JXG.Math.circumcenter() }, 
+ /**  */ 
  circumcenterMidpoint()  { return (window as any).JXG.Math.circumcenterMidpoint() }, 
+ /**  */ 
  det3p()  { return (window as any).JXG.Math.det3p() }, 
+ /**  */ 
  distance()  { return (window as any).JXG.Math.distance() }, 
+ /**  */ 
  distPointLine()  { return (window as any).JXG.Math.distPointLine() }, 
+ /**  */ 
  GrahamScan()  { return (window as any).JXG.Math.GrahamScan() }, 
+ /**  */ 
  intersectionFunction()  { return (window as any).JXG.Math.intersectionFunction() }, 
+ /**  */ 
  isSameDir()  { return (window as any).JXG.Math.isSameDir() }, 
+ /**  */ 
  isSameDirection()  { return (window as any).JXG.Math.isSameDirection() }, 
+ /**  */ 
  meet()  { return (window as any).JXG.Math.meet() }, 
+ /**  */ 
  meetBezierCurveRedBlueSegments()  { return (window as any).JXG.Math.meetBezierCurveRedBlueSegments() }, 
+ /**  */ 
  meetBeziersegmentBeziersegment()  { return (window as any).JXG.Math.meetBeziersegmentBeziersegment() }, 
+ /**  */ 
  meetCircleCircle()  { return (window as any).JXG.Math.meetCircleCircle() }, 
+ /**  */ 
  meetCurveCurve()  { return (window as any).JXG.Math.meetCurveCurve() }, 
+ /**  */ 
  meetCurveLine()  { return (window as any).JXG.Math.meetCurveLine() }, 
+ /**  */ 
  meetCurveLineContinuous()  { return (window as any).JXG.Math.meetCurveLineContinuous() }, 
+ /**  */ 
  meetCurveLineDiscrete()  { return (window as any).JXG.Math.meetCurveLineDiscrete() }, 
+ /**  */ 
  meetCurveRedBlueSegments()  { return (window as any).JXG.Math.meetCurveRedBlueSegments() }, 
+ /**  */ 
  meetLineBoard()  { return (window as any).JXG.Math.meetLineBoard() }, 
+ /**  */ 
  meetLineCircle()  { return (window as any).JXG.Math.meetLineCircle() }, 
+ /**  */ 
  meetLineLine()  { return (window as any).JXG.Math.meetLineLine() }, 
+ /**  */ 
  meetPathPath()  { return (window as any).JXG.Math.meetPathPath() }, 
+ /**  */ 
  meetPolygonLine()  { return (window as any).JXG.Math.meetPolygonLine() }, 
+ /**  */ 
  meetSegmentSegment()  { return (window as any).JXG.Math.meetSegmentSegment() }, 
+ /**  */ 
  perpendicular()  { return (window as any).JXG.Math.perpendicular() }, 
+ /**  */ 
  pnpoly()  { return (window as any).JXG.Math.pnpoly() }, 
+ /**  */ 
  projectCoordsToBeziersegment()  { return (window as any).JXG.Math.projectCoordsToBeziersegment() }, 
+ /**  */ 
  projectCoordsToCurve()  { return (window as any).JXG.Math.projectCoordsToCurve() }, 
+ /**  */ 
  projectCoordsToPolygon()  { return (window as any).JXG.Math.projectCoordsToPolygon() }, 
+ /**  */ 
  projectCoordsToSegment()  { return (window as any).JXG.Math.projectCoordsToSegment() }, 
+ /**  */ 
  projectPointToBoard()  { return (window as any).JXG.Math.projectPointToBoard() }, 
+ /**  */ 
  projectPointToCircle()  { return (window as any).JXG.Math.projectPointToCircle() }, 
+ /**  */ 
  projectPointToCurve()  { return (window as any).JXG.Math.projectPointToCurve() }, 
+ /**  */ 
  projectPointToLine()  { return (window as any).JXG.Math.projectPointToLine() }, 
+ /**  */ 
  projectPointToPoint()  { return (window as any).JXG.Math.projectPointToPoint() }, 
+ /**  */ 
  projectPointToTurtle()  { return (window as any).JXG.Math.projectPointToTurtle() }, 
+ /**  */ 
  rad()  { return (window as any).JXG.Math.rad() }, 
+ /**  */ 
  reflection()  { return (window as any).JXG.Math.reflection() }, 
+ /**  */ 
  reuleauxPolygon()  { return (window as any).JXG.Math.reuleauxPolygon() }, 
+ /**  */ 
  rotation()  { return (window as any).JXG.Math.rotation() }, 
+ /**  */ 
  signedPolygon()  { return (window as any).JXG.Math.signedPolygon() }, 
+ /**  */ 
  signedTriangle()  { return (window as any).JXG.Math.signedTriangle() }, 
+ /**  */ 
  sortVertices()  { return (window as any).JXG.Math.sortVertices() }, 
+ /**  */ 
  trueAngle()  { return (window as any).JXG.Math.trueAngle() }, 
+ /**  */ 
  windingNumber()  { return (window as any).JXG.Math.windingNumber() }, 
 },
+Math :{
+ /** Hyperbolic arc-cosine of a number. */ 
+ acosh(x:number):number  { return (window as any).JXG.Math.acosh(x) }, 
+ /** Computes the inverse cotangent of x. */ 
+ acot(x:number)  { return (window as any).JXG.Math.acot(x) }, 
+ /** Logical operator: a && b? */ 
+ and(a:Boolean, b:Boolean)  { return (window as any).JXG.Math.and(a, b) }, 
+ /** Hyperbolic arcsine of a number */ 
+ asinh(x:number)  { return (window as any).JXG.Math.asinh(x) }, 
+ /** Compute a * x + y for a scalar a and vectors x and y. */ 
+ axpy(a:number, x:number, y:number)  { return (window as any).JXG.Math.axpy(a, x, y) }, 
+ /** Computes the binomial coefficient n over k. */ 
+ binomial(n:number, k:number)  { return (window as any).JXG.Math.binomial(n, k) }, 
+ /** Computes cube root of real number Polyfill for Math.cbrt(). */ 
+ cbrt(x:number)  { return (window as any).JXG.Math.cbrt(x) }, 
+ /** Clamp x within the interval [a, b]. */ 
+ clamp(x:number, a:number, b:number):number  { return (window as any).JXG.Math.clamp(x, a, b) }, 
+ /** Calculates the cosine hyperbolicus of x. */ 
+ cosh(x:number)  { return (window as any).JXG.Math.cosh(x) }, 
+ /** Computes the cotangent of x. */ 
+ cot(x:number)  { return (window as any).JXG.Math.cot(x) }, 
+ /** Calculates the cross product of two vectors both of length three. */ 
+ crossProduct(c1:number[], c2:number[])  { return (window as any).JXG.Math.crossProduct(c1, c2) }, 
+ /** Convert a floating point number to sign + integer + fraction. */ 
+ decToFraction(x:number, order:number)  { return (window as any).JXG.Math.decToFraction(x, order) }, 
+ /** Logical test: a === b? */ 
+ eq(a:number, b:number)  { return (window as any).JXG.Math.eq(a, b) }, 
+ /** Error function, see https://en.wikipedia.org/wiki/Error_function. */ 
+ erf(x:number)  { return (window as any).JXG.Math.erf(x) }, 
+ /** Complementary error function, i.e. */ 
+ erfc(x:number)  { return (window as any).JXG.Math.erfc(x) }, 
+ /** Inverse of error function */ 
+ erfi(x:number)  { return (window as any).JXG.Math.erfi(x) }, 
+ /** Compute the factorial of a positive integer. */ 
+ factorial(n:number)  { return (window as any).JXG.Math.factorial(n) }, 
+ /** Generates a 4x4 matrix for 3D to 2D projections. */ 
+ frustum(l:number, r:number, t:number, b:number, n:number, f:number)  { return (window as any).JXG.Math.frustum(l, r, t, b, n, f) }, 
+ /** Gamma function for real parameters by Lanczos approximation. */ 
+ gamma(z:number)  { return (window as any).JXG.Math.gamma(z) }, 
+ /** Greatest common divisor (gcd) of two numbers. */ 
+ gcd(a:number, b:number)  { return (window as any).JXG.Math.gcd(a, b) }, 
+ /** Logical test: a >= b? */ 
+ geq(a:number, b:number)  { return (window as any).JXG.Math.geq(a, b) }, 
+ /** Logical test: a > b? */ 
+ gt(a:number, b:number)  { return (window as any).JXG.Math.gt(a, b) }, 
+ /** Heaviside unit step function. */ 
+ hstep(x:number)  { return (window as any).JXG.Math.hstep(x) }, 
+ /** Returns sqrt(a * a + b * b) for a variable number of arguments. */ 
+ hypot(a:number)  { return (window as any).JXG.Math.hypot(a) }, 
+ /** Generates an identity matrix. */ 
+ identity(n:number, m:number)  { return (window as any).JXG.Math.identity(n, m) }, 
+ /** Inner product of two vectors a and b. */ 
+ innerProduct(a:number[], b:number[], n?:number)  { return (window as any).JXG.Math.innerProduct(a, b, n) }, 
+ /** Compute the inverse of an (n x n)-matrix by Gauss elimination. */ 
+ inverse(A:number[][])  { return (window as any).JXG.Math.inverse(A) }, 
+ /** Least common multiple (lcm) of two numbers. */ 
+ lcm(a:number, b:number)  { return (window as any).JXG.Math.lcm(a, b) }, 
+ /** Logical test: a <= b? */ 
+ leq(a:number, b:number)  { return (window as any).JXG.Math.leq(a, b) }, 
+ /** Logarithm to arbitrary base b. */ 
+ log(x:number, b?:number)  { return (window as any).JXG.Math.log(x, b) }, 
+ /** Logarithm to base 10. */ 
+ log10(x:number)  { return (window as any).JXG.Math.log10(x) }, 
+ /** Logarithm to base 2. */ 
+ log2(x:number)  { return (window as any).JXG.Math.log2(x) }, 
+ /** Logical test: a < b? */ 
+ lt(a:number, b:number)  { return (window as any).JXG.Math.lt(a, b) }, 
+ /** Compute the sum of two matrices: mat1 + mat2. */ 
+ matMatAdd(mat1:number[][], mat2:number[][])  { return (window as any).JXG.Math.matMatAdd(mat1, mat2) }, 
+ /** Computes the product of the two matrices: mat1 * mat2. */ 
+ matMatMult(mat1:number[][], mat2:number[][])  { return (window as any).JXG.Math.matMatMult(mat1, mat2) }, 
+ /** Multiply a matrix mat by a scalar alpha: mat * scalar */ 
+ matNumberMult(mat:number[][], alpha:number)  { return (window as any).JXG.Math.matNumberMult(mat, alpha) }, 
+ /** Initializes a matrix as an array of rows with the given value. */ 
+ matrix(n:number, m:number, init:number)  { return (window as any).JXG.Math.matrix(n, m, init) }, 
+ /** Multiplies a vector vec to a matrix mat: mat * vec. */ 
+ matVecMult(mat:number[][], vec:number[])  { return (window as any).JXG.Math.matVecMult(mat, vec) }, 
+ /** The JavaScript implementation of the % operator returns the symmetric modulo. */ 
+ mod(a:number, m:number)  { return (window as any).JXG.Math.mod(a, m) }, 
+ /** Normal distribution function */ 
+ ndtr(x:number)  { return (window as any).JXG.Math.ndtr(x) }, 
+ /** Inverse of normal distribution function */ 
+ ndtri(x:number)  { return (window as any).JXG.Math.ndtri(x) }, 
+ /** Logical test: a !== b? */ 
+ neq(a:Boolean, b:Boolean)  { return (window as any).JXG.Math.neq(a, b) }, 
+ /** Euclidean norm of a vector. */ 
+ norm(a:number, n:number)  { return (window as any).JXG.Math.norm(a, n) }, 
+ /** Normalize the standard form [c, b0, b1, a, k, r, q0, q1]. */ 
+ normalize(stdform:number[])  { return (window as any).JXG.Math.normalize(stdform) }, 
+ /** Logical operator: !a? */ 
+ not(a:Boolean)  { return (window as any).JXG.Math.not(a) }, 
+ /** Compute n-th real root of a real number. */ 
+ nthroot(x:number, n:number)  { return (window as any).JXG.Math.nthroot(x, n) }, 
+ /** Logical operator: a || b? */ 
+ or(a:Boolean, b:Boolean)  { return (window as any).JXG.Math.or(a, b) }, 
+ /** Compute base to the power of exponent. */ 
+ pow(base:number, exponent:number)  { return (window as any).JXG.Math.pow(base, exponent) }, 
+ /** Generates a 4x4 matrix for 3D to 2D projections. */ 
+ projection(fov:number[][], ratio:number, n:number, f:number)  { return (window as any).JXG.Math.projection(fov, ratio, n, f) }, 
+ /** Compute base to the power of the rational exponent m / n. */ 
+ ratpow(base:number, m:number, n:number)  { return (window as any).JXG.Math.ratpow(base, m, n) }, 
+ /** Determine the relative difference between two numbers. */ 
+ relDif(a:number, b:number)  { return (window as any).JXG.Math.relDif(a, b) }, 
+ /** Special use of Math.round function to round not only to integers but also to chosen decimal values. */ 
+ roundToStep(value:number, step:number, min:number, max:number)  { return (window as any).JXG.Math.roundToStep(value, step, min, max) }, 
+ /** The sign() function returns the sign of a number, indicating whether the number is positive, negative or zero. */ 
+ sign(x:number)  { return (window as any).JXG.Math.sign(x) }, 
+ /** Sine hyperbolicus of x. */ 
+ sinh(x:number)  { return (window as any).JXG.Math.sinh(x) }, 
+ /** A square & multiply algorithm to compute base to the power of exponent. */ 
+ squampow(base:number, exponent:number)  { return (window as any).JXG.Math.squampow(base, exponent) }, 
+ /** Converts a two-dimensional array to a one-dimensional Float32Array that can be processed by WebGL. */ 
+ toGL(m:number[])  { return (window as any).JXG.Math.toGL(m) }, 
+ /** Trace of a square matrix, given as a two-dimensional array. */ 
+ trace(M:number[][])  { return (window as any).JXG.Math.trace(M) }, 
+ /** Transposes a matrix given as a two-dimensional array. */ 
+ transpose(M:number[][])  { return (window as any).JXG.Math.transpose(M) }, 
+ /** Multiplies a vector vec to a matrix mat from the left: vec * mat. */ 
+ vecMatMult(vec:number[], mat:number[][])  { return (window as any).JXG.Math.vecMatMult(vec, mat) }, 
+ /** Initializes a vector of size n wih coefficients set to the init value (default 0) */ 
+ vector(n:number, init?:number)  { return (window as any).JXG.Math.vector(n, init) }, 
+ /** Theorem of Vieta: Given a set of simple zeroes x_0, . */ 
+ Vieta(x:number)  { return (window as any).JXG.Math.Vieta(x) }, 
+ /** Translate x into the interval [a, b) by adding a multiple of b - a. */ 
+ wrap(x:number, a:number, b:number)  { return (window as any).JXG.Math.wrap(x, a, b) }, 
+ /** A way of clamping a periodic variable. */ 
+ wrapAndClamp(x:number, a:number, b:number, period:number)  { return (window as any).JXG.Math.wrapAndClamp(x, a, b, period) }, 
+ /** Logical operator: either a or b? */ 
+ xor(a:Boolean, b:Boolean)  { return (window as any).JXG.Math.xor(a, b) }, 
+},
 Numerics :{
+ /**  */ 
  bezier(points:Point[])  { return (window as any).JXG.Math.bezier(points) }, 
+ /**  */ 
  bspline(points:Point[],order:number)  { return (window as any).JXG.Math.bspline(points,order) }, 
+ /**  */ 
  CardinalSpline(points:Point[],tau:number|Function)  { return (window as any).JXG.Math.CardinalSpline(points,tau) }, 
 },
 Statistics :{
+ /** Generate value of a standard normal random variable with given mean and standard deviation.
+                                   See {@link https://en.wikipedia.org/wiki/Normal_distribution} */ 
  randomNormal(mean:number,stdDev:number)  { return (window as any).JXG.Math.Statistics.randomNormal(mean,stdDev) }, 
+ /** Generate value of a uniform distributed random variable in the interval [a, b]. */ 
  randomUniform(a:number,b:number)  { return (window as any).JXG.Math.Statistics.randomUniform(a,b) }, 
+ /** Generate value of a random variable with exponential distribution.
+                                    See {@link https://en.wikipedia.org/wiki/Exponential_distribution}.
+                                    Algorithm: D.E. Knuth, TAOCP 2, p. 128. */ 
  randomExponential(lambda:number)  { return (window as any).JXG.Math.Statistics.randomExponential(lambda) }, 
+ /** Generate value of a random variable with gamma distribution of order alpha.  Default scale is 1. Default threshold is 0.
+                        See {@link https://en.wikipedia.org/wiki/Gamma_distribution}.
+                        Algorithm: D.E. Knuth, TAOCP 2, p. 129. */ 
  randomGamma(shape:number,scale?:number,threshold?:number)  { return (window as any).JXG.Math.Statistics.randomGamma(shape,scale,threshold) }, 
+ /** Generate value of a random variable with Pareto distribution with shape gamma and scale k.
+                                   See {@link https://en.wikipedia.org/wiki/Pareto_distribution}. */ 
  randomPareto(shape:number,scale?:number,threshold?:number)  { return (window as any).JXG.Math.Statistics.randomPareto(shape,scale,threshold) }, 
+ /** Generate value of a random variable with beta distribution with shape parameters alpha and beta.
+                                    See {@link https://en.wikipedia.org/wiki/Beta_distribution}. */ 
  randomBeta(alpha:number,beta:number)  { return (window as any).JXG.Math.Statistics.randomBeta(alpha,beta) }, 
+ /** Generate value of a random variable with chi-square distribution with k (>0) degrees of freedom.
+                                    See {@link https://en.wikipedia.org/wiki/Chi-squared_distribution}. */ 
  randomChisquare(k:number)  { return (window as any).JXG.Math.Statistics.randomChisquare(k) }, 
+ /** Generate value of a random variable with F-distribution with d1 and d2 degrees of freedom.
+                                    See {@link https://en.wikipedia.org/wiki/F-distribution}. */ 
  randomF(d1:number,d2:number)  { return (window as any).JXG.Math.Statistics.randomF(d1,d2) }, 
+ /** Generate value of a random variable with Students-t-distribution with v degrees of freedom.
+                                    See {@link https://en.wikipedia.org/wiki/Student%27s_t-distribution}. */ 
  randomT(v:number)  { return (window as any).JXG.Math.Statistics.randomT(v) }, 
+ /** Generate values for a random variable in binomial distribution with parameters n and p
+                                    See {@link https://en.wikipedia.org/wiki/Binomial_distribution}. */ 
  randomBinomial(n:number,p:number)  { return (window as any).JXG.Math.Statistics.randomBinomial(n,p) }, 
+ /** Generate values for a random variable in geometric distribution with propability <i>p</i>.
+                                    See {@link https://en.wikipedia.org/wiki/Geometric_distribution}. */ 
  randomGeometric(p:number)  { return (window as any).JXG.Math.Statistics.randomGeometric(p) }, 
+ /** Generate values for a random variable in Poisson distribution with mean <i>mu</i>..
+                                    See {@link https://en.wikipedia.org/wiki/Poisson_distribution}. */ 
  randomPoisson(mu:number)  { return (window as any).JXG.Math.Statistics.randomPoisson(mu) }, 
+ /** Generate values for a random variable in hypergeometric distribution.
+                                    See {@link https://en.wikipedia.org/wiki/Hypergeometric_distribution}
+                                    Samples are drawn from a hypergeometric distribution with specified parameters, <i>good</i> (ways to make a good selection),
+                                    <i>bad</i> (ways to make a bad selection), and <i>samples</i> (number of items sampled, which is less than or equal to <i>good + bad</i>). */ 
  randomHypergeometric(good:number,bad:number,samples:number)  { return (window as any).JXG.Math.Statistics.randomHypergeometric(good,bad,samples) }, 
+ /** Compute the histogram of a dataset.  Range can be false or [min(x), max(x)]. If density is true then normalize the counts by dividing by sum(counts). Returns [number[],number[]], the first array contains start value of bins, the second array countains the counts. */ 
  histogram(data:number[], bins?:number, range?:boolean|[number,number], density?:boolean, cumulative?:boolean)  { return (window as any).JXG.Math.Statistics.histogram(data,{bins:bins??10, range:range??false, density:density??true, cumulative:cumulative??false}) }, 
+ /** The P-th percentile ( 0 < P ≤ 100 ) of a list of N ordered values (sorted from least to greatest) is the smallest value in the list such that no more than P percent of the data is strictly less than the value and at least P percent of the data is less than or equal to that value. */ 
  percentile(data:number[],ranges:number[])  { return (window as any).JXG.Math.Statistics.percentile(data,ranges) }, 
 },
 
@@ -3353,10 +3581,6 @@ Statistics :{
 ///  WE NEED A PLACE TO STORE THE BOARD AND VIEW3D OBJECTS ///
 
 //////////////////////////////////////////////////////////////
-
-
-
-
 
 
 
@@ -3462,7 +3686,7 @@ export class TSXBoard {
 
     // this is the code for InitBoard, which is created in the wrapper.
 
-    constructor(canvas: string = 'jxgbox', attributes: Object = {}) {
+    constructor(canvas: string = 'jxgbox', attributes: BoardAttributes = {}) {
 
 
 
@@ -4426,7 +4650,7 @@ export class TSXBoard {
 
     /** Removes object from board and renderer.*/
 
-    removeObject(object: Object, saveMethod?: Boolean): any { return (this._jBoard as any).removeObject(object, saveMethod) }
+    removeObject(object: any|any[], saveMethod?: Boolean): any { return (this._jBoard as any).removeObject(object, saveMethod) }
 
 
 
@@ -4474,7 +4698,7 @@ export class TSXBoard {
 
     /** Sets an arbitrary number of attributes.*/
 
-    setAttribute(attributes: Object): any { return (this._jBoard as any).setAttribute(attributes) }
+    setAttribute(attributes: BoardAttributes): any { return (this._jBoard as any).setAttribute(attributes) }
 
 
 
@@ -6635,6 +6859,7 @@ let  curve = TSX.stepfunction([0,1,2,3,4,5], [1,3,0,2,2,1]);
 
  // Missing signaature array for Matrix
  // Missing signaature array for Geometry
+ // Missing signaature array for Math
  // Missing signaature array for Numerics
  // Missing signaature array for Statistics
 }///////////////////////////

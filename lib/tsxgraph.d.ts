@@ -2167,93 +2167,321 @@ export interface Scale3D extends Transform3D {
         */
 export declare let JsxMath: {
     Matrix: {
-        crossProduct(v1: number[], v2: number[]): any;
-        frustum(left: number, right: number, top: number, bottom: number, near: number, far: number): any;
-        identity(m: number, n: number): any;
-        innerProduct(v1: number[], v2: number[]): any;
-        inverse(mat: matAny): any;
-        matMatMult(mat1: matAny, mat2: matAny): any;
-        matrix(nRows: number, mCols: number, init: number): any;
-        matVecMult(mat: matAny, vec: number[]): any;
-        projection(fov: number, ratio: number, near: number, far: number): any;
-        transpose(mat: matAny): any;
-        vector(n: number, init: number): any;
+        /** Calculates the cross product of two vectors both of length three. */
+        crossProduct(v1: number[], v2: number[]): number[];
+        /** Generates a 4x4 matrix for 3D to 2D projections. */
+        frustum(left: number, right: number, top: number, bottom: number, near: number, far: number): number[][];
+        /** Generates an identity matrix of size m x n.  (Yes it is possible to have a non-square identity matrix) */
+        identity(m: number, n: number): number[][];
+        /** Inner product of two vectors a and b.  Inner product is a generalization of Dot product for an arbitrary vector space. */
+        innerProduct(v1: number[], v2: number[]): number[];
+        /** Compute the inverse of an nxn matrix with Gauss elimination.  Returns [] if there is a singularity. */
+        inverse(mat: number[][]): number[][];
+        /** Computes the product of the two matrices mat1*mat2. */
+        matMatMult(mat1: number[][], mat2: number[][]): number[][];
+        /** Initializes a matrix as an array of rows with the given value. */
+        matrix(nRows: number, mCols: number, init: number): number[][];
+        /** Multiplies a vector vec to a matrix mat: mat * vec.  The matrix is a two-dimensional array of numbers. The inner arrays describe the columns, the outer ones the matrix rows. eg: [[2,1],[3,2]] where [2,1] is the first colummn. */
+        matVecMult(mat: matAny, vec: number[]): number[];
+        /** Generates a 4x4 matrix for 3D to 2D projections. */
+        projection(fov: number, ratio: number, near: number, far: number): number[][];
+        /** Transposes a matrix given as a two dimensional array. */
+        transpose(mat: matAny): number[][];
+        /** Initializes a vector of size n wih coefficients set to the given value. */
+        vector(n: number, init: number): number[];
     };
     Geometry: {
+        /**  */
         affineDistance(): any;
+        /**  */
         affineRatio(): any;
+        /**  */
         angle(): any;
+        /**  */
         angleBisector(): any;
+        /**  */
         bezierArc(): any;
+        /**  */
         calcLabelQuadrant(): any;
+        /**  */
         calcLineDelimitingPoints(): any;
+        /**  */
         calcStraight(): any;
+        /**  */
         circumcenter(): any;
+        /**  */
         circumcenterMidpoint(): any;
+        /**  */
         det3p(): any;
+        /**  */
         distance(): any;
+        /**  */
         distPointLine(): any;
+        /**  */
         GrahamScan(): any;
+        /**  */
         intersectionFunction(): any;
+        /**  */
         isSameDir(): any;
+        /**  */
         isSameDirection(): any;
+        /**  */
         meet(): any;
+        /**  */
         meetBezierCurveRedBlueSegments(): any;
+        /**  */
         meetBeziersegmentBeziersegment(): any;
+        /**  */
         meetCircleCircle(): any;
+        /**  */
         meetCurveCurve(): any;
+        /**  */
         meetCurveLine(): any;
+        /**  */
         meetCurveLineContinuous(): any;
+        /**  */
         meetCurveLineDiscrete(): any;
+        /**  */
         meetCurveRedBlueSegments(): any;
+        /**  */
         meetLineBoard(): any;
+        /**  */
         meetLineCircle(): any;
+        /**  */
         meetLineLine(): any;
+        /**  */
         meetPathPath(): any;
+        /**  */
         meetPolygonLine(): any;
+        /**  */
         meetSegmentSegment(): any;
+        /**  */
         perpendicular(): any;
+        /**  */
         pnpoly(): any;
+        /**  */
         projectCoordsToBeziersegment(): any;
+        /**  */
         projectCoordsToCurve(): any;
+        /**  */
         projectCoordsToPolygon(): any;
+        /**  */
         projectCoordsToSegment(): any;
+        /**  */
         projectPointToBoard(): any;
+        /**  */
         projectPointToCircle(): any;
+        /**  */
         projectPointToCurve(): any;
+        /**  */
         projectPointToLine(): any;
+        /**  */
         projectPointToPoint(): any;
+        /**  */
         projectPointToTurtle(): any;
+        /**  */
         rad(): any;
+        /**  */
         reflection(): any;
+        /**  */
         reuleauxPolygon(): any;
+        /**  */
         rotation(): any;
+        /**  */
         signedPolygon(): any;
+        /**  */
         signedTriangle(): any;
+        /**  */
         sortVertices(): any;
+        /**  */
         trueAngle(): any;
+        /**  */
         windingNumber(): any;
     };
+    Math: {
+        /** Hyperbolic arc-cosine of a number. */
+        acosh(x: number): number;
+        /** Computes the inverse cotangent of x. */
+        acot(x: number): any;
+        /** Logical operator: a && b? */
+        and(a: Boolean, b: Boolean): any;
+        /** Hyperbolic arcsine of a number */
+        asinh(x: number): any;
+        /** Compute a * x + y for a scalar a and vectors x and y. */
+        axpy(a: number, x: number, y: number): any;
+        /** Computes the binomial coefficient n over k. */
+        binomial(n: number, k: number): any;
+        /** Computes cube root of real number Polyfill for Math.cbrt(). */
+        cbrt(x: number): any;
+        /** Clamp x within the interval [a, b]. */
+        clamp(x: number, a: number, b: number): number;
+        /** Calculates the cosine hyperbolicus of x. */
+        cosh(x: number): any;
+        /** Computes the cotangent of x. */
+        cot(x: number): any;
+        /** Calculates the cross product of two vectors both of length three. */
+        crossProduct(c1: number[], c2: number[]): any;
+        /** Convert a floating point number to sign + integer + fraction. */
+        decToFraction(x: number, order: number): any;
+        /** Logical test: a === b? */
+        eq(a: number, b: number): any;
+        /** Error function, see https://en.wikipedia.org/wiki/Error_function. */
+        erf(x: number): any;
+        /** Complementary error function, i.e. */
+        erfc(x: number): any;
+        /** Inverse of error function */
+        erfi(x: number): any;
+        /** Compute the factorial of a positive integer. */
+        factorial(n: number): any;
+        /** Generates a 4x4 matrix for 3D to 2D projections. */
+        frustum(l: number, r: number, t: number, b: number, n: number, f: number): any;
+        /** Gamma function for real parameters by Lanczos approximation. */
+        gamma(z: number): any;
+        /** Greatest common divisor (gcd) of two numbers. */
+        gcd(a: number, b: number): any;
+        /** Logical test: a >= b? */
+        geq(a: number, b: number): any;
+        /** Logical test: a > b? */
+        gt(a: number, b: number): any;
+        /** Heaviside unit step function. */
+        hstep(x: number): any;
+        /** Returns sqrt(a * a + b * b) for a variable number of arguments. */
+        hypot(a: number): any;
+        /** Generates an identity matrix. */
+        identity(n: number, m: number): any;
+        /** Inner product of two vectors a and b. */
+        innerProduct(a: number[], b: number[], n?: number): any;
+        /** Compute the inverse of an (n x n)-matrix by Gauss elimination. */
+        inverse(A: number[][]): any;
+        /** Least common multiple (lcm) of two numbers. */
+        lcm(a: number, b: number): any;
+        /** Logical test: a <= b? */
+        leq(a: number, b: number): any;
+        /** Logarithm to arbitrary base b. */
+        log(x: number, b?: number): any;
+        /** Logarithm to base 10. */
+        log10(x: number): any;
+        /** Logarithm to base 2. */
+        log2(x: number): any;
+        /** Logical test: a < b? */
+        lt(a: number, b: number): any;
+        /** Compute the sum of two matrices: mat1 + mat2. */
+        matMatAdd(mat1: number[][], mat2: number[][]): any;
+        /** Computes the product of the two matrices: mat1 * mat2. */
+        matMatMult(mat1: number[][], mat2: number[][]): any;
+        /** Multiply a matrix mat by a scalar alpha: mat * scalar */
+        matNumberMult(mat: number[][], alpha: number): any;
+        /** Initializes a matrix as an array of rows with the given value. */
+        matrix(n: number, m: number, init: number): any;
+        /** Multiplies a vector vec to a matrix mat: mat * vec. */
+        matVecMult(mat: number[][], vec: number[]): any;
+        /** The JavaScript implementation of the % operator returns the symmetric modulo. */
+        mod(a: number, m: number): any;
+        /** Normal distribution function */
+        ndtr(x: number): any;
+        /** Inverse of normal distribution function */
+        ndtri(x: number): any;
+        /** Logical test: a !== b? */
+        neq(a: Boolean, b: Boolean): any;
+        /** Euclidean norm of a vector. */
+        norm(a: number, n: number): any;
+        /** Normalize the standard form [c, b0, b1, a, k, r, q0, q1]. */
+        normalize(stdform: number[]): any;
+        /** Logical operator: !a? */
+        not(a: Boolean): any;
+        /** Compute n-th real root of a real number. */
+        nthroot(x: number, n: number): any;
+        /** Logical operator: a || b? */
+        or(a: Boolean, b: Boolean): any;
+        /** Compute base to the power of exponent. */
+        pow(base: number, exponent: number): any;
+        /** Generates a 4x4 matrix for 3D to 2D projections. */
+        projection(fov: number[][], ratio: number, n: number, f: number): any;
+        /** Compute base to the power of the rational exponent m / n. */
+        ratpow(base: number, m: number, n: number): any;
+        /** Determine the relative difference between two numbers. */
+        relDif(a: number, b: number): any;
+        /** Special use of Math.round function to round not only to integers but also to chosen decimal values. */
+        roundToStep(value: number, step: number, min: number, max: number): any;
+        /** The sign() function returns the sign of a number, indicating whether the number is positive, negative or zero. */
+        sign(x: number): any;
+        /** Sine hyperbolicus of x. */
+        sinh(x: number): any;
+        /** A square & multiply algorithm to compute base to the power of exponent. */
+        squampow(base: number, exponent: number): any;
+        /** Converts a two-dimensional array to a one-dimensional Float32Array that can be processed by WebGL. */
+        toGL(m: number[]): any;
+        /** Trace of a square matrix, given as a two-dimensional array. */
+        trace(M: number[][]): any;
+        /** Transposes a matrix given as a two-dimensional array. */
+        transpose(M: number[][]): any;
+        /** Multiplies a vector vec to a matrix mat from the left: vec * mat. */
+        vecMatMult(vec: number[], mat: number[][]): any;
+        /** Initializes a vector of size n wih coefficients set to the init value (default 0) */
+        vector(n: number, init?: number): any;
+        /** Theorem of Vieta: Given a set of simple zeroes x_0, . */
+        Vieta(x: number): any;
+        /** Translate x into the interval [a, b) by adding a multiple of b - a. */
+        wrap(x: number, a: number, b: number): any;
+        /** A way of clamping a periodic variable. */
+        wrapAndClamp(x: number, a: number, b: number, period: number): any;
+        /** Logical operator: either a or b? */
+        xor(a: Boolean, b: Boolean): any;
+    };
     Numerics: {
+        /**  */
         bezier(points: Point[]): any;
+        /**  */
         bspline(points: Point[], order: number): any;
+        /**  */
         CardinalSpline(points: Point[], tau: number | Function): any;
     };
     Statistics: {
+        /** Generate value of a standard normal random variable with given mean and standard deviation.
+                                          See {@link https://en.wikipedia.org/wiki/Normal_distribution} */
         randomNormal(mean: number, stdDev: number): any;
+        /** Generate value of a uniform distributed random variable in the interval [a, b]. */
         randomUniform(a: number, b: number): any;
+        /** Generate value of a random variable with exponential distribution.
+                                           See {@link https://en.wikipedia.org/wiki/Exponential_distribution}.
+                                           Algorithm: D.E. Knuth, TAOCP 2, p. 128. */
         randomExponential(lambda: number): any;
+        /** Generate value of a random variable with gamma distribution of order alpha.  Default scale is 1. Default threshold is 0.
+                               See {@link https://en.wikipedia.org/wiki/Gamma_distribution}.
+                               Algorithm: D.E. Knuth, TAOCP 2, p. 129. */
         randomGamma(shape: number, scale?: number, threshold?: number): any;
+        /** Generate value of a random variable with Pareto distribution with shape gamma and scale k.
+                                          See {@link https://en.wikipedia.org/wiki/Pareto_distribution}. */
         randomPareto(shape: number, scale?: number, threshold?: number): any;
+        /** Generate value of a random variable with beta distribution with shape parameters alpha and beta.
+                                           See {@link https://en.wikipedia.org/wiki/Beta_distribution}. */
         randomBeta(alpha: number, beta: number): any;
+        /** Generate value of a random variable with chi-square distribution with k (>0) degrees of freedom.
+                                           See {@link https://en.wikipedia.org/wiki/Chi-squared_distribution}. */
         randomChisquare(k: number): any;
+        /** Generate value of a random variable with F-distribution with d1 and d2 degrees of freedom.
+                                           See {@link https://en.wikipedia.org/wiki/F-distribution}. */
         randomF(d1: number, d2: number): any;
+        /** Generate value of a random variable with Students-t-distribution with v degrees of freedom.
+                                           See {@link https://en.wikipedia.org/wiki/Student%27s_t-distribution}. */
         randomT(v: number): any;
+        /** Generate values for a random variable in binomial distribution with parameters n and p
+                                           See {@link https://en.wikipedia.org/wiki/Binomial_distribution}. */
         randomBinomial(n: number, p: number): any;
+        /** Generate values for a random variable in geometric distribution with propability <i>p</i>.
+                                           See {@link https://en.wikipedia.org/wiki/Geometric_distribution}. */
         randomGeometric(p: number): any;
+        /** Generate values for a random variable in Poisson distribution with mean <i>mu</i>..
+                                           See {@link https://en.wikipedia.org/wiki/Poisson_distribution}. */
         randomPoisson(mu: number): any;
+        /** Generate values for a random variable in hypergeometric distribution.
+                                           See {@link https://en.wikipedia.org/wiki/Hypergeometric_distribution}
+                                           Samples are drawn from a hypergeometric distribution with specified parameters, <i>good</i> (ways to make a good selection),
+                                           <i>bad</i> (ways to make a bad selection), and <i>samples</i> (number of items sampled, which is less than or equal to <i>good + bad</i>). */
         randomHypergeometric(good: number, bad: number, samples: number): any;
+        /** Compute the histogram of a dataset.  Range can be false or [min(x), max(x)]. If density is true then normalize the counts by dividing by sum(counts). Returns [number[],number[]], the first array contains start value of bins, the second array countains the counts. */
         histogram(data: number[], bins?: number, range?: boolean | [number, number], density?: boolean, cumulative?: boolean): any;
+        /** The P-th percentile ( 0 < P ≤ 100 ) of a list of N ordered values (sorted from least to greatest) is the smallest value in the list such that no more than P percent of the data is strictly less than the value and at least P percent of the data is less than or equal to that value. */
         percentile(data: number[], ranges: number[]): any;
     };
 };
@@ -2299,7 +2527,7 @@ export declare class TSXBoard {
     static get Validator(): any;
     /** Constant: the currently used JSXGraph version. */
     static get version(): any;
-    constructor(canvas?: string, attributes?: Object);
+    constructor(canvas?: string, attributes?: BoardAttributes);
     /** test for empty object {} */
     isEmptyObject(obj: Object): Boolean;
     defaultAttributes(attrs?: Object): Object;
@@ -2522,7 +2750,7 @@ export declare class TSXBoard {
     /** De - register mouse event handlers.*/
     removeMouseEventHandlers(): any;
     /** Removes object from board and renderer.*/
-    removeObject(object: Object, saveMethod?: Boolean): any;
+    removeObject(object: any | any[], saveMethod?: Boolean): any;
     /** Remove MSPointer * Event handlers.*/
     removePointerEventHandlers(): any;
     /** Remove resize related event handlers*/
@@ -2538,7 +2766,7 @@ export declare class TSXBoard {
     /** Select a single or multiple elements at once.*/
     select(str: string, onlyByIdOrName: Boolean): any;
     /** Sets an arbitrary number of attributes.*/
-    setAttribute(attributes: Object): any;
+    setAttribute(attributes: BoardAttributes): any;
     /** Composes an id for an element.*/
     setId(obj: Object, type: number): any;
     /** Lists the dependencies graph in a new HTML - window.*/
