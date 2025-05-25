@@ -5,6 +5,40 @@ type pointAddr3D = NumberFunction[];
 type arrayNumber = Number[];
 type arrayNumber2 = arrayNumber | Number;
 type matAny = arrayNumber2[];
+type eventType = 'down' | 'drag' | 'keydrag' | 'mousedown' | 'mousedrag' | 'mousemove' | 'mouseout' | 'mouseover' | 'mouseup' | 'move' | 'out' | 'over' | 'pendown' | 'pendrag' | 'penup' | 'touchdown' | 'touchdrag' | 'touchup' | 'up';
+interface Events {
+    /** event handlers, eventType is a STRING
+     * ```
+     * let p = TSX.Point([0, 0])
+     * p.on('over', () => alert('bang!'))
+     * ```
+    */
+    on(trigger: eventType, action: Function): void;
+}
+interface EventsAttributes {
+    /** color is a shortcut for  ['strokeColor', 'fillColor']  */
+    color?: string | Function;
+    /** opacity is a shortcut for ['strokeOpacity', 'fillOpacity']  */
+    opacity?: number | Function;
+    /** highlightColor is a shortcut for ['highlightStrokeColor', 'highlightFillColor']  */
+    highlightColor?: string | Function;
+    /** highlightOpacity is a shortcut for ['highlightStrokeOpacity', 'highlightFillOpacity'] */
+    highlightOpacity?: number | Function;
+    /** strokeWidth is a shortcut for ['strokeWidth', 'highlightStrokeWidth'] */
+    strokeWidth?: number | Function;
+    /** the name of the object used in labels */
+    name?: string | Function;
+    /** size of the element in px */
+    size?: number | Function;
+    /** label attributes eg:  {position: 'top', offset: 10}  */
+    label?: LabelAttributes;
+    /** use Katex for math notation */
+    useKatex?: Boolean;
+    /** why is this not in Line3D ?? */
+    lastArrow?: Boolean | Object;
+    /** why is this not in ParallelPoint ?? */
+    parallelpoint?: PointAttributes;
+}
 export interface ShaderInterface {
     enabled: Boolean;
     type: 'angle' | 'zIndex';
@@ -127,19 +161,95 @@ const board = TXG.TSXGraph.initBoard('jxgbox', { axis: true });
 ```
 */
 export type SpaceIcon = 'icons/alien-1.png' | 'icons/alien-2.png' | 'icons/alien-3.png' | 'icons/alien-4.png' | 'icons/alien-5.png' | 'icons/alien-abduction.png' | 'icons/alien-ship-2.png' | 'icons/alien-ship-beam.png' | 'icons/alien-ship.png' | 'icons/asteroid-2.png' | 'icons/asteroid.png' | 'icons/astronaut-helmet.png' | 'icons/atom.png' | 'icons/atronaut.png' | 'icons/bb-8.png' | 'icons/big-dipper.png' | 'icons/black-hole.png' | 'icons/brain-slug.png' | 'icons/cassiopeia.png' | 'icons/chewbacca.png' | 'icons/comet.png' | 'icons/cylon-raider.png' | 'icons/darth-vader.png' | 'icons/death-star.png' | 'icons/earth.png' | 'icons/falling-asteroid.png' | 'icons/falling-space-capsule.png' | 'icons/falling-star.png' | 'icons/flag.png' | 'icons/fly\ icon\ licence.png' | 'icons/flyicon.png' | 'icons/galaxy.png' | 'icons/intl-space-station.png' | 'icons/jupiter.png' | 'icons/landing-space-capsule.png' | 'icons/laser-gun.png' | 'icons/mars.png' | 'icons/millennium-falcon.png' | 'icons/mission-control.png' | 'icons/moon-full-almost.png' | 'icons/moon-full-moon.png' | 'icons/moon-last-quarter.png' | 'icons/moon-new-moon.png' | 'icons/moon-waning-cresent.png' | 'icons/moon-waning-gibbous.png' | 'icons/morty.png' | 'icons/neptune.png' | 'icons/pluto.png' | 'icons/princess-leia.png' | 'icons/rick.png' | 'icons/ring-ship.png' | 'icons/rocket-launch.png' | 'icons/rocket.png' | 'icons/satellite.png' | 'icons/saturn.png' | 'icons/solar-system.png' | 'icons/space-capsule.png' | 'icons/space-cockpit.png' | 'icons/space-invader.png' | 'icons/space-observatory.png' | 'icons/space-rocket.png' | 'icons/space-rover-1.png' | 'icons/space-rover-2.png' | 'icons/space-satellite-dish.png' | 'icons/space-ship_1.png' | 'icons/space-ship_2.png' | 'icons/space-ship_3.png' | 'icons/space-ship.png' | 'icons/space-shuttle-launch.png' | 'icons/space-shuttle.png' | 'icons/sputnick-1.png' | 'icons/sputnick-2.png' | 'icons/star.png' | 'icons/stars.png' | 'icons/stormtrooper.png' | 'icons/sun.png' | 'icons/telescope.png' | 'icons/uranus.png' | 'icons/venus.png' | 'icons/moon-dreamy.png';
-export interface GeometryElementAttributes {
-    /** If true, the infobox is shown on mouse/pen over for all points which have set their attribute showInfobox to `inherit`. */
-    showInfobox?: Boolean;
-    /** Sets an arbitrary number of attributes. */
-    setAttribute?: Object;
+export interface CoordsElementAttributes extends EventsAttributes {
+}
+export interface CoordsElement extends Events {
+    /** missing description */
+    coords: Coords;
+    /** missing description */
+    groups: number[];
+    /** missing description */
+    isConstrained: Boolean;
+    /** missing description */
+    needsUpdateFromParent: Boolean;
+    /** missing description */
+    onPolygon: Boolean;
+    /** missing description */
+    position: number;
+    /** missing description */
+    slideObject: GeometryElement;
+    /** missing description */
+    slideObjects: CoordsElement;
+    /** Convert the point to CAS point and call update(). */
+    addConstraint(terms: any[]): CoordsElement;
+    /** Add transformations to this element. */
+    addTransform(el: GeometryElement, transform: any | any[]): CoordsElement;
+    /** Getter method for coordinates x, y and (optional) z. */
+    Coords(digits: number, withZ: Boolean): number[];
+    /** Generic method to create point, text or image. Determines the type of the construction, i.e. free, or constrained by function, transformation or of glider type.  */
+    create(Callback: any, board: any, coords: any, attr: any, arg1: any, arg2: any): Object;
+    /** Getter method for the distance to a second point, this is required for CAS-elements. Here, function inlining seems to be worthwile (for plotting).  */
+    Dist(point2: Point): number;
+    /** Converts a calculated element into a free element, i.e. it will delete all ancestors and transformations and, if the element is currently a glider, will remove the slideObject reference.  */
+    free(): void;
+    /** A point can change its type from free point to glider and vice versa. If it is given an array of attractor elements (attribute attractors) and the attribute attractorDistance then the point will be made a glider if it less than attractorDistance apart from one of its attractor elements. If attractorDistance is equal to zero, the point stays in its current form.  */
+    handleAttractors(): void;
+    /** Let a point snap to the nearest point in distance of {@link JXG.Point#attractorDistance}. The function uses the coords object of the point as its actual position. */
+    handleSnapToPoints(force: Boolean): Point;
+    /** Convert the point to glider and update the construction. To move the point visual onto the glider, a call of board update is necessary.  */
+    makeGlider(slide: GeometryElement): GeometryElement;
+    /** Move along a path defined by an array of coordinates  */
+    moveAlong(path?: number[][], time?: number, options?: Object): void;
+    /** ES6 version of {@link JXG.CoordsElement#moveAlong} using a promise. */
+    moveAlongES6(): CoordsElement;
+    /** Starts an animated point movement towards the given coordinates &lt;tt&gt;where&lt;/tt&gt;. The animation is done after &lt;tt&gt;time&lt;/tt&gt; milliseconds. If the second parameter is not given or is equal to 0, setPosition() is called, see {@link JXG.CoordsElement#setPosition}, i.e. the coordinates are changed without animation. */
+    moveTo(p: number[] | Function, time?: number, options?: MoveToOptions): Promise<any>;
+    /** ES6 version of {@link JXG.CoordsElement#moveTo} using a promise. */
+    moveToES6(): CoordsElement;
+    /** Remove the last slideObject. If there are more than one elements the point is bound to, the second last element is the new active slideObject. */
+    popSlideObject(): Point;
+    /** Sets the position of a glider relative to the defining elements of the {@link JXG.Point#slideObject}. */
+    setGliderPosition(): Point;
+    /** Sets coordinates and calls the element&#039;s update() method. */
+    setPosition(method: number, coordinates: number[]): void;
+    /** Translates the point by &lt;tt&gt;tv = (x, y)&lt;/tt&gt;. */
+    setPositionByTransform(): Point;
+    /** Sets coordinates and calls the elements&#039;s update() method. */
+    setPositionDirectly(method: number, coords: NumberFunction[], prevCoords?: NumberFunction[]): GeometryElement;
+    /** Alias for {@link JXG.Element#handleSnapToGrid} */
+    snapToGrid(): CoordsElement;
+    /** Alias for {@link JXG.CoordsElement#handleSnapToPoints}. */
+    snapToPoints(): GeometryElement;
+    /** Applies the transformations of the element to {@link JXG.Point#baseElement}. Point transformations are relative to a base element.  */
+    updateTransform(fromParent: Boolean): void;
+    /** Starts an animated point movement towards the given coordinates &lt;tt&gt;where&lt;/tt&gt;. After arriving at &lt;tt&gt;where&lt;/tt&gt; the point moves back to where it started. The animation is done after &lt;tt&gt;time&lt;/tt&gt; milliseconds. */
+    visit(): CoordsElement;
+    /** ES6 version of {@link JXG.CoordsElement#moveVisit} using a promise. */
+    visitES6(): CoordsElement;
+    /** Getter method for x, this is used by for CAS-points to access point coordinates. */
+    X(): number;
+    /** Getter method for y, this is used by CAS-points to access point coordinates. */
+    Y(): number;
+    /** Getter method for z, this is used by CAS-points to access point coordinates. */
+    Z(): number;
+}
+export interface GeometryElementAttributes extends CoordsElementAttributes {
+    /** Apply CSS classes to an element in highlighted view. It is possible to supply one or more CSS classes separated by blanks. <p> For non-text and non-image elements, this feature is available for the SVG renderer, only. */
+    highlightCssClass?: string;
+    /** If this is set to true, the element is updated in every update call of the board. If set to false, the element is updated only after zoom events or more generally, when the bounding box has been changed. Examples for the latter behavior should be axes. */
+    needsRegularUpdate?: Boolean;
+    /** Precision options for JSXGraph elements. This attributes takes either the value 'inherit' or an object of the form: <pre> precision: { touch: 30, mouse: 4, pen: 4 } </pre> In the first case, the global, JSXGraph-wide values of JXGraph.Options.precision are taken. */
+    precision?: string;
+    /** A private element will be inaccessible in certain environments, e.g. a graphical user interface. */
+    priv?: Boolean;
+    /** Transition duration (in milliseconds) for certain cahnges of properties like color and opacity. The properties can be set in the attribute transitionProperties Works in SVG renderer, only. */
+    transitionDuration?: number;
+    /** Properties which change smoothly in the time set in transitionDuration. Possible values are ['fill', 'fill-opacity', 'stroke', 'stroke-opacity', 'stroke-width', 'width', 'height', 'rx', 'ry'] (and maybe more) for geometry elements and ['color', 'opacity', 'all'] for HTML texts. */
+    transitionProperties?: string[];
     /** ARIA settings for the element. */
     aria?: AriaAttributes;
     /** Apply CSS classes to an element in non-highlighted view. */
     cssClass?: string;
-    /** Color of the element. */
-    color?: string | Function;
-    /** Opacity of the element (between 0 and 1). */
-    opacity?: number | Function;
     /** The fill color of this geometry element. */
     fillColor?: string | Function;
     /** Opacity for fill color. */
@@ -154,30 +264,18 @@ export interface GeometryElementAttributes {
     visible?: Boolean | Function;
     /** Determines the elements border-style. Possible values are: 0 for a solid line 1 for a dotted line 2 for a line with small dashes 3 for a line with medium dashes 4 for a line with big dashes 5 for a line with alternating medium and big dashes and large gaps 6 for a line with alternating medium and big dashes and small gaps 7 for a dotted line. Needs JXG.GeometryElement#linecap set to ”round” for round dots.The dash patterns are defined in JXG.AbstractRenderer#dashArray. */
     dash?: number;
+    /** if true the element will be drawn in grey scale colors (as default) to visualize that it's only a draft. */
+    draft?: Boolean;
     /** If true the element is fixed and can not be dragged around. The element will be repositioned on zoom and moveOrigin events. */
     fixed?: Boolean;
     /** If true a label will display the element's name. */
     withLabel?: Boolean;
-    /** Attributes for the line label. */
-    label?: LabelAttributes;
-    /** Set display name  */
-    name?: string | Function;
     /** If enabled:true the (stroke) element will get a customized shadow.Customize color and opacity: If the object's RGB stroke color is [r,g,b] and its opacity is op, and the shadow parameters color is given as [r', g', b'] and opacity as op' the shadow will receive the RGB color[blend*r + r', blend*g + g', blend*b + b']and its opacity will be equal to op * op'. Further, the parameters blur and offset can be adjusted.This attribute is only available with SVG, not with canvas. */
     shadow?: Object;
-    /** If true, KaTeX will be used to render the input string. */
-    useKatex?: Boolean;
     /** Snaps the element or its parents to the grid. Currently only relevant for points, circles, and lines. Points are snapped to grid directly, on circles and lines it's only the parent points that are snapped */
     snapToGrid?: Boolean;
     /** If some size of an element is controlled by a function, like the circle radius or segments of fixed length, this attribute controls what happens if the value is negative. By default, the absolute value is taken. If true, the maximum of 0 and the value is used. */
     nonnegativeOnly?: Boolean;
-    /** Draw label for this Element? */
-    drawLabels?: Boolean;
-    /** Size in pixels */
-    size?: number | Function;
-    /** There are different point styles which differ in appearance. */
-    face?: 'o' | 'line' | 'point' | 'cross' | 'plus' | 'minus' | 'divide' | 'diamond' | 'triangledown' | 'triangleleft' | 'triangleright' | 'triangleup' | 'square' | 'circle' | string;
-    /** Include the the zero line in the grid */
-    drawZero?: Boolean;
     /** If true, the dash pattern is multiplied by strokeWidth / 2. */
     dashScale?: Boolean;
     /** If the element is dragged it will be moved on mousedown or touchstart to the top of its layer. Works only for SVG renderer and for simple elements consisting of one SVG node. */
@@ -235,99 +333,153 @@ export interface GeometryElementAttributes {
     /** Extra visual properties for traces of an element */
     traceAttributes?: PointAttributes;
 }
-export interface GeometryElement {
-    /** missing description */
-    x: GeometryElement;
-    /** missing description */
-    y: GeometryElement;
+export interface GeometryElement extends CoordsElement {
     /** missing description */
     elType: String;
     /** missing description */
-    name: String;
+    name: string | Function;
     /** missing description */
     isDraggable: Boolean;
     /** missing description */
+    ancestors: Object;
+    /** missing description */
+    board: Board;
+    /** missing description */
+    childElements: Object;
+    /** missing description */
+    descendants: Object;
+    /** missing description */
+    dump: Boolean;
+    /** missing description */
+    elementClass: Number;
+    /** missing description */
+    hasLabel: Boolean;
+    /** missing description */
+    highlighted: Boolean;
+    /** missing description */
+    id: String;
+    /** missing description */
+    inherits: Object;
+    /** missing description */
+    isReal: Boolean;
+    /** missing description */
+    lastDragTime: Date;
+    /** missing description */
+    methodMap: Object;
+    /** missing description */
+    mouseover: Boolean;
+    /** missing description */
+    needsUpdate: Boolean;
+    /** missing description */
+    notExistingParents: Object;
+    /** missing description */
+    numTraces: Number;
+    /** missing description */
+    parents: Object;
+    /** missing description */
+    quadraticform: number[];
+    /** missing description */
+    rendNode: Object;
+    /** missing description */
+    stdform: number[];
+    /** missing description */
+    subs: Object;
+    /** missing description */
+    symbolic: Object;
+    /** missing description */
+    traces: Object;
+    /** missing description */
+    transformations: number[];
+    /** missing description */
+    type: Number;
+    /** missing description */
+    visProp: Object;
+    /** missing description */
+    visPropCalc: Object;
+    /** Removes all ticks from a line or curve. */
     removeAllTicks(): Object;
-    /** missing description */
+    /** Get value of a parameter. If the parameter is a function, call the function and return its value. In that case, the function is called with the GeometryElement as (only) parameter. For label elements (i.e. if the attribute  */
+    eval(val: string | number | Function | Object): any;
+    /** Get value of an attribute. If the value that attribute is a function, call the function and return its value. In that case, the function is called with the GeometryElement as (only) parameter. For label elements (i.e. if the attribute  */
+    evalVisProp(key: string): any;
+    /** Checks whether (x,y) is near the element.  */
+    hasPoint(x: number, y: number): Boolean;
+    /** Add an element as a child to the current element. Can be used to model dependencies between geometry elements. */
     addChild(): GeometryElement;
-    /** missing description */
+    /** Adds ids of elements to the array this.parents. This method needs to be called if some dependencies can not be detected automatically by JSXGraph. For example if a function graph is given by a function which refers to coordinates of a point, calling addParents() is necessary. */
     addParents(parents: GeometryElement[]): Object;
-    /** missing description */
+    /** Rotate texts or images by a given degree. */
     addRotation(): String;
-    /** missing description */
+    /** Adds ticks to this line or curve. Ticks can be added to a curve or any kind of line: line, arrow, and axis. */
     addTicks(): String;
-    /** missing description */
-    addTransform(element: GeometryElement, transforms: any | any[]): GeometryElement;
-    /** missing description */
+    /** Add transformations to this element. */
+    addTransform(element: GeometryElement | GeometryElement3D, transforms: any | any[]): CoordsElement;
+    /** Animates properties for that object like stroke or fill color, opacity and maybe even more later. */
     animate(): GeometryElement;
-    /** missing description */
+    /** Dimensions of the smallest rectangle enclosing the element. */
     bounds(): number[];
-    /** missing description */
+    /** Removes all objects generated by the trace function. */
     clearTrace(): GeometryElement;
-    /** missing description */
+    /** Copy the element to background. This is used for tracing elements. */
     cloneToBackground(): GeometryElement;
-    /** missing description */
+    /** Creates a label element for this geometry element. */
     createLabel(): boolean;
-    /** missing description */
+    /** Format a number according to the locale set in the attribute  */
     formatNumberLocale(): string | number;
-    /** missing description */
+    /** Array of strings containing the polynomials defining the element. Used for determining geometric loci the groebner way. */
     generatePolynomial(): number[];
-    /** missing description */
+    /** Get the value of the property &lt;tt&gt;key&lt;/tt&gt;. */
     getAttribute(): Object;
-    /** missing description */
+    /** Retrieve a copy of the current visProp. */
     getAttributes(): Object;
-    /** missing description */
+    /** Returns the elements name. Used in JessieCode. */
     getName(): String;
-    /** missing description */
+    /** List of the element ids resp. values used as parents in {@link JXG.Board#create}. */
     getParents(): number[];
-    /** missing description */
+    /** Deprecated alias for {@link JXG.GeometryElement#getAttribute}. */
     getProperty(): number[];
-    /** missing description */
+    /** The type of the element as used in {@link JXG.Board#create}. */
     getType(): String;
-    /** missing description */
+    /** Move an element to its nearest grid point. The function uses the coords object of the element as its actual position. If there is no coords object or if the object is fixed, nothing is done. */
     handleSnapToGrid(): GeometryElement;
-    /** missing description */
+    /** Hide the element. It will still exist but not be visible on the board. Alias for  */
     hide(): GeometryElement;
-    /** missing description */
-    hideElement(): GeometryElement;
-    /** missing description */
-    labelColor(): Board;
-    /** missing description */
+    /** Hide the polygon including its border lines. It will still exist but not visible on the board.  */
+    hideElement(borderless?: Boolean): void;
+    /** Uses the  */
     noHighlight(): Board;
-    /** missing description */
+    /** Removes the element from the construction.  This only removes the SVG or VML node of the element and its label (if available) from the renderer, to remove the element completely you should use {@link JXG.Board#removeObject}. */
     remove(): Object;
-    /** missing description */
+    /** Remove an element as a child from the current element. */
     removeChild(): Object;
-    /** missing description */
+    /** Alias of {@link JXG.EventEmitter.off}. */
     removeEvent(): number;
-    /** missing description */
+    /** Removes ticks identified by parameter named tick from this line or curve. */
     removeTicks(): Object;
-    /** missing description */
+    /** Determines whether the element has arrows at start or end of the arc. If it is set to be a  */
     setArrow(): GeometryElement;
-    /** missing description */
+    /** Sets an arbitrary number of attributes. This method has one or more parameters of the following types: &lt;ul&gt; &lt;li&gt; object: {key1:value1,key2:value2,...} &lt;li&gt; string: &#039;key:value&#039; &lt;li&gt; array: [&#039;key&#039;, value] &lt;/ul&gt; */
     setAttribute(attrs: GeometryElementAttributes): void;
-    /** missing description */
+    /** Sets a label and its text If label doesn&#039;t exist, it creates one */
     setLabel(txt: string): Object;
-    /** missing description */
+    /** Updates the element&#039;s label text, strips all html. */
     setLabelText(): Object;
-    /** missing description */
+    /** Updates the element&#039;s label text and the element&#039;s attribute  */
     setName(): Object;
-    /** missing description */
+    /** Sets ids of elements to the array this.parents. First, this.parents is cleared. See {@link JXG.GeometryElement#addParents}. */
     setParents(): Object;
-    /** missing description */
-    setPositionDirectly(method: number, coords: NumberFunction[], prevCoords?: NumberFunction[]): Point;
-    /** missing description */
+    /** Moves an element by the difference of two coordinates. */
+    setPositionDirectly(method: number, coords: NumberFunction[], prevCoords?: NumberFunction[]): GeometryElement;
+    /** Deprecated alias for {@link JXG.GeometryElement#setAttribute}. */
     setProperty(): GeometryElement;
-    /** missing description */
+    /** Make the element visible. Alias for  */
     show(): GeometryElement;
-    /** missing description */
+    /** Make the element visible. Alias for {@link JXG.GeometryElement#show} */
     showElement(): GeometryElement;
-    /** missing description */
+    /** Snaps the element to points. Only works for points. Points will snap to the next point as defined in their properties {@link JXG.Point#attractorDistance} and {@link JXG.Point#attractorUnit}. Lines and circles will snap their parent points to points. */
     snapToPoints(): GeometryElement;
-    /** missing description */
+    /** Checks if locale is enabled in the attribute. This may be in the attributes of the board, or in the attributes of the text. The latter has higher priority. The board attribute is taken if attribute  */
     useLocale(): Boolean;
-    /** missing description */
-    on(event: string, handler: Function): any;
 }
 export interface BoardAttributes {
     /** Location of the coordinate axes or 'axis gizmo'. */
@@ -481,32 +633,16 @@ export interface PointAttributes extends GeometryElementAttributes {
     zoom?: Boolean;
 }
 export interface Point extends GeometryElement {
-    /** missing description */
-    setAttribute(attrs: PointAttributes): void;
-    /** missing description */
-    coords(): number[];
-    /** missing description */
-    startAnimation(direction: number, stepCount: number, delayMSec: number): void;
-    /** missing description */
-    stopAnimation(): any;
-    /** missing description */
-    Dist(toPoint: Point | pointAddr): number;
-    /** missing description */
+    /** Convert the point to intersection point and update the construction. To move the point visual onto the intersection, a call of board update is necessary.  */
+    makeIntersection(el1: string | Object, el2: string | Object, i: number, j: number): void;
+    /** Applies the transformations of the element to {@link JXG.Point#baseElement}. Point transformations are relative to a base element.  */
+    updateTransform(fromParent: Boolean): void;
+    /** Set the face of a point element. */
     face(style: 'cross' | 'circle' | 'square' | 'plus' | 'minus' | 'diamond'): Boolean;
-    /** missing description */
+    /** Test if the point is on (is incident with) element  */
     isOn(el: GeometryElement, tol: number): Boolean;
-    /** missing description */
+    /** Updates the position of the point. */
     update(): number[];
-    /** missing description */
-    X(): number;
-    /** missing description */
-    Y(): number;
-    /** missing description */
-    Z(): number;
-    /** missing description */
-    moveTo(p: number[] | Function[], time?: number, options?: VisitAttributes): Promise<any>;
-    /** missing description */
-    visit(p: number[] | Function[], time?: number, options?: VisitAttributes): Promise<any>;
 }
 export interface LineAttributes extends GeometryElementAttributes {
     /** Configure the arrow head at the position of its first point or the corresponding intersection with the canvas borderIn case firstArrow is an object it has the sub-attributes:{type: 1, // possible values are 1, 2, ..., 7. Default value is 1.size: 6, // size of the arrow head. Default value is 6.// This value is multiplied with the strokeWidth of the line// Exception: for type=7 size is ignoredhighlightSize: 6, // size of the arrow head in case the element is highlighted. Default value }type=7 is the default for curves if firstArrow: true */
@@ -549,74 +685,40 @@ export interface Line extends GeometryElement {
     point2: Point;
     /** missing description */
     ticks: number[];
-    /** missing description */
+    /** Add transformations to this line. */
+    addTransform(t: Transformation): CoordsElement;
+    /** Determines the angle between the positive x axis and the line. */
     getAngle(): number;
-    /** missing description */
+    /** Calculates the y intersect of the line. */
     getRise(): number;
-    /** missing description */
+    /** Alias for line.Slope */
     getSlope(): number;
-    /** missing description */
+    /** Checks whether (x,y) is near the line. */
     hasPoint(): Boolean;
-    /** missing description */
+    /** The distance between the two points defining the line. */
     L(): number;
-    /** missing description */
+    /** Calculates the slope of the line. */
     Slope(): number;
-    /** missing description */
+    /** Treat the line as parametric curve in homogeneous coordinates, where the parameter t runs from 0 to 1. First we transform the interval [0,1] to [-1,1]. If the line has homogeneous coordinates [c, a, b] = stdform[] then the direction of the line is [b, -a]. Now, we take one finite point that defines the line, i.e. we take either point1 or point2 (in case the line is not the ideal line). Let the coordinates of that point be [z, x, y]. Then, the curve runs linearly from [0, b, -a] (t=-1) to [z, x, y] (t=0) and [z, x, y] (t=0) to [0, -b, a] (t=1) */
     X(): number;
-    /** missing description */
+    /** Treat the line as parametric curve in homogeneous coordinates. See {@link JXG.Line#X} for a detailed description. */
     Y(): number;
-    /** missing description */
+    /** Treat the line as parametric curve in homogeneous coordinates. See {@link JXG.Line#X} for a detailed description. */
     Z(): number;
+    /** Set a new fixed length, then update the board. */
+    setFixedLength(l: string | number | Function): number;
 }
 export interface GeometryElement3DAttributes extends GeometryElementAttributes {
-    /** label for this item */
-    name?: string | Function;
-    /** enable label for this item */
-    withLabel?: boolean;
-    /** Opacity of the element (between 0 and 1). */
-    opacity?: number | Function;
-    /** Opacity of the element (between 0 and 1). */
-    fillOpacity?: number | Function;
-    /** Set whether the element is visibledisplay name  */
-    visible?: Boolean;
-    /** Set the width of lines in pixels  */
-    strokeWidth?: number;
-    /** Set the color of lines */
-    strokeColor?: string | Function;
-    /** Set the color of areas */
-    fillColor?: string | Function;
-    /** Arrow at the end of the line? */
-    firstArrow?: Boolean;
-    /** Arrow at the start of the line? */
-    lastArrow?: Boolean;
-    /** Highlight on mouse-over? */
-    highlight?: Boolean;
-    /** Attributes for first point (an object) */
-    point1?: Point3DAttributes;
-    /** Attributes for second point (an object) */
-    point2?: Point3DAttributes;
 }
-export interface GeometryElement3D extends GeometryElement {
+export interface GeometryElement3D extends Omit<GeometryElement, 'X' | 'Y' | 'Z'> {
     /** missing description */
-    element2D: number[];
+    element2D: GeometryElement;
     /** missing description */
     is3D: Boolean;
     /** missing description */
     view: any;
-    /** missing description */
-    strokeColor: String;
-    /** missing description */
-    strokeWidth: number;
-    /** missing description */
-    size: number;
-    /** missing description */
-    fillColor: String;
-    /** missing description */
-    visible: Boolean;
-    /** missing description */
-    setAttribute(attrs: GeometryElement3DAttributes): void;
 }
-export interface View3DAttributes extends GeometryElement3DAttributes {
+export interface View3DAttributes extends GeometryElementAttributes {
     /** Choose the projection type to be used: `parallel` or `central`. `parallel` is parallel projection, also called orthographic projection.   `central` is central projection, also called perspective projection */
     projection?: `parallel` | `central`;
     /** Specify the user handing of the azimuth. */
@@ -625,8 +727,6 @@ export interface View3DAttributes extends GeometryElement3DAttributes {
     bank?: screenControls;
     /** Specify the user handing of the elevation. */
     el?: screenControls;
-    /** Support occlusion by ordering points? */
-    depthorderpoints?: Boolean;
     /** use {enable:true, layers:[12]} */
     depthOrder?: Object;
     /** Position of the main axes in a View3D element. Possible values are 'center' and 'border'. */
@@ -675,67 +775,99 @@ export interface View3DAttributes extends GeometryElement3DAttributes {
     zPlaneRearXAxis?: Object;
     /** Attributes of the 3D y-axis on the 3D plane orthogonal to the z-axis at the ”rear” of the cube. */
     zPlaneRearYAxis?: Object;
+    /** Enable user handling by a virtual trackball that allows to move the 3D scene with 3 degrees of freedom. If not enabled, direct user dragging (i.e. in the JSXGraph board, not manipulating the sliders) will only have two degrees of freedom. This means, the z-axis will always be projected to a vertical 2D line. <p> Sub-attributes: <ul> <li><tt>enabled</tt>: Boolean that specifies whether pointer navigation is allowed by elevation. <li><tt>outside</tt>: Boolean that specifies whether the pointer navigation is continued when the cursor leaves the board. <li><tt>button</tt>: Which button of the pointer should be used? (<tt>'-1'</tt> (=no button), <tt>'0'</tt> or <tt>'2'</tt>) <li><tt>key</tt>: Should an additional key be pressed? (<tt>'none'</tt>, <tt>'shift'</tt> or <tt>'ctrl'</tt>) </ul> */
+    trackball?: Object;
+    /** Fixed values for the view, which can be changed using keyboard keys `picture-up` and `picture-down`. Array of the form: [[el0, az0, r0], [el1, az1, r1, ...[eln, azn, rn]] */
+    values?: number[];
+    /** Attributes of the 3D x-axis at the border. */
+    xAxisBorder?: Line3D;
+    /** Attributes of the 3D y-axis at the border. */
+    yAxisBorder?: Line3D;
+    /** Attributes of the 3D z-axis at the border. */
+    zAxisBorder?: Line3D;
 }
-export interface View3D extends GeometryElement3D {
+export interface View3D extends Omit<GeometryElement, 'create'> {
     /** missing description */
     defaultAxes: Object;
     /** missing description */
     matrix3D: Object;
     /** missing description */
+    angles: number[];
+    /** missing description */
+    az_slide: Slider;
+    /** missing description */
+    bank_slide: Slider;
+    /** missing description */
+    bbox3D: number[][];
+    /** missing description */
+    boxToCam: number[];
+    /** missing description */
+    el_slide: Slider;
+    /** missing description */
+    focalDist: number;
+    /** missing description */
+    matrix3DRot: number[];
+    /** missing description */
+    projectionType: string;
+    /** missing description */
+    r: number;
+    /** missing description */
+    shift: number;
+    /** missing description */
+    trackballEnabled: string;
+    /** Sets camera view to the given values. */
     setView(azimuth: number, elevation: number, radius?: number): View3D;
-    /** missing description */
+    /**  */
     animateAzimuth(): Object;
-    /** missing description */
-    create(): Object;
-    /** missing description */
+    /** Creates a new 3D element of type elementType. */
+    create(elementType: string, parents: any[], attributes: View3DAttributes): View3D;
+    /** Intersect a ray with the bounding cube of the 3D view. */
     intersectionLineCube(): number[];
-    /** missing description */
+    /**  */
     intersectionPlanePlane(): number[];
-    /** missing description */
+    /** Test if coordinates are inside of the bounding cube. */
     isInCube(): number[];
-    /** missing description */
+    /** Project a 2D coordinate to the plane defined by point  */
     project2DTo3DPlane(): number[];
-    /** missing description */
+    /** Project a 2D coordinate to a new 3D position by keeping the 3D x, y coordinates and changing only the z coordinate. All horizontal moves of the 2D point are ignored. */
     project2DTo3DVertical(): number[];
-    /** missing description */
+    /** Project 3D coordinates to 2D board coordinates The 3D coordinates are provides as three numbers x, y, z or one array of length 3. */
     project3DTo2D(): number[];
-    /** missing description */
+    /** Limit 3D coordinates to the bounding cube. */
     project3DToCube(): GeometryElement3D | Composition;
-    /** missing description */
+    /** Select a single or multiple elements at once. */
     select(): GeometryElement3D | Composition;
-    /** missing description */
+    /**  */
     stopAzimuth(): any;
+    /** Compares 3D elements according to their z-Index.  */
+    compareDepth(a: GeometryElement3D, b: GeometryElement3D): number;
+    /** Project a point on the screen to the nearest point, in screen distance, on a line segment in 3d space. The inputs must be in ordinary coordinates, but the output is in homogeneous coordinates.  */
+    projectScreenToSegment(pScr: number[], end0: number[], end1: number[]): number[];
+    /** Changes view to the determined view stored in the attribute `values`.  */
+    setCurrentView(n: number): View3D;
+    /** Map world coordinates to focal coordinates. These coordinate systems are explained in the {@link JXG.View3D#boxToCam} matrix documentation.  */
+    worldToFocal(pWorld: number[], homog?: Boolean): void;
 }
 export interface ChartAttributes extends GeometryElementAttributes {
-    /** Select type of chart. */
-    chartStyle?: `bar` | `line`;
-    /**  */
-    width?: number;
-    /**  */
-    labels?: any[];
-    /**  */
-    colorArray?: string[];
-    /**  */
-    label?: LabelAttributes;
 }
 export interface Chart extends GeometryElement {
     /** missing description */
     elements: any[];
-    /** missing description */
+    /** Create bar chart defined by two data arrays. Attributes to change the layout of the bar chart are: &lt;ul&gt; &lt;li&gt; width (optional) &lt;li&gt; dir: &#039;horizontal&#039; or &#039;vertical&#039; &lt;li&gt; colors: array of colors &lt;li&gt; labels: array of labels &lt;/ul&gt; */
     drawBar(): any[];
-    /** missing description */
+    /** Create line chart where the curve is given by a regression polynomial defined by two data arrays. The degree of the polynomial is supplied through the attribute  */
     drawFit(): Curve;
-    /** missing description */
+    /** Create line chart defined by two data arrays. */
     drawLine(): Curve;
-    /** missing description */
+    /** Create pie chart. Attributes to change the layout of the pie chart are: &lt;ul&gt; &lt;li&gt; labels: array of labels &lt;li&gt; colors: (Array) &lt;li&gt; highlightColors (Array) &lt;li&gt; radius &lt;li&gt; center (coordinate array) &lt;li&gt; highlightOnSector (Boolean) &lt;/ul&gt; */
     drawPie(): Object;
-    /** missing description */
+    /** Create chart consisting of JSXGraph points. Attributes to change the layout of the point chart are: &lt;ul&gt; &lt;li&gt; fixed (Boolean) &lt;li&gt; infoboxArray (Array): Texts for the infobox &lt;/ul&gt; */
     drawPoints(): number[];
-    /** missing description */
+    /** Create radar chart. Attributes to change the layout of the pie chart are: &lt;ul&gt; &lt;li&gt; paramArray: labels for axes, [ paramx, paramy, paramz ] &lt;li&gt; startShiftRatio: 0 &lt;= offset from chart center &lt;=1 &lt;li&gt; endShiftRatio:  0 &lt;= offset from chart radius &lt;=1 &lt;li&gt; startShiftArray: Adjust offsets per each axis &lt;li&gt; endShiftArray: Adjust offsets per each axis &lt;li&gt; startArray: Values for inner circle. Default values: minimums &lt;li&gt; start: one value to overwrite all startArray values &lt;li&gt; endArray: Values for outer circle, maximums by default &lt;li&gt; end: one value to overwrite all endArray values &lt;li&gt; labelArray &lt;li&gt; polyStrokeWidth &lt;li&gt; colors &lt;li&gt; highlightcolors &lt;li&gt; labelArray: [ row1, row2, row3 ] &lt;li&gt; radius &lt;li&gt; legendPosition &lt;li&gt; showCircles &lt;li&gt; circleLabelArray &lt;li&gt; circleStrokeWidth &lt;/ul&gt; */
     drawRadar(): Object;
-    /** missing description */
+    /** Create line chart that consists of a natural spline curve defined by two data arrays. */
     drawSpline(): Curve;
-    /** missing description */
+    /** Template for dynamic charts update. This method is used to compute new entries for the arrays this.dataX and this.dataY. It is used in update. Default is an empty method, can be overwritten by the user. */
     updateDataArray(): Chart;
 }
 export interface CircleAttributes extends GeometryElementAttributes {
@@ -763,22 +895,32 @@ export interface Circle extends GeometryElement {
     point2: Point;
     /** missing description */
     radius: number;
-    /** missing description */
+    /** Add transformations to this circle. */
+    addTransform(t: Transformation): CoordsElement;
+    /** Circle area */
     Area(): number;
-    /** missing description */
+    /** Perimeter (circumference) of circle. */
     Perimeter(): number;
-    /** missing description */
+    /** Calculates the radius of the circle. */
     Radius(): number;
-    /** missing description */
+    /** Set a new radius, then update the board. */
+    setRadius(r: number | Function): Circle;
+    /** Treats the circle as parametric curve and calculates its X coordinate. */
     X(): number;
-    /** missing description */
+    /** Treats the circle as parametric curve and calculates its Y coordinate. */
     Y(): number;
-    /** missing description */
+    /** Treat the circle as parametric curve and calculates its Z coordinate. */
     Z(): number;
 }
 export interface Circle3DAttributes extends GeometryElement3DAttributes {
 }
 export interface Circle3D extends GeometryElement3D {
+    /** missing description */
+    center: Point3D;
+    /** Calculates the radius of the circle.  */
+    Radius(value?: number | Function): number;
+    /** Set a new radius, then update the board.  */
+    setRadius(r: number | Function): void;
 }
 export interface ComplexAttributes {
 }
@@ -793,44 +935,42 @@ export interface Complex {
     isComplex: Boolean;
     /** missing description */
     real: number;
-    /** missing description */
+    /** Add another complex number to this complex number. */
     add(): Complex;
-    /** missing description */
+    /** Conjugate a complex number in place. */
     conj(): Complex;
-    /** missing description */
+    /** Divide this complex number by the given complex number. */
     div(): Complex;
-    /** missing description */
+    /** Multiply another complex number to this complex number. */
     mult(): Complex;
-    /** missing description */
+    /** Subtract another complex number from this complex number. */
     sub(): Complex;
-    /** missing description */
+    /** Converts a complex number into a string. */
     toString(): String;
 }
 export interface CompositionAttributes {
 }
 export interface Composition {
-    /** missing description */
+    /** Adds an element to the composition container. */
     add(): Boolean;
-    /** missing description */
+    /** Invokes fullUpdate for every stored element with a fullUpdate method and hands over the given arguments. See {@link JXG.GeometryElement#fullUpdate} for further description, valid parameters and return values. */
     fullUpdate(): Boolean;
-    /** missing description */
+    /** Invokes highlight for every stored element with a highlight method and hands over the given arguments. See {@link JXG.GeometryElement#highlight} for further description, valid parameters and return values. */
     highlight(): Boolean;
-    /** missing description */
+    /** Invokes noHighlight for every stored element with a noHighlight method and hands over the given arguments. See {@link JXG.GeometryElement#noHighlight} for further description, valid parameters and return values. */
     noHighlight(): Boolean;
-    /** missing description */
+    /** Invokes prepareUpdate for every stored element with a prepareUpdate method and hands over the given arguments. See {@link JXG.GeometryElement#prepareUpdate} for further description, valid parameters and return values. */
     prepareUpdate(): Boolean;
-    /** missing description */
+    /** Remove an element from the composition container. */
     remove(): Boolean;
-    /** missing description */
-    setParents(): any;
-    /** missing description */
+    /** Invokes setParents for every stored element with a setParents method and hands over the given arguments. See {@link JXG.GeometryElement#setParents} for further description, valid parameters and return values. */
+    setParents(parents: any[]): any;
+    /** Invokes updateRenderer for every stored element with a updateRenderer method and hands over the given arguments. See {@link JXG.GeometryElement#updateRenderer} for further description, valid parameters and return values. */
     updateRenderer(): Point;
 }
 export interface CoordsAttributes {
 }
 export interface Coords {
-    /** missing description */
-    currentBoard: Board;
     /** missing description */
     emitter: boolean;
     /** missing description */
@@ -838,11 +978,17 @@ export interface Coords {
     /** missing description */
     usrCoords: number[];
     /** missing description */
+    board: Board;
+    /** Calculate distance of one point to another. */
+    distance(toPoint: Point | number[]): number;
+    /** Test if one of the usrCoords is NaN or the coordinates are infinite. */
     isReal(): Boolean;
-    /** missing description */
+    /** Set coordinates by either user coordinates or screen coordinates and recalculate the other one. */
     setCoordinates(): Coords;
 }
 export interface CurveAttributes extends GeometryElementAttributes {
+    /** Line endings (linecap) of a curve stroke. */
+    lineCap?: 'butt' | 'round' | 'square';
     /** The curveType is set in JXG.Curve#generateTerm and used in JXG.Curve#updateCurve. Possible values are'none' 'plot': Data plot 'parameter': we can not distinguish function graphs and parameter curves 'functiongraph': function graph 'polar' 'implicit' (not yet) Only parameter and plot are set directly. Polar is set with JXG.GeometryElement#setAttribute only. */
     curveType?: String;
     /** If true use a recursive bisection algorithm. It is slower, but usually the result is better. It tries to detect jumps and singularities. */
@@ -863,8 +1009,6 @@ export interface CurveAttributes extends GeometryElementAttributes {
     numberPointsLow?: number;
     /** Select the version of the plot algorithm.Version 1 is very outdatedVersion 2 is the default version in JSXGraph v0.99.*, v1.0, and v1.1, v1.2.0Version 3 is an internal version that was never published ina stable version.Version 4 is available since JSXGraph v1.2.0Version 4 plots correctly logarithms if the function term is supplied as string (i.e. as JessieCode) */
     plotVersion?: number;
-    /** Apply Ramer-Douglas-Peuker smoothing. */
-    RDPsmoothing?: Boolean;
     /** Recursion depth used for plotting triggered by up events (i.e. high quality plotting) in case Curve#doAdvancedPlot is true. */
     recursionDepthHigh?: number;
     /** number of points used for plotting triggered by move events in case (i.e. lower quality plotting but fast) Curve#doAdvancedPlot is true. */
@@ -876,100 +1020,106 @@ export interface Curve extends GeometryElement {
     /** missing description */
     dataY: number[];
     /** missing description */
+    numberPoints: number;
+    /** missing description */
+    qdt: Object;
+    /** missing description */
     ticks: number[];
-    /** missing description */
-    addTransform(base: GeometryElement, transforms: Transform[]): Curve;
-    /** missing description */
+    /** Add transformations to this curve. */
+    addTransform(base: GeometryElement, transforms: Transformation[]): CoordsElement;
+    /** Allocate points in the Coords array this.points */
     allocatePoints(): number[];
-    /** missing description */
+    /** Converts the JavaScript/JessieCode/GEONExT syntax of the defining function term into JavaScript. New methods X() and Y() for the Curve object are generated, further new methods for minX() and maxX(). If mi or ma are not supplied, default functions are set. */
     generateTerm(): number[];
-    /** missing description */
+    /** Position a curve label according to the attributes "position" and distance. This function is also used for angle, arc and sector. */
+    getLabelPosition(pos: string, distance: number): Coords;
+    /** Checks whether (x,y) is near the curve. */
     hasPoint(): Boolean;
-    /** missing description */
+    /** Gives the default value of the right bound for the curve. May be overwritten in {@link JXG.Curve#generateTerm}. */
     maxX(): number;
-    /** missing description */
+    /** Gives the default value of the left bound for the curve. May be overwritten in {@link JXG.Curve#generateTerm}. */
     minX(): number;
-    /** missing description */
-    moveTo(): Curve;
-    /** missing description */
+    /** Shift the curve by the vector &#039;where&#039;. */
+    moveTo(where: number[]): Promise<any>;
+    /** Finds dependencies in a given term and notifies the parents by adding the dependent object to the found objects child elements. */
     notifyParents(): Curve;
-    /** missing description */
+    /** Computes for equidistant points on the x-axis the values of the function */
     update(): Curve;
-    /** missing description */
+    /** Computes the curve path */
     updateCurve(): Curve;
-    /** missing description */
+    /** For dynamic dataplots updateCurve can be used to compute new entries for the arrays {@link JXG.Curve#dataX} and {@link JXG.Curve#dataY}. It is used in {@link JXG.Curve#updateCurve}. Default is an empty method, can be overwritten by the user. */
     updateDataArray(func: Function): void;
-    /** missing description */
+    /** Updates the visual contents of the curve. */
     updateRenderer(): Curve;
-    /** missing description */
-    updateTransform(): Point;
-    /** missing description */
+    /** Applies the transformations of the curve to the given point &lt;tt&gt;p&lt;/tt&gt;. Before using it, {@link JXG.Curve#updateTransformMatrix} has to be called. */
+    updateTransform(): GeometryElement;
+    /** The parametric function which defines the x-coordinate of the curve. */
     X(): number;
-    /** missing description */
+    /** The parametric function which defines the y-coordinate of the curve. */
     Y(): number;
-    /** missing description */
+    /** Treat the curve as curve with homogeneous coordinates. */
     Z(): number;
 }
 export interface Curve3DAttributes extends GeometryElement3DAttributes {
 }
 export interface Curve3D extends GeometryElement3D {
-    /** missing description */
-    addTransform(other: ParametricSurface3D, transforms: Transform3D[]): Curve3D;
-    /** missing description */
-    updateTransform(): void;
-    /** missing description */
+    /**  */
+    updateTransform(): GeometryElement;
+    /** Generic function which evaluates the function term of the curve and applies its transformations. */
     evalF(u: number): void;
-    /** missing description */
+    /** Function defining the curve plus applying transformations. */
     F(u: number): void;
-    /** missing description */
+    /** Simple curve plotting algorithm. */
     updateCoords(): void;
-    /** missing description */
+    /** Function which maps (u) to z; i.e. */
     X(u: number): number;
-    /** missing description */
+    /** Function which maps (u) to y; i.e. */
     Y(u: number): number;
-    /** missing description */
+    /** Function which maps (u) to z; i.e. */
     Z(u: number): number;
 }
 export interface DumpAttributes {
 }
 export interface Dump {
-    /** missing description */
+    /** Adds markers to every element of the board */
     addMarkers(): Dump;
-    /** missing description */
+    /** Converts an array of different values into a parameter string that can be used by the code generators. */
     arrayToParamStr(): Dump;
-    /** missing description */
+    /** Removes markers from every element on the board. */
     deleteMarkers(): Dump;
-    /** missing description */
+    /** Generate a save-able structure with all elements. This is used by {@link JXG.Dump#toJessie} and {@link JXG.Dump#toJavaScript} to generate the script. */
     dump(): Dump;
-    /** missing description */
+    /** Eliminate default values given by {@link JXG.Options} from the attributes object. */
     minimizeObject(): Dump;
-    /** missing description */
+    /** Prepare the attributes object for an element to be dumped as JavaScript or JessieCode code. */
     prepareAttributes(): Dump;
-    /** missing description */
+    /** Stringifies a string, i.e. puts some quotation marks around &lt;tt&gt;s&lt;/tt&gt; if it is of type string. */
     str(): Dump;
-    /** missing description */
+    /** Saves the construction in &lt;tt&gt;board&lt;/tt&gt; to JavaScript. */
     toJavaScript(): Dump;
-    /** missing description */
+    /** Converts a JavaScript object into a JCAN (JessieCode Attribute Notation) string. */
     toJCAN(): Dump;
-    /** missing description */
+    /** Saves the construction in &lt;tt&gt;board&lt;/tt&gt; to JessieCode. */
     toJessie(): Dump;
 }
 export interface ForeignObjectAttributes extends GeometryElementAttributes {
+    /** If set to true, this object is only evaluated once and not re-evaluated on update. This is necessary if you want to have a bord within a foreignObject of another board. */
+    evaluateOnlyOnce?: Boolean;
     /** List of attractor elements. If the distance of the ForeignObject is less than attractorDistance the ForeignObject is made to glider of this element. */
     attractors?: Element[];
 }
-export interface ForeignObject extends GeometryElement {
+export interface ForeignObject extends Omit<GeometryElement, 'size'> {
     /** missing description */
     content: number[];
     /** missing description */
     size: number[];
-    /** missing description */
+    /** Returns the height of the foreignObject in user coordinates. */
     H(): number;
-    /** missing description */
+    /** Checks whether (x,y) is over or near the image; */
     hasPoint(): Boolean;
-    /** missing description */
+    /** Set the width and height of the foreignObject. After setting a new size, board.update() or foreignobject.fullUpdate() has to be called to make the change visible. */
     setSize(): ForeignObject;
-    /** missing description */
+    /** Returns the width of the foreignObject in user coordinates. */
     W(): number;
 }
 export interface GroupAttributes extends CompositionAttributes {
@@ -977,41 +1127,43 @@ export interface GroupAttributes extends CompositionAttributes {
 export interface Group extends Composition {
     /** missing description */
     coords: Object;
-    /** missing description */
+    /** Adds all points in a group to this group. */
     addGroup(group: Group): Group;
-    /** missing description */
+    /** Adds ids of elements to the array this.parents. This is a copy of {@link Element.addParents}. */
     addParents(parents: GeometryElement[]): Object;
-    /** missing description */
+    /** Adds an Point to this group. */
     addPoint(point: Point | pointAddr | Image): Group;
-    /** missing description */
+    /** Adds multiple points to this group. */
     addPoints(points: Point[]): Group;
-    /** missing description */
+    /** Adds a point to the set of rotation points of the group. Dragging at one of these points results into a rotation of the whole group around the rotation center of the group {@see JXG.Group#setRotationCenter}. */
     addRotationPoint(point: Point): Group;
-    /** missing description */
+    /** Adds a point to the set of the scale points of the group. Dragging at one of these points results into a scaling of the whole group. */
     addScalePoint(point: Point, direction: number | Function): Group;
-    /** missing description */
+    /** Adds a point to the set of the translation points of the group. Dragging one of these points results into a translation of the whole group. */
     addTranslationPoint(point: Point): Group;
-    /** missing description */
+    /** List of the element ids resp. values used as parents in {@link JXG.Board#create}. */
     getParents(): number[];
-    /** missing description */
+    /** Removes a point from the group. */
     removePoint(point: Point): Group;
-    /** missing description */
+    /** Removes the rotation property from a point of the group. */
     removeRotationPoint(point: Point): Group;
-    /** missing description */
+    /** Removes the scaling property from a point of the group. */
     removeScalePoint(point: Point): Group;
-    /** missing description */
+    /** Removes the translation property from a point of the group. */
     removeTranslationPoint(point: Point): Group;
-    /** missing description */
+    /** Sets ids of elements to the array this.parents. This is a copy of {@link Element.setParents} First, this.parents is cleared. See {@link Group#addParents}. */
+    setParents(parents: any[]): Object;
+    /** Sets the center of rotation for the group. This is either a point or the centroid of the group. */
     setRotationCenter(pivot: Point | pointAddr | "centroid"): Group;
-    /** missing description */
+    /** Sets the rotation points of the group. Dragging at one of these points results into a rotation of the whole group around the rotation center of the group {@see JXG.Group#setRotationCenter}. */
     setRotationPoints(points: Point | Point[]): Group;
-    /** missing description */
+    /** Sets the center of scaling for the group. This is either a point or the centroid of the group. */
     setScaleCenter(point: Point | pointAddr): Group;
-    /** missing description */
+    /** Sets the scale points of the group. Dragging at one of these points results into a scaling of the whole group. */
     setScalePoints(points: Point | Point[]): Group;
-    /** missing description */
+    /** Sets the translation points of the group. Dragging at one of these points results into a translation of the whole group. */
     setTranslationPoints(points: Point | Point[]): Group;
-    /** missing description */
+    /** Releases all elements of this group. */
     ungroup(): Group;
 }
 export interface ImageAttributes extends GeometryElementAttributes {
@@ -1028,21 +1180,45 @@ export interface ImageAttributes extends GeometryElementAttributes {
     /** Defines together with Image#snapSizeX the grid the image snaps on to. The image will only snap on integer multiples to snapSizeX in x and snapSizeY in y direction. If this value is equal to or less than 0, it will use the grid displayed by the major ticks of the default ticks of the default y axes of the currentBoard. */
     snapSizeY?: number;
 }
-export interface Image extends GeometryElement {
+export interface Image extends Omit<GeometryElement, 'size'> {
     /** missing description */
     size: number[];
     /** missing description */
     url: string;
-    /** missing description */
+    /** Returns the height of the image in user coordinates. */
     H(): number;
-    /** missing description */
+    /** Checks whether (x,y) is over or near the image; */
     hasPoint(): Boolean;
-    /** missing description */
+    /** Set the width and height of the image. After setting a new size, board.update() or image.fullUpdate() has to be called to make the change visible. */
     setSize(): GeometryElement;
-    /** missing description */
+    /** Returns the width of the image in user coordinates. */
     W(): number;
 }
-export interface ImplicitcurveAttributes extends GeometryElementAttributes {
+export interface ImplicitCurveAttributes extends GeometryElementAttributes {
+    /** Allowed distance (in user units) of predictor point to curve. */
+    delta_0?: number;
+    /** If h is below this threshold (in user units), we bail out of the tracing phase of that component. */
+    h_critical?: number;
+    /** Inverse of desired number of Newton steps. */
+    kappa_0?: number;
+    /** Use Gosper's loop detector. */
+    loop_detection?: Boolean;
+    /** Minimum acos of angle to detect loop. */
+    loop_dir?: number;
+    /** Allowed distance (in user units multiplied by actual step width) to detect loop. */
+    loop_dist?: number;
+    /** Defines the margin (in user coordinates) around the JSXGraph board in which the implicit curve is plotted. */
+    margin?: number;
+    /** Maximum iterations for one component of the implicit curve. */
+    max_steps?: number;
+    /** Tolerance to find starting points for the tracing phase of a component. */
+    tol_0?: number;
+    /** Tolerance for cusp / bifurcation detection. */
+    tol_cusp?: number;
+    /** Tolerance for the Newton steps. */
+    tol_newton?: number;
+    /** If two points are closer than this value, we bail out of the tracing phase for that component. */
+    tol_progress?: number;
     /** Horizontal resolution: distance (in pixel) between vertical lines to search for components of the implicit curve. */
     resolution_outer?: number;
     /** Vertical resolution (in pixel) to search for components of the implicit curve. */
@@ -1056,7 +1232,9 @@ export interface ImplicitcurveAttributes extends GeometryElementAttributes {
     /** Half of the box size (in user units) to search for existing line segments in the quadtree. */
     qdt_box?: number;
 }
-export interface Implicitcurve extends GeometryElement {
+export interface ImplicitCurve extends GeometryElement {
+    /** missing description */
+    domain: any;
 }
 export interface IntersectionCircle3DAttributes extends GeometryElement3DAttributes {
 }
@@ -1084,9 +1262,9 @@ export interface Line3D extends GeometryElement3D {
     /** missing description */
     point: Point3D;
     /** missing description */
-    point1: Point3D;
+    endpoints: number[];
     /** missing description */
-    point2: Point3D;
+    vec: number[];
     /** missing description */
     range: number[];
 }
@@ -1106,6 +1284,10 @@ export interface Plane3DAttributes extends GeometryElement3DAttributes {
 }
 export interface Plane3D extends GeometryElement3D {
     /** missing description */
+    range_u: number[];
+    /** missing description */
+    range_v: number[];
+    /** missing description */
     d: number[];
     /** missing description */
     direction1: number[] | Function;
@@ -1116,42 +1298,40 @@ export interface Plane3D extends GeometryElement3D {
     /** missing description */
     point: Point3D;
     /** missing description */
-    range1: number[];
-    /** missing description */
-    range2: number[];
-    /** missing description */
     vec1: number[];
     /** missing description */
     vec2: number[];
-    /** missing description */
-    vec3: number[];
-    /** missing description */
+    /** Get coordinate array [x, y, z] of a point on the plane for parameters (u, v). */
     F(u: number, v: number): number[];
-    /** missing description */
+    /** Get x-coordinate of a point on the plane for parameters (u, v). */
     X(u: number, v: number): number;
-    /** missing description */
+    /** Get y-coordinate of a point on the plane for parameters (u, v). */
     Y(u: number, v: number): number;
-    /** missing description */
+    /** Get z-coordinate of a point on the plane for parameters (u, v). */
     Z(u: number, v: number): number;
 }
 export interface Point3DAttributes extends GeometryElement3DAttributes {
-    /** Size in pixels */
-    size?: number | Function;
-    /** If true the element is fixed and can not be dragged around. The element will be repositioned on zoom and moveOrigin events. */
-    fixed?: Boolean;
 }
 export interface Point3D extends GeometryElement3D {
     /** missing description */
     slide: GeometryElement3D;
-    /** missing description */
-    setPosition(coords: number[], noEvent: boolean): Point3D;
-    /** missing description */
+    /** Calculate the distance from one point to another. If one of the points is on the plane at infinity, return positive infinity.  */
+    distance(pt: Point3D): number;
+    /** Move along a path defined by an array of coordinates  */
+    moveAlong(traversePath?: number[][], time?: number, options?: Object): void;
+    /** Set the position of a 3D point. */
+    setPosition(method: number, coords: number[], noEvent?: boolean): void;
+    /** Get x-coordinate of a 3D point. */
     X(): number;
-    /** missing description */
+    /** Get y-coordinate of a 3D point. */
     Y(): number;
-    /** missing description */
+    /** Get z-coordinate of a 3D point. */
     Z(): number;
-    /** missing description */
+    /** Moves an element towards coordinates, optionally tweening over time.  Time is in ms.    EG:
+   
+   ```js
+   P.moveTo([A.X(), A.Y()], 5000)
+   ``` */
     moveTo(p: number[] | Function, time?: number, options?: MoveToOptions): Promise<any>;
 }
 export interface PolygonAttributes extends GeometryElementAttributes {
@@ -1173,14 +1353,34 @@ export interface Polygon extends GeometryElement {
     borders: Line[];
     /** missing description */
     vertices: Point[];
-    /** missing description */
+    /** Checks whether (x,y) is near the polygon. */
     hasPoint(x: number, y: number): Boolean;
-    /** missing description */
+    /** Add more points to the polygon. The new points will be inserted at the end. The attributes of new border segments are set to the same values as those used when the polygon was created. If new vertices are supplied by coordinates, the default attributes of polygon vertices are taken as their attributes. Therefore, the visual attributes of new vertices and borders may have to be adapted afterwards.  */
+    addPoints(p: Point): Polygon;
+    /** Finds the index to a given point reference.  */
+    findPoint(p: Point): Point;
+    /** Hide the polygon including its border lines. It will still exist but not visible on the board.  */
+    hideElement(borderless?: Boolean): void;
+    /** Insert points to the vertex list of the polygon after index <tt>idx</tt>. The attributes of new border segments are set to the same values as those used when the polygon was created. If new vertices are supplied by coordinates, the default attributes of polygon vertices are taken as their attributes. Therefore, the visual attributes of new vertices and borders may have to be adapted afterwards.  */
+    insertPoints(idx: number, p: Point): Polygon;
+    /** Generic method for the intersection of this polygon with another polygon. The parent object is the clipping polygon, it expects as parameter a polygon to be clipped. Both polygons have to be convex. Calls the algorithm by Sutherland, Hodgman, {@link JXG.Polygon#sutherlandHodgman}. <p> An alternative is to use the methods from {@link JXG.Math.Clip}, where the algorithm by Greiner and Hormann is used.  */
+    intersect(polygon: Polygon): number[];
+    /** Wrapper for JXG.Math.Geometry.pnpoly.  */
+    pnpoly(x_in: number, y_in: number, coord_type: number): Boolean;
+    /** Removes given set of vertices from the polygon  */
+    removePoints(p: Point): Polygon;
+    /** Moves the polygon by the difference of two coordinates.  */
+    setPositionDirectly(method: number, coords: NumberFunction[], oldcoords: NumberFunction[]): GeometryElement;
+    /** Make the element visible.  */
+    showElement(borderless?: Boolean): GeometryElement;
+    /** Uses the boards renderer to update the polygon. */
     updateRenderer(): Polygon;
 }
 export interface Polygon3DAttributes extends GeometryElement3DAttributes {
 }
 export interface Polygon3D extends GeometryElement3D {
+    /** missing description */
+    vertices: number[][];
 }
 export interface TextAttributes extends GeometryElementAttributes {
     /** Anchor element Point, Text or Image of the text. */
@@ -1235,48 +1435,50 @@ export interface TextAttributes extends GeometryElementAttributes {
     useKatex?: Boolean;
     /** If true, MathJax will be used to render the input string. */
     useMathJax?: Boolean;
-    /** Control the attribute ”checked” of the HTML checkbox. */
-    checked?: Boolean;
+    /** If the text content is solely a number and this attribute is true (default) then the number is either formatted according to the number of digits given by the attribute 'digits' or converted into a fraction if 'toFraction' is true. <p> Otherwise, display the raw number. */
+    formatNumber?: Boolean;
+    /** Display number as integer + nominator / denominator. Works together with MathJax, KaTex or as plain text. */
+    toFraction?: Boolean;
+    /**  */
+    visible?: Boolean;
 }
-export interface Text extends GeometryElement {
+export interface Text extends Omit<GeometryElement, 'size'> {
     /** missing description */
     size: number[];
-    /** missing description */
-    setAttribute(attrs: TextAttributes): Object;
-    /** missing description */
+    /** Returns the bounding box of the text element in user coordinates as an array of length 4: [upper left x, upper left y, lower right x, lower right y]. The method assumes that the lower left corner is at position [el.X(), el.Y()] of the text element el, i.e. the attributes anchorX, anchorY are ignored.  &lt;p&gt; &lt;strong&gt;Attention:&lt;/strong&gt; for labels, [0, 0, 0, 0] is returned. */
     bounds(): number[];
-    /** missing description */
+    /** A very crude estimation of the dimensions of the textbox in case nothing else is available. */
     crudeSizeEstimate(): number[];
-    /** missing description */
+    /** Returns the value of the attribute  */
     getAnchorX(): number;
-    /** missing description */
+    /** Returns the value of the attribute  */
     getAnchorY(): number;
-    /** missing description */
+    /** Return the width of the text element. */
     getSize(): number[];
-    /** missing description */
+    /** Replace _{} by &amp;lt;sub&amp;gt; */
     replaceSub(): string;
-    /** missing description */
+    /** Replace ^{} by &amp;lt;sup&amp;gt; */
     replaceSup(): string;
-    /** missing description */
+    /** Sets the offset of a label element to the position with the least number of overlaps with other elements, while retaining the distance to its anchor element. Twelve different angles are possible. */
     setAutoPosition(): Text;
-    /** missing description */
+    /** Move the text to new coordinates. */
     setCoords(x: number, y: number): object;
-    /** missing description */
+    /** Defines new content. */
     setText(newText: string): Text;
-    /** missing description */
+    /** Defines new content but converts &amp;lt; and &amp;gt; to HTML entities before updating the DOM. */
     setTextJessieCode(): this;
-    /** missing description */
+    /** Evaluates the text. Then, the update function of the renderer is called. */
     update(): this;
-    /** missing description */
+    /** Recompute the width and the height of the text box. Updates the array {@link JXG.Text#size} with pixel values. The result may differ from browser to browser by some pixels. In canvas an old IEs we use a very crude estimation of the dimensions of the textbox. JSXGraph needs {@link JXG.Text#size} for applying rotations in IE and for aligning text. */
     updateSize(): this;
-    /** missing description */
+    /** Decode unicode entities into characters. */
     utf8_decode(): string;
 }
 export interface Text3DAttributes extends TextAttributes {
 }
 export interface Text3D extends Text {
-    /** missing description */
-    setPosition(coords: number[], noEvent: boolean): Text3D;
+    /** Set the position of a 3D point. If `noEvent` true, then no events are triggered. */
+    setPosition(method: number, coords: number[], noEvent?: boolean): void;
 }
 export interface TicksAttributes extends GeometryElementAttributes {
     /** Determine the position of the tick with value 0. 'left' means point1 of the line, 'right' means point2, and 'middle' is equivalent to the midpoint of the defining points. This attribute is ignored if the parent line is of type axis. */
@@ -1289,6 +1491,10 @@ export interface TicksAttributes extends GeometryElementAttributes {
     drawLabels?: Boolean;
     /** Draw the zero tick, that lies at line.point1? */
     drawZero?: Boolean;
+    /** Tick face for major ticks of finite length. By default (face: '|') this is a straight line. Possible other values are '<' and '>'. These faces are used in {@link JXG.Hatch} for hatch marking parallel lines. */
+    face?: string;
+    /** If a label exceeds {@link Ticks#maxLabelLength} this determines the precision used to shorten the tick label. Deprecated! Replaced by the attribute <tt>digits</tt>. */
+    precision?: string;
     /** A function that expects two JXG.Coords, the first one representing the coordinates of the tick that is to be labeled, the second one the coordinates of the center (the tick with position 0). The third parameter is a null, number or a string. In the latter two cases, this value is taken. Returns a string. */
     generateLabelText?: Function;
     /** A function that expects two JXG.Coords, the first one representing the coordinates of the tick that is to be labeled, the second one the coordinates of the center (the tick with position 0). */
@@ -1347,13 +1553,13 @@ export interface Ticks extends GeometryElement {
     line: Line;
     /** missing description */
     ticks: number[];
-    /** missing description */
+    /** Formats label texts to make labels displayed in scientific notation look beautiful. For example, label 5.00e+6 will become 5&bull;10⁶, label -1.00e-7 will become into -1&bull;10⁻⁷ */
     beautifyScientificNotationLabel(): String;
-    /** missing description */
+    /** Checks whether (x,y) is near the line. Only available for line elements,  not for ticks on curves. */
     hasPoint(): Boolean;
-    /** missing description */
-    setPositionDirectly(): Point;
-    /** missing description */
+    /** Sets x and y coordinate of the tick. */
+    setPositionDirectly(method: number, coords: NumberFunction[], prevCoords?: NumberFunction[]): GeometryElement;
+    /** Uses the boards renderer to update the arc. */
     updateRenderer(): Ticks;
 }
 export interface SectorAttributes extends CurveAttributes {
@@ -1379,9 +1585,19 @@ export interface Sector extends Curve {
     point3: Point;
     /** missing description */
     point4: Point;
-    /** missing description */
+    /** Area of the sector. */
+    Area(): number;
+    /** Arc length. */
+    L(): number;
+    /** Sector perimeter, i.e. arc length plus 2 * radius. */
+    Perimeter(): number;
+    /** Overwrite the Radius method of the sector.  */
+    setRadius(value: number | Function): void;
+    /** Length of the sector's arc or the angle in various units,  */
+    Value(unit: string): number;
+    /** Checks whether (x,y) is within the area defined by the sector. */
     hasPointSector(): Boolean;
-    /** missing description */
+    /** Returns the radius of the sector. */
     Radius(): number;
 }
 export interface VectorfieldAttributes extends CurveAttributes {
@@ -1391,7 +1607,7 @@ export interface VectorfieldAttributes extends CurveAttributes {
     scale?: Object;
 }
 export interface Vectorfield extends Curve {
-    /** missing description */
+    /** Set the defining functions of vector field. */
     setF(): Object;
 }
 export interface AngleAttributes extends SectorAttributes {
@@ -1411,17 +1627,15 @@ export interface AngleAttributes extends SectorAttributes {
     radiuspoint?: Object;
     /** Display type of the angle field. Possible values are 'sector' or 'sectordot' or 'square' or 'none'. */
     type?: String;
-    /** Attributes for the label object of this element */
-    label?: LabelAttributes;
 }
 export interface Angle extends Sector {
     /** missing description */
     point: Point;
-    /** missing description */
-    free(): Object;
-    /** missing description */
+    /** Frees an angle from a prescribed value. This is only relevant if the angle size has been set by  */
+    free(): void;
+    /** Set an angle to a prescribed value given in radians. This is only possible if the third point of the angle, i.e. the anglepoint is a free point. Removing the constraint again is done by calling  */
     setAngle(angle: number | Function): Object;
-    /** missing description */
+    /** Returns the value of the angle. */
     Value(): number;
 }
 export interface ArcAttributes extends CurveAttributes {
@@ -1435,21 +1649,21 @@ export interface ArcAttributes extends CurveAttributes {
     radiusPoint?: Point;
     /** Type of arc. Possible values are 'minor', 'major', and 'auto'. */
     selection?: String;
-    /** Attributes for the label object of this element */
-    label?: LabelAttributes;
 }
 export interface Arc extends Curve {
+    /** missing description */
+    L: number;
     /** missing description */
     anglepoint: Point;
     /** missing description */
     radiuspoint: Point;
-    /** missing description */
+    /**  */
     getRadius(): number;
-    /** missing description */
+    /** Checks whether (x,y) is within the sector defined by the arc. */
     hasPointSector(): Boolean;
-    /** missing description */
+    /** Determines the arc&#039;s current radius. I.e. the distance between {@link Arc#center} and {@link Arc#radiuspoint}. */
     Radius(): number;
-    /** missing description */
+    /** Returns the length of the arc or the value of the angle spanned by the arc. */
     Value(): number;
 }
 export interface ArrowAttributes extends LineAttributes {
@@ -1462,11 +1676,25 @@ export interface ParallelAttributes extends LineAttributes {
 }
 export interface Parallel extends Line {
 }
-export interface ArrowparallelAttributes extends ParallelAttributes {
+export interface ArrowParallelAttributes extends ParallelAttributes {
 }
-export interface Arrowparallel extends Parallel {
+export interface ArrowParallel extends Parallel {
 }
 export interface AxisAttributes extends LineAttributes {
+    /** Position is used in cases: position=='sticky' or position=='fixed'. */
+    anchor?: Boolean;
+    /** Used to define at which distance to the edge of the board the axis should stick or be fixed. */
+    anchorDist?: string | number;
+    /** Is used to define the behaviour of the axis. Settings in this attribute only have an effect if the axis is exactly horizontal or vertical.  */
+    position?: 'static' | 'fixed' | 'sticky';
+    /** Attributes for ticks of the axis. */
+    ticks?: TicksAttributes;
+    /** set to true, the tick labels of the axis are automatically positioned in the narrower area between the axis and the side of the board. Settings in this attribute only have an effect if the axis is exactly horizontal or vertical. This option overrides offset, anchorX and anchorY of axis tick labels. */
+    ticksAutoPos?: Boolean;
+    /** Defines, when ticksAutoPos takes effect.  */
+    ticksAutoPosThreshold?: string | number;
+    /** Show / hide ticks. Deprecated. Suggested alternative is "ticks: {visible: false}" */
+    withTicks?: Boolean;
     /** Attributes for the axis label. */
     label?: LabelAttributes;
     /** Attributes for first point the axis. */
@@ -1501,8 +1729,6 @@ export interface ButtonAttributes extends TextAttributes {
     disabled?: Boolean | Function;
 }
 export interface Button extends Text {
-    /** missing description */
-    rendNodeButton: HTMLButtonElement;
 }
 export interface CardinalsplineAttributes extends CurveAttributes {
     /** Controls if the data points of the cardinal spline when given as arrays should be converted into JXG.Points. */
@@ -1521,10 +1747,8 @@ export interface CheckboxAttributes extends TextAttributes {
     disabled?: Boolean;
 }
 export interface Checkbox extends Text {
-    /** missing description */
+    /** Returns the value of the checkbox element */
     Value(): Boolean;
-    /** missing description */
-    onChange(action: Function): void;
 }
 export interface CircumcenterAttributes extends PointAttributes {
 }
@@ -1605,14 +1829,22 @@ export interface ParametricSurface3DAttributes extends Curve3DAttributes {
 export interface ParametricSurface3D extends Curve3D {
 }
 export interface Face3DAttributes extends CurveAttributes {
+    /** Shading of faces. For this, the HSL color scheme is used. Two types are possible: either by 'angle' or by 'zIndex'. By default (i.e. type:'angle'), the angle between the camera axis and the normal of the face determines the lightness value of the HSL color. Otherwise, the zIndex of the face determines the lightness value of the HSL color. */
+    shader?: Object;
 }
 export interface Face3D extends Curve {
     /** missing description */
-    dataX: number[];
+    d: Number;
     /** missing description */
-    dataY: number[];
+    faceNumber: Number;
     /** missing description */
-    dataZ: number[];
+    normal: number[];
+    /** missing description */
+    polyhedron: Object;
+    /** missing description */
+    vec1: number[];
+    /** missing description */
+    vec2: number[];
 }
 export interface FunctiongraphAttributes extends CurveAttributes {
 }
@@ -1625,6 +1857,10 @@ export interface Functiongraph3D extends ParametricSurface3D {
 export interface GliderAttributes extends PointAttributes {
 }
 export interface Glider extends Point {
+    /** Animate the point. */
+    startAnimation(direction: number | Function, stepCount: number | Function, delay: number | Function): void;
+    /** Stop animation. */
+    stopAnimation(): CoordsElement;
 }
 export interface Glider3DAttributes extends Point3DAttributes {
 }
@@ -1644,17 +1880,25 @@ export interface GridAttributes extends CurveAttributes {
     /** Include the the boundary lines in the grid */
     includeBoundaries?: Boolean;
     /** Attributes for Major Grid Elements */
-    major?: GeometryElementAttributes;
+    major?: GridAttributes;
     /** Attributes for Minor Grid Elements */
-    minor?: GeometryElementAttributes;
+    minor?: GridAttributes;
     /** number of elements in minor grid between elements of the major grid. */
     minorElements?: number | 'auto';
-    /**  */
-    snapSizeX?: Boolean;
-    /**  */
-    snapSizeY?: Boolean;
-    /**  */
-    snapToGrid?: Boolean;
+    /** There are different point styles which differ in appearance. */
+    face?: 'o' | 'line' | 'point' | 'cross' | 'plus' | 'minus' | 'divide' | 'diamond' | 'triangledown' | 'triangleleft' | 'triangleright' | 'triangleup' | 'square' | 'circle' | string;
+    /** To print a quadratic grid with same distance of major grid elements in x- and y-direction. 'min' or true will set both distances of major grid elements in x- and y-direction to the primarily lesser value, 'max' to the primarily greater value. */
+    forceSquare?: Boolean;
+    /** Deprecated. Use Grid#majorStep instead. */
+    gridX?: number;
+    /** Deprecated. Use Grid#majorStep instead. */
+    gridY?: number;
+    /** This number (pixel value) controls where grid elements end at the canvas edge. If zero, the line ends exactly at the end, if negative there is a margin to the inside, if positive the line ends outside of the canvas (which is invisible). */
+    margin?: number;
+    /** Number of vertices for face 'polygon'. */
+    polygonVertices?: number;
+    /** Size of grid elements. There are the following possibilities: */
+    size?: number | Function;
 }
 export interface Grid extends Curve {
 }
@@ -1691,11 +1935,9 @@ export interface InputAttributes extends TextAttributes {
     maxlength?: number;
 }
 export interface Input extends Text {
-    /** missing description */
-    rendNodeInput: HTMLInputElement;
-    /** missing description */
+    /** Sets value of the input element. */
     set(value: String): GeometryElement;
-    /** missing description */
+    /** Returns the value (content) of the input element */
     Value(): string;
 }
 export interface IntegralAttributes extends CurveAttributes {
@@ -1719,7 +1961,7 @@ export interface Integral extends Curve {
     curveLeft: Point;
     /** missing description */
     curveRight: Point;
-    /** missing description */
+    /** Returns the current value of the integral. */
     Value(): Point;
 }
 export interface IntersectionAttributes extends PointAttributes {
@@ -1741,8 +1983,8 @@ export interface LabelAttributes extends TextAttributes {
     offset?: [number, number];
     /** Possible string values for the position of a label for label anchor points are:'first' (lines only)'last' (lines only)'lft''rt''top''bot''ulft''urt''llft''lrt'This is relevant for non-points: line, circle, curve.The names have been borrowed from MetaPost. */
     position?: 'first' | 'last' | 'lft' | 'rt' | 'top' | 'bot' | 'ulft' | 'urt' | 'llft' | 'lrt';
-    /**  Display number as integer + nominator / denominator. Works together with MathJax, KaTex or as plain text. */
-    toFraction?: Boolean;
+    /** List of object ids which should be ignored on setting automatic position of label text. */
+    autoPositionWhitelist?: string[];
 }
 export interface Label extends Text {
 }
@@ -1751,22 +1993,24 @@ export interface LegendAttributes extends GeometryElementAttributes {
     labels?: string[];
     /** Array of legend colors */
     colors?: string[];
+    /** The element is fixed and can not be dragged around. */
+    frozen?: Boolean;
+    /** Length of line in one legend entry */
+    lineLength?: number;
+    /** Height (in px) of one legend entry */
+    rowHeight?: number;
+    /** (Circular) array of opacity for legend line stroke color for one legend entry. */
+    strokeOpacity?: number;
+    /** Height (in px) of one legend entry */
+    strokeWidth?: number;
+    /** Default style of a legend element. The only possible value is 'vertical'. */
+    style?: string;
 }
 export interface Legend extends GeometryElement {
-    /** missing description */
-    labels: number[];
-    /** missing description */
-    rowHeight: number;
-    /** missing description */
-    style: String;
 }
 export interface LocusAttributes extends CurveAttributes {
 }
 export interface Locus extends Curve {
-    /** missing description */
-    ctime: number;
-    /** missing description */
-    eq: String;
 }
 export interface MajorArcAttributes extends CurveAttributes {
 }
@@ -1799,6 +2043,10 @@ export interface MeasurementAttributes extends TextAttributes {
 export interface Measurement extends Text {
 }
 export interface Mesh3DAttributes extends CurveAttributes {
+    /** Step width of the mesh in the direction of the first spanning vector. */
+    stepWidthU?: number;
+    /** Step width of the mesh in the direction of the second spanning vector. */
+    stepWidthV?: number;
 }
 export interface Mesh3D extends Curve {
 }
@@ -1814,13 +2062,13 @@ export interface MinorSectorAttributes extends CurveAttributes {
 }
 export interface MinorSector extends Curve {
 }
-export interface MirrorelementAttributes extends GeometryElementAttributes {
+export interface MirrorElementAttributes extends GeometryElementAttributes {
 }
-export interface Mirrorelement extends GeometryElement {
+export interface MirrorElement extends GeometryElement {
 }
-export interface MirrorpointAttributes extends PointAttributes {
+export interface MirrorPointAttributes extends PointAttributes {
 }
-export interface Mirrorpoint extends Point {
+export interface MirrorPoint extends Point {
 }
 export interface NonReflexAngleAttributes extends AngleAttributes {
 }
@@ -1853,10 +2101,10 @@ export interface SegmentAttributes extends LineAttributes {
 export interface Segment extends Line {
 }
 export interface ParallelogramAttributes extends PolygonAttributes {
-    /** Attributes of helper point of normal. */
-    parallelpoint?: DisplayPoint;
 }
 export interface Parallelogram extends Polygon {
+    /** missing description */
+    parallelPoint: Point;
 }
 export interface PerpendicularAttributes extends SegmentAttributes {
 }
@@ -1885,8 +2133,6 @@ export interface PolygonalChainAttributes extends PolygonAttributes {
 export interface PolygonalChain extends Polygon {
 }
 export interface Polyhedron3DAttributes extends GeometryElement3DAttributes {
-    /** Default attributes for the face shader. */
-    shader?: ShaderInterface;
     /** Array of face colors. */
     fillColorArray?: string[];
 }
@@ -1905,6 +2151,8 @@ export interface RadicalAxis extends Line {
 export interface ReflectionAttributes extends GeometryElementAttributes {
     /** Type of transformation. Possible values are 'Euclidean', 'projective'.If the value is 'Euclidean', the reflected element of a circle is again a circle, otherwise it is a conic section. */
     type?: String;
+    /** Attributes of circle center, i.e. the center of the circle, if a circle is the mirror element and the transformation type is 'Euclidean' */
+    center?: PointAttributes;
 }
 export interface Reflection extends GeometryElement {
 }
@@ -1921,13 +2169,15 @@ export interface RegularPolygonAttributes extends PolygonAttributes {
     vertices?: GeometryElementAttributes;
     /** Is the polygon bordered by lines? */
     withLines?: Boolean;
+    /** Attributes for the polygon label. */
+    label?: LabelAttributes;
 }
 export interface RegularPolygon extends Polygon {
 }
 export interface RiemannsumAttributes extends CurveAttributes {
 }
 export interface Riemannsum extends Curve {
-    /** missing description */
+    /** Returns the value of the Riemann sum, i.e. the sum of the (signed) areas of the rectangles. */
     Value(): number;
 }
 export interface SemicircleAttributes extends ArcAttributes {
@@ -1939,8 +2189,6 @@ export interface Semicircle extends Arc {
     midpoint: Midpoint;
 }
 export interface SliderAttributes extends GliderAttributes {
-    /** If the difference between the slider value and one of the elements of snapValues is less than this number (in user coordinate units), the slider will snap to that value. */
-    stepWidth?: number;
     /** Attributes for the base line of the slider. */
     baseline?: GeometryElementAttributes;
     /** Attributes for the highlighting line of the slider. */
@@ -1960,7 +2208,7 @@ export interface SliderAttributes extends GliderAttributes {
     /** If not null, this is appended to the value and to unitLabel in the slider label. Possible types: string, number or function. */
     postLabel?: String;
     /** The precision of the slider value displayed in the optional text. Replaced by the attribute ”digits”. */
-    precision?: number;
+    precision?: string;
     /** Size of slider point. */
     size?: number;
     /** If the difference between the slider value and one of the elements of snapValues is less than this number (in user coordinate units), the slider will snap to that value. */
@@ -1985,16 +2233,14 @@ export interface Slider extends Glider {
     _smax: number;
     /** missing description */
     _smin: number;
-    /** missing description */
+    /** Sets the maximum value of the slider. */
     setMax(value: number): Object;
-    /** missing description */
+    /** Sets the minimum value of the slider. */
     setMin(value: number): Object;
-    /** missing description */
+    /** Sets the value of the slider. This call must be followed by a board update call. */
     setValue(value: number): Object;
-    /** missing description */
+    /** Returns the current slider value. */
     Value(): number;
-    /** missing description */
-    on(event: string, action: Function): void;
 }
 export interface SlopefieldAttributes extends VectorfieldAttributes {
     /** Customize arrow heads of vectors. Be careful! If enabled this will slow down the performance. Fields are:enabled: Booleansize: length of the arrow head legs (in pixel)angle: angle of the arrow head legs In radians. */
@@ -2003,7 +2249,7 @@ export interface SlopefieldAttributes extends VectorfieldAttributes {
     scale?: Object;
 }
 export interface Slopefield extends Vectorfield {
-    /** missing description */
+    /** Set the defining functions of slope field. */
     setF(): Object;
 }
 export interface SlopetriangleAttributes extends LineAttributes {
@@ -2021,7 +2267,7 @@ export interface SlopetriangleAttributes extends LineAttributes {
     toppoint?: Point;
 }
 export interface Slopetriangle extends Line {
-    /** missing description */
+    /** Returns the value of the slope triangle, that is the slope of the tangent. */
     Value(): number;
 }
 export interface SmartlabelAttributes extends TextAttributes {
@@ -2045,6 +2291,20 @@ export interface Smartlabel extends Text {
 export interface Sphere3DAttributes extends GeometryElement3DAttributes {
 }
 export interface Sphere3D extends GeometryElement3D {
+    /** missing description */
+    center: Point3D;
+    /** missing description */
+    element2D: GeometryElement;
+    /** missing description */
+    method: string;
+    /** missing description */
+    point2: Point3D;
+    /** missing description */
+    projectionType: string;
+    /** Calculates the radius of the circle.  */
+    Radius(value?: number | Function): number;
+    /** Set a new radius, then update the board.  */
+    setRadius(r: number | Function): void;
 }
 export interface SplineAttributes extends CurveAttributes {
 }
@@ -2076,7 +2336,7 @@ export interface TapemeasureAttributes extends SegmentAttributes {
     /** Attributes for second helper point defining the tape measure position. */
     point2?: PointAttributes;
     /** The precision of the tape measure value displayed in the optional text. Replaced by the attribute digits */
-    precision?: number;
+    precision?: string;
     /** Text rotation in degrees. */
     rotate?: number;
     /** Attributes for the ticks of the tape measure. */
@@ -2087,7 +2347,7 @@ export interface TapemeasureAttributes extends SegmentAttributes {
     withTicks?: Boolean;
 }
 export interface Tapemeasure extends Segment {
-    /** missing description */
+    /** Returns the length of the tape measure. */
     Value(): number;
 }
 export interface TracecurveAttributes extends CurveAttributes {
@@ -2096,17 +2356,29 @@ export interface TracecurveAttributes extends CurveAttributes {
 }
 export interface Tracecurve extends Curve {
 }
-export interface TransformAttributes extends GeometryElementAttributes {
+export interface TransformationAttributes extends GeometryElementAttributes {
 }
-export interface Transform extends GeometryElement {
-    /** missing description */
-    point(fromPoint: Point, attributes: PointAttributes): Point;
-    /** missing description */
+export interface Transformation extends GeometryElement {
+    /** Applies a transformation once to a point element, that are: {@link Point}, {@link Text}, {@link Image}, {@link Point3D} or to an array of such elements. If it is a free 2D point, then it can be dragged around later and will overwrite the transformed coordinates. */
     applyOnce(element: GeometryElement): void;
-    /** missing description */
+    /**  Binds a transformation to a GeometryElement or an array of elements. In every update of the GeometryElement(s), the transformation is executed. That means, in order to immediately apply the transformation, a call of currentBoard.update() has to follow. */
     bindTo(element: GeometryElement | GeometryElement[]): void;
-    /** missing description */
-    setMatrix(): Transform;
+    /** Set the transformation matrix for different types of standard transforms. */
+    setMatrix(board: Object, type: 'translate' | 'scale' | 'reflect' | 'rotate' | 'shear' | 'generic', params: any[]): Transformation;
+    /** Applies a transformation once to a point element, that are: {@link Point}, {@link Text}, {@link Image}, {@link Point3D} or to an array of such elements. If it is a free 2D point, then it can be dragged around later and will overwrite the transformed coordinates.  */
+    applyOnce(p: Point | number[]): void;
+    /** Binds a transformation to a GeometryElement or an array of elements. In every update of the GeometryElement(s), the transformation is executed. That means, in order to immediately apply the transformation after calling bindTo, a call of board.update() has to follow. <p> The transformation is simply appended to the existing list of transformations of the object. It is not fused (melt) with an existing transformation.  */
+    bindTo(el: number[] | Object): void;
+    /** Combine two transformations to one transformation. This only works if both of transformation matrices consist of numbers solely, and do not contain functions. Multiplies the transformation with a transformation t from the left. i.e. (this) = (t) join (this)  */
+    melt(t: Transformation): void;
+    /** Binds a transformation to a GeometryElement or an array of elements. In every update of the GeometryElement(s), the transformation is executed. That means, in order to immediately apply the transformation after calling meltTo, a call of board.update() has to follow. <p> In case the last transformation of the element and this transformation are static, i.e. the transformation matrices do not depend on other elements, the transformation will be fused into (multiplied with) the last transformation of the element. Thus, the list of transformations is kept small. If the transformation will be the first transformation ot the element, it will be cloned to prevent side effects.  */
+    meltTo(el: number[] | Object): void;
+    /** Empty method. Unused.  */
+    setAttribute(term: Object): void;
+    /** Set the transformation matrix for different types of standard transforms.  */
+    setMatrix(board: Board, type: string, params: number[]): void;
+    /** Set the 3D transformation matrix for different types of standard transforms.  */
+    setMatrix3D(board: Board, type: string, params: number[]): void;
 }
 export interface Transform3DAttributes extends GeometryElement3DAttributes {
 }
@@ -2124,17 +2396,17 @@ export interface Segment3DAttributes extends Line3DAttributes {
 }
 export interface Segment3D extends Line3D {
 }
-export interface TranslateAttributes extends TransformAttributes {
+export interface TranslateAttributes extends TransformationAttributes {
 }
-export interface Translate extends Transform {
+export interface Translate extends Transformation {
 }
-export interface RotateAttributes extends TransformAttributes {
+export interface RotateAttributes extends TransformationAttributes {
 }
-export interface Rotate extends Transform {
+export interface Rotate extends Transformation {
 }
-export interface ScaleAttributes extends TransformAttributes {
+export interface ScaleAttributes extends TransformationAttributes {
 }
-export interface Scale extends Transform {
+export interface Scale extends Transformation {
 }
 export interface Translate3DAttributes extends Transform3DAttributes {
 }
@@ -2871,7 +3143,7 @@ export declare class TSXBoard {
     /** create a chart */
     Chart(f: number[], attributes?: ChartAttributes): Chart;
     Circle(centerPoint: Point | pointAddr | Function, remotePoint: Point | pointAddr | Line | number | Function | Circle, attributes?: CircleAttributes): Circle;
-    Circle(initial: Circle, transform: Transform, attributes?: CircleAttributes): Circle;
+    Circle(initial: Circle, transform: Transformation, attributes?: CircleAttributes): Circle;
     /** In 3D space, a circle consists of all points on a given plane with a given distance from a given point.
                        The given point is called the center, and the given distance is called the radius.
                        A circle can be constructed by providing a center, a normal vector (either homogenous or cartesian),
@@ -2913,17 +3185,17 @@ export declare class TSXBoard {
     Group(pointArray: Point[] | Polygon, attributes?: GroupAttributes): Group;
     Image(url: SpaceIcon, lowerLeft: pointAddr, widthHeight: [number, number], attributes?: ImageAttributes): Image;
     Image(url: string, lowerLeft: pointAddr, widthHeight: [number, number], attributes?: ImageAttributes): Image;
-    Implicitcurve(f: Function | String, attributes?: ImplicitcurveAttributes): Implicitcurve;
-    Implicitcurve(f: Function | String, dfx: Function | String, dfy: Function | String, attributes?: ImplicitcurveAttributes): Implicitcurve;
+    ImplicitCurve(f: Function | String, attributes?: ImplicitCurveAttributes): ImplicitCurve;
+    ImplicitCurve(f: Function | String, dfx: Function | String, dfy: Function | String, attributes?: ImplicitCurveAttributes): ImplicitCurve;
     /** The circle that is the intersection of two elements (plane3d or sphere3d) in 3D. */
     IntersectionCircle3D(sphere1: Sphere3D, sphere: Sphere3D | Plane3D, attributes?: IntersectionCircle3DAttributes): IntersectionCircle3D;
     /** The circle that is the intersection of two elements (plane3d or sphere3d) in 3D. */
-    IntersectionLine3D(plane1: Sphere3D, plane2: Plane3D, attributes?: IntersectionLine3DAttributes): IntersectionLine3D;
+    IntersectionLine3D(plane1: Sphere3D | Plane3D, plane2: Plane3D, attributes?: IntersectionLine3DAttributes): IntersectionLine3D;
     /** Two signatures: A line in 3D is given by two points, or one point and a direction vector.
     *```
    *```
     The 3D line is defined by two 3D points (Point3D): The points can be either existing points or coordinate arrays of the form [x, y, z]. */
-    Line3D(point1: Point3D | pointAddr3D, point2: Point3D | pointAddr3D, attributes?: Line3DAttributes): Line3D;
+    Line3D(point1: Point3D | pointAddr3D, pointDir: Point3D | pointAddr3D, attributes?: Line3DAttributes): Line3D;
     /** Two signatures: A line in 3D is given by two points, or one point and a direction vector.
     *```
    *```
@@ -2933,7 +3205,7 @@ export declare class TSXBoard {
     Plane3D(point: Point3D | number[] | Function, direction1: number[] | Function | Function[], direction2: number[] | Function | Function[], range1?: pointAddr, range2?: pointAddr, attributes?: Plane3DAttributes): Plane3D;
     Plane3D(point1: Point3D, point2: Point3D, point3: Point3D, range1?: pointAddr, range2?: pointAddr, attributes?: Plane3DAttributes): Plane3D;
     Plane3D(point1: Point3D, point2: Point3D, point3: Point3D, attributes?: Plane3DAttributes): Plane3D;
-    Point3D(xyz: NumberFunction[], attributes?: Point3DAttributes): Point3D;
+    Point3D(xyz: number[], attributes?: Point3DAttributes): Point3D;
     Point3D(fn: () => number[] | [number, number, number], attributes?: Point3DAttributes): Point3D;
     /** Array of Points */
     Polygon(vertices: Point[] | pointAddr[] | Function, attributes?: PolygonAttributes): Polygon;
@@ -2979,7 +3251,7 @@ export declare class TSXBoard {
     Parallel(line: Line | [Point, Point], point: Point | pointAddr, attributes?: ParallelAttributes): Parallel;
     Parallel(lineP1: Point | pointAddr, lineP2: Point | pointAddr, Point: Point | pointAddr, attributes?: ParallelAttributes): Parallel;
     /** Create an Arrow parallel to a segment. The constructed arrow contains p3 and has the same slope as the line through p1 and p2. */
-    Arrowparallel(p1: Point | pointAddr, p2: Point | pointAddr, p3: Point | pointAddr, attributes?: ArrowparallelAttributes): Arrowparallel;
+    ArrowParallel(p1: Point | pointAddr, p2: Point | pointAddr, p3: Point | pointAddr, attributes?: ArrowParallelAttributes): ArrowParallel;
     /** Create an Axis with two points (like a Line) */
     Axis(p1: Point | pointAddr, p2: Point | pointAddr, attributes?: AxisAttributes): Axis;
     /** A cubic bezier curve.  The input is 3k + 1 points; those at positions k mod 3 = 0 (eg: 0, 3, 6 are the data points, the two points between each data points are the control points.
@@ -3138,8 +3410,8 @@ export declare class TSXBoard {
     Midpoint(line: Line, attributes?: MidpointAttributes): Midpoint;
     MinorArc(p1: Point | pointAddr, p2: Point | pointAddr, p3: Point | pointAddr, attributes?: MinorArcAttributes): MinorArc;
     MinorSector(p1: Point | pointAddr, p2: Point | pointAddr, p3: Point | pointAddr, attributes?: MinorSectorAttributes): MinorSector;
-    Mirrorelement(element: Point | Line | Circle | Curve | Polygon, acrossPoint: Point | pointAddr, attributes?: MirrorelementAttributes): Mirrorelement;
-    Mirrorpoint(p1: Point, p2: Point, attributes?: MirrorpointAttributes): Mirrorpoint;
+    MirrorElement(element: Point | Line | Circle | Curve | Polygon, acrossPoint: Point | pointAddr, attributes?: MirrorElementAttributes): MirrorElement;
+    MirrorPoint(p1: Point, p2: Point, attributes?: MirrorPointAttributes): MirrorPoint;
     NonReflexAngle(point1: Point, point2: Point, point3: Point, attributes?: NonReflexAngleAttributes): NonReflexAngle;
     Normal(object: Line | Circle | Curve, point: Point, attributes?: NormalAttributes): Normal;
     Normal(glider: Glider, attributes?: NormalAttributes): Normal;
@@ -3266,7 +3538,7 @@ export declare class TSXBoard {
         let shapeb = TSX.transformPoint(b,[rot,scale,trans],{color:'blue'})
         TSX.segment(shapea,shapeb)
    ~~~             */
-    TransformPoint(point: Point, transform: Transform | Transform[], attributes?: TransformPointAttributes): TransformPoint;
+    TransformPoint(point: Point, transform: Transformation | Transformation[], attributes?: TransformPointAttributes): TransformPoint;
     /** Create a new point from an existing point and a concatenation of transforms. This is a powerful way of creating complex constructions that can be rotated, scaled, and translated.  An alternative to using Groups.
    ~~~js
         // define a few sliders to control the model
@@ -3289,11 +3561,11 @@ export declare class TSXBoard {
     TransformPoint3D(point: Point3D, transform: Transform3D | Transform3D[], attributes?: TransformPoint3DAttributes): TransformPoint3D;
     Segment3D(P1: Point | pointAddr, P2: Point | pointAddr, attributes?: Segment3DAttributes): Segment3D;
     Segment3D(P1: Point | pointAddr, P2: Point | pointAddr, length: number | Function, attributes?: Segment3DAttributes): Segment3D;
-    /** Create a Transform object with Translate properties. */
+    /** Create a Transformation object with Translate properties. */
     Translate(dx: number | Function, dy: number | Function, attributes?: TranslateAttributes): Translate;
-    /** Create a Transform object with Rotate properties. */
+    /** Create a Transformation object with Rotate properties. */
     Rotate(angle: number | Function, around: Point | pointAddr, attributes?: RotateAttributes): Rotate;
-    /** Create a Transform object with Scale properties.  Scaling is relative to [0,0]. */
+    /** Create a Transformation object with Scale properties.  Scaling is relative to [0,0]. */
     Scale(xMultiplier: number | Function, yMultiplier: number | Function, attributes?: ScaleAttributes): Scale;
     /** Create a Transform3D object with Translate properties. */
     Translate3D(dx: number | Function, dy: number | Function, dz: number | Function, attributes?: Translate3DAttributes): Translate3D;
@@ -3305,16 +3577,11 @@ export declare class TSXBoard {
     RotateY3D(angle: number | Function, attributes?: RotateY3DAttributes): RotateY3D;
     /** Create a Transform3D object with Rotate properties around the Z axis. */
     RotateZ3D(angle: number | Function, attributes?: RotateZ3DAttributes): RotateZ3D;
-    /** Create a Transform object with Scale properties.  Scaling is relative to [0,0,0]. */
+    /** Create a Transformation object with Scale properties.  Scaling is relative to [0,0,0]. */
     Scale3D(xMultiplier: number | Function, yMultiplier: number | Function, zMultiplier: number | Function, attributes?: Scale3DAttributes): Scale3D;
 }
 interface MeshAttributes extends CurveAttributes {
     /** A Mesh3D is attached to a Plane3D. */
     visible?: Boolean | Function;
-}
-interface VisitAttributes {
-    callback?: Function;
-    effect?: "==" | "<>" | "<" | ">";
-    repeat?: number;
 }
 export {};
