@@ -21,7 +21,7 @@
         //    DEALINGS IN THE SOFTWARE.
         //
         /////////////////////////////////////////////////////////////////////////////
-        //   Generated on June 2, 2025, 8:49 am
+        //   Generated on June 3, 2025, 5:32 pm
 
      // match JSXGraph definition for JXG_Point3D, etc
         type NumberFunction = Number | Function
@@ -537,7 +537,7 @@ export type SpaceIcon =
  /** missing description */
  quadraticform: number[]; 
  /** missing description */
- rendNode: Object; 
+ rendNode: HTMLElement; 
  /** missing description */
  stdform: number[]; 
  /** missing description */
@@ -729,6 +729,8 @@ export type SpaceIcon =
  Y(): number,
  /** Getter method for z, this is used by CAS-points to access point coordinates. */
  Z(): number,
+/** sets an arbitrary number of attributes for this CoordsElement element*/  // inserted in writewrapper()
+                        setAttribute(attrs: CoordsElementAttributes):void,
  }
 
  export interface BoardAttributes  {
@@ -824,6 +826,8 @@ export type SpaceIcon =
  //// fields 
 
  //// methods 
+/** sets an arbitrary number of attributes for this Board element*/  // inserted in writewrapper()
+                        setAttribute(attrs: BoardAttributes):void,
  }
 
  export interface PointAttributes extends GeometryElementAttributes {
@@ -879,6 +883,8 @@ export type SpaceIcon =
  isOn(el:GeometryElement,tol:number): Boolean,
  /** Updates the position of the point. */
  update(fromParent?:Boolean): number[],
+/** sets an arbitrary number of attributes for this Point element*/  // inserted in writewrapper()
+                        setAttribute(attrs: PointAttributes):void,
  }
 
  export interface LineAttributes extends GeometryElementAttributes {
@@ -956,6 +962,8 @@ export type SpaceIcon =
  setFixedLength(l:string|number|Function): number,
  /** Returns the direction vector of the line. This is an array of length two containing the direction vector as [x, y]. It is defined as <li> the difference of the x- and y-coordinate of the second and first point, in case both points are finite or both points are infinite. <li> [x, y] coordinates of point2, in case only point2 is infinite. <li> [-x, -y] coordinates of point1, in case only point1 is infinite.  */
  Direction():number[],
+/** sets an arbitrary number of attributes for this Line element*/  // inserted in writewrapper()
+                        setAttribute(attrs: LineAttributes):void,
  }
 
  export interface GeometryElement3DAttributes extends GeometryElementAttributes {
@@ -973,6 +981,8 @@ export type SpaceIcon =
  view: any; 
 
  //// methods 
+/** sets an arbitrary number of attributes for this GeometryElement3D element*/  // inserted in writewrapper()
+                        setAttribute(attrs: GeometryElement3DAttributes):void,
  }
 
  export interface View3DAttributes extends GeometryElementAttributes {
@@ -1115,6 +1125,8 @@ export type SpaceIcon =
  setCurrentView(n:number):View3D,
  /** Map world coordinates to focal coordinates. These coordinate systems are explained in the {@link JXG.View3D#boxToCam} matrix documentation.  */
  worldToFocal(pWorld:number[],homog?:Boolean):void,
+/** sets an arbitrary number of attributes for this View3D element*/  // inserted in writewrapper()
+                        setAttribute(attrs: View3DAttributes):void,
  }
 
  export interface ChartAttributes extends GeometryElementAttributes {
@@ -1144,6 +1156,8 @@ export type SpaceIcon =
  drawSpline(board:string|Board, x:number[], y:number[], attributes?:BoardAttributes): Curve,
  /** Template for dynamic charts update. This method is used to compute new entries for the arrays this.dataX and this.dataY. It is used in update. Default is an empty method, can be overwritten by the user. */
  updateDataArray(): Chart,
+/** sets an arbitrary number of attributes for this Chart element*/  // inserted in writewrapper()
+                        setAttribute(attrs: ChartAttributes):void,
  }
 
  export interface CircleAttributes extends GeometryElementAttributes {
@@ -1203,6 +1217,8 @@ export type SpaceIcon =
  Z(t:number): number,
  /** Uses the boards renderer to update the circle.  */
  update():void,
+/** sets an arbitrary number of attributes for this Circle element*/  // inserted in writewrapper()
+                        setAttribute(attrs: CircleAttributes):void,
  }
 
  export interface Circle3DAttributes extends GeometryElement3DAttributes {
@@ -1220,6 +1236,8 @@ export type SpaceIcon =
  Radius(value?:number|Function):number,
  /** Set a new radius, then update the board.  */
  setRadius(r:number|Function):void,
+/** sets an arbitrary number of attributes for this Circle3D element*/  // inserted in writewrapper()
+                        setAttribute(attrs: Circle3DAttributes):void,
  }
 
  export interface ComplexAttributes  {
@@ -1253,6 +1271,8 @@ export type SpaceIcon =
  sub(c:Complex|number):Complex,
  /** Converts a complex number into a string. */
  toString(): String,
+/** sets an arbitrary number of attributes for this Complex element*/  // inserted in writewrapper()
+                        setAttribute(attrs: ComplexAttributes):void,
  }
 
  export interface CompositionAttributes  {
@@ -1309,6 +1329,8 @@ export type SpaceIcon =
  isReal(): Boolean,
  /** Set coordinates by either user coordinates or screen coordinates and recalculate the other one. */
  setCoordinates(coord_type:number, coordinates:number[], doRound?:Boolean, noevent?:Boolean): Coords,
+/** sets an arbitrary number of attributes for this Coords element*/  // inserted in writewrapper()
+                        setAttribute(attrs: CoordsAttributes):void,
  }
 
  export interface CurveAttributes extends GeometryElementAttributes {
@@ -1390,6 +1412,8 @@ export type SpaceIcon =
  Y(t:number,suspendUpdate?:Boolean): number,
  /** Treat the curve as curve with homogeneous coordinates. */
  Z(t:number): number,
+/** sets an arbitrary number of attributes for this Curve element*/  // inserted in writewrapper()
+                        setAttribute(attrs: CurveAttributes):void,
  }
 
  export interface Curve3DAttributes extends GeometryElement3DAttributes {
@@ -1415,6 +1439,8 @@ export type SpaceIcon =
  Y(u:number): number,
  /** Function which maps (u) to z; i.e. */
  Z(u:number): number,
+/** sets an arbitrary number of attributes for this Curve3D element*/  // inserted in writewrapper()
+                        setAttribute(attrs: Curve3DAttributes):void,
  }
 
  export interface DumpAttributes  {
@@ -1446,6 +1472,8 @@ export type SpaceIcon =
  toJCAN(obj:Object): string,
  /** Saves the construction in &lt;tt&gt;board&lt;/tt&gt; to JessieCode. */
  toJessie(board:Board): string,
+/** sets an arbitrary number of attributes for this Dump element*/  // inserted in writewrapper()
+                        setAttribute(attrs: DumpAttributes):void,
  }
 
  export interface ForeignObjectAttributes extends GeometryElementAttributes {
@@ -1473,6 +1501,8 @@ export type SpaceIcon =
  setSize(width:number,height:number): ForeignObject,
  /** Returns the width of the foreignObject in user coordinates. */
  W(): number,
+/** sets an arbitrary number of attributes for this ForeignObject element*/  // inserted in writewrapper()
+                        setAttribute(attrs: ForeignObjectAttributes):void,
  }
 
  export interface GroupAttributes extends CompositionAttributes {
@@ -1561,6 +1591,8 @@ export type SpaceIcon =
  setSize(width:number,height:number):void,
  /** Returns the width of the image in user coordinates. */
  W(): number,
+/** sets an arbitrary number of attributes for this Image element*/  // inserted in writewrapper()
+                        setAttribute(attrs: ImageAttributes):void,
  }
 
  export interface ImplicitCurveAttributes extends GeometryElementAttributes {
@@ -1616,6 +1648,8 @@ export type SpaceIcon =
  dfy():number,
  /** Function of two variables for the left side of the equation <i>f(x,y)=0</i>.  */
  f():number,
+/** sets an arbitrary number of attributes for this ImplicitCurve element*/  // inserted in writewrapper()
+                        setAttribute(attrs: ImplicitCurveAttributes):void,
  }
 
  export interface IntersectionCircle3DAttributes extends GeometryElement3DAttributes {
@@ -1627,6 +1661,8 @@ export type SpaceIcon =
  //// fields 
 
  //// methods 
+/** sets an arbitrary number of attributes for this IntersectionCircle3D element*/  // inserted in writewrapper()
+                        setAttribute(attrs: IntersectionCircle3DAttributes):void,
  }
 
  export interface IntersectionLine3DAttributes extends GeometryElement3DAttributes {
@@ -1638,6 +1674,8 @@ export type SpaceIcon =
  //// fields 
 
  //// methods 
+/** sets an arbitrary number of attributes for this IntersectionLine3D element*/  // inserted in writewrapper()
+                        setAttribute(attrs: IntersectionLine3DAttributes):void,
  }
 
  export interface Line3DAttributes extends LineAttributes, GeometryElement3DAttributes {
@@ -1671,6 +1709,8 @@ export type SpaceIcon =
  //// methods 
  /** Update the z-index of the line, i.e. the z-index of its midpoint.  */
  updateZIndex():Line3D,
+/** sets an arbitrary number of attributes for this Line3D element*/  // inserted in writewrapper()
+                        setAttribute(attrs: Line3DAttributes):void,
  }
 
  export interface Plane3DAttributes extends GeometryElement3DAttributes {
@@ -1720,6 +1760,8 @@ export type SpaceIcon =
  Y(u:number, v:number): number,
  /** Get z-coordinate of a point on the plane for parameters (u, v). */
  Z(u:number, v:number): number,
+/** sets an arbitrary number of attributes for this Plane3D element*/  // inserted in writewrapper()
+                        setAttribute(attrs: Plane3DAttributes):void,
  }
 
  export interface Point3DAttributes extends PointAttributes, GeometryElement3DAttributes {
@@ -1755,6 +1797,8 @@ export type SpaceIcon =
 P.moveTo([A.X(), A.Y()], 5000)
 ``` */
  moveTo(where:number[]|Function,time?:number,options?:MoveToOptions):Promise<any>,
+/** sets an arbitrary number of attributes for this Point3D element*/  // inserted in writewrapper()
+                        setAttribute(attrs: Point3DAttributes):void,
  }
 
  export interface PolygonAttributes extends GeometryElementAttributes {
@@ -1814,6 +1858,8 @@ P.moveTo([A.X(), A.Y()], 5000)
  showElement(borderless?:Boolean):GeometryElement,
  /** Uses the boards renderer to update the polygon. */
  updateRenderer(): Polygon,
+/** sets an arbitrary number of attributes for this Polygon element*/  // inserted in writewrapper()
+                        setAttribute(attrs: PolygonAttributes):void,
  }
 
  export interface Polygon3DAttributes extends PolygonAttributes, GeometryElement3DAttributes {
@@ -1827,6 +1873,8 @@ P.moveTo([A.X(), A.Y()], 5000)
  vertices: number[][]; 
 
  //// methods 
+/** sets an arbitrary number of attributes for this Polygon3D element*/  // inserted in writewrapper()
+                        setAttribute(attrs: Polygon3DAttributes):void,
  }
 
  export interface TextAttributes extends GeometryElementAttributes {
@@ -1926,6 +1974,8 @@ P.moveTo([A.X(), A.Y()], 5000)
  updateSize(): this,
  /** Decode unicode entities into characters. */
  utf8_decode(string:string): string,
+/** sets an arbitrary number of attributes for this Text element*/  // inserted in writewrapper()
+                        setAttribute(attrs: TextAttributes):void,
  }
 
  export interface Text3DAttributes extends TextAttributes {
@@ -1941,6 +1991,8 @@ P.moveTo([A.X(), A.Y()], 5000)
  setPosition(method:number, coords:number[] /*,noEvent?:boolean*/):CoordsElement,
  /** Check whether a text's position is finite, i.e. the first entry is not zero.  */
  testIfFinite():Boolean,
+/** sets an arbitrary number of attributes for this Text3D element*/  // inserted in writewrapper()
+                        setAttribute(attrs: Text3DAttributes):void,
  }
 
  export interface TicksAttributes extends GeometryElementAttributes {
@@ -2032,6 +2084,8 @@ P.moveTo([A.X(), A.Y()], 5000)
  updateRenderer(): Ticks,
  /** Recalculate the tick positions and the labels.  */
  update():void,
+/** sets an arbitrary number of attributes for this Ticks element*/  // inserted in writewrapper()
+                        setAttribute(attrs: TicksAttributes):void,
  }
 
  export interface SectorAttributes extends CurveAttributes {
@@ -2077,6 +2131,8 @@ P.moveTo([A.X(), A.Y()], 5000)
  hasPointSector(x:number,y:number): Boolean,
  /** Returns the radius of the sector. */
  Radius(): number,
+/** sets an arbitrary number of attributes for this Sector element*/  // inserted in writewrapper()
+                        setAttribute(attrs: SectorAttributes):void,
  }
 
  export interface VectorfieldAttributes extends CurveAttributes {
@@ -2094,6 +2150,8 @@ P.moveTo([A.X(), A.Y()], 5000)
  //// methods 
  /** Set the defining functions of vector field. */
  setF(func:Function): Object,
+/** sets an arbitrary number of attributes for this Vectorfield element*/  // inserted in writewrapper()
+                        setAttribute(attrs: VectorfieldAttributes):void,
  }
 
  export interface AngleAttributes extends SectorAttributes {
@@ -2136,6 +2194,8 @@ P.moveTo([A.X(), A.Y()], 5000)
 It is sufficient to supply the first three characters of the unit, e.g. 'len'.
  */
  Value(unit?:string):number,
+/** sets an arbitrary number of attributes for this Angle element*/  // inserted in writewrapper()
+                        setAttribute(attrs: AngleAttributes):void,
  }
 
  export interface ArcAttributes extends CurveAttributes {
@@ -2171,6 +2231,8 @@ It is sufficient to supply the first three characters of the unit, e.g. 'len'.
  Radius(): number,
  /** Returns the length of the arc or the value of the angle spanned by the arc. */
  Value(unit?:string,rad?:number): number,
+/** sets an arbitrary number of attributes for this Arc element*/  // inserted in writewrapper()
+                        setAttribute(attrs: ArcAttributes):void,
  }
 
  export interface ArrowAttributes extends LineAttributes {
@@ -2182,6 +2244,8 @@ It is sufficient to supply the first three characters of the unit, e.g. 'len'.
  //// fields 
 
  //// methods 
+/** sets an arbitrary number of attributes for this Arrow element*/  // inserted in writewrapper()
+                        setAttribute(attrs: ArrowAttributes):void,
  }
 
  export interface ParallelAttributes extends LineAttributes {
@@ -2195,6 +2259,8 @@ It is sufficient to supply the first three characters of the unit, e.g. 'len'.
  //// fields 
 
  //// methods 
+/** sets an arbitrary number of attributes for this Parallel element*/  // inserted in writewrapper()
+                        setAttribute(attrs: ParallelAttributes):void,
  }
 
  export interface ArrowParallelAttributes extends ParallelAttributes {
@@ -2206,6 +2272,8 @@ It is sufficient to supply the first three characters of the unit, e.g. 'len'.
  //// fields 
 
  //// methods 
+/** sets an arbitrary number of attributes for this ArrowParallel element*/  // inserted in writewrapper()
+                        setAttribute(attrs: ArrowParallelAttributes):void,
  }
 
  export interface AxisAttributes extends LineAttributes {
@@ -2239,6 +2307,8 @@ It is sufficient to supply the first three characters of the unit, e.g. 'len'.
  defaultTicks: Ticks; 
 
  //// methods 
+/** sets an arbitrary number of attributes for this Axis element*/  // inserted in writewrapper()
+                        setAttribute(attrs: AxisAttributes):void,
  }
 
  export interface BezierCurveAttributes extends CurveAttributes {
@@ -2250,6 +2320,8 @@ It is sufficient to supply the first three characters of the unit, e.g. 'len'.
  //// fields 
 
  //// methods 
+/** sets an arbitrary number of attributes for this BezierCurve element*/  // inserted in writewrapper()
+                        setAttribute(attrs: BezierCurveAttributes):void,
  }
 
  export interface BisectorAttributes extends LineAttributes {
@@ -2263,6 +2335,8 @@ It is sufficient to supply the first three characters of the unit, e.g. 'len'.
  //// fields 
 
  //// methods 
+/** sets an arbitrary number of attributes for this Bisector element*/  // inserted in writewrapper()
+                        setAttribute(attrs: BisectorAttributes):void,
  }
 
  export interface BisectorlinesAttributes extends CompositionAttributes {
@@ -2289,8 +2363,12 @@ It is sufficient to supply the first three characters of the unit, e.g. 'len'.
  export interface Button extends Text {   // fields and methods
 
  //// fields 
+ /** missing description */
+ rendNodeButton: HTMLElement; 
 
  //// methods 
+/** sets an arbitrary number of attributes for this Button element*/  // inserted in writewrapper()
+                        setAttribute(attrs: ButtonAttributes):void,
  }
 
  export interface CardinalsplineAttributes extends CurveAttributes {
@@ -2308,11 +2386,13 @@ It is sufficient to supply the first three characters of the unit, e.g. 'len'.
  //// fields 
 
  //// methods 
+/** sets an arbitrary number of attributes for this Cardinalspline element*/  // inserted in writewrapper()
+                        setAttribute(attrs: CardinalsplineAttributes):void,
  }
 
  export interface CheckboxAttributes extends TextAttributes {
  /** Control the attribute ”checked” of the HTML checkbox. */
-  checked?: Boolean
+  checked?: Boolean|Function
  /** Control the attribute ”disabled” of the HTML checkbox. */
   disabled?: Boolean
 }
@@ -2321,10 +2401,14 @@ It is sufficient to supply the first three characters of the unit, e.g. 'len'.
  export interface Checkbox extends Text {   // fields and methods
 
  //// fields 
+ /** missing description */
+ rendNodeCheck: HTMLElement; 
 
  //// methods 
  /** Returns the value of the checkbox element */
  Value(): Boolean,
+/** sets an arbitrary number of attributes for this Checkbox element*/  // inserted in writewrapper()
+                        setAttribute(attrs: CheckboxAttributes):void,
  }
 
  export interface CircumcenterAttributes extends PointAttributes {
@@ -2336,6 +2420,8 @@ It is sufficient to supply the first three characters of the unit, e.g. 'len'.
  //// fields 
 
  //// methods 
+/** sets an arbitrary number of attributes for this Circumcenter element*/  // inserted in writewrapper()
+                        setAttribute(attrs: CircumcenterAttributes):void,
  }
 
  export interface CircumcircleAttributes extends CircleAttributes {
@@ -2349,6 +2435,8 @@ It is sufficient to supply the first three characters of the unit, e.g. 'len'.
  //// fields 
 
  //// methods 
+/** sets an arbitrary number of attributes for this Circumcircle element*/  // inserted in writewrapper()
+                        setAttribute(attrs: CircumcircleAttributes):void,
  }
 
  export interface CircumcircleArcAttributes extends ArcAttributes {
@@ -2362,6 +2450,8 @@ It is sufficient to supply the first three characters of the unit, e.g. 'len'.
  //// fields 
 
  //// methods 
+/** sets an arbitrary number of attributes for this CircumcircleArc element*/  // inserted in writewrapper()
+                        setAttribute(attrs: CircumcircleArcAttributes):void,
  }
 
  export interface CircumcircleSectorAttributes extends SectorAttributes {
@@ -2375,6 +2465,8 @@ It is sufficient to supply the first three characters of the unit, e.g. 'len'.
  center: Circumcenter; 
 
  //// methods 
+/** sets an arbitrary number of attributes for this CircumcircleSector element*/  // inserted in writewrapper()
+                        setAttribute(attrs: CircumcircleSectorAttributes):void,
  }
 
  export interface CombAttributes extends CurveAttributes {
@@ -2398,6 +2490,8 @@ It is sufficient to supply the first three characters of the unit, e.g. 'len'.
  //// fields 
 
  //// methods 
+/** sets an arbitrary number of attributes for this Comb element*/  // inserted in writewrapper()
+                        setAttribute(attrs: CombAttributes):void,
  }
 
  export interface ConicAttributes extends CurveAttributes {
@@ -2417,6 +2511,8 @@ It is sufficient to supply the first three characters of the unit, e.g. 'len'.
  //// fields 
 
  //// methods 
+/** sets an arbitrary number of attributes for this Conic element*/  // inserted in writewrapper()
+                        setAttribute(attrs: ConicAttributes):void,
  }
 
  export interface CurveDifferenceAttributes extends CurveAttributes {
@@ -2428,6 +2524,8 @@ It is sufficient to supply the first three characters of the unit, e.g. 'len'.
  //// fields 
 
  //// methods 
+/** sets an arbitrary number of attributes for this CurveDifference element*/  // inserted in writewrapper()
+                        setAttribute(attrs: CurveDifferenceAttributes):void,
  }
 
  export interface CurveIntersectionAttributes extends CurveAttributes {
@@ -2439,6 +2537,8 @@ It is sufficient to supply the first three characters of the unit, e.g. 'len'.
  //// fields 
 
  //// methods 
+/** sets an arbitrary number of attributes for this CurveIntersection element*/  // inserted in writewrapper()
+                        setAttribute(attrs: CurveIntersectionAttributes):void,
  }
 
  export interface CurveUnionAttributes extends CurveAttributes {
@@ -2450,6 +2550,8 @@ It is sufficient to supply the first three characters of the unit, e.g. 'len'.
  //// fields 
 
  //// methods 
+/** sets an arbitrary number of attributes for this CurveUnion element*/  // inserted in writewrapper()
+                        setAttribute(attrs: CurveUnionAttributes):void,
  }
 
  export interface DerivativeAttributes extends CurveAttributes {
@@ -2461,6 +2563,8 @@ It is sufficient to supply the first three characters of the unit, e.g. 'len'.
  //// fields 
 
  //// methods 
+/** sets an arbitrary number of attributes for this Derivative element*/  // inserted in writewrapper()
+                        setAttribute(attrs: DerivativeAttributes):void,
  }
 
  export interface EllipseAttributes extends ConicAttributes {
@@ -2472,6 +2576,8 @@ It is sufficient to supply the first three characters of the unit, e.g. 'len'.
  //// fields 
 
  //// methods 
+/** sets an arbitrary number of attributes for this Ellipse element*/  // inserted in writewrapper()
+                        setAttribute(attrs: EllipseAttributes):void,
  }
 
  export interface ParametricSurface3DAttributes extends CurveAttributes {
@@ -2489,6 +2595,8 @@ It is sufficient to supply the first three characters of the unit, e.g. 'len'.
  //// methods 
  /** Add transformations to this line. */
  addTransform(el:GeometryElement,transform:Transformation|Transformation[]):GeometryElement,
+/** sets an arbitrary number of attributes for this ParametricSurface3D element*/  // inserted in writewrapper()
+                        setAttribute(attrs: ParametricSurface3DAttributes):void,
  }
 
  export interface Face3DAttributes extends CurveAttributes {
@@ -2520,6 +2628,8 @@ It is sufficient to supply the first three characters of the unit, e.g. 'len'.
  updateCoords():Face3D,
  /** Update the 2d coordinates of the face, returns {X:[], Y:[]}  */
  updateDataArray2D():Object,
+/** sets an arbitrary number of attributes for this Face3D element*/  // inserted in writewrapper()
+                        setAttribute(attrs: Face3DAttributes):void,
  }
 
  export interface FunctiongraphAttributes extends CurveAttributes {
@@ -2531,6 +2641,8 @@ It is sufficient to supply the first three characters of the unit, e.g. 'len'.
  //// fields 
 
  //// methods 
+/** sets an arbitrary number of attributes for this Functiongraph element*/  // inserted in writewrapper()
+                        setAttribute(attrs: FunctiongraphAttributes):void,
  }
 
  export interface Functiongraph3DAttributes extends ParametricSurface3DAttributes {
@@ -2542,6 +2654,8 @@ It is sufficient to supply the first three characters of the unit, e.g. 'len'.
  //// fields 
 
  //// methods 
+/** sets an arbitrary number of attributes for this Functiongraph3D element*/  // inserted in writewrapper()
+                        setAttribute(attrs: Functiongraph3DAttributes):void,
  }
 
  export interface GliderAttributes extends PointAttributes {
@@ -2557,6 +2671,8 @@ It is sufficient to supply the first three characters of the unit, e.g. 'len'.
  startAnimation(direction:number|Function,stepCount:number|Function,delay:number|Function):void,
  /** Stop animation. */
  stopAnimation(): CoordsElement,
+/** sets an arbitrary number of attributes for this Glider element*/  // inserted in writewrapper()
+                        setAttribute(attrs: GliderAttributes):void,
  }
 
  export interface Glider3DAttributes extends Point3DAttributes {
@@ -2568,6 +2684,8 @@ It is sufficient to supply the first three characters of the unit, e.g. 'len'.
  //// fields 
 
  //// methods 
+/** sets an arbitrary number of attributes for this Glider3D element*/  // inserted in writewrapper()
+                        setAttribute(attrs: Glider3DAttributes):void,
  }
 
  export interface GridAttributes extends CurveAttributes {
@@ -2611,6 +2729,8 @@ Instead of one value you can provide two values as an array [x, y] here. These a
  //// fields 
 
  //// methods 
+/** sets an arbitrary number of attributes for this Grid element*/  // inserted in writewrapper()
+                        setAttribute(attrs: GridAttributes):void,
  }
 
  export interface HatchAttributes extends TicksAttributes {
@@ -2624,6 +2744,8 @@ Instead of one value you can provide two values as an array [x, y] here. These a
  ticksDistance: number; 
 
  //// methods 
+/** sets an arbitrary number of attributes for this Hatch element*/  // inserted in writewrapper()
+                        setAttribute(attrs: HatchAttributes):void,
  }
 
  export interface HyperbolaAttributes extends ConicAttributes {
@@ -2635,6 +2757,8 @@ Instead of one value you can provide two values as an array [x, y] here. These a
  //// fields 
 
  //// methods 
+/** sets an arbitrary number of attributes for this Hyperbola element*/  // inserted in writewrapper()
+                        setAttribute(attrs: HyperbolaAttributes):void,
  }
 
  export interface IncenterAttributes extends PointAttributes {
@@ -2646,6 +2770,8 @@ Instead of one value you can provide two values as an array [x, y] here. These a
  //// fields 
 
  //// methods 
+/** sets an arbitrary number of attributes for this Incenter element*/  // inserted in writewrapper()
+                        setAttribute(attrs: IncenterAttributes):void,
  }
 
  export interface IncircleAttributes extends CircleAttributes {
@@ -2659,6 +2785,8 @@ Instead of one value you can provide two values as an array [x, y] here. These a
  //// fields 
 
  //// methods 
+/** sets an arbitrary number of attributes for this Incircle element*/  // inserted in writewrapper()
+                        setAttribute(attrs: IncircleAttributes):void,
  }
 
  export interface InequalityAttributes extends CurveAttributes {
@@ -2672,6 +2800,8 @@ Instead of one value you can provide two values as an array [x, y] here. These a
  //// fields 
 
  //// methods 
+/** sets an arbitrary number of attributes for this Inequality element*/  // inserted in writewrapper()
+                        setAttribute(attrs: InequalityAttributes):void,
  }
 
  export interface InputAttributes extends TextAttributes {
@@ -2691,6 +2821,8 @@ Instead of one value you can provide two values as an array [x, y] here. These a
  set(val:String): GeometryElement,
  /** Returns the value (content) of the input element */
  Value(): string,
+/** sets an arbitrary number of attributes for this Input element*/  // inserted in writewrapper()
+                        setAttribute(attrs: InputAttributes):void,
  }
 
  export interface IntegralAttributes extends CurveAttributes {
@@ -2722,6 +2854,8 @@ Instead of one value you can provide two values as an array [x, y] here. These a
  //// methods 
  /** Returns the current value of the integral. */
  Value(): Point,
+/** sets an arbitrary number of attributes for this Integral element*/  // inserted in writewrapper()
+                        setAttribute(attrs: IntegralAttributes):void,
  }
 
  export interface IntersectionAttributes extends PointAttributes {
@@ -2735,6 +2869,8 @@ Instead of one value you can provide two values as an array [x, y] here. These a
  //// fields 
 
  //// methods 
+/** sets an arbitrary number of attributes for this Intersection element*/  // inserted in writewrapper()
+                        setAttribute(attrs: IntersectionAttributes):void,
  }
 
  export interface LabelAttributes extends TextAttributes {
@@ -2760,6 +2896,8 @@ Instead of one value you can provide two values as an array [x, y] here. These a
  //// fields 
 
  //// methods 
+/** sets an arbitrary number of attributes for this Label element*/  // inserted in writewrapper()
+                        setAttribute(attrs: LabelAttributes):void,
  }
 
  export interface LegendAttributes extends GeometryElementAttributes {
@@ -2787,6 +2925,8 @@ Instead of one value you can provide two values as an array [x, y] here. These a
  //// fields 
 
  //// methods 
+/** sets an arbitrary number of attributes for this Legend element*/  // inserted in writewrapper()
+                        setAttribute(attrs: LegendAttributes):void,
  }
 
  export interface LocusAttributes extends CurveAttributes {
@@ -2798,6 +2938,8 @@ Instead of one value you can provide two values as an array [x, y] here. These a
  //// fields 
 
  //// methods 
+/** sets an arbitrary number of attributes for this Locus element*/  // inserted in writewrapper()
+                        setAttribute(attrs: LocusAttributes):void,
  }
 
  export interface MajorArcAttributes extends CurveAttributes {
@@ -2809,6 +2951,8 @@ Instead of one value you can provide two values as an array [x, y] here. These a
  //// fields 
 
  //// methods 
+/** sets an arbitrary number of attributes for this MajorArc element*/  // inserted in writewrapper()
+                        setAttribute(attrs: MajorArcAttributes):void,
  }
 
  export interface MajorSectorAttributes extends CurveAttributes {
@@ -2820,6 +2964,8 @@ Instead of one value you can provide two values as an array [x, y] here. These a
  //// fields 
 
  //// methods 
+/** sets an arbitrary number of attributes for this MajorSector element*/  // inserted in writewrapper()
+                        setAttribute(attrs: MajorSectorAttributes):void,
  }
 
  export interface MeasurementAttributes extends TextAttributes {
@@ -2849,6 +2995,8 @@ Instead of one value you can provide two values as an array [x, y] here. These a
  //// fields 
 
  //// methods 
+/** sets an arbitrary number of attributes for this Measurement element*/  // inserted in writewrapper()
+                        setAttribute(attrs: MeasurementAttributes):void,
  }
 
  export interface Mesh3DAttributes extends CurveAttributes {
@@ -2864,6 +3012,8 @@ Instead of one value you can provide two values as an array [x, y] here. These a
  //// fields 
 
  //// methods 
+/** sets an arbitrary number of attributes for this Mesh3D element*/  // inserted in writewrapper()
+                        setAttribute(attrs: Mesh3DAttributes):void,
  }
 
  export interface MidpointAttributes extends PointAttributes {
@@ -2875,6 +3025,8 @@ Instead of one value you can provide two values as an array [x, y] here. These a
  //// fields 
 
  //// methods 
+/** sets an arbitrary number of attributes for this Midpoint element*/  // inserted in writewrapper()
+                        setAttribute(attrs: MidpointAttributes):void,
  }
 
  export interface MinorArcAttributes extends CurveAttributes {
@@ -2886,6 +3038,8 @@ Instead of one value you can provide two values as an array [x, y] here. These a
  //// fields 
 
  //// methods 
+/** sets an arbitrary number of attributes for this MinorArc element*/  // inserted in writewrapper()
+                        setAttribute(attrs: MinorArcAttributes):void,
  }
 
  export interface MinorSectorAttributes extends CurveAttributes {
@@ -2897,6 +3051,8 @@ Instead of one value you can provide two values as an array [x, y] here. These a
  //// fields 
 
  //// methods 
+/** sets an arbitrary number of attributes for this MinorSector element*/  // inserted in writewrapper()
+                        setAttribute(attrs: MinorSectorAttributes):void,
  }
 
  export interface MirrorElementAttributes extends GeometryElementAttributes {
@@ -2908,6 +3064,8 @@ Instead of one value you can provide two values as an array [x, y] here. These a
  //// fields 
 
  //// methods 
+/** sets an arbitrary number of attributes for this MirrorElement element*/  // inserted in writewrapper()
+                        setAttribute(attrs: MirrorElementAttributes):void,
  }
 
  export interface MirrorPointAttributes extends PointAttributes {
@@ -2919,6 +3077,8 @@ Instead of one value you can provide two values as an array [x, y] here. These a
  //// fields 
 
  //// methods 
+/** sets an arbitrary number of attributes for this MirrorPoint element*/  // inserted in writewrapper()
+                        setAttribute(attrs: MirrorPointAttributes):void,
  }
 
  export interface NonReflexAngleAttributes extends AngleAttributes {
@@ -2930,6 +3090,8 @@ Instead of one value you can provide two values as an array [x, y] here. These a
  //// fields 
 
  //// methods 
+/** sets an arbitrary number of attributes for this NonReflexAngle element*/  // inserted in writewrapper()
+                        setAttribute(attrs: NonReflexAngleAttributes):void,
  }
 
  export interface NormalAttributes extends LineAttributes {
@@ -2943,6 +3105,8 @@ Instead of one value you can provide two values as an array [x, y] here. These a
  //// fields 
 
  //// methods 
+/** sets an arbitrary number of attributes for this Normal element*/  // inserted in writewrapper()
+                        setAttribute(attrs: NormalAttributes):void,
  }
 
  export interface OrthogonalprojectionAttributes extends PointAttributes {
@@ -2954,6 +3118,8 @@ Instead of one value you can provide two values as an array [x, y] here. These a
  //// fields 
 
  //// methods 
+/** sets an arbitrary number of attributes for this Orthogonalprojection element*/  // inserted in writewrapper()
+                        setAttribute(attrs: OrthogonalprojectionAttributes):void,
  }
 
  export interface OtherIntersectionAttributes extends PointAttributes {
@@ -2965,6 +3131,8 @@ Instead of one value you can provide two values as an array [x, y] here. These a
  //// fields 
 
  //// methods 
+/** sets an arbitrary number of attributes for this OtherIntersection element*/  // inserted in writewrapper()
+                        setAttribute(attrs: OtherIntersectionAttributes):void,
  }
 
  export interface ParabolaAttributes extends ConicAttributes {
@@ -2976,6 +3144,8 @@ Instead of one value you can provide two values as an array [x, y] here. These a
  //// fields 
 
  //// methods 
+/** sets an arbitrary number of attributes for this Parabola element*/  // inserted in writewrapper()
+                        setAttribute(attrs: ParabolaAttributes):void,
  }
 
  export interface ParallelpointAttributes extends PointAttributes {
@@ -2987,6 +3157,8 @@ Instead of one value you can provide two values as an array [x, y] here. These a
  //// fields 
 
  //// methods 
+/** sets an arbitrary number of attributes for this Parallelpoint element*/  // inserted in writewrapper()
+                        setAttribute(attrs: ParallelpointAttributes):void,
  }
 
  export interface SegmentAttributes extends LineAttributes {
@@ -2998,6 +3170,8 @@ Instead of one value you can provide two values as an array [x, y] here. These a
  //// fields 
 
  //// methods 
+/** sets an arbitrary number of attributes for this Segment element*/  // inserted in writewrapper()
+                        setAttribute(attrs: SegmentAttributes):void,
  }
 
  export interface ParallelogramAttributes extends PolygonAttributes {
@@ -3011,6 +3185,8 @@ Instead of one value you can provide two values as an array [x, y] here. These a
  parallelPoint: Point; 
 
  //// methods 
+/** sets an arbitrary number of attributes for this Parallelogram element*/  // inserted in writewrapper()
+                        setAttribute(attrs: ParallelogramAttributes):void,
  }
 
  export interface PerpendicularAttributes extends SegmentAttributes {
@@ -3022,6 +3198,8 @@ Instead of one value you can provide two values as an array [x, y] here. These a
  //// fields 
 
  //// methods 
+/** sets an arbitrary number of attributes for this Perpendicular element*/  // inserted in writewrapper()
+                        setAttribute(attrs: PerpendicularAttributes):void,
  }
 
  export interface PerpendicularPointAttributes extends PointAttributes {
@@ -3033,6 +3211,8 @@ Instead of one value you can provide two values as an array [x, y] here. These a
  //// fields 
 
  //// methods 
+/** sets an arbitrary number of attributes for this PerpendicularPoint element*/  // inserted in writewrapper()
+                        setAttribute(attrs: PerpendicularPointAttributes):void,
  }
 
  export interface PerpendicularSegmentAttributes extends SegmentAttributes {
@@ -3046,6 +3226,8 @@ Instead of one value you can provide two values as an array [x, y] here. These a
  point: PerpendicularPoint; 
 
  //// methods 
+/** sets an arbitrary number of attributes for this PerpendicularSegment element*/  // inserted in writewrapper()
+                        setAttribute(attrs: PerpendicularSegmentAttributes):void,
  }
 
  export interface PolarLineAttributes extends LineAttributes {
@@ -3057,6 +3239,8 @@ Instead of one value you can provide two values as an array [x, y] here. These a
  //// fields 
 
  //// methods 
+/** sets an arbitrary number of attributes for this PolarLine element*/  // inserted in writewrapper()
+                        setAttribute(attrs: PolarLineAttributes):void,
  }
 
  export interface PolePointAttributes extends PointAttributes {
@@ -3068,6 +3252,8 @@ Instead of one value you can provide two values as an array [x, y] here. These a
  //// fields 
 
  //// methods 
+/** sets an arbitrary number of attributes for this PolePoint element*/  // inserted in writewrapper()
+                        setAttribute(attrs: PolePointAttributes):void,
  }
 
  export interface PolygonalChainAttributes extends PolygonAttributes {
@@ -3079,6 +3265,8 @@ Instead of one value you can provide two values as an array [x, y] here. These a
  //// fields 
 
  //// methods 
+/** sets an arbitrary number of attributes for this PolygonalChain element*/  // inserted in writewrapper()
+                        setAttribute(attrs: PolygonalChainAttributes):void,
  }
 
  export interface Polyhedron3DAttributes extends GeometryElement3DAttributes {
@@ -3098,6 +3286,8 @@ Instead of one value you can provide two values as an array [x, y] here. These a
  numberFaces: number; 
 
  //// methods 
+/** sets an arbitrary number of attributes for this Polyhedron3D element*/  // inserted in writewrapper()
+                        setAttribute(attrs: Polyhedron3DAttributes):void,
  }
 
  export interface RadicalAxisAttributes extends LineAttributes {
@@ -3109,6 +3299,8 @@ Instead of one value you can provide two values as an array [x, y] here. These a
  //// fields 
 
  //// methods 
+/** sets an arbitrary number of attributes for this RadicalAxis element*/  // inserted in writewrapper()
+                        setAttribute(attrs: RadicalAxisAttributes):void,
  }
 
  export interface ReflectionAttributes extends GeometryElementAttributes {
@@ -3124,6 +3316,8 @@ Instead of one value you can provide two values as an array [x, y] here. These a
  //// fields 
 
  //// methods 
+/** sets an arbitrary number of attributes for this Reflection element*/  // inserted in writewrapper()
+                        setAttribute(attrs: ReflectionAttributes):void,
  }
 
  export interface ReflexAngleAttributes extends AngleAttributes {
@@ -3135,6 +3329,8 @@ Instead of one value you can provide two values as an array [x, y] here. These a
  //// fields 
 
  //// methods 
+/** sets an arbitrary number of attributes for this ReflexAngle element*/  // inserted in writewrapper()
+                        setAttribute(attrs: ReflexAngleAttributes):void,
  }
 
  export interface RegularPolygonAttributes extends PolygonAttributes {
@@ -3156,6 +3352,8 @@ Instead of one value you can provide two values as an array [x, y] here. These a
  //// fields 
 
  //// methods 
+/** sets an arbitrary number of attributes for this RegularPolygon element*/  // inserted in writewrapper()
+                        setAttribute(attrs: RegularPolygonAttributes):void,
  }
 
  export interface RiemannsumAttributes extends CurveAttributes {
@@ -3169,6 +3367,8 @@ Instead of one value you can provide two values as an array [x, y] here. These a
  //// methods 
  /** Returns the value of the Riemann sum, i.e. the sum of the (signed) areas of the rectangles. */
  Value(): number,
+/** sets an arbitrary number of attributes for this Riemannsum element*/  // inserted in writewrapper()
+                        setAttribute(attrs: RiemannsumAttributes):void,
  }
 
  export interface SemicircleAttributes extends ArcAttributes {
@@ -3184,6 +3384,8 @@ Instead of one value you can provide two values as an array [x, y] here. These a
  midpoint: Midpoint; 
 
  //// methods 
+/** sets an arbitrary number of attributes for this Semicircle element*/  // inserted in writewrapper()
+                        setAttribute(attrs: SemicircleAttributes):void,
  }
 
  export interface SliderAttributes extends GliderAttributes {
@@ -3245,6 +3447,8 @@ Instead of one value you can provide two values as an array [x, y] here. These a
  setValue(val:number): Slider,
  /** Returns the current slider value. */
  Value(): number,
+/** sets an arbitrary number of attributes for this Slider element*/  // inserted in writewrapper()
+                        setAttribute(attrs: SliderAttributes):void,
  }
 
  export interface SlopefieldAttributes extends VectorfieldAttributes {
@@ -3262,6 +3466,8 @@ Instead of one value you can provide two values as an array [x, y] here. These a
  //// methods 
  /** Set the defining functions of slope field. */
  setF(func:Function): Slopefield,
+/** sets an arbitrary number of attributes for this Slopefield element*/  // inserted in writewrapper()
+                        setAttribute(attrs: SlopefieldAttributes):void,
  }
 
  export interface SlopetriangleAttributes extends LineAttributes {
@@ -3289,6 +3495,8 @@ Instead of one value you can provide two values as an array [x, y] here. These a
  Value(): number,
  /** Returns the direction of the slope triangle, that is the direction of the tangent.  */
  Direction():number[],
+/** sets an arbitrary number of attributes for this Slopetriangle element*/  // inserted in writewrapper()
+                        setAttribute(attrs: SlopetriangleAttributes):void,
  }
 
  export interface SmartlabelAttributes extends TextAttributes {
@@ -3314,6 +3522,8 @@ Instead of one value you can provide two values as an array [x, y] here. These a
  //// fields 
 
  //// methods 
+/** sets an arbitrary number of attributes for this Smartlabel element*/  // inserted in writewrapper()
+                        setAttribute(attrs: SmartlabelAttributes):void,
  }
 
  export interface Sphere3DAttributes extends GeometryElement3DAttributes {
@@ -3339,6 +3549,8 @@ Instead of one value you can provide two values as an array [x, y] here. These a
  Radius(value?:number|Function):number,
  /** Set a new radius, then update the board.  */
  setRadius(r:number|Function):void,
+/** sets an arbitrary number of attributes for this Sphere3D element*/  // inserted in writewrapper()
+                        setAttribute(attrs: Sphere3DAttributes):void,
  }
 
  export interface SplineAttributes extends CurveAttributes {
@@ -3350,6 +3562,8 @@ Instead of one value you can provide two values as an array [x, y] here. These a
  //// fields 
 
  //// methods 
+/** sets an arbitrary number of attributes for this Spline element*/  // inserted in writewrapper()
+                        setAttribute(attrs: SplineAttributes):void,
  }
 
  export interface StepfunctionAttributes extends CurveAttributes {
@@ -3361,6 +3575,8 @@ Instead of one value you can provide two values as an array [x, y] here. These a
  //// fields 
 
  //// methods 
+/** sets an arbitrary number of attributes for this Stepfunction element*/  // inserted in writewrapper()
+                        setAttribute(attrs: StepfunctionAttributes):void,
  }
 
  export interface TangentAttributes extends LineAttributes {
@@ -3372,6 +3588,8 @@ Instead of one value you can provide two values as an array [x, y] here. These a
  //// fields 
 
  //// methods 
+/** sets an arbitrary number of attributes for this Tangent element*/  // inserted in writewrapper()
+                        setAttribute(attrs: TangentAttributes):void,
  }
 
  export interface TangentToAttributes extends LineAttributes {
@@ -3387,6 +3605,8 @@ Instead of one value you can provide two values as an array [x, y] here. These a
  //// fields 
 
  //// methods 
+/** sets an arbitrary number of attributes for this TangentTo element*/  // inserted in writewrapper()
+                        setAttribute(attrs: TangentToAttributes):void,
  }
 
  export interface TapemeasureAttributes extends SegmentAttributes {
@@ -3418,6 +3638,8 @@ Instead of one value you can provide two values as an array [x, y] here. These a
  //// methods 
  /** Returns the length of the tape measure. */
  Value(): number,
+/** sets an arbitrary number of attributes for this Tapemeasure element*/  // inserted in writewrapper()
+                        setAttribute(attrs: TapemeasureAttributes):void,
  }
 
  export interface TracecurveAttributes extends CurveAttributes {
@@ -3431,6 +3653,8 @@ Instead of one value you can provide two values as an array [x, y] here. These a
  //// fields 
 
  //// methods 
+/** sets an arbitrary number of attributes for this Tracecurve element*/  // inserted in writewrapper()
+                        setAttribute(attrs: TracecurveAttributes):void,
  }
 
  export interface TransformationAttributes extends GeometryElementAttributes {
@@ -3475,6 +3699,8 @@ Instead of one value you can provide two values as an array [x, y] here. These a
  //// fields 
 
  //// methods 
+/** sets an arbitrary number of attributes for this Transform3D element*/  // inserted in writewrapper()
+                        setAttribute(attrs: Transform3DAttributes):void,
  }
 
  export interface TransformPointAttributes extends PointAttributes {
@@ -3486,6 +3712,8 @@ Instead of one value you can provide two values as an array [x, y] here. These a
  //// fields 
 
  //// methods 
+/** sets an arbitrary number of attributes for this TransformPoint element*/  // inserted in writewrapper()
+                        setAttribute(attrs: TransformPointAttributes):void,
  }
 
  export interface TransformPoint3DAttributes extends Point3DAttributes {
@@ -3497,6 +3725,8 @@ Instead of one value you can provide two values as an array [x, y] here. These a
  //// fields 
 
  //// methods 
+/** sets an arbitrary number of attributes for this TransformPoint3D element*/  // inserted in writewrapper()
+                        setAttribute(attrs: TransformPoint3DAttributes):void,
  }
 
  export interface Segment3DAttributes extends Line3DAttributes {
@@ -3508,6 +3738,8 @@ Instead of one value you can provide two values as an array [x, y] here. These a
  //// fields 
 
  //// methods 
+/** sets an arbitrary number of attributes for this Segment3D element*/  // inserted in writewrapper()
+                        setAttribute(attrs: Segment3DAttributes):void,
  }
 
  export interface TranslateAttributes extends TransformationAttributes {
@@ -3519,6 +3751,8 @@ Instead of one value you can provide two values as an array [x, y] here. These a
  //// fields 
 
  //// methods 
+/** sets an arbitrary number of attributes for this Translate element*/  // inserted in writewrapper()
+                        setAttribute(attrs: TranslateAttributes):void,
  }
 
  export interface RotateAttributes extends TransformationAttributes {
@@ -3530,6 +3764,8 @@ Instead of one value you can provide two values as an array [x, y] here. These a
  //// fields 
 
  //// methods 
+/** sets an arbitrary number of attributes for this Rotate element*/  // inserted in writewrapper()
+                        setAttribute(attrs: RotateAttributes):void,
  }
 
  export interface ScaleAttributes extends TransformationAttributes {
@@ -3541,6 +3777,8 @@ Instead of one value you can provide two values as an array [x, y] here. These a
  //// fields 
 
  //// methods 
+/** sets an arbitrary number of attributes for this Scale element*/  // inserted in writewrapper()
+                        setAttribute(attrs: ScaleAttributes):void,
  }
 
  export interface Translate3DAttributes extends Transform3DAttributes {
@@ -3552,6 +3790,8 @@ Instead of one value you can provide two values as an array [x, y] here. These a
  //// fields 
 
  //// methods 
+/** sets an arbitrary number of attributes for this Translate3D element*/  // inserted in writewrapper()
+                        setAttribute(attrs: Translate3DAttributes):void,
  }
 
  export interface Rotate3DAttributes extends Transform3DAttributes {
@@ -3563,6 +3803,8 @@ Instead of one value you can provide two values as an array [x, y] here. These a
  //// fields 
 
  //// methods 
+/** sets an arbitrary number of attributes for this Rotate3D element*/  // inserted in writewrapper()
+                        setAttribute(attrs: Rotate3DAttributes):void,
  }
 
  export interface RotateX3DAttributes extends Transform3DAttributes {
@@ -3574,6 +3816,8 @@ Instead of one value you can provide two values as an array [x, y] here. These a
  //// fields 
 
  //// methods 
+/** sets an arbitrary number of attributes for this RotateX3D element*/  // inserted in writewrapper()
+                        setAttribute(attrs: RotateX3DAttributes):void,
  }
 
  export interface RotateY3DAttributes extends Transform3DAttributes {
@@ -3585,6 +3829,8 @@ Instead of one value you can provide two values as an array [x, y] here. These a
  //// fields 
 
  //// methods 
+/** sets an arbitrary number of attributes for this RotateY3D element*/  // inserted in writewrapper()
+                        setAttribute(attrs: RotateY3DAttributes):void,
  }
 
  export interface RotateZ3DAttributes extends Transform3DAttributes {
@@ -3596,6 +3842,8 @@ Instead of one value you can provide two values as an array [x, y] here. These a
  //// fields 
 
  //// methods 
+/** sets an arbitrary number of attributes for this RotateZ3D element*/  // inserted in writewrapper()
+                        setAttribute(attrs: RotateZ3DAttributes):void,
  }
 
  export interface Scale3DAttributes extends Transform3DAttributes {
@@ -3607,6 +3855,8 @@ Instead of one value you can provide two values as an array [x, y] here. These a
  //// fields 
 
  //// methods 
+/** sets an arbitrary number of attributes for this Scale3D element*/  // inserted in writewrapper()
+                        setAttribute(attrs: Scale3DAttributes):void,
  }
 
 /** A wrapper for the various math routines provided by JSXGraph.  For example:
@@ -7035,9 +7285,14 @@ TSX.Orthogonalprojection(p3, s1)
 
 
 
- /** Array of Points */
- PolygonalChain (pointArray:Point[]|pointAddr[], attributes: PolygonalChainAttributes ={} ):PolygonalChain {
-   return (this._jBoard as any).create('polygonalchain', [pointArray,], this.defaultAttributes(attributes))  as PolygonalChain
+ /** A polygonal chain is a connected series of line segments (borders). It is determined by a list of points or a list of coordinate arrays or a function returning a list of coordinate arrays.
+                            Each two consecutive points of the list define a line. In JSXGraph, a polygonal chain is simply realized as polygon without the last - closing - point. This may lead to unexpected results. Polygonal chains can be distinguished from polygons by the attribute 'elType' which is 'polygonalchain' for the first and 'polygon' for the latter. */
+ PolygonalChain (pointArray:Point[]|pointAddr[]|Function, attributes: PolygonalChainAttributes ={} ):PolygonalChain {
+ if(Array.isArray(pointArray)){
+                            return (this._jBoard as any).create('polygonalchain', pointArray, this.defaultAttributes(attributes));
+                        }else{
+                            return (this._jBoard as any).create('polygonalchain', [pointArray], this.defaultAttributes(attributes));
+                        }
 }
 
 

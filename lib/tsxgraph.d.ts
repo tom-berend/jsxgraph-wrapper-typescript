@@ -304,7 +304,7 @@ export interface GeometryElement extends Events {
     /** missing description */
     quadraticform: number[];
     /** missing description */
-    rendNode: Object;
+    rendNode: HTMLElement;
     /** missing description */
     stdform: number[];
     /** missing description */
@@ -487,6 +487,7 @@ export interface CoordsElement extends Omit<GeometryElement, 'snapToPoints'> {
     Y(): number;
     /** Getter method for z, this is used by CAS-points to access point coordinates. */
     Z(): number;
+    /** sets an arbitrary number of attributes for this CoordsElement element*/ setAttribute(attrs: CoordsElementAttributes): void;
 }
 export interface BoardAttributes {
     /** Location of the coordinate axes or 'axis gizmo'. */
@@ -602,6 +603,7 @@ export interface BoardAttributes {
     zoomY?: number;
 }
 export interface Board {
+    /** sets an arbitrary number of attributes for this Board element*/ setAttribute(attrs: BoardAttributes): void;
 }
 export interface PointAttributes extends GeometryElementAttributes {
     /** If the distance of the point to one of its attractors is less than this number the point will be a glider on this attracting element. If set to zero nothing happens. */
@@ -650,6 +652,7 @@ export interface Point extends CoordsElement, Omit<GeometryElement, 'setPosition
     isOn(el: GeometryElement, tol: number): Boolean;
     /** Updates the position of the point. */
     update(fromParent?: Boolean): number[];
+    /** sets an arbitrary number of attributes for this Point element*/ setAttribute(attrs: PointAttributes): void;
 }
 export interface LineAttributes extends GeometryElementAttributes {
     /** Configure the arrow head at the position of its first point or the corresponding intersection with the canvas borderIn case firstArrow is an object it has the sub-attributes:{type: 1, // possible values are 1, 2, ..., 7. Default value is 1.size: 6, // size of the arrow head. Default value is 6.// This value is multiplied with the strokeWidth of the line// Exception: for type=7 size is ignoredhighlightSize: 6, // size of the arrow head in case the element is highlighted. Default value }type=7 is the default for curves if firstArrow: true */
@@ -720,6 +723,7 @@ export interface Line extends Omit<GeometryElement, 'addTransform'> {
     setFixedLength(l: string | number | Function): number;
     /** Returns the direction vector of the line. This is an array of length two containing the direction vector as [x, y]. It is defined as <li> the difference of the x- and y-coordinate of the second and first point, in case both points are finite or both points are infinite. <li> [x, y] coordinates of point2, in case only point2 is infinite. <li> [-x, -y] coordinates of point1, in case only point1 is infinite.  */
     Direction(): number[];
+    /** sets an arbitrary number of attributes for this Line element*/ setAttribute(attrs: LineAttributes): void;
 }
 export interface GeometryElement3DAttributes extends GeometryElementAttributes {
 }
@@ -730,6 +734,7 @@ export interface GeometryElement3D extends Omit<GeometryElement, 'X' | 'Y' | 'Z'
     is3D: Boolean;
     /** missing description */
     view: any;
+    /** sets an arbitrary number of attributes for this GeometryElement3D element*/ setAttribute(attrs: GeometryElement3DAttributes): void;
 }
 export interface View3DAttributes extends GeometryElementAttributes {
     /** Choose the projection type to be used: `parallel` or `central`. `parallel` is parallel projection, also called orthographic projection.   `central` is central projection, also called perspective projection */
@@ -865,6 +870,7 @@ export interface View3D extends Omit<GeometryElement, 'create'> {
     setCurrentView(n: number): View3D;
     /** Map world coordinates to focal coordinates. These coordinate systems are explained in the {@link JXG.View3D#boxToCam} matrix documentation.  */
     worldToFocal(pWorld: number[], homog?: Boolean): void;
+    /** sets an arbitrary number of attributes for this View3D element*/ setAttribute(attrs: View3DAttributes): void;
 }
 export interface ChartAttributes extends GeometryElementAttributes {
 }
@@ -887,6 +893,7 @@ export interface Chart extends GeometryElement {
     drawSpline(board: string | Board, x: number[], y: number[], attributes?: BoardAttributes): Curve;
     /** Template for dynamic charts update. This method is used to compute new entries for the arrays this.dataX and this.dataY. It is used in update. Default is an empty method, can be overwritten by the user. */
     updateDataArray(): Chart;
+    /** sets an arbitrary number of attributes for this Chart element*/ setAttribute(attrs: ChartAttributes): void;
 }
 export interface CircleAttributes extends GeometryElementAttributes {
     /** Attributes for center point. */
@@ -939,6 +946,7 @@ export interface Circle extends Omit<GeometryElement, 'addTransform'> {
     Z(t: number): number;
     /** Uses the boards renderer to update the circle.  */
     update(): void;
+    /** sets an arbitrary number of attributes for this Circle element*/ setAttribute(attrs: CircleAttributes): void;
 }
 export interface Circle3DAttributes extends GeometryElement3DAttributes {
 }
@@ -949,6 +957,7 @@ export interface Circle3D extends GeometryElement3D {
     Radius(value?: number | Function): number;
     /** Set a new radius, then update the board.  */
     setRadius(r: number | Function): void;
+    /** sets an arbitrary number of attributes for this Circle3D element*/ setAttribute(attrs: Circle3DAttributes): void;
 }
 export interface ComplexAttributes {
 }
@@ -975,6 +984,7 @@ export interface Complex {
     sub(c: Complex | number): Complex;
     /** Converts a complex number into a string. */
     toString(): String;
+    /** sets an arbitrary number of attributes for this Complex element*/ setAttribute(attrs: ComplexAttributes): void;
 }
 export interface CompositionAttributes {
 }
@@ -1017,6 +1027,7 @@ export interface Coords {
     isReal(): Boolean;
     /** Set coordinates by either user coordinates or screen coordinates and recalculate the other one. */
     setCoordinates(coord_type: number, coordinates: number[], doRound?: Boolean, noevent?: Boolean): Coords;
+    /** sets an arbitrary number of attributes for this Coords element*/ setAttribute(attrs: CoordsAttributes): void;
 }
 export interface CurveAttributes extends GeometryElementAttributes {
     /** Line endings (linecap) of a curve stroke. */
@@ -1091,6 +1102,7 @@ export interface Curve extends Omit<GeometryElement, 'addTransform'> {
     Y(t: number, suspendUpdate?: Boolean): number;
     /** Treat the curve as curve with homogeneous coordinates. */
     Z(t: number): number;
+    /** sets an arbitrary number of attributes for this Curve element*/ setAttribute(attrs: CurveAttributes): void;
 }
 export interface Curve3DAttributes extends GeometryElement3DAttributes {
 }
@@ -1109,6 +1121,7 @@ export interface Curve3D extends GeometryElement3D {
     Y(u: number): number;
     /** Function which maps (u) to z; i.e. */
     Z(u: number): number;
+    /** sets an arbitrary number of attributes for this Curve3D element*/ setAttribute(attrs: Curve3DAttributes): void;
 }
 export interface DumpAttributes {
 }
@@ -1133,6 +1146,7 @@ export interface Dump {
     toJCAN(obj: Object): string;
     /** Saves the construction in &lt;tt&gt;board&lt;/tt&gt; to JessieCode. */
     toJessie(board: Board): string;
+    /** sets an arbitrary number of attributes for this Dump element*/ setAttribute(attrs: DumpAttributes): void;
 }
 export interface ForeignObjectAttributes extends GeometryElementAttributes {
     /** If set to true, this object is only evaluated once and not re-evaluated on update. This is necessary if you want to have a bord within a foreignObject of another board. */
@@ -1153,6 +1167,7 @@ export interface ForeignObject extends Omit<GeometryElement, 'size'> {
     setSize(width: number, height: number): ForeignObject;
     /** Returns the width of the foreignObject in user coordinates. */
     W(): number;
+    /** sets an arbitrary number of attributes for this ForeignObject element*/ setAttribute(attrs: ForeignObjectAttributes): void;
 }
 export interface GroupAttributes extends CompositionAttributes {
 }
@@ -1227,6 +1242,7 @@ export interface Image extends Omit<GeometryElement, 'size'> {
     setSize(width: number, height: number): void;
     /** Returns the width of the image in user coordinates. */
     W(): number;
+    /** sets an arbitrary number of attributes for this Image element*/ setAttribute(attrs: ImageAttributes): void;
 }
 export interface ImplicitCurveAttributes extends GeometryElementAttributes {
     /** Allowed distance (in user units) of predictor point to curve. */
@@ -1275,14 +1291,17 @@ export interface ImplicitCurve extends GeometryElement {
     dfy(): number;
     /** Function of two variables for the left side of the equation <i>f(x,y)=0</i>.  */
     f(): number;
+    /** sets an arbitrary number of attributes for this ImplicitCurve element*/ setAttribute(attrs: ImplicitCurveAttributes): void;
 }
 export interface IntersectionCircle3DAttributes extends GeometryElement3DAttributes {
 }
 export interface IntersectionCircle3D extends GeometryElement3D {
+    /** sets an arbitrary number of attributes for this IntersectionCircle3D element*/ setAttribute(attrs: IntersectionCircle3DAttributes): void;
 }
 export interface IntersectionLine3DAttributes extends GeometryElement3DAttributes {
 }
 export interface IntersectionLine3D extends GeometryElement3D {
+    /** sets an arbitrary number of attributes for this IntersectionLine3D element*/ setAttribute(attrs: IntersectionLine3DAttributes): void;
 }
 export interface Line3DAttributes extends LineAttributes, GeometryElement3DAttributes {
     /** Attributes of the defining point in case the line is defined by [point, vector, [range]] */
@@ -1309,6 +1328,7 @@ export interface Line3D extends GeometryElement3D {
     range: number[];
     /** Update the z-index of the line, i.e. the z-index of its midpoint.  */
     updateZIndex(): Line3D;
+    /** sets an arbitrary number of attributes for this Line3D element*/ setAttribute(attrs: Line3DAttributes): void;
 }
 export interface Plane3DAttributes extends GeometryElement3DAttributes {
     /** Optional 3D mesh of a finite plane.  Mesh:{visible:true} */
@@ -1351,6 +1371,7 @@ export interface Plane3D extends GeometryElement3D {
     Y(u: number, v: number): number;
     /** Get z-coordinate of a point on the plane for parameters (u, v). */
     Z(u: number, v: number): number;
+    /** sets an arbitrary number of attributes for this Plane3D element*/ setAttribute(attrs: Plane3DAttributes): void;
 }
 export interface Point3DAttributes extends PointAttributes, GeometryElement3DAttributes {
 }
@@ -1379,6 +1400,7 @@ export interface Point3D extends Omit<GeometryElement3D, 'setPosition'> {
    P.moveTo([A.X(), A.Y()], 5000)
    ``` */
     moveTo(where: number[] | Function, time?: number, options?: MoveToOptions): Promise<any>;
+    /** sets an arbitrary number of attributes for this Point3D element*/ setAttribute(attrs: Point3DAttributes): void;
 }
 export interface PolygonAttributes extends GeometryElementAttributes {
     /** Attributes for the polygon border lines. */
@@ -1431,12 +1453,14 @@ export interface Polygon extends GeometryElement {
     showElement(borderless?: Boolean): GeometryElement;
     /** Uses the boards renderer to update the polygon. */
     updateRenderer(): Polygon;
+    /** sets an arbitrary number of attributes for this Polygon element*/ setAttribute(attrs: PolygonAttributes): void;
 }
 export interface Polygon3DAttributes extends PolygonAttributes, GeometryElement3DAttributes {
 }
 export interface Polygon3D extends GeometryElement3D {
     /** missing description */
     vertices: number[][];
+    /** sets an arbitrary number of attributes for this Polygon3D element*/ setAttribute(attrs: Polygon3DAttributes): void;
 }
 export interface TextAttributes extends GeometryElementAttributes {
     /** Anchor element Point, Text or Image of the text. */
@@ -1529,6 +1553,7 @@ export interface Text extends Omit<GeometryElement, 'size'> {
     updateSize(): this;
     /** Decode unicode entities into characters. */
     utf8_decode(string: string): string;
+    /** sets an arbitrary number of attributes for this Text element*/ setAttribute(attrs: TextAttributes): void;
 }
 export interface Text3DAttributes extends TextAttributes {
 }
@@ -1537,6 +1562,7 @@ export interface Text3D extends Text {
     setPosition(method: number, coords: number[]): CoordsElement;
     /** Check whether a text's position is finite, i.e. the first entry is not zero.  */
     testIfFinite(): Boolean;
+    /** sets an arbitrary number of attributes for this Text3D element*/ setAttribute(attrs: Text3DAttributes): void;
 }
 export interface TicksAttributes extends GeometryElementAttributes {
     /** Determine the position of the tick with value 0. 'left' means point1 of the line, 'right' means point2, and 'middle' is equivalent to the midpoint of the defining points. This attribute is ignored if the parent line is of type axis. */
@@ -1621,6 +1647,7 @@ export interface Ticks extends GeometryElement {
     updateRenderer(): Ticks;
     /** Recalculate the tick positions and the labels.  */
     update(): void;
+    /** sets an arbitrary number of attributes for this Ticks element*/ setAttribute(attrs: TicksAttributes): void;
 }
 export interface SectorAttributes extends CurveAttributes {
     /** Attributes for helper point anglepoint in case it is provided by coordinates. */
@@ -1659,6 +1686,7 @@ export interface Sector extends Curve {
     hasPointSector(x: number, y: number): Boolean;
     /** Returns the radius of the sector. */
     Radius(): number;
+    /** sets an arbitrary number of attributes for this Sector element*/ setAttribute(attrs: SectorAttributes): void;
 }
 export interface VectorfieldAttributes extends CurveAttributes {
     /** Customize arrow heads of vectors. Be careful! If enabled this will slow down the performance. Fields are:enabled: Booleansize: length of the arrow head legs (in pixel)angle: angle of the arrow head legs In radians. */
@@ -1669,6 +1697,7 @@ export interface VectorfieldAttributes extends CurveAttributes {
 export interface Vectorfield extends Curve {
     /** Set the defining functions of vector field. */
     setF(func: Function): Object;
+    /** sets an arbitrary number of attributes for this Vectorfield element*/ setAttribute(attrs: VectorfieldAttributes): void;
 }
 export interface AngleAttributes extends SectorAttributes {
     /** Attributes for sub-element arc. In general, the arc will run through the first point and thus will not have the same radius as the angle sector. */
@@ -1704,6 +1733,7 @@ export interface Angle extends Sector {
    It is sufficient to supply the first three characters of the unit, e.g. 'len'.
     */
     Value(unit?: string): number;
+    /** sets an arbitrary number of attributes for this Angle element*/ setAttribute(attrs: AngleAttributes): void;
 }
 export interface ArcAttributes extends CurveAttributes {
     /** Attributes for angle point. */
@@ -1732,20 +1762,24 @@ export interface Arc extends Curve {
     Radius(): number;
     /** Returns the length of the arc or the value of the angle spanned by the arc. */
     Value(unit?: string, rad?: number): number;
+    /** sets an arbitrary number of attributes for this Arc element*/ setAttribute(attrs: ArcAttributes): void;
 }
 export interface ArrowAttributes extends LineAttributes {
 }
 export interface Arrow extends Line {
+    /** sets an arbitrary number of attributes for this Arrow element*/ setAttribute(attrs: ArrowAttributes): void;
 }
 export interface ParallelAttributes extends LineAttributes {
     /** Attributes of helper point of normal. */
     point?: Point;
 }
 export interface Parallel extends Line {
+    /** sets an arbitrary number of attributes for this Parallel element*/ setAttribute(attrs: ParallelAttributes): void;
 }
 export interface ArrowParallelAttributes extends ParallelAttributes {
 }
 export interface ArrowParallel extends Parallel {
+    /** sets an arbitrary number of attributes for this ArrowParallel element*/ setAttribute(attrs: ArrowParallelAttributes): void;
 }
 export interface AxisAttributes extends LineAttributes {
     /** Position is used in cases: position=='sticky' or position=='fixed'. */
@@ -1772,16 +1806,19 @@ export interface AxisAttributes extends LineAttributes {
 export interface Axis extends Line {
     /** missing description */
     defaultTicks: Ticks;
+    /** sets an arbitrary number of attributes for this Axis element*/ setAttribute(attrs: AxisAttributes): void;
 }
 export interface BezierCurveAttributes extends CurveAttributes {
 }
 export interface BezierCurve extends Curve {
+    /** sets an arbitrary number of attributes for this BezierCurve element*/ setAttribute(attrs: BezierCurveAttributes): void;
 }
 export interface BisectorAttributes extends LineAttributes {
     /** Attributes for the helper point of the bisector. */
     point?: Point;
 }
 export interface Bisector extends Line {
+    /** sets an arbitrary number of attributes for this Bisector element*/ setAttribute(attrs: BisectorAttributes): void;
 }
 export interface BisectorlinesAttributes extends CompositionAttributes {
     /** Attributes for first line. */
@@ -1796,6 +1833,9 @@ export interface ButtonAttributes extends TextAttributes {
     disabled?: Boolean | Function;
 }
 export interface Button extends Text {
+    /** missing description */
+    rendNodeButton: HTMLElement;
+    /** sets an arbitrary number of attributes for this Button element*/ setAttribute(attrs: ButtonAttributes): void;
 }
 export interface CardinalsplineAttributes extends CurveAttributes {
     /** Controls if the data points of the cardinal spline when given as arrays should be converted into JXG.Points. */
@@ -1806,38 +1846,46 @@ export interface CardinalsplineAttributes extends CurveAttributes {
     points?: Object;
 }
 export interface Cardinalspline extends Curve {
+    /** sets an arbitrary number of attributes for this Cardinalspline element*/ setAttribute(attrs: CardinalsplineAttributes): void;
 }
 export interface CheckboxAttributes extends TextAttributes {
     /** Control the attribute ”checked” of the HTML checkbox. */
-    checked?: Boolean;
+    checked?: Boolean | Function;
     /** Control the attribute ”disabled” of the HTML checkbox. */
     disabled?: Boolean;
 }
 export interface Checkbox extends Text {
+    /** missing description */
+    rendNodeCheck: HTMLElement;
     /** Returns the value of the checkbox element */
     Value(): Boolean;
+    /** sets an arbitrary number of attributes for this Checkbox element*/ setAttribute(attrs: CheckboxAttributes): void;
 }
 export interface CircumcenterAttributes extends PointAttributes {
 }
 export interface Circumcenter extends Point {
+    /** sets an arbitrary number of attributes for this Circumcenter element*/ setAttribute(attrs: CircumcenterAttributes): void;
 }
 export interface CircumcircleAttributes extends CircleAttributes {
     /** Attributes for center point. */
     center?: GeometryElementAttributes;
 }
 export interface Circumcircle extends Circle {
+    /** sets an arbitrary number of attributes for this Circumcircle element*/ setAttribute(attrs: CircumcircleAttributes): void;
 }
 export interface CircumcircleArcAttributes extends ArcAttributes {
     /** Attributes for center point. */
     center?: Point;
 }
 export interface CircumcircleArc extends Arc {
+    /** sets an arbitrary number of attributes for this CircumcircleArc element*/ setAttribute(attrs: CircumcircleArcAttributes): void;
 }
 export interface CircumcircleSectorAttributes extends SectorAttributes {
 }
 export interface CircumcircleSector extends Sector {
     /** missing description */
     center: Circumcenter;
+    /** sets an arbitrary number of attributes for this CircumcircleSector element*/ setAttribute(attrs: CircumcircleSectorAttributes): void;
 }
 export interface CombAttributes extends CurveAttributes {
     /** Angle - given in radians - under which comb elements are positioned. */
@@ -1854,6 +1902,7 @@ export interface CombAttributes extends CurveAttributes {
     width?: number;
 }
 export interface Comb extends Curve {
+    /** sets an arbitrary number of attributes for this Comb element*/ setAttribute(attrs: CombAttributes): void;
 }
 export interface ConicAttributes extends CurveAttributes {
     /** Attributes for center point. */
@@ -1866,26 +1915,32 @@ export interface ConicAttributes extends CurveAttributes {
     point?: PointAttributes;
 }
 export interface Conic extends Curve {
+    /** sets an arbitrary number of attributes for this Conic element*/ setAttribute(attrs: ConicAttributes): void;
 }
 export interface CurveDifferenceAttributes extends CurveAttributes {
 }
 export interface CurveDifference extends Curve {
+    /** sets an arbitrary number of attributes for this CurveDifference element*/ setAttribute(attrs: CurveDifferenceAttributes): void;
 }
 export interface CurveIntersectionAttributes extends CurveAttributes {
 }
 export interface CurveIntersection extends Curve {
+    /** sets an arbitrary number of attributes for this CurveIntersection element*/ setAttribute(attrs: CurveIntersectionAttributes): void;
 }
 export interface CurveUnionAttributes extends CurveAttributes {
 }
 export interface CurveUnion extends Curve {
+    /** sets an arbitrary number of attributes for this CurveUnion element*/ setAttribute(attrs: CurveUnionAttributes): void;
 }
 export interface DerivativeAttributes extends CurveAttributes {
 }
 export interface Derivative extends Curve {
+    /** sets an arbitrary number of attributes for this Derivative element*/ setAttribute(attrs: DerivativeAttributes): void;
 }
 export interface EllipseAttributes extends ConicAttributes {
 }
 export interface Ellipse extends Conic {
+    /** sets an arbitrary number of attributes for this Ellipse element*/ setAttribute(attrs: EllipseAttributes): void;
 }
 export interface ParametricSurface3DAttributes extends CurveAttributes {
     /** number of intervals the mesh is divided into in direction of parameter u. */
@@ -1896,6 +1951,7 @@ export interface ParametricSurface3DAttributes extends CurveAttributes {
 export interface ParametricSurface3D extends Omit<Curve, 'addTransform'> {
     /** Add transformations to this line. */
     addTransform(el: GeometryElement, transform: Transformation | Transformation[]): GeometryElement;
+    /** sets an arbitrary number of attributes for this ParametricSurface3D element*/ setAttribute(attrs: ParametricSurface3DAttributes): void;
 }
 export interface Face3DAttributes extends CurveAttributes {
     /** Shading of faces. For this, the HSL color scheme is used. Two types are possible: either by 'angle' or by 'zIndex'. By default (i.e. type:'angle'), the angle between the camera axis and the normal of the face determines the lightness value of the HSL color. Otherwise, the zIndex of the face determines the lightness value of the HSL color. */
@@ -1920,14 +1976,17 @@ export interface Face3D extends Curve {
     updateCoords(): Face3D;
     /** Update the 2d coordinates of the face, returns {X:[], Y:[]}  */
     updateDataArray2D(): Object;
+    /** sets an arbitrary number of attributes for this Face3D element*/ setAttribute(attrs: Face3DAttributes): void;
 }
 export interface FunctiongraphAttributes extends CurveAttributes {
 }
 export interface Functiongraph extends Curve {
+    /** sets an arbitrary number of attributes for this Functiongraph element*/ setAttribute(attrs: FunctiongraphAttributes): void;
 }
 export interface Functiongraph3DAttributes extends ParametricSurface3DAttributes {
 }
 export interface Functiongraph3D extends ParametricSurface3D {
+    /** sets an arbitrary number of attributes for this Functiongraph3D element*/ setAttribute(attrs: Functiongraph3DAttributes): void;
 }
 export interface GliderAttributes extends PointAttributes {
 }
@@ -1936,10 +1995,12 @@ export interface Glider extends Point {
     startAnimation(direction: number | Function, stepCount: number | Function, delay: number | Function): void;
     /** Stop animation. */
     stopAnimation(): CoordsElement;
+    /** sets an arbitrary number of attributes for this Glider element*/ setAttribute(attrs: GliderAttributes): void;
 }
 export interface Glider3DAttributes extends Point3DAttributes {
 }
 export interface Glider3D extends Point3D {
+    /** sets an arbitrary number of attributes for this Glider3D element*/ setAttribute(attrs: Glider3DAttributes): void;
 }
 export interface GridAttributes extends CurveAttributes {
     /**
@@ -1976,32 +2037,38 @@ export interface GridAttributes extends CurveAttributes {
     size?: number | Function;
 }
 export interface Grid extends Curve {
+    /** sets an arbitrary number of attributes for this Grid element*/ setAttribute(attrs: GridAttributes): void;
 }
 export interface HatchAttributes extends TicksAttributes {
 }
 export interface Hatch extends Ticks {
     /** missing description */
     ticksDistance: number;
+    /** sets an arbitrary number of attributes for this Hatch element*/ setAttribute(attrs: HatchAttributes): void;
 }
 export interface HyperbolaAttributes extends ConicAttributes {
 }
 export interface Hyperbola extends Conic {
+    /** sets an arbitrary number of attributes for this Hyperbola element*/ setAttribute(attrs: HyperbolaAttributes): void;
 }
 export interface IncenterAttributes extends PointAttributes {
 }
 export interface Incenter extends Point {
+    /** sets an arbitrary number of attributes for this Incenter element*/ setAttribute(attrs: IncenterAttributes): void;
 }
 export interface IncircleAttributes extends CircleAttributes {
     /** Attributes of circle center. */
     center?: GeometryElementAttributes;
 }
 export interface Incircle extends Circle {
+    /** sets an arbitrary number of attributes for this Incircle element*/ setAttribute(attrs: IncircleAttributes): void;
 }
 export interface InequalityAttributes extends CurveAttributes {
     /** By default an inequality is less (or equal) than. Set inverse to true will consider the inequality greater (or equal) than. */
     inverse?: Boolean;
 }
 export interface Inequality extends Curve {
+    /** sets an arbitrary number of attributes for this Inequality element*/ setAttribute(attrs: InequalityAttributes): void;
 }
 export interface InputAttributes extends TextAttributes {
     /** Control the attribute ”disabled” of the HTML input field. */
@@ -2014,6 +2081,7 @@ export interface Input extends Text {
     set(val: String): GeometryElement;
     /** Returns the value (content) of the input element */
     Value(): string;
+    /** sets an arbitrary number of attributes for this Input element*/ setAttribute(attrs: InputAttributes): void;
 }
 export interface IntegralAttributes extends CurveAttributes {
     /** Attributes of the (left) base point of the integral. */
@@ -2038,12 +2106,14 @@ export interface Integral extends Curve {
     curveRight: Point;
     /** Returns the current value of the integral. */
     Value(): Point;
+    /** sets an arbitrary number of attributes for this Integral element*/ setAttribute(attrs: IntegralAttributes): void;
 }
 export interface IntersectionAttributes extends PointAttributes {
     /**  */
     alwaysIntersect?: Boolean;
 }
 export interface Intersection extends Point {
+    /** sets an arbitrary number of attributes for this Intersection element*/ setAttribute(attrs: IntersectionAttributes): void;
 }
 export interface LabelAttributes extends TextAttributes {
     /** Automatic position of label text. When called first, the positioning algorithm starts at the position defined by offset. The algorithm tries to find a position with the least number of overlappings with other elements, while retaining the distance to the anchor element. */
@@ -2062,6 +2132,7 @@ export interface LabelAttributes extends TextAttributes {
     autoPositionWhitelist?: string[];
 }
 export interface Label extends Text {
+    /** sets an arbitrary number of attributes for this Label element*/ setAttribute(attrs: LabelAttributes): void;
 }
 export interface LegendAttributes extends GeometryElementAttributes {
     /** Array of legend values */
@@ -2082,18 +2153,22 @@ export interface LegendAttributes extends GeometryElementAttributes {
     style?: string;
 }
 export interface Legend extends GeometryElement {
+    /** sets an arbitrary number of attributes for this Legend element*/ setAttribute(attrs: LegendAttributes): void;
 }
 export interface LocusAttributes extends CurveAttributes {
 }
 export interface Locus extends Curve {
+    /** sets an arbitrary number of attributes for this Locus element*/ setAttribute(attrs: LocusAttributes): void;
 }
 export interface MajorArcAttributes extends CurveAttributes {
 }
 export interface MajorArc extends Curve {
+    /** sets an arbitrary number of attributes for this MajorArc element*/ setAttribute(attrs: MajorArcAttributes): void;
 }
 export interface MajorSectorAttributes extends CurveAttributes {
 }
 export interface MajorSector extends Curve {
+    /** sets an arbitrary number of attributes for this MajorSector element*/ setAttribute(attrs: MajorSectorAttributes): void;
 }
 export interface MeasurementAttributes extends TextAttributes {
     /** This specifies the unit of measurement in dimension 1  */
@@ -2116,6 +2191,7 @@ export interface MeasurementAttributes extends TextAttributes {
     units?: string;
 }
 export interface Measurement extends Text {
+    /** sets an arbitrary number of attributes for this Measurement element*/ setAttribute(attrs: MeasurementAttributes): void;
 }
 export interface Mesh3DAttributes extends CurveAttributes {
     /** Step width of the mesh in the direction of the first spanning vector. */
@@ -2124,88 +2200,108 @@ export interface Mesh3DAttributes extends CurveAttributes {
     stepWidthV?: number;
 }
 export interface Mesh3D extends Curve {
+    /** sets an arbitrary number of attributes for this Mesh3D element*/ setAttribute(attrs: Mesh3DAttributes): void;
 }
 export interface MidpointAttributes extends PointAttributes {
 }
 export interface Midpoint extends Point {
+    /** sets an arbitrary number of attributes for this Midpoint element*/ setAttribute(attrs: MidpointAttributes): void;
 }
 export interface MinorArcAttributes extends CurveAttributes {
 }
 export interface MinorArc extends Curve {
+    /** sets an arbitrary number of attributes for this MinorArc element*/ setAttribute(attrs: MinorArcAttributes): void;
 }
 export interface MinorSectorAttributes extends CurveAttributes {
 }
 export interface MinorSector extends Curve {
+    /** sets an arbitrary number of attributes for this MinorSector element*/ setAttribute(attrs: MinorSectorAttributes): void;
 }
 export interface MirrorElementAttributes extends GeometryElementAttributes {
 }
 export interface MirrorElement extends GeometryElement {
+    /** sets an arbitrary number of attributes for this MirrorElement element*/ setAttribute(attrs: MirrorElementAttributes): void;
 }
 export interface MirrorPointAttributes extends PointAttributes {
 }
 export interface MirrorPoint extends Point {
+    /** sets an arbitrary number of attributes for this MirrorPoint element*/ setAttribute(attrs: MirrorPointAttributes): void;
 }
 export interface NonReflexAngleAttributes extends AngleAttributes {
 }
 export interface NonReflexAngle extends Angle {
+    /** sets an arbitrary number of attributes for this NonReflexAngle element*/ setAttribute(attrs: NonReflexAngleAttributes): void;
 }
 export interface NormalAttributes extends LineAttributes {
     /** Attributes of helper point of normal. */
     point?: Point;
 }
 export interface Normal extends Line {
+    /** sets an arbitrary number of attributes for this Normal element*/ setAttribute(attrs: NormalAttributes): void;
 }
 export interface OrthogonalprojectionAttributes extends PointAttributes {
 }
 export interface Orthogonalprojection extends Point {
+    /** sets an arbitrary number of attributes for this Orthogonalprojection element*/ setAttribute(attrs: OrthogonalprojectionAttributes): void;
 }
 export interface OtherIntersectionAttributes extends PointAttributes {
 }
 export interface OtherIntersection extends Point {
+    /** sets an arbitrary number of attributes for this OtherIntersection element*/ setAttribute(attrs: OtherIntersectionAttributes): void;
 }
 export interface ParabolaAttributes extends ConicAttributes {
 }
 export interface Parabola extends Conic {
+    /** sets an arbitrary number of attributes for this Parabola element*/ setAttribute(attrs: ParabolaAttributes): void;
 }
 export interface ParallelpointAttributes extends PointAttributes {
 }
 export interface Parallelpoint extends Point {
+    /** sets an arbitrary number of attributes for this Parallelpoint element*/ setAttribute(attrs: ParallelpointAttributes): void;
 }
 export interface SegmentAttributes extends LineAttributes {
 }
 export interface Segment extends Line {
+    /** sets an arbitrary number of attributes for this Segment element*/ setAttribute(attrs: SegmentAttributes): void;
 }
 export interface ParallelogramAttributes extends PolygonAttributes {
 }
 export interface Parallelogram extends Polygon {
     /** missing description */
     parallelPoint: Point;
+    /** sets an arbitrary number of attributes for this Parallelogram element*/ setAttribute(attrs: ParallelogramAttributes): void;
 }
 export interface PerpendicularAttributes extends SegmentAttributes {
 }
 export interface Perpendicular extends Segment {
+    /** sets an arbitrary number of attributes for this Perpendicular element*/ setAttribute(attrs: PerpendicularAttributes): void;
 }
 export interface PerpendicularPointAttributes extends PointAttributes {
 }
 export interface PerpendicularPoint extends Point {
+    /** sets an arbitrary number of attributes for this PerpendicularPoint element*/ setAttribute(attrs: PerpendicularPointAttributes): void;
 }
 export interface PerpendicularSegmentAttributes extends SegmentAttributes {
 }
 export interface PerpendicularSegment extends Segment {
     /** missing description */
     point: PerpendicularPoint;
+    /** sets an arbitrary number of attributes for this PerpendicularSegment element*/ setAttribute(attrs: PerpendicularSegmentAttributes): void;
 }
 export interface PolarLineAttributes extends LineAttributes {
 }
 export interface PolarLine extends Line {
+    /** sets an arbitrary number of attributes for this PolarLine element*/ setAttribute(attrs: PolarLineAttributes): void;
 }
 export interface PolePointAttributes extends PointAttributes {
 }
 export interface PolePoint extends Point {
+    /** sets an arbitrary number of attributes for this PolePoint element*/ setAttribute(attrs: PolePointAttributes): void;
 }
 export interface PolygonalChainAttributes extends PolygonAttributes {
 }
 export interface PolygonalChain extends Polygon {
+    /** sets an arbitrary number of attributes for this PolygonalChain element*/ setAttribute(attrs: PolygonalChainAttributes): void;
 }
 export interface Polyhedron3DAttributes extends GeometryElement3DAttributes {
     /** Array of face colors. */
@@ -2218,10 +2314,12 @@ export interface Polyhedron3D extends GeometryElement3D {
     faces: Face3D[];
     /** missing description */
     numberFaces: number;
+    /** sets an arbitrary number of attributes for this Polyhedron3D element*/ setAttribute(attrs: Polyhedron3DAttributes): void;
 }
 export interface RadicalAxisAttributes extends LineAttributes {
 }
 export interface RadicalAxis extends Line {
+    /** sets an arbitrary number of attributes for this RadicalAxis element*/ setAttribute(attrs: RadicalAxisAttributes): void;
 }
 export interface ReflectionAttributes extends GeometryElementAttributes {
     /** Type of transformation. Possible values are 'Euclidean', 'projective'.If the value is 'Euclidean', the reflected element of a circle is again a circle, otherwise it is a conic section. */
@@ -2230,10 +2328,12 @@ export interface ReflectionAttributes extends GeometryElementAttributes {
     center?: PointAttributes;
 }
 export interface Reflection extends GeometryElement {
+    /** sets an arbitrary number of attributes for this Reflection element*/ setAttribute(attrs: ReflectionAttributes): void;
 }
 export interface ReflexAngleAttributes extends AngleAttributes {
 }
 export interface ReflexAngle extends Angle {
+    /** sets an arbitrary number of attributes for this ReflexAngle element*/ setAttribute(attrs: ReflexAngleAttributes): void;
 }
 export interface RegularPolygonAttributes extends PolygonAttributes {
     /** Attributes for the polygon border lines. */
@@ -2248,12 +2348,14 @@ export interface RegularPolygonAttributes extends PolygonAttributes {
     label?: LabelAttributes;
 }
 export interface RegularPolygon extends Polygon {
+    /** sets an arbitrary number of attributes for this RegularPolygon element*/ setAttribute(attrs: RegularPolygonAttributes): void;
 }
 export interface RiemannsumAttributes extends CurveAttributes {
 }
 export interface Riemannsum extends Curve {
     /** Returns the value of the Riemann sum, i.e. the sum of the (signed) areas of the rectangles. */
     Value(): number;
+    /** sets an arbitrary number of attributes for this Riemannsum element*/ setAttribute(attrs: RiemannsumAttributes): void;
 }
 export interface SemicircleAttributes extends ArcAttributes {
     /** Attributes for center point of the semicircle. */
@@ -2262,6 +2364,7 @@ export interface SemicircleAttributes extends ArcAttributes {
 export interface Semicircle extends Arc {
     /** missing description */
     midpoint: Midpoint;
+    /** sets an arbitrary number of attributes for this Semicircle element*/ setAttribute(attrs: SemicircleAttributes): void;
 }
 export interface SliderAttributes extends GliderAttributes {
     /** Attributes for the base line of the slider. */
@@ -2316,6 +2419,7 @@ export interface Slider extends Glider {
     setValue(val: number): Slider;
     /** Returns the current slider value. */
     Value(): number;
+    /** sets an arbitrary number of attributes for this Slider element*/ setAttribute(attrs: SliderAttributes): void;
 }
 export interface SlopefieldAttributes extends VectorfieldAttributes {
     /** Customize arrow heads of vectors. Be careful! If enabled this will slow down the performance. Fields are:enabled: Booleansize: length of the arrow head legs (in pixel)angle: angle of the arrow head legs In radians. */
@@ -2326,6 +2430,7 @@ export interface SlopefieldAttributes extends VectorfieldAttributes {
 export interface Slopefield extends Vectorfield {
     /** Set the defining functions of slope field. */
     setF(func: Function): Slopefield;
+    /** sets an arbitrary number of attributes for this Slopefield element*/ setAttribute(attrs: SlopefieldAttributes): void;
 }
 export interface SlopetriangleAttributes extends LineAttributes {
     /** Attributes for the base line. */
@@ -2346,6 +2451,7 @@ export interface Slopetriangle extends Line {
     Value(): number;
     /** Returns the direction of the slope triangle, that is the direction of the tangent.  */
     Direction(): number[];
+    /** sets an arbitrary number of attributes for this Slopetriangle element*/ setAttribute(attrs: SlopetriangleAttributes): void;
 }
 export interface SmartlabelAttributes extends TextAttributes {
     /** CSS classes for the smart label. Available classes are:'smart-label-solid''smart-label-outline''smart-label-pure'By default, an additional class is given specific for the element type. Available classes are 'smart-label-angle', 'smart-label-circle', 'smart-label-line', 'smart-label-point', 'smart-label-polygon'. */
@@ -2364,6 +2470,7 @@ export interface SmartlabelAttributes extends TextAttributes {
     unit?: string;
 }
 export interface Smartlabel extends Text {
+    /** sets an arbitrary number of attributes for this Smartlabel element*/ setAttribute(attrs: SmartlabelAttributes): void;
 }
 export interface Sphere3DAttributes extends GeometryElement3DAttributes {
 }
@@ -2382,18 +2489,22 @@ export interface Sphere3D extends GeometryElement3D {
     Radius(value?: number | Function): number;
     /** Set a new radius, then update the board.  */
     setRadius(r: number | Function): void;
+    /** sets an arbitrary number of attributes for this Sphere3D element*/ setAttribute(attrs: Sphere3DAttributes): void;
 }
 export interface SplineAttributes extends CurveAttributes {
 }
 export interface Spline extends Curve {
+    /** sets an arbitrary number of attributes for this Spline element*/ setAttribute(attrs: SplineAttributes): void;
 }
 export interface StepfunctionAttributes extends CurveAttributes {
 }
 export interface Stepfunction extends Curve {
+    /** sets an arbitrary number of attributes for this Stepfunction element*/ setAttribute(attrs: StepfunctionAttributes): void;
 }
 export interface TangentAttributes extends LineAttributes {
 }
 export interface Tangent extends Line {
+    /** sets an arbitrary number of attributes for this Tangent element*/ setAttribute(attrs: TangentAttributes): void;
 }
 export interface TangentToAttributes extends LineAttributes {
     /** Attributes for the intersection point of the conic/circle with the polar line of the tangentTo construction. */
@@ -2402,6 +2513,7 @@ export interface TangentToAttributes extends LineAttributes {
     polar?: PolarLineAttributes;
 }
 export interface TangentTo extends Line {
+    /** sets an arbitrary number of attributes for this TangentTo element*/ setAttribute(attrs: TangentToAttributes): void;
 }
 export interface TapemeasureAttributes extends SegmentAttributes {
     /** The precision of the tape measure value displayed in the optional text. */
@@ -2426,12 +2538,14 @@ export interface TapemeasureAttributes extends SegmentAttributes {
 export interface Tapemeasure extends Segment {
     /** Returns the length of the tape measure. */
     Value(): number;
+    /** sets an arbitrary number of attributes for this Tapemeasure element*/ setAttribute(attrs: TapemeasureAttributes): void;
 }
 export interface TracecurveAttributes extends CurveAttributes {
     /** The number of evaluated data points. */
     numberPoints?: number;
 }
 export interface Tracecurve extends Curve {
+    /** sets an arbitrary number of attributes for this Tracecurve element*/ setAttribute(attrs: TracecurveAttributes): void;
 }
 export interface TransformationAttributes extends GeometryElementAttributes {
 }
@@ -2462,54 +2576,67 @@ export interface Transformation extends GeometryElement {
 export interface Transform3DAttributes extends TransformationAttributes {
 }
 export interface Transform3D extends Transformation {
+    /** sets an arbitrary number of attributes for this Transform3D element*/ setAttribute(attrs: Transform3DAttributes): void;
 }
 export interface TransformPointAttributes extends PointAttributes {
 }
 export interface TransformPoint extends Point {
+    /** sets an arbitrary number of attributes for this TransformPoint element*/ setAttribute(attrs: TransformPointAttributes): void;
 }
 export interface TransformPoint3DAttributes extends Point3DAttributes {
 }
 export interface TransformPoint3D extends Point3D {
+    /** sets an arbitrary number of attributes for this TransformPoint3D element*/ setAttribute(attrs: TransformPoint3DAttributes): void;
 }
 export interface Segment3DAttributes extends Line3DAttributes {
 }
 export interface Segment3D extends Line3D {
+    /** sets an arbitrary number of attributes for this Segment3D element*/ setAttribute(attrs: Segment3DAttributes): void;
 }
 export interface TranslateAttributes extends TransformationAttributes {
 }
 export interface Translate extends Transformation {
+    /** sets an arbitrary number of attributes for this Translate element*/ setAttribute(attrs: TranslateAttributes): void;
 }
 export interface RotateAttributes extends TransformationAttributes {
 }
 export interface Rotate extends Transformation {
+    /** sets an arbitrary number of attributes for this Rotate element*/ setAttribute(attrs: RotateAttributes): void;
 }
 export interface ScaleAttributes extends TransformationAttributes {
 }
 export interface Scale extends Transformation {
+    /** sets an arbitrary number of attributes for this Scale element*/ setAttribute(attrs: ScaleAttributes): void;
 }
 export interface Translate3DAttributes extends Transform3DAttributes {
 }
 export interface Translate3D extends Transform3D {
+    /** sets an arbitrary number of attributes for this Translate3D element*/ setAttribute(attrs: Translate3DAttributes): void;
 }
 export interface Rotate3DAttributes extends Transform3DAttributes {
 }
 export interface Rotate3D extends Transform3D {
+    /** sets an arbitrary number of attributes for this Rotate3D element*/ setAttribute(attrs: Rotate3DAttributes): void;
 }
 export interface RotateX3DAttributes extends Transform3DAttributes {
 }
 export interface RotateX3D extends Transform3D {
+    /** sets an arbitrary number of attributes for this RotateX3D element*/ setAttribute(attrs: RotateX3DAttributes): void;
 }
 export interface RotateY3DAttributes extends Transform3DAttributes {
 }
 export interface RotateY3D extends Transform3D {
+    /** sets an arbitrary number of attributes for this RotateY3D element*/ setAttribute(attrs: RotateY3DAttributes): void;
 }
 export interface RotateZ3DAttributes extends Transform3DAttributes {
 }
 export interface RotateZ3D extends Transform3D {
+    /** sets an arbitrary number of attributes for this RotateZ3D element*/ setAttribute(attrs: RotateZ3DAttributes): void;
 }
 export interface Scale3DAttributes extends Transform3DAttributes {
 }
 export interface Scale3D extends Transform3D {
+    /** sets an arbitrary number of attributes for this Scale3D element*/ setAttribute(attrs: Scale3DAttributes): void;
 }
 /** A wrapper for the various math routines provided by JSXGraph.  For example:
             ```js
@@ -3728,8 +3855,9 @@ export declare class TSXBoard {
     PerpendicularSegment(line: Line | [Point | pointAddr, Point | pointAddr], point: Point | pointAddr, attributes?: PerpendicularSegmentAttributes): PerpendicularSegment;
     PolarLine(conic: Conic | Circle, point: Point, attributes?: PolarLineAttributes): PolarLine;
     PolePoint(conic: Conic | Circle, line: Line, attributes?: PolePointAttributes): PolePoint;
-    /** Array of Points */
-    PolygonalChain(pointArray: Point[] | pointAddr[], attributes?: PolygonalChainAttributes): PolygonalChain;
+    /** A polygonal chain is a connected series of line segments (borders). It is determined by a list of points or a list of coordinate arrays or a function returning a list of coordinate arrays.
+                               Each two consecutive points of the list define a line. In JSXGraph, a polygonal chain is simply realized as polygon without the last - closing - point. This may lead to unexpected results. Polygonal chains can be distinguished from polygons by the attribute 'elType' which is 'polygonalchain' for the first and 'polygon' for the latter. */
+    PolygonalChain(pointArray: Point[] | pointAddr[] | Function, attributes?: PolygonalChainAttributes): PolygonalChain;
     /** A polyhedron in a 3D view consists of faces. Faces can be 0-, 1- or 2-dimensional.
    ```js
    let rho = 1.6180339887;
