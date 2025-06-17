@@ -1,73 +1,78 @@
 const express = require('express');
 const fs = require('fs');
-
-const app = express();
-
-
 const port = 3000;
-app.listen(port, () => {
-    console.log(`Server is running at http://localhost:${port}`);
-});
 
-// empty page, HOME button
-app.get('/', (req, res) => {
-    res.setHeader('content-type', 'text/html');
-    res.send(fileList());
-});
-
-// if we are specifically asked for tsxgraph, pull it from lib
-app.get('/lib/tsxgraph.js', (req, res) => {
-    const tsxgraph = fs.readFileSync('./dist/lib/tsxgraph.js', 'utf8');
-    res.setHeader('content-type', 'text/javascript');
-    res.send(tsxgraph);
-});
-
-app.all('*', function (req, res) {
-
-    // if we are asked for something from node_modules, find the right mime type
-    let nmText = '/node_modules/'
-    let nmLen = nmText.length
-
-    if (req.url.slice(0, nmLen) == nmText && req.url.slice(-3) == '.js') {
-        const fileText = fs.readFileSync(req.url.slice(1), 'utf8');
-        res.setHeader('content-type', 'text/javascript');
-        res.send(fileText)
-    } else if (req.url.slice(0, nmLen) == nmText && req.url.slice(-4) == '.css') {
-        const fileText = fs.readFileSync(req.url.slice(1), 'utf8');
-        res.setHeader('content-type', 'text/css');
-        res.send(fileText)
-    } else if (req.url.slice(0, nmLen) == nmText && req.url.slice(-6) == '.woff2') {
-        const fileText = fs.readFileSync(req.url.slice(1));
-        res.setHeader('content-type', 'text/woff2');
-        res.send(fileText)
-    } else if (req.url.slice(0, nmLen) == nmText && req.url.slice(-5) == '.woff') {
-        const fileText = fs.readFileSync(req.url.slice(1));
-        res.setHeader('content-type', 'text/woff');
-        res.send(fileText)
-
-        // default js comes from dist file, default png from images.
-    } else if (req.url.slice(-3) == '.js') {
-        const fileText = fs.readFileSync(`./dist/src/${req.url}`, 'utf8');
-        res.setHeader('content-type', 'text/javascript');
-        res.send(fileText)
-    } else if (req.url.slice(-4) == '.png') {
-        const fileText = fs.readFileSync(req.url.slice(1));
-        res.setHeader('content-type', 'image/png');
-        res.send(fileText)
-
-        // otherwise thing is assumed html.  could replicate & extend above code if mime is important.
-
-    } else {
-        res.setHeader('content-type', 'text/html');
-        res.send(makeHTML(req.url + '.js'));
-    }
-
-});
-
-function buttons() {
+const buttons = ()=> {
     let ret = ''
     ret += `<button type='button' onclick="window.location.href = 'http://localhost:${port.toString()}';">Home</button><br><br>`;
     return ret;
+}
+
+try {
+    const app = express();
+
+
+    app.listen(port, () => {
+        console.log(`Server is running at http://localhost:${port}`);
+    });
+
+    // empty page, HOME button
+    app.get('/', (req, res) => {
+        res.setHeader('content-type', 'text/html');
+        res.send(fileList());
+    });
+
+    // if we are specifically asked for tsxgraph, pull it from lib
+    app.get('/lib/tsxgraph.js', (req, res) => {
+        const tsxgraph = fs.readFileSync('./dist/lib/tsxgraph.js', 'utf8');
+        res.setHeader('content-type', 'text/javascript');
+        res.send(tsxgraph);
+    });
+
+    app.all('*', function (req, res) {
+
+        // if we are asked for something from node_modules, find the right mime type
+        let nmText = '/node_modules/'
+        let nmLen = nmText.length
+
+        if (req.url.slice(0, nmLen) == nmText && req.url.slice(-3) == '.js' && fs.existsSync(req.url.slice(1))) {
+            const fileText = fs.readFileSync(req.url.slice(1), 'utf8');
+            res.setHeader('content-type', 'text/javascript');
+            res.send(fileText)
+        } else if (req.url.slice(0, nmLen) == nmText && req.url.slice(-4) == '.css') {
+            const fileText = fs.readFileSync(req.url.slice(1), 'utf8');
+            res.setHeader('content-type', 'text/css');
+            res.send(fileText)
+        } else if (req.url.slice(0, nmLen) == nmText && req.url.slice(-6) == '.woff2') {
+            const fileText = fs.readFileSync(req.url.slice(1));
+            res.setHeader('content-type', 'text/woff2');
+            res.send(fileText)
+        } else if (req.url.slice(0, nmLen) == nmText && req.url.slice(-5) == '.woff') {
+            const fileText = fs.readFileSync(req.url.slice(1));
+            res.setHeader('content-type', 'text/woff');
+            res.send(fileText)
+
+            // default js comes from dist file, default png from images.
+        } else if (req.url.slice(-3) == '.js') {
+            const fileText = fs.readFileSync(`./dist/src/${req.url}`, 'utf8');
+            res.setHeader('content-type', 'text/javascript');
+            res.send(fileText)
+        } else if (req.url.slice(-4) == '.png') {
+            const fileText = fs.readFileSync(req.url.slice(1));
+            res.setHeader('content-type', 'image/png');
+            res.send(fileText)
+
+            // otherwise thing is assumed html.  could replicate & extend above code if mime is important.
+
+        } else {
+            res.setHeader('content-type', 'text/html');
+            res.send(makeHTML(req.url + '.js'));
+        }
+
+    });
+
+} catch (e) {
+    console.error(e);
 }
 
 /**  create list of files in src directory */
@@ -109,7 +114,7 @@ function makeHTML(file) {
     <link href="node_modules/jsxgraph/distrib/jsxgraph.css" rel="stylesheet">
 
     <script src="node_modules/webfontloader/webfontloader.js"></script>`;
-
+-
 
 
     ret += `</head>
