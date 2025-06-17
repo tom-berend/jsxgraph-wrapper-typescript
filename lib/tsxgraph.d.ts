@@ -478,9 +478,9 @@ export interface CoordsElement extends Omit<GeometryElement, 'snapToPoints'> {
     /** Applies the transformations of the element to {@link JXG.Point#baseElement}. Point transformations are relative to a base element.  */
     updateTransform(fromParent: Boolean): void;
     /** Starts an animated point movement towards the given coordinates &lt;tt&gt;where&lt;/tt&gt;. After arriving at &lt;tt&gt;where&lt;/tt&gt; the point moves back to where it started. The animation is done after &lt;tt&gt;time&lt;/tt&gt; milliseconds. */
-    visit(where: number[], time: number, options: VisitAttributes): CoordsElement;
+    visit(where: number[], time: number, options?: VisitAttributes): CoordsElement;
     /** ES6 version of {@link JXG.CoordsElement#moveVisit} using a promise. */
-    visitES6(where: number[], time: number, options: VisitAttributes): Promise<any>;
+    visitES6(where: number[], time: number, options?: VisitAttributes): Promise<any>;
     /** Getter method for x, this is used by for CAS-points to access point coordinates. */
     X(): number;
     /** Getter method for y, this is used by CAS-points to access point coordinates. */
@@ -620,7 +620,7 @@ export interface PointAttributes extends GeometryElementAttributes {
     infoboxDigits?: String | number;
     /** If true, the infobox is shown on mouse/pen over, if false not. If the value is 'inherit', the value of JXG.currentBoard#showInfobox is taken. */
     showInfobox?: Boolean;
-    /** There are different point styles which differ in appearance. */
+    /** There are different point styles which differ in appearance. cross	x,  circle	o,  square,   []	[],  plus	+,  minus	-,  divide	|,  diamond	<>,  diamond2	<> (bigger),  triangleup	^,   a,   A,  triangledown	v,  triangleleft	<,  triangleright	>, */
     face?: 'o' | 'line' | 'point' | 'cross' | 'plus' | 'minus' | 'divide' | 'diamond' | 'triangledown' | 'triangleleft' | 'triangleright' | 'triangleup' | 'square' | 'circle' | string;
     /** Size of a point, either in pixel or user coordinates. Means radius resp. half the width of a point (depending on the face). */
     size?: number | Function;
@@ -1832,7 +1832,7 @@ export interface ButtonAttributes extends TextAttributes {
     /** Control the attribute ”disabled” of the HTML button. */
     disabled?: Boolean | Function;
 }
-export interface Button extends Text {
+export interface Button extends Text, Omit<CoordsElement, 'setPosition' | 'setPositionDirectly' | 'update' | 'snapToPoints'>, Omit<GeometryElement, 'setPositionDirectly' | 'snapToPoints' | 'setPosition' | 'update'> {
     /** missing description */
     rendNodeButton: HTMLElement;
     /** sets an arbitrary number of attributes for this Button element*/ setAttribute(attrs: ButtonAttributes): void;
