@@ -21,7 +21,7 @@
 //    DEALINGS IN THE SOFTWARE.
 //
 /////////////////////////////////////////////////////////////////////////////
-//   Generated on June 16, 2025, 10:46 am
+//   Generated on June 24, 2025, 9:53 am
 
 // match JSXGraph definition for JXG_Point3D, etc
 type NumberFunction = Number | Function
@@ -44,7 +44,8 @@ type arrayNumber = Number[]
 type arrayNumber2 = arrayNumber | Number
 type matAny = arrayNumber2[]
 
-type eventType = 'down' | 'drag' | 'keydrag' | 'mousedown' | 'mousedrag' | 'mousemove' | 'mouseout' | 'mouseover' | 'mouseup' | 'move' | 'out' | 'over' | 'pendown' | 'pendrag' | 'penup' | 'touchdown' | 'touchdrag' | 'touchup' | 'up'
+// eventType accepts any string, but will suggest a few
+type eventType = 'down' | 'up' | 'drag' | 'keydrag' | 'mousedown' | 'mousedrag' | 'mousemove' | 'mouseout' | 'mouseover' | 'mouseup' | 'move' | 'out' | 'over' | 'pendown' | 'pendrag' | 'penup' | 'touchdown' | 'touchdrag' | 'touchup' | 'up' | string
 
 interface Events {
     /** event handlers, eventType is a STRING
@@ -404,6 +405,8 @@ export interface GeometryElementAttributes extends EventsAttributes {
     aria?: AriaAttributes
     /** Apply CSS classes to an element in non-highlighted view. */
     cssClass?: string
+    /** Apply CSS classes to an element in non-highlighted view. */
+    cssStyle?: string | Function
     /** The fill color of this geometry element. */
     fillColor?: string | Function
     /** Opacity for fill color. */
@@ -1889,9 +1892,9 @@ export interface TextAttributes extends GeometryElementAttributes {
     /** CSS class of the text in non-highlighted view. */
     cssClass?: string
     /** Default CSS properties of the HTML text element. */
-    cssDefaultStyle?: string
+    cssDefaultStyle?: string | Function
     /** CSS properties of the HTML text element. */
-    cssStyle?: string
+    cssStyle?: string | Function
     /** Used to round texts given by a number. */
     digits?: number
     /** Determines the rendering method of the text. */
@@ -1899,7 +1902,7 @@ export interface TextAttributes extends GeometryElementAttributes {
     /** Sensitive area for dragging the text. */
     dragArea?: string
     /** The font size in pixels. */
-    fontSize?: number
+    fontSize?: number | Function
     /** CSS unit for the font size of a text element. */
     fontUnit?: string
     /** CSS class of the text in highlighted view. */
@@ -1907,7 +1910,7 @@ export interface TextAttributes extends GeometryElementAttributes {
     /** Default CSS properties of the HTML text element in case of highlighting. */
     highlightCssDefaultStyle?: string
     /** CSS properties of the HTML text element in case of highlighting. */
-    highlightCssStyle?: string
+    highlightCssStyle?: string | Function
     /** Internationalization support for texts consisting of a number only. */
     intl?: object
     /** If enabled, the text will be handled as label. */
@@ -2398,11 +2401,11 @@ export interface CheckboxAttributes extends TextAttributes {
 }
 
 
-export interface Checkbox extends Text {   // fields and methods
+export interface Checkbox extends Text, Omit<CoordsElement, 'setPosition' | 'setPositionDirectly' | 'update' | 'snapToPoints'>, Omit<GeometryElement, 'setPositionDirectly' | 'snapToPoints' | 'setPosition' | 'update'> {
 
     //// fields
     /** missing description */
-    rendNodeCheck: HTMLElement;
+    rendNodeCheckbox: HTMLElement;
 
     //// methods
     /** Returns the value of the checkbox element */
@@ -2812,7 +2815,7 @@ export interface InputAttributes extends TextAttributes {
 }
 
 
-export interface Input extends Text {   // fields and methods
+export interface Input extends Text, Omit<CoordsElement, 'setPosition' | 'setPositionDirectly' | 'update' | 'snapToPoints'>, Omit<GeometryElement, 'setPositionDirectly' | 'snapToPoints' | 'setPosition' | 'update'> {
 
     //// fields
 
@@ -4330,6 +4333,8 @@ export class TSXBoard {
 
                 zPlaneRear: { visible: false },
 
+                // note: keyboard requires jsxbox div to contain tabindex='0' directive
+
                 az: { pointer: { enabled: false }, keyboard: { enabled: true, key: 'none' } },
 
                 el: { pointer: { enabled: false }, keyboard: { enabled: true, key: 'none' } },
@@ -4340,7 +4345,7 @@ export class TSXBoard {
 
 
 
-        (this._jView3d as any).setView(Math.PI, Math.PI / 2, 0);
+        // (this._jView3d as any).setView(Math.PI, Math.PI / 2, 0);
 
 
 
@@ -6091,7 +6096,7 @@ export class TSXBoard {
     *```
    *```
      */
-    Point3D(xyz: number[], attributes?: Point3DAttributes): Point3D
+    Point3D(xyz: NumberFunction[], attributes?: Point3DAttributes): Point3D
     /** This element is used to provide a constructor for a 3D Point.
     *```
    *```
@@ -6465,7 +6470,6 @@ export class TSXBoard {
     }
 
 
-
     /** Create a button.
    ```js
        let toggleValue = false   // button toggles this value and updates board
@@ -6476,23 +6480,128 @@ export class TSXBoard {
        });
        TSX.circle([0, 0], 1, { visible: () => toggleValue });  // sees update
    ```
-    */
-    Button(position: pointAddr, label: string | Function, handler: Function, attributes: ButtonAttributes = {}): Button {
-        (position as any).push(label, handler);  // position is already array, eg: [1,2], just use it as params
-        return (this._jBoard as any).create('button', position, this.defaultAttributes(attributes)) as Button;
-    }
 
+    *```
+   *```
+     */
+    Button(position: pointAddr, label: string | Function, attributes?: ButtonAttributes): Button
+    /** Create a button.
+   ```js
+       let toggleValue = false   // button toggles this value and updates board
+       let butt = TSX.Button([0, 0], 'Toggle', () => {
+           toggleValue = !toggleValue;
+           butt.rendNodeButton.innerHTML = toggleValue ? 'On' : 'Off';
+           butt.rendNodeButton.style.backgroundColor = toggleValue ? 'lightgreen' : 'salmon';
+       });
+       TSX.circle([0, 0], 1, { visible: () => toggleValue });  // sees update
+   ```
+
+    *```
+   *```
+     */
+    Button(position: pointAddr, label: string | Function, handler: Function, attributes?: ButtonAttributes): Button
+    // implementation of signature,  hidden from user
+    Button(a?: any, b?: any, c?: any, d?: any, e?: any, f?: any, g?: any, h?: any, i?: any) {
+        let params: any[] = []
+        let attrs = {}
+        if (arguments.length == 1) {
+            params = this.isAttribute(a) ? [] : [a,];
+            attrs = this.isAttribute(a) ? a : {};
+        }
+        if (arguments.length == 2) {
+            params = this.isAttribute(b) ? [a,] : [a, b,];
+            attrs = this.isAttribute(b) ? b : {};
+        }
+        if (arguments.length == 3) {
+            params = this.isAttribute(c) ? [a, b,] : [a, b, c,];
+            attrs = this.isAttribute(c) ? c : {};
+        }
+        if (arguments.length == 4) {
+            params = this.isAttribute(d) ? [a, b, c,] : [a, b, c, d,];
+            attrs = this.isAttribute(d) ? d : {};
+        }
+        if (arguments.length == 5) {
+            params = this.isAttribute(e) ? [a, b, c, d,] : [a, b, c, d, e,];
+            attrs = this.isAttribute(e) ? e : {};
+        }
+        if (arguments.length == 6) {
+            params = this.isAttribute(f) ? [a, b, c, d, e,] : [a, b, c, d, e, f,];
+            attrs = this.isAttribute(f) ? f : {};
+        }
+        if (arguments.length == 7) {
+            params = this.isAttribute(g) ? [a, b, c, d, e, f,] : [a, b, c, d, e, f, g,];
+            attrs = this.isAttribute(g) ? g : {};
+        }
+        if (typeof c === 'function') {
+            (a as any).push(b, c);    // position is already array, eg: [1,2], just use it as params
+        } else {
+            (a as any).push(b);
+        }
+        return (this._jBoard as any).create('button', a, this.defaultAttributes(attrs)) as Button;
+    }
 
     Cardinalspline(data: Point[] | number[][], funct: Function, splineType: `uniform` | `centripetal`, attributes: CardinalsplineAttributes = {}): Curve {
         return (this._jBoard as any).create('cardinalspline', [data, funct, splineType,], this.defaultAttributes(attributes)) as Curve
     }
 
 
-    Checkbox(position: pointAddr, label: string | Function, attributes: CheckboxAttributes = {}): Checkbox {
-        (position as any).push(label);
-        return (this._jBoard as any).create('checkbox', position, this.defaultAttributes(attributes));
+    /** A text element that contains an HTML checkbox tag.
+   ```js
+   let p = TSX.Point([1, 1])
+   let chkbx = TSX.Checkbox([0, 3], 'Click me', () => p.moveTo([chkbx.Value()?-4:4,1],500))
+   ```
+    *```
+   *```
+     */
+    Checkbox(position: pointAddr, label: string | Function, attributes?: CheckboxAttributes): Checkbox
+    /** A text element that contains an HTML checkbox tag.
+   ```js
+   let p = TSX.Point([1, 1])
+   let chkbx = TSX.Checkbox([0, 3], 'Click me', () => p.moveTo([chkbx.Value()?-4:4,1],500))
+   ```
+    *```
+   *```
+     */
+    Checkbox(position: pointAddr, label: string | Function, handler?: Function, attributes?: CheckboxAttributes): Checkbox
+    // implementation of signature,  hidden from user
+    Checkbox(a?: any, b?: any, c?: any, d?: any, e?: any, f?: any, g?: any, h?: any, i?: any) {
+        let params: any[] = []
+        let attrs = {}
+        if (arguments.length == 1) {
+            params = this.isAttribute(a) ? [] : [a,];
+            attrs = this.isAttribute(a) ? a : {};
+        }
+        if (arguments.length == 2) {
+            params = this.isAttribute(b) ? [a,] : [a, b,];
+            attrs = this.isAttribute(b) ? b : {};
+        }
+        if (arguments.length == 3) {
+            params = this.isAttribute(c) ? [a, b,] : [a, b, c,];
+            attrs = this.isAttribute(c) ? c : {};
+        }
+        if (arguments.length == 4) {
+            params = this.isAttribute(d) ? [a, b, c,] : [a, b, c, d,];
+            attrs = this.isAttribute(d) ? d : {};
+        }
+        if (arguments.length == 5) {
+            params = this.isAttribute(e) ? [a, b, c, d,] : [a, b, c, d, e,];
+            attrs = this.isAttribute(e) ? e : {};
+        }
+        if (arguments.length == 6) {
+            params = this.isAttribute(f) ? [a, b, c, d, e,] : [a, b, c, d, e, f,];
+            attrs = this.isAttribute(f) ? f : {};
+        }
+        if (arguments.length == 7) {
+            params = this.isAttribute(g) ? [a, b, c, d, e, f,] : [a, b, c, d, e, f, g,];
+            attrs = this.isAttribute(g) ? g : {};
+        }
+        (a as any).push(b);  // a is already an array, push label
+        let _temp = (this._jBoard as any).create('checkbox', a, this.defaultAttributes(attrs)) as Checkbox;
+        if (typeof c === 'function') {
+            _temp.on('down', c);         // if function then add handler.  JSXGraph doesn't have this.
+        }
+        return _temp;
     }
-
 
 
     /** Creates a Point at the center of a circle defined by 3 points */
@@ -6855,11 +6964,65 @@ export class TSXBoard {
     }
 
 
-    Input(position: Point | pointAddr, label: string | Function, initial: String = "", attributes: InputAttributes = {}): Input {
-        (position as any).push(label, initial);
-        return (this._jBoard as any).create('input', position, this.defaultAttributes(attributes));
+    /** This element is used to provide a constructor for special texts containing a HTML form input element.
+    *```
+   *```
+     */
+    Input(position: Point | pointAddr, label: string | Function, attributes?: InputAttributes): Input
+    /** This element is used to provide a constructor for special texts containing a HTML form input element.
+    *```
+   *```
+     */
+    Input(position: Point | pointAddr, label: string | Function, initial: string, attributes?: InputAttributes): Input
+    /** This element is used to provide a constructor for special texts containing a HTML form input element.
+    *```
+   *```
+     */
+    Input(position: Point | pointAddr, label: string | Function, initial: string, handler: Function, attributes?: InputAttributes): Input
+    // implementation of signature,  hidden from user
+    Input(a?: any, b?: any, c?: any, d?: any, e?: any, f?: any, g?: any, h?: any, i?: any) {
+        let params: any[] = []
+        let attrs = {}
+        if (arguments.length == 1) {
+            params = this.isAttribute(a) ? [] : [a,];
+            attrs = this.isAttribute(a) ? a : {};
+        }
+        if (arguments.length == 2) {
+            params = this.isAttribute(b) ? [a,] : [a, b,];
+            attrs = this.isAttribute(b) ? b : {};
+        }
+        if (arguments.length == 3) {
+            params = this.isAttribute(c) ? [a, b,] : [a, b, c,];
+            attrs = this.isAttribute(c) ? c : {};
+        }
+        if (arguments.length == 4) {
+            params = this.isAttribute(d) ? [a, b, c,] : [a, b, c, d,];
+            attrs = this.isAttribute(d) ? d : {};
+        }
+        if (arguments.length == 5) {
+            params = this.isAttribute(e) ? [a, b, c, d,] : [a, b, c, d, e,];
+            attrs = this.isAttribute(e) ? e : {};
+        }
+        if (arguments.length == 6) {
+            params = this.isAttribute(f) ? [a, b, c, d, e,] : [a, b, c, d, e, f,];
+            attrs = this.isAttribute(f) ? f : {};
+        }
+        if (arguments.length == 7) {
+            params = this.isAttribute(g) ? [a, b, c, d, e, f,] : [a, b, c, d, e, f, g,];
+            attrs = this.isAttribute(g) ? g : {};
+        }
+        (a as any).push(b);      // always have label
+        if (typeof c === 'string') {
+            (a as any).push(c)
+        } else {
+            (a as any).push('')   // label is optional, but JSXGraph says 'undefined'
+        }
+        let _temp = (this._jBoard as any).create('input', a, this.defaultAttributes(attrs)) as Input;
+        if (typeof d === 'function') {
+            (_temp as any).rendNodeInput.addEventListener('keyup', d);         // if function then add handler.  JSXGraph doesn't have this.
+        }
+        return _temp;
     }
-
 
     Integral(range: number[], curve: Curve, attributes: IntegralAttributes = {}): Integral {
         return (this._jBoard as any).create('integral', [range, curve,], this.defaultAttributes(attributes)) as Integral

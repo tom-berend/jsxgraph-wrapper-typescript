@@ -5,7 +5,7 @@ type pointAddr3D = NumberFunction[];
 type arrayNumber = Number[];
 type arrayNumber2 = arrayNumber | Number;
 type matAny = arrayNumber2[];
-type eventType = 'down' | 'drag' | 'keydrag' | 'mousedown' | 'mousedrag' | 'mousemove' | 'mouseout' | 'mouseover' | 'mouseup' | 'move' | 'out' | 'over' | 'pendown' | 'pendrag' | 'penup' | 'touchdown' | 'touchdrag' | 'touchup' | 'up';
+type eventType = 'down' | 'up' | 'drag' | 'keydrag' | 'mousedown' | 'mousedrag' | 'mousemove' | 'mouseout' | 'mouseover' | 'mouseup' | 'move' | 'out' | 'over' | 'pendown' | 'pendrag' | 'penup' | 'touchdown' | 'touchdrag' | 'touchup' | 'up' | string;
 interface Events {
     /** event handlers, eventType is a STRING
      * ```
@@ -175,6 +175,8 @@ export interface GeometryElementAttributes extends EventsAttributes {
     aria?: AriaAttributes;
     /** Apply CSS classes to an element in non-highlighted view. */
     cssClass?: string;
+    /** Apply CSS classes to an element in non-highlighted view. */
+    cssStyle?: string | Function;
     /** The fill color of this geometry element. */
     fillColor?: string | Function;
     /** Opacity for fill color. */
@@ -1474,9 +1476,9 @@ export interface TextAttributes extends GeometryElementAttributes {
     /** CSS class of the text in non-highlighted view. */
     cssClass?: string;
     /** Default CSS properties of the HTML text element. */
-    cssDefaultStyle?: string;
+    cssDefaultStyle?: string | Function;
     /** CSS properties of the HTML text element. */
-    cssStyle?: string;
+    cssStyle?: string | Function;
     /** Used to round texts given by a number. */
     digits?: number;
     /** Determines the rendering method of the text. */
@@ -1484,7 +1486,7 @@ export interface TextAttributes extends GeometryElementAttributes {
     /** Sensitive area for dragging the text. */
     dragArea?: string;
     /** The font size in pixels. */
-    fontSize?: number;
+    fontSize?: number | Function;
     /** CSS unit for the font size of a text element. */
     fontUnit?: string;
     /** CSS class of the text in highlighted view. */
@@ -1492,7 +1494,7 @@ export interface TextAttributes extends GeometryElementAttributes {
     /** Default CSS properties of the HTML text element in case of highlighting. */
     highlightCssDefaultStyle?: string;
     /** CSS properties of the HTML text element in case of highlighting. */
-    highlightCssStyle?: string;
+    highlightCssStyle?: string | Function;
     /** Internationalization support for texts consisting of a number only. */
     intl?: object;
     /** If enabled, the text will be handled as label. */
@@ -1854,9 +1856,9 @@ export interface CheckboxAttributes extends TextAttributes {
     /** Control the attribute ”disabled” of the HTML checkbox. */
     disabled?: Boolean;
 }
-export interface Checkbox extends Text {
+export interface Checkbox extends Text, Omit<CoordsElement, 'setPosition' | 'setPositionDirectly' | 'update' | 'snapToPoints'>, Omit<GeometryElement, 'setPositionDirectly' | 'snapToPoints' | 'setPosition' | 'update'> {
     /** missing description */
-    rendNodeCheck: HTMLElement;
+    rendNodeCheckbox: HTMLElement;
     /** Returns the value of the checkbox element */
     Value(): Boolean;
     /** sets an arbitrary number of attributes for this Checkbox element*/ setAttribute(attrs: CheckboxAttributes): void;
@@ -2076,7 +2078,7 @@ export interface InputAttributes extends TextAttributes {
     /** Control the attribute ”maxlength” of the HTML input field. */
     maxlength?: number;
 }
-export interface Input extends Text {
+export interface Input extends Text, Omit<CoordsElement, 'setPosition' | 'setPositionDirectly' | 'update' | 'snapToPoints'>, Omit<GeometryElement, 'setPositionDirectly' | 'snapToPoints' | 'setPosition' | 'update'> {
     /** Sets value of the input element. */
     set(val: String): GeometryElement;
     /** Returns the value (content) of the input element */
@@ -3453,7 +3455,7 @@ export declare class TSXBoard {
     *```
    *```
      */
-    Point3D(xyz: number[], attributes?: Point3DAttributes): Point3D;
+    Point3D(xyz: NumberFunction[], attributes?: Point3DAttributes): Point3D;
     /** This element is used to provide a constructor for a 3D Point.
     *```
    *```
@@ -3625,10 +3627,45 @@ export declare class TSXBoard {
        });
        TSX.circle([0, 0], 1, { visible: () => toggleValue });  // sees update
    ```
-    */
+    
+    *```
+   *```
+     */
+    Button(position: pointAddr, label: string | Function, attributes?: ButtonAttributes): Button;
+    /** Create a button.
+   ```js
+       let toggleValue = false   // button toggles this value and updates board
+       let butt = TSX.Button([0, 0], 'Toggle', () => {
+           toggleValue = !toggleValue;
+           butt.rendNodeButton.innerHTML = toggleValue ? 'On' : 'Off';
+           butt.rendNodeButton.style.backgroundColor = toggleValue ? 'lightgreen' : 'salmon';
+       });
+       TSX.circle([0, 0], 1, { visible: () => toggleValue });  // sees update
+   ```
+    
+    *```
+   *```
+     */
     Button(position: pointAddr, label: string | Function, handler: Function, attributes?: ButtonAttributes): Button;
     Cardinalspline(data: Point[] | number[][], funct: Function, splineType: `uniform` | `centripetal`, attributes?: CardinalsplineAttributes): Curve;
+    /** A text element that contains an HTML checkbox tag.
+   ```js
+   let p = TSX.Point([1, 1])
+   let chkbx = TSX.Checkbox([0, 3], 'Click me', () => p.moveTo([chkbx.Value()?-4:4,1],500))
+   ```
+    *```
+   *```
+     */
     Checkbox(position: pointAddr, label: string | Function, attributes?: CheckboxAttributes): Checkbox;
+    /** A text element that contains an HTML checkbox tag.
+   ```js
+   let p = TSX.Point([1, 1])
+   let chkbx = TSX.Checkbox([0, 3], 'Click me', () => p.moveTo([chkbx.Value()?-4:4,1],500))
+   ```
+    *```
+   *```
+     */
+    Checkbox(position: pointAddr, label: string | Function, handler?: Function, attributes?: CheckboxAttributes): Checkbox;
     /** Creates a Point at the center of a circle defined by 3 points */
     Circumcenter(p1: Point | pointAddr, p2: Point | pointAddr, p3: Point | pointAddr, attributes?: CircumcenterAttributes): Circumcenter;
     /** Draw a circle defined by 3 points */
@@ -3738,7 +3775,21 @@ export declare class TSXBoard {
     Incenter(p1: Point | pointAddr, p2: Point | pointAddr, p3: Point | pointAddr, attributes?: IncenterAttributes): Incenter;
     Incircle(p1: Point | pointAddr, p2: Point | pointAddr, p3: Point | pointAddr, attributes?: IncircleAttributes): Incircle;
     Inequality(boundaryLine: Line | [Point | pointAddr, Point | pointAddr] | Curve, attributes?: InequalityAttributes): Inequality;
-    Input(position: Point | pointAddr, label: string | Function, initial?: String, attributes?: InputAttributes): Input;
+    /** This element is used to provide a constructor for special texts containing a HTML form input element.
+    *```
+   *```
+     */
+    Input(position: Point | pointAddr, label: string | Function, attributes?: InputAttributes): Input;
+    /** This element is used to provide a constructor for special texts containing a HTML form input element.
+    *```
+   *```
+     */
+    Input(position: Point | pointAddr, label: string | Function, initial: string, attributes?: InputAttributes): Input;
+    /** This element is used to provide a constructor for special texts containing a HTML form input element.
+    *```
+   *```
+     */
+    Input(position: Point | pointAddr, label: string | Function, initial: string, handler: Function, attributes?: InputAttributes): Input;
     Integral(range: number[], curve: Curve, attributes?: IntegralAttributes): Integral;
     /** A point intersecting two 1-dimensional elements. It is one point of the set consisting of the intersection points of the two elements.  The third parameter `i` selects the positive square root when 0, the negative square root when 1
     *```
