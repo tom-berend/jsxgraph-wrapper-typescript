@@ -31,6 +31,7 @@ try {
 
     app.all('*', function (req, res) {
 
+        console.log('app.all',req)
         // if we are asked for something from node_modules, find the right mime type
         let nmText = '/node_modules/'
         let nmLen = nmText.length
@@ -114,9 +115,6 @@ function makeHTML(file) {
     <link href="node_modules/jsxgraph/distrib/jsxgraph.css" rel="stylesheet">
 
     <script src="node_modules/webfontloader/webfontloader.js"></script>`;
--
-
-
     ret += `</head>
     <body>
 
