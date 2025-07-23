@@ -114,8 +114,6 @@ function makeHTML(file) {
     <link href="node_modules/jsxgraph/distrib/jsxgraph.css" rel="stylesheet">
 
     <script src="node_modules/webfontloader/webfontloader.js"></script>`;
--
-
 
     ret += `</head>
     <body>
