@@ -2923,7 +2923,7 @@ export declare class TSXBoard {
     private _jView3d;
     private printLineNumber;
     /** This contains the default options of the board and of all geometry elements.  See JSXGraph.Options.js for details.  Example: TSX.JXGOptions.elements.tabindex = -1 */
-    JXGOptions: Object;
+    JXGOptions: any;
     private currentCanvas;
     private boardList;
     private defaultAttrs;
@@ -3069,8 +3069,7 @@ export declare class TSXBoard {
     clickRightArrow(): any;
     /** Handler for click on up arrow in the navigation bar*/
     clickUpArrow(): any;
-    /** Creates a new geometric element of type elementType.*/
-    create(elementType: string, parents: string, attributes: Object): any;
+    /** Creates a new geometric element of type elementType.*/ Create(elementType: string, parents: any[], attributes: Object): any;
     /** Deprecated name for JXG.Board.create.*/
     createElement(): any;
     /** Function to animate a curve rolling on another curve.*/
@@ -3511,8 +3510,16 @@ export declare class TSXBoard {
    *```
      */
     Text3D(position: Point3D | number[] | Function, text: string | Function, slide: GeometryElement3D, attributes?: Text3DAttributes): Text3D;
-    /** Ticks are used as distance markers on a line or curve. They are mainly used for axis elements and slider elements.  */
+    /** Ticks are used as distance markers on a line or curve. They are mainly used for axis elements and slider elements.
+    *```
+   *```
+     */
     Ticks(line: Line, attributes?: TicksAttributes): Ticks;
+    /** Ticks are used as distance markers on a line or curve. They are mainly used for axis elements and slider elements.
+    *```
+   *```
+     */
+    Ticks(line: Line, tickpositions: number[], attributes?: TicksAttributes): Ticks;
     /** A circular sector is a subarea of the area enclosed by a circle. It is enclosed by two radii and an arc. The sector as curve consists of two legs and an arc. The curve length is 6. That means, a point with coordinates [sector.X(t), sector.Y(t)] is on leg 1 if t is between 0 and 1, the arc if t is between 1 and 5, leg 2 if t is between 5 and 6. */
     Sector(P1: Point | pointAddr, P2: Point | pointAddr, P3: Point | pointAddr, attributes?: SectorAttributes): Sector;
     /** A vector field on a plane can be visualized as a collection of arrows with given magnitudes and directions, each attached to a point on the plane.  Plot a vector field either given by two functions f1(x, y) and f2(x,y) or by a function f(x, y) returning an array of size 2. */
@@ -3749,8 +3756,19 @@ export declare class TSXBoard {
     /** Functiongraph visualizes a map x → f(x).  It is a wrapper for element Curve. The graph is drawn for x in the interval [a,b] default -10 to 10.
    ```js
    let f = TSX.Functiongraph((x: number) => 3 * Math.pow(x, 2))
-   ``` */
-    Functiongraph(funct: (x: number) => number, leftBorder?: number, rightBorder?: number, attributes?: FunctiongraphAttributes): Curve;
+   ```
+    *```
+   *```
+     */
+    Functiongraph(funct: (x: number) => number, attributes?: FunctiongraphAttributes): Functiongraph;
+    /** Functiongraph visualizes a map x → f(x).  It is a wrapper for element Curve. The graph is drawn for x in the interval [a,b] default -10 to 10.
+   ```js
+   let f = TSX.Functiongraph((x: number) => 3 * Math.pow(x, 2))
+   ```
+    *```
+   *```
+     */
+    Functiongraph(funct: (x: number) => number, leftBorder: number, rightBorder: number, attributes?: FunctiongraphAttributes): Functiongraph;
     /** A 3D functiongraph visualizes a map (x, y) → f(x, y).  */
     Functiongraph3D(xyFunction: (x: number, y: number) => number, xRange: NumberFunction[], yRange: NumberFunction[], attributes?: Functiongraph3DAttributes): Functiongraph3D;
     /** A point bound to a GeometryElement like Line, Circle, or Curve, with  optionally a starting point defined by [X,Y]
