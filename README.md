@@ -13,6 +13,7 @@ Visit the [TSXGraph Playground](https://cheeseandcrackers.ca/playground/) to try
 Don't use TypeScript?  The wrapper's `d.ts` file will still scaffold for you.  Hover over the tokens of the JavaScript examples in the `JS_examples` directory.
 
 
+
 | **JSXGraph**    | **TSXGraph** | comment |
 | --------- | ------- |--------|
 | `var board = JXG.JSXGraph.initBoard('jxgbox')` | `let TSX = new TSXBoard('jxgbox)`   |
