@@ -24,7 +24,6 @@ Don't use TypeScript?  The wrapper's `d.ts` file will still scaffold for you.  H
 
 
 
-
 ## Quick Start Workflow
 
 This package includes two quick-start workflows.  They both look for source files in the `/src` directory.
