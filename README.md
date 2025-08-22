@@ -4,14 +4,13 @@
 
 [JSXGraph](https://jsxgraph.uni-bayreuth.de/wp/index.html) is amazing for creating geometry constructions, writing games, building dashboards, and teaching coding.
 
-But building a JSXGraph construction is finicky. JSXGraph constructions use a
-single `create()` function, with over 100 overloads, requiring frequent references to the [API Reference](https://jsxgraph.org/docs/index.html) and debugging with the browser console.  There are over 1,000 attributes and methods, so you might as well keep that API Reference page open
+But building a JSXGraph construction is finicky. JSXGraph constructions use a single `create()` function, with over 100 overloads, so VSCode can't help you with completions, signatures, or discovery.  There are over 1,000 attributes and methods.  You won't get far without the console debugger and [API Reference](https://jsxgraph.org/docs/index.html) pages open.
 
-This wrapper provides a [TypeScript](https://www.typescriptlang.org/) replacement for the `create()` function, optimized for scaffolding with VSCode.  It provides type-checking, syntax checking, and object discovery, plus completion help for most of the attributes, fields, and methods. The syntax is familiar if you already know JSXGraph, and delightful if you don't.
+This wrapper provides a [TypeScript](https://www.typescriptlang.org/) replacement for the `create()` function, optimized for scaffolding with VSCode.  It provides type-checking, syntax checking, completions, and object discovery.  It offers almost 100% coverage of attributes, fields, and methods. The syntax is familiar if you already know JSXGraph, and delightful if you don't.
 
 Visit the [TSXGraph Playground](https://cheeseandcrackers.ca/playground/) to try it out.
 
-Don't use TypeScript?  It's still great.  Hover over the tokens of the JavaScript examples in the `JS_examples` directory.
+Don't use TypeScript?  The wrapper's `d.ts` file will still scaffold for you.  Hover over the tokens of the JavaScript examples in the `JS_examples` directory.
 
 
 | **JSXGraph**    | **TSXGraph** | comment |
@@ -23,16 +22,6 @@ Don't use TypeScript?  It's still great.  Hover over the tokens of the JavaScrip
 | `let rot = board.create('transform', [()=>slider.Value(), c], {type: 'rotate'})`| `let rot = TSX.Rotate(()=>slider.Value(),c)` | // transform that rotates around c|
 | `view.create('point3d',[0,0,0])`  | `TSX.Point3D([0,0,0])`   |  // 2D and 3D are consolidated, view is automatic
 
-
-
-## Aarrgggg!! Copilot grabs `CTRL+I`
-
-VSCode re-assigned `CTRL+I` to Copilot Chat.  Previously it triggered suggestions, providing instant access to JSXGraph attributes, fields, and methods. These suggestions are an essential tool for using JSXGraph.
-
-I remapped 'Trigger Suggest' to `CTRL+J` on my machine.  It is still `CTRL+I` in the [TSXGraph Playground](https://cheeseandcrackers.ca/playground/).
-
-To remap your machine, select File > Preferences > Keyboard Shortcuts.
-![](suggest.png)
 
 
 
@@ -57,12 +46,12 @@ npm run start
 ```
 Browse to `http://localhost:3000`.   Add or edit `.ts` files in `/src` and refresh your browser.  This workflow does not support the VSCode debugger.
 
-Just want to stick to plain JavaScript?  Look at the `html_examples` directory.
-\
+Just want to stick to plain JavaScript?  Look at the `JS_examples` directory.
+
 
 This package includes **Space Icons** by [Good Stuff No Nonsense](https://goodstuffnononsense.com/), licensed under CC BY 4.0.
 ~~~
-TSX.Image("icons/saturn.png",[0,0])    // Use VSCode's `Trigger Suggest` to list the icons.
+TSX.Image("icons/saturn.png",[0,0])    // Use VSCode's `Trigger Suggest` to list the icons (see below).
 ~~~
 
 
@@ -72,10 +61,12 @@ You only need to import individual elements if you are using them as TypeScript 
 
 ```
 import { TSXBoard, JsxMath} from './tsxgraph.js';         // always
-import { Point3D, Point, Line3D } from './tsxgraph.js';   // only for types, gets fully erased
-let TSX = new TSXBoard('html00')
+import { Point3D, Point, Line3D } from './tsxgraph.js';   // only needed if you specify parameter or variable types
 
-function foo(p1: Point, p2: Point3D) {                    // example of using types
+let TSX = new TSXBoard('jxgbox')                          // TSX is the wrapper
+let p = TSX.Point([0,0], {name: 'origin'})                // p is a normal JSXGraph point object
+
+function foo(p1: Point, p2: Point3D) {                    // example of using parameters types
 }
 ```
 <br>
@@ -85,8 +76,18 @@ function foo(p1: Point, p2: Point3D) {                    // example of using ty
 If you try the wrapper, I'd love to hear from you.
 
 ---
+---
+---
 
-![](test.png)
+## Aarrgggg!! Copilot grabs `CTRL+I`.
+
+VSCode re-assigned `CTRL+I` to Copilot Chat.  Previously it triggered suggestions, providing instant access to JSXGraph attributes, fields, and methods. These suggestions are an essential tool for exploring JSXGraph with this wrapper.
+
+I remapped 'Trigger Suggest' to `CTRL+J` on my machine.  It is still `CTRL+I` in the [TSXGraph Playground](https://cheeseandcrackers.ca/playground/).
+
+To remap your machine, select File > Preferences > Keyboard Shortcuts.
+![](suggest.png)
+
 
 
 
