@@ -248,7 +248,7 @@ export interface GeometryElementAttributes extends EventsAttributes {
     /** Display layer which will contain the element. */
     layer?: number;
     /** Line endings (linecap) of a stroke element, i.e. line, circle, curve. Possible values are:'butt','round','square'. */
-    lineCap?: string;
+    lineCap?: 'butt' | 'round' | 'square';
     /** Determines whether two-finger manipulation may rotate this object. If set to false, the object can only be scaled and translated.In case the element is a polygon or line and it has the attribute ”rotatable:false”, moving the element with two fingers results in a rotation or translation.If an element is set to be neither scalable nor rotatable, it can only be translated.In case of a polygon, scaling is only possible if no vertex has snapToGrid or snapToPoints enabled and no vertex is fixed by some other constraint. Also, the polygon itself has to have snapToGrid disabled. */
     rotatable?: Boolean;
     /** Determines whether two-finger manipulation of this object may change its size. If set to false, the object is only rotated and translated.In case the element is a horizontal or vertical line having ticks, ”scalable:true” enables zooming of the currentBoard by dragging ticks lines. This feature is enabled, for the ticks element of the line element the attribute ”fixed” has to be false and the line element's scalable attribute has to be true.In case the element is a polygon or line and it has the attribute ”scalable:false”, moving the element with two fingers results in a rotation or translation.If an element is set to be neither scalable nor rotatable, it can only be translated.In case of a polygon, scaling is only possible if no vertex has snapToGrid or snapToPoints enabled and no vertex is fixed by some other constraint. Also, the polygon itself has to have snapToGrid disabled. */
@@ -456,9 +456,9 @@ export interface CoordsElement extends Omit<GeometryElement, 'snapToPoints'> {
     /** Convert the point to glider and update the construction. To move the point visual onto the glider, a call of board update is necessary.  */
     makeGlider(slide: GeometryElement): GeometryElement;
     /** Move along a path defined by an array of coordinates  */
-    moveAlong(where: number[][], time?: number, options?: Object): void;
+    moveAlong(where: number[][] | Function, time?: number, options?: Object): void;
     /** ES6 version of {@link JXG.CoordsElement#moveAlong} using a promise. */
-    moveAlongES6(where: number[][], time?: number, options?: Object): Promise<any>;
+    moveAlongES6(where: number[][] | Function, time?: number, options?: Object): Promise<any>;
     /** Starts an animated point movement towards the given coordinates &lt;tt&gt;where&lt;/tt&gt;. The animation is done after &lt;tt&gt;time&lt;/tt&gt; milliseconds. If the second parameter is not given or is equal to 0, setPosition() is called, see {@link JXG.CoordsElement#setPosition}, i.e. the coordinates are changed without animation. */
     moveTo(where: number[] | Function, time?: number, options?: MoveToOptions): void;
     /** ES6 version of {@link JXG.CoordsElement#moveTo} using a promise. */
@@ -1328,6 +1328,10 @@ export interface Line3D extends GeometryElement3D {
     vec: number[];
     /** Range [r1, r2] of the line. r1, r2 can be numbers or functions. The 3D line goes from (point + r1 * direction) to (point + r2 * direction) */
     range: number[];
+    /** point1 and point2 are Point3D objects that represent the endpoints of the Line3D. */
+    point1: Point3D;
+    /** point1 and point2 are Point3D objects that represent the endpoints of the Line3D. */
+    point2: Point3D;
     /** Update the z-index of the line, i.e. the z-index of its midpoint.  */
     updateZIndex(): Line3D;
     /** sets an arbitrary number of attributes for this Line3D element*/ setAttribute(attrs: Line3DAttributes): void;
@@ -1414,7 +1418,7 @@ export interface PolygonAttributes extends GeometryElementAttributes {
     /** Attributes for the polygon label. */
     label?: LabelAttributes;
     /** Attributes for the polygon vertices.  eg: {vertices: { opacity: 0 }} */
-    vertices?: GeometryElementAttributes;
+    vertices?: PointAttributes;
     /** Is the polygon bordered by lines? */
     withLines?: Boolean;
 }
@@ -1577,8 +1581,8 @@ export interface TicksAttributes extends GeometryElementAttributes {
     drawLabels?: Boolean;
     /** Draw the zero tick, that lies at line.point1? */
     drawZero?: Boolean;
-    /** Tick face for major ticks of finite length. By default (face: '|') this is a straight line. Possible other values are '<' and '>'. These faces are used in {@link JXG.Hatch} for hatch marking parallel lines. */
-    face?: string;
+    /** Tick face for major ticks of finite length. By default (face: '|') this is a straight line.  These faces are used in {@link JXG.Hatch} for hatch marking parallel lines. */
+    face?: 'x' | 'o' | '[]' | '+' | '-' | '/' | '<>' | '<>' | '^' | 'v' | '<' | '>';
     /** If a label exceeds {@link Ticks#maxLabelLength} this determines the precision used to shorten the tick label. Deprecated! Replaced by the attribute <tt>digits</tt>. */
     precision?: string;
     /** A function that expects two JXG.Coords, the first one representing the coordinates of the tick that is to be labeled, the second one the coordinates of the center (the tick with position 0). The third parameter is a null, number or a string. In the latter two cases, this value is taken. Returns a string. */
@@ -2024,7 +2028,7 @@ export interface GridAttributes extends CurveAttributes {
     /** number of elements in minor grid between elements of the major grid. */
     minorElements?: number | 'auto';
     /** There are different point styles which differ in appearance. */
-    face?: 'o' | 'line' | 'point' | 'cross' | 'plus' | 'minus' | 'divide' | 'diamond' | 'triangledown' | 'triangleleft' | 'triangleright' | 'triangleup' | 'square' | 'circle' | string;
+    face?: 'x' | 'o' | '[]' | '+' | '-' | '/' | '<>' | '<>' | '^' | 'v' | '<' | '>';
     /** To print a quadratic grid with same distance of major grid elements in x- and y-direction. 'min' or true will set both distances of major grid elements in x- and y-direction to the primarily lesser value, 'max' to the primarily greater value. */
     forceSquare?: Boolean;
     /** Deprecated. Use Grid#majorStep instead. */
@@ -3069,7 +3073,7 @@ export declare class TSXBoard {
     clickRightArrow(): any;
     /** Handler for click on up arrow in the navigation bar*/
     clickUpArrow(): any;
-    /** Creates a new geometric element of type elementType.*/ Create(elementType: string, parents: any[], attributes: Object): any;
+    /** Creates a new geometric element of type elementType.*/ create(elementType: string, parents: any[], attributes: Object): any;
     /** Deprecated name for JXG.Board.create.*/
     createElement(): any;
     /** Function to animate a curve rolling on another curve.*/
@@ -3417,12 +3421,12 @@ export declare class TSXBoard {
     *```
    *```
      */
-    ImplicitCurve(f: Function | String, attributes?: ImplicitCurveAttributes): ImplicitCurve;
+    ImplicitCurve(f: Function | string, attributes?: ImplicitCurveAttributes): ImplicitCurve;
     /** An implicit curve is a plane curve defined by an implicit equation relating two coordinate variables, commonly x and y. For example, the unit circle is defined by the implicit equation x2 + y2 = 1. In general, every implicit curve is defined by an equation of the form f(x, y) = 0 for some function f of two variables.  IMPLICIT means that the equation is not expressed as a solution for either x in terms of y or vice versa.
     *```
    *```
      */
-    ImplicitCurve(f: Function | String, dfx: Function | String, dfy: Function | String, attributes?: ImplicitCurveAttributes): ImplicitCurve;
+    ImplicitCurve(f: Function | string, dfx: Function | string, dfy: Function | string, attributes?: ImplicitCurveAttributes): ImplicitCurve;
     /** The circle that is the intersection of two elements (plane3d or sphere3d) in 3D. */
     IntersectionCircle3D(sphere1: Sphere3D, sphere: Sphere3D | Plane3D, attributes?: IntersectionCircle3DAttributes): IntersectionCircle3D;
     /** The circle that is the intersection of two elements (plane3d or sphere3d) in 3D. */
@@ -3466,7 +3470,7 @@ export declare class TSXBoard {
     *```
    *```
      */
-    Point3D(fn: () => number[] | [number, number, number], attributes?: Point3DAttributes): Point3D;
+    Point3D(fn: () => number[] | [NumberFunction, NumberFunction, NumberFunction], attributes?: Point3DAttributes): Point3D;
     /** Array of Points */
     Polygon(vertices: Point[] | pointAddr[] | Function, attributes?: PolygonAttributes): Polygon;
     /** A polygon is a sequence of points connected by lines, with the last point connecting back to the first one. The points are given by a list of Point3D objects or a list of coordinate arrays. Each two consecutive points of the list define a line. */
@@ -3768,7 +3772,7 @@ export declare class TSXBoard {
     *```
    *```
      */
-    Functiongraph(funct: (x: number) => number, leftBorder: number, rightBorder: number, attributes?: FunctiongraphAttributes): Functiongraph;
+    Functiongraph(funct: (x: number) => number, leftBorder: number | Function, rightBorder: number | Function, attributes?: FunctiongraphAttributes): Functiongraph;
     /** A 3D functiongraph visualizes a map (x, y) → f(x, y).  */
     Functiongraph3D(xyFunction: (x: number, y: number) => number, xRange: NumberFunction[], yRange: NumberFunction[], attributes?: Functiongraph3DAttributes): Functiongraph3D;
     /** A point bound to a GeometryElement like Line, Circle, or Curve, with  optionally a starting point defined by [X,Y]
@@ -4020,7 +4024,7 @@ export declare class TSXBoard {
                postLabel: ' meters'        // this is a suffix
            
    *``` */
-    Slider(StartPoint: Point | pointAddr, EndPoint: Point | pointAddr, minimum_initial_maximum: [number, number, number], attributes?: SliderAttributes): Slider;
+    Slider(StartPoint: pointAddr, EndPoint: pointAddr, minimum_initial_maximum: [number, number, number], attributes?: SliderAttributes): Slider;
     Slopefield(func: Function, xData: NumberFunction[], yData: NumberFunction[], attributes?: SlopefieldAttributes): Slopefield;
     /** A slope triangle is an imaginary triangle that helps you find the slope of a line or a line segment (use the method '.Value()' ). The hypotenuse of the triangle (the diagonal) is the line you are interested in finding the slope of. The two 'legs' of the triangle are the 'rise' and 'run' used in the slope formula.
     *```
