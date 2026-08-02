@@ -1,24 +1,22 @@
 {
     "compilerOptions": {
         "module": "esnext",
-        "moduleResolution": "node",
-        "target": "esnext",
         "lib": [
             "ESNext",
             "dom"
         ],
-        "declaration": true,
+        "declaration": false,   // true if you want d.ts files for your constructions
         "outDir": "dist",
         "strict": true,
         "removeComments": false,
         "preserveConstEnums": true,
         "inlineSourceMap": true,
+        "allowJs": true,
     },
     "include": [
-        "src/**/*",
+        "src/**/*"
     ],
     "watchOptions": {
-        "watchFile": "useFsEvents",
-        "watchDirectory": "useFsEvents",
+        "excludeFiles": ["dist/**/*"]
     }
 }

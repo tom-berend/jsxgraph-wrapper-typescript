@@ -3,23 +3,22 @@
     "author": "Tom Berend",
     "email": "tom.berend@cheeseandcrackers.ca",
     "description": "A thin TypeScript wrapper over JSXGraph to maximize scaffolding with VSCode.",
-    "version": "2.1.2",
+    "version": "3.0.0",
     "licence": "MIT",
+    "keywords": [
+        "jsxgraph",
+        "vscode",
+        "geometry",
+        "simplified"
+      ],
     "scripts": {
-        "comment": "We use pm2 to run the express webserver in background.  browse to http://localhost:3000",
-        "start": "pm2 start webserver.js & tsc -w",
-        "stop": "pm2 kill",
-        "comment2": "Or, if you already have a web server with PHP, browse to http://localhost/path_to_your_directory",
+        "comment": "You need a web server with PHP eg: XAMPP.  browse to http://localhost/path_to_your_directory",
         "watch": "tsc -w"
     },
-    "devDependencies": {
-        "express": "^5.1.0",
-        "pm2": "^6.0.6",
-        "typescript": "^5.8.3"
-    },
     "dependencies": {
-        "jsxgraph": "^1.11.1",
-        "katex": "^0.16.22",
+        "jsxgraph": "^1.13.1",
+        "katex": "^0.18.1",
+        "typescript": "^7.0.1",
         "webfontloader": "^1.6.28"
     }
 }

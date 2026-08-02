@@ -6,12 +6,11 @@
 
 But building a JSXGraph construction is finicky. JSXGraph constructions use a single `create()` function, with over 100 overloads, so VSCode can't help you with completions, signatures, or discovery.  There are over 1,000 attributes and methods.  You won't get far without the console debugger and [API Reference](https://jsxgraph.org/docs/index.html) pages open.
 
-This wrapper provides a [TypeScript](https://www.typescriptlang.org/) replacement for the `create()` function, optimized for scaffolding with VSCode.  It provides type-checking, syntax checking, completions, and object discovery.  It offers almost 100% coverage of attributes, fields, and methods. The syntax is familiar if you already know JSXGraph, and delightful if you don't.
+This wrapper provides a [TypeScript](https://www.typescriptlang.org/) replacement for the `create()` function, optimized for scaffolding with VSCode.  It provides type-checking, syntax checking, completions, and object discovery.  It offers almost 100% coverage of attributes, fields, and methods. The syntax is familiar if you know JSXGraph, and delightful if you don't.
 
 Visit the [TSXGraph Playground](https://cheeseandcrackers.ca/playground/) to try it out.
 
-Don't use TypeScript?  The wrapper's `d.ts` file will still scaffold for you.  Hover over the tokens of the JavaScript examples in the `JS_examples` directory.
-
+Don't use TypeScript?  The wrapper's `d.ts` file will still scaffold for you.  `angle.js` is an example of a JS file using the wrapper.
 
 
 | **JSXGraph**    | **TSXGraph** | comment |
@@ -27,26 +26,16 @@ Don't use TypeScript?  The wrapper's `d.ts` file will still scaffold for you.  H
 
 ## Quick Start Workflow
 
-This package includes two quick-start workflows.  They both look for source files in the `/src` directory.
+This package includes a quick-start workflows.  It looks for source files in the `/src` directory.
 
 
-If you have a local webserver with PHP (like [XAMPP](https://www.apachefriends.org/)), then clone this directory and run...
+You require a local webserver with PHP support (like [XAMPP](https://www.apachefriends.org/)), then clone this directory and run...
 ```
 npm i
-tsc -w
+npm run watch
 ```
-Then browse to the directory you cloned. Your browser will find `index.php` there.  Add or edit `.ts` files in `/src` and refresh your browser.  If you want to use the VSCode debugger, edit the `.vscode/launch.json` file to point at your repository directory URL.
+Then browse to the directory you cloned. Your browser will find `index.php` there.  Add or edit `.ts` or `js` files in `/src` and refresh your browser.  If you want to use the VSCode debugger, edit the `.vscode/launch.json` file to point at your repository directory URL.
 
-
-If you don't have a local webserver, run...
-
-```
-npm i
-npm run start
-```
-Browse to `http://localhost:3000`.   Add or edit `.ts` files in `/src` and refresh your browser.  This workflow does not support the VSCode debugger.
-
-Just want to stick to plain JavaScript?  Look at the `JS_examples` directory.
 
 
 This package includes **Space Icons** by [Good Stuff No Nonsense](https://goodstuffnononsense.com/), licensed under CC BY 4.0.
