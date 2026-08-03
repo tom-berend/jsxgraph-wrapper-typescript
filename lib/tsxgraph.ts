@@ -21,7 +21,7 @@
         //    DEALINGS IN THE SOFTWARE.
         //
         /////////////////////////////////////////////////////////////////////////////
-        //   Generated on July 28, 2026, 5:31 pm
+        //   Generated on August 3, 2026, 11:26 am
 
      // match JSXGraph definition for JXG_Point3D, etc
         type NumberFunction = Number | Function
@@ -4808,7 +4808,29 @@ export class TSXBoard {
 
     */
 
-    on(event: string, handler: Function) { (this._jBoard as any).on(event, handler) }
+   on(event: string, handler: (e: Event) => void, context?: unknown): void{
+
+       console.log('adding keyboard event')
+
+       // JSXGraph doesn't share keyboard events, but I want them
+
+       if(event == 'keypress' || event == 'keydown' || event == 'keyup'){
+
+           (window as any).document.addEventListener(event, handler)
+
+        }else{
+
+            (this._jBoard as any).on(event, handler, context)
+
+        }
+
+    }
+
+    // on(event: string, handler: Function) { (this._jBoard as any).on(event, handler) }
+
+
+
+
 
 
 

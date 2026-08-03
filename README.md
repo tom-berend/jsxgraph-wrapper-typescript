@@ -6,11 +6,11 @@
 
 But building a JSXGraph construction is finicky. JSXGraph constructions use a single `create()` function, with over 100 overloads, so VSCode can't help you with completions, signatures, or discovery.  There are over 1,000 attributes and methods.  You won't get far without the console debugger and [API Reference](https://jsxgraph.org/docs/index.html) pages open.
 
-This wrapper provides a [TypeScript](https://www.typescriptlang.org/) replacement for the `create()` function, optimized for scaffolding with VSCode.  It provides type-checking, syntax checking, completions, and object discovery.  It offers almost 100% coverage of attributes, fields, and methods. The syntax is familiar if you know JSXGraph, and delightful if you don't.
+This wrapper provides a replacement for the `create()` function, optimized for scaffolding with VSCode.  It provides type-checking, syntax checking, completions, and object discovery.  It offers almost 100% coverage of attributes, fields, and methods. The syntax is familiar if you know JSXGraph, and delightful if you don't.
 
 Visit the [TSXGraph Playground](https://cheeseandcrackers.ca/playground/) to try it out.
 
-Don't use TypeScript?  The wrapper's `d.ts` file will still scaffold for you.  `angle.js` is an example of a JS file using the wrapper.
+Prefer to use JavaScript?  The wrapper's `d.ts` file will still scaffold for you.  `angle.js` is an example of a JS file using the wrapper.
 
 
 | **JSXGraph**    | **TSXGraph** | comment |
