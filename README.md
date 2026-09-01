@@ -72,7 +72,7 @@ If you try the wrapper, I'd love to hear from you.
 
 VSCode re-assigned `CTRL+I` to Copilot Chat.  Previously it triggered suggestions, providing instant access to JSXGraph attributes, fields, and methods. These suggestions are an essential tool for exploring JSXGraph with this wrapper.
 
-I remapped 'Trigger Suggest' to `CTRL+J` on my machine.  It is still `CTRL+I` in the [TSXGraph Playground](https://cheeseandcrackers.ca/playground/).
+I remapped 'Trigger Suggest' to `ALT+I` on my machine.  It is still `CTRL+I` in the [TSXGraph Playground](https://cheeseandcrackers.ca/playground/).
 
 To remap your machine, select File > Preferences > Keyboard Shortcuts.
 ![](suggest.png)

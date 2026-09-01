@@ -28,7 +28,7 @@ $html = htmlHeader();
 //  user asked for a specific file?
 if (empty($_REQUEST)) {
     if(!file_exists('./dist/src')){
-        echo "Run the typescript compiler first:  <tt style='color:blue;'>npm run watch</tt> (or <tt style='color:blue;'>tsc -w</tt>);";
+        echo "Run the typescript compiler first:  <tt style='color:blue;'>npm run watch</tt> (or <tt style='color:blue;'>npx tsc -w</tt>);";
         return;
     }
     // no - show list of files in src directory

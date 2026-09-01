@@ -1,4 +1,3 @@
-
 import { TSXBoard, Polygon } from "../lib/tsxgraph.js"    // note: we need the '.js'
 let TSX = new TSXBoard('jxgbox')
 

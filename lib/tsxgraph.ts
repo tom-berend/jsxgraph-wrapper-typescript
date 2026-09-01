@@ -21,7 +21,7 @@
         //    DEALINGS IN THE SOFTWARE.
         //
         /////////////////////////////////////////////////////////////////////////////
-        //   Generated on August 3, 2026, 11:26 am
+        //   Generated on August 31, 2026, 9:16 pm
 
      // match JSXGraph definition for JXG_Point3D, etc
         type NumberFunction = Number | Function
@@ -321,7 +321,7 @@ export type SpaceIcon =
     'icons/asteroid.png' |
     'icons/astronaut-helmet.png' |
     'icons/atom.png' |
-    'icons/atronaut.png' |
+    'icons/astronaut.png' |
     'icons/bb-8.png' |
     'icons/big-dipper.png' |
     'icons/black-hole.png' |
@@ -391,6 +391,563 @@ export type SpaceIcon =
 
 
 
+    export type Sounds = 
+    'Alien/sfx_deathscream_alien1.wav' |
+    'Alien/sfx_deathscream_alien2.wav' |
+    'Alien/sfx_deathscream_alien3.wav' |
+    'Alien/sfx_deathscream_alien4.wav' |
+    'Alien/sfx_deathscream_alien5.wav' |
+    'Alien/sfx_deathscream_alien6.wav' |
+    
+    'Android/sfx_deathscream_android1.wav' |
+    'Android/sfx_deathscream_android2.wav' |
+    'Android/sfx_deathscream_android3.wav' |
+    'Android/sfx_deathscream_android4.wav' |
+    'Android/sfx_deathscream_android5.wav' |
+    'Android/sfx_deathscream_android6.wav' |
+    'Android/sfx_deathscream_android7.wav' |
+    'Android/sfx_deathscream_android8.wav' |
+    
+    'Human/sfx_deathscream_human1.wav' |
+    'Human/sfx_deathscream_human10.wav' |
+    'Human/sfx_deathscream_human11.wav' |
+    'Human/sfx_deathscream_human12.wav' |
+    'Human/sfx_deathscream_human13.wav' |
+    'Human/sfx_deathscream_human14.wav' |
+    'Human/sfx_deathscream_human2.wav' |
+    'Human/sfx_deathscream_human3.wav' |
+    'Human/sfx_deathscream_human4.wav' |
+    'Human/sfx_deathscream_human5.wav' |
+    'Human/sfx_deathscream_human6.wav' |
+    'Human/sfx_deathscream_human7.wav' |
+    'Human/sfx_deathscream_human8.wav' |
+    'Human/sfx_deathscream_human9.wav' |
+    
+    'Robot/sfx_deathscream_robot1.wav' |
+    'Robot/sfx_deathscream_robot2.wav' |
+    'Robot/sfx_deathscream_robot3.wav' |
+    'Robot/sfx_deathscream_robot4.wav' |
+    
+    'Clusters/sfx_exp_cluster1.wav' |
+    'Clusters/sfx_exp_cluster10.wav' |
+    'Clusters/sfx_exp_cluster11.wav' |
+    'Clusters/sfx_exp_cluster2.wav' |
+    'Clusters/sfx_exp_cluster3.wav' |
+    'Clusters/sfx_exp_cluster4.wav' |
+    'Clusters/sfx_exp_cluster5.wav' |
+    'Clusters/sfx_exp_cluster6.wav' |
+    'Clusters/sfx_exp_cluster7.wav' |
+    'Clusters/sfx_exp_cluster8.wav' |
+    'Clusters/sfx_exp_cluster9.wav' |
+    
+    'Double/sfx_exp_double1.wav' |
+    'Double/sfx_exp_double2.wav' |
+    'Double/sfx_exp_double3.wav' |
+    
+    'Long/sfx_exp_long1.wav' |
+    'Long/sfx_exp_long2.wav' |
+    'Long/sfx_exp_long3.wav' |
+    'Long/sfx_exp_long4.wav' |
+    'Long/sfx_exp_long5.wav' |
+    'Long/sfx_exp_long6.wav' |
+    
+    'Medium Length/sfx_exp_medium1.wav' |
+    'Medium Length/sfx_exp_medium10.wav' |
+    'Medium Length/sfx_exp_medium11.wav' |
+    'Medium Length/sfx_exp_medium12.wav' |
+    'Medium Length/sfx_exp_medium13.wav' |
+    'Medium Length/sfx_exp_medium2.wav' |
+    'Medium Length/sfx_exp_medium3.wav' |
+    'Medium Length/sfx_exp_medium4.wav' |
+    'Medium Length/sfx_exp_medium5.wav' |
+    'Medium Length/sfx_exp_medium6.wav' |
+    'Medium Length/sfx_exp_medium7.wav' |
+    'Medium Length/sfx_exp_medium8.wav' |
+    'Medium Length/sfx_exp_medium9.wav' |
+    
+    'Odd/sfx_exp_odd1.wav' |
+    'Odd/sfx_exp_odd2.wav' |
+    'Odd/sfx_exp_odd3.wav' |
+    'Odd/sfx_exp_odd4.wav' |
+    'Odd/sfx_exp_odd5.wav' |
+    'Odd/sfx_exp_odd6.wav' |
+    'Odd/sfx_exp_odd7.wav' |
+    
+    'Short/sfx_exp_short_hard1.wav' |
+    'Short/sfx_exp_short_hard10.wav' |
+    'Short/sfx_exp_short_hard11.wav' |
+    'Short/sfx_exp_short_hard12.wav' |
+    'Short/sfx_exp_short_hard13.wav' |
+    'Short/sfx_exp_short_hard14.wav' |
+    'Short/sfx_exp_short_hard15.wav' |
+    'Short/sfx_exp_short_hard16.wav' |
+    'Short/sfx_exp_short_hard17.wav' |
+    'Short/sfx_exp_short_hard2.wav' |
+    'Short/sfx_exp_short_hard3.wav' |
+    'Short/sfx_exp_short_hard4.wav' |
+    'Short/sfx_exp_short_hard5.wav' |
+    'Short/sfx_exp_short_hard6.wav' |
+    'Short/sfx_exp_short_hard7.wav' |
+    'Short/sfx_exp_short_hard8.wav' |
+    'Short/sfx_exp_short_hard9.wav' |
+    'Short/sfx_exp_short_soft1.wav' |
+    'Short/sfx_exp_short_soft10.wav' |
+    'Short/sfx_exp_short_soft11.wav' |
+    'Short/sfx_exp_short_soft12.wav' |
+    'Short/sfx_exp_short_soft2.wav' |
+    'Short/sfx_exp_short_soft3.wav' |
+    'Short/sfx_exp_short_soft4.wav' |
+    'Short/sfx_exp_short_soft5.wav' |
+    'Short/sfx_exp_short_soft6.wav' |
+    'Short/sfx_exp_short_soft7.wav' |
+    'Short/sfx_exp_short_soft8.wav' |
+    'Short/sfx_exp_short_soft9.wav' |
+    
+    'Shortest/sfx_exp_shortest_hard1.wav' |
+    'Shortest/sfx_exp_shortest_hard10.wav' |
+    'Shortest/sfx_exp_shortest_hard2.wav' |
+    'Shortest/sfx_exp_shortest_hard3.wav' |
+    'Shortest/sfx_exp_shortest_hard4.wav' |
+    'Shortest/sfx_exp_shortest_hard5.wav' |
+    'Shortest/sfx_exp_shortest_hard6.wav' |
+    'Shortest/sfx_exp_shortest_hard7.wav' |
+    'Shortest/sfx_exp_shortest_hard8.wav' |
+    'Shortest/sfx_exp_shortest_hard9.wav' |
+    'Shortest/sfx_exp_shortest_soft1.wav' |
+    'Shortest/sfx_exp_shortest_soft2.wav' |
+    'Shortest/sfx_exp_shortest_soft3.wav' |
+    'Shortest/sfx_exp_shortest_soft4.wav' |
+    'Shortest/sfx_exp_shortest_soft5.wav' |
+    'Shortest/sfx_exp_shortest_soft6.wav' |
+    'Shortest/sfx_exp_shortest_soft7.wav' |
+    'Shortest/sfx_exp_shortest_soft8.wav' |
+    'Shortest/sfx_exp_shortest_soft9.wav' |
+    
+    'Various/sfx_exp_various1.wav' |
+    'Various/sfx_exp_various2.wav' |
+    'Various/sfx_exp_various3.wav' |
+    'Various/sfx_exp_various4.wav' |
+    'Various/sfx_exp_various5.wav' |
+    'Various/sfx_exp_various6.wav' |
+    'Various/sfx_exp_various7.wav' |
+    
+    'Alarms/Alarms/sfx_alarm_loop1.wav' |
+    'Alarms/Alarms/sfx_alarm_loop2.wav' |
+    'Alarms/Alarms/sfx_alarm_loop3.wav' |
+    'Alarms/Alarms/sfx_alarm_loop4.wav' |
+    'Alarms/Alarms/sfx_alarm_loop5.wav' |
+    'Alarms/Alarms/sfx_alarm_loop6.wav' |
+    'Alarms/Alarms/sfx_alarm_loop7.wav' |
+    'Alarms/Alarms/sfx_alarm_loop8.wav' |
+    
+    'Alarms/Lowhealth/sfx_lowhealth_alarmloop1.wav' |
+    'Alarms/Lowhealth/sfx_lowhealth_alarmloop2.wav' |
+    'Alarms/Lowhealth/sfx_lowhealth_alarmloop3.wav' |
+    'Alarms/Lowhealth/sfx_lowhealth_alarmloop4.wav' |
+    'Alarms/Lowhealth/sfx_lowhealth_alarmloop5.wav' |
+    'Alarms/Lowhealth/sfx_lowhealth_alarmloop6.wav' |
+    'Alarms/Lowhealth/sfx_lowhealth_alarmloop7.wav' |
+    
+    'Buttons/sfx_sounds_button1.wav' |
+    'Buttons/sfx_sounds_button10.wav' |
+    'Buttons/sfx_sounds_button11.wav' |
+    'Buttons/sfx_sounds_button12.wav' |
+    'Buttons/sfx_sounds_button13.wav' |
+    'Buttons/sfx_sounds_button14.wav' |
+    'Buttons/sfx_sounds_button2.wav' |
+    'Buttons/sfx_sounds_button3.wav' |
+    'Buttons/sfx_sounds_button4.wav' |
+    'Buttons/sfx_sounds_button5.wav' |
+    'Buttons/sfx_sounds_button6.wav' |
+    'Buttons/sfx_sounds_button7.wav' |
+    'Buttons/sfx_sounds_button8.wav' |
+    'Buttons/sfx_sounds_button9.wav' |
+    
+    'Coins/sfx_coin_cluster1.wav' |
+    'Coins/sfx_coin_cluster2.wav' |
+    'Coins/sfx_coin_cluster3.wav' |
+    'Coins/sfx_coin_cluster4.wav' |
+    'Coins/sfx_coin_cluster5.wav' |
+    'Coins/sfx_coin_cluster6.wav' |
+    'Coins/sfx_coin_cluster7.wav' |
+    'Coins/sfx_coin_cluster8.wav' |
+    'Coins/sfx_coin_cluster9.wav' |
+    'Coins/sfx_coin_double1.wav' |
+    'Coins/sfx_coin_double2.wav' |
+    'Coins/sfx_coin_double3.wav' |
+    'Coins/sfx_coin_double4.wav' |
+    'Coins/sfx_coin_double5.wav' |
+    'Coins/sfx_coin_double6.wav' |
+    'Coins/sfx_coin_double7.wav' |
+    'Coins/sfx_coin_single1.wav' |
+    'Coins/sfx_coin_single2.wav' |
+    'Coins/sfx_coin_single3.wav' |
+    'Coins/sfx_coin_single4.wav' |
+    'Coins/sfx_coin_single5.wav' |
+    'Coins/sfx_coin_single6.wav' |
+    
+    'Fanfares/sfx_sounds_fanfare1.wav' |
+    'Fanfares/sfx_sounds_fanfare2.wav' |
+    'Fanfares/sfx_sounds_fanfare3.wav' |
+    
+    'High Pitched Sounds/sfx_sounds_high1.wav' |
+    'High Pitched Sounds/sfx_sounds_high2.wav' |
+    'High Pitched Sounds/sfx_sounds_high3.wav' |
+    'High Pitched Sounds/sfx_sounds_high4.wav' |
+    'High Pitched Sounds/sfx_sounds_high5.wav' |
+    'High Pitched Sounds/sfx_sounds_high6.wav' |
+    'High Pitched Sounds/sfx_sounds_high7.wav' |
+    
+    'Impacts/sfx_sounds_impact1.wav' |
+    'Impacts/sfx_sounds_impact10.wav' |
+    'Impacts/sfx_sounds_impact11.wav' |
+    'Impacts/sfx_sounds_impact12.wav' |
+    'Impacts/sfx_sounds_impact13.wav' |
+    'Impacts/sfx_sounds_impact14.wav' |
+    'Impacts/sfx_sounds_impact15.wav' |
+    'Impacts/sfx_sounds_impact2.wav' |
+    'Impacts/sfx_sounds_impact3.wav' |
+    'Impacts/sfx_sounds_impact4.wav' |
+    'Impacts/sfx_sounds_impact5.wav' |
+    'Impacts/sfx_sounds_impact6.wav' |
+    'Impacts/sfx_sounds_impact7.wav' |
+    'Impacts/sfx_sounds_impact8.wav' |
+    'Impacts/sfx_sounds_impact9.wav' |
+    
+    'Interactions/sfx_sounds_interaction1.wav' |
+    'Interactions/sfx_sounds_interaction10.wav' |
+    'Interactions/sfx_sounds_interaction11.wav' |
+    'Interactions/sfx_sounds_interaction12.wav' |
+    'Interactions/sfx_sounds_interaction13.wav' |
+    'Interactions/sfx_sounds_interaction14.wav' |
+    'Interactions/sfx_sounds_interaction15.wav' |
+    'Interactions/sfx_sounds_interaction16.wav' |
+    'Interactions/sfx_sounds_interaction17.wav' |
+    'Interactions/sfx_sounds_interaction18.wav' |
+    'Interactions/sfx_sounds_interaction19.wav' |
+    'Interactions/sfx_sounds_interaction2.wav' |
+    'Interactions/sfx_sounds_interaction20.wav' |
+    'Interactions/sfx_sounds_interaction21.wav' |
+    'Interactions/sfx_sounds_interaction22.wav' |
+    'Interactions/sfx_sounds_interaction23.wav' |
+    'Interactions/sfx_sounds_interaction24.wav' |
+    'Interactions/sfx_sounds_interaction25.wav' |
+    'Interactions/sfx_sounds_interaction26.wav' |
+    'Interactions/sfx_sounds_interaction3.wav' |
+    'Interactions/sfx_sounds_interaction4.wav' |
+    'Interactions/sfx_sounds_interaction5.wav' |
+    'Interactions/sfx_sounds_interaction6.wav' |
+    'Interactions/sfx_sounds_interaction7.wav' |
+    'Interactions/sfx_sounds_interaction8.wav' |
+    'Interactions/sfx_sounds_interaction9.wav' |
+    
+    'Menu Sounds/sfx_menu_move1.wav' |
+    'Menu Sounds/sfx_menu_move2.wav' |
+    'Menu Sounds/sfx_menu_move3.wav' |
+    'Menu Sounds/sfx_menu_move4.wav' |
+    'Menu Sounds/sfx_menu_move5.wav' |
+    'Menu Sounds/sfx_menu_select1.wav' |
+    'Menu Sounds/sfx_menu_select2.wav' |
+    'Menu Sounds/sfx_menu_select3.wav' |
+    'Menu Sounds/sfx_menu_select4.wav' |
+    'Menu Sounds/sfx_menu_select5.wav' |
+    
+    'Negative Sounds/sfx_sounds_damage1.wav' |
+    'Negative Sounds/sfx_sounds_damage2.wav' |
+    'Negative Sounds/sfx_sounds_damage3.wav' |
+    'Negative Sounds/sfx_sounds_error1.wav' |
+    'Negative Sounds/sfx_sounds_error10.wav' |
+    'Negative Sounds/sfx_sounds_error11.wav' |
+    'Negative Sounds/sfx_sounds_error12.wav' |
+    'Negative Sounds/sfx_sounds_error13.wav' |
+    'Negative Sounds/sfx_sounds_error14.wav' |
+    'Negative Sounds/sfx_sounds_error15.wav' |
+    'Negative Sounds/sfx_sounds_error2.wav' |
+    'Negative Sounds/sfx_sounds_error3.wav' |
+    'Negative Sounds/sfx_sounds_error4.wav' |
+    'Negative Sounds/sfx_sounds_error5.wav' |
+    'Negative Sounds/sfx_sounds_error6.wav' |
+    'Negative Sounds/sfx_sounds_error7.wav' |
+    'Negative Sounds/sfx_sounds_error8.wav' |
+    'Negative Sounds/sfx_sounds_error9.wav' |
+    'Negative Sounds/sfx_sounds_negative1.wav' |
+    'Negative Sounds/sfx_sounds_negative2.wav' |
+    
+    'Neutral Sounds/sfx_sound_neutral1.wav' |
+    'Neutral Sounds/sfx_sound_neutral10.wav' |
+    'Neutral Sounds/sfx_sound_neutral11.wav' |
+    'Neutral Sounds/sfx_sound_neutral2.wav' |
+    'Neutral Sounds/sfx_sound_neutral3.wav' |
+    'Neutral Sounds/sfx_sound_neutral4.wav' |
+    'Neutral Sounds/sfx_sound_neutral5.wav' |
+    'Neutral Sounds/sfx_sound_neutral6.wav' |
+    'Neutral Sounds/sfx_sound_neutral7.wav' |
+    'Neutral Sounds/sfx_sound_neutral8.wav' |
+    'Neutral Sounds/sfx_sound_neutral9.wav' |
+    
+    'Pause Sounds/sfx_sounds_pause1_in.wav' |
+    'Pause Sounds/sfx_sounds_pause1_out.wav' |
+    'Pause Sounds/sfx_sounds_pause2_in.wav' |
+    'Pause Sounds/sfx_sounds_pause2_out.wav' |
+    'Pause Sounds/sfx_sounds_pause3_in.wav' |
+    'Pause Sounds/sfx_sounds_pause3_out.wav' |
+    'Pause Sounds/sfx_sounds_pause4_in.wav' |
+    'Pause Sounds/sfx_sounds_pause4_out.wav' |
+    'Pause Sounds/sfx_sounds_pause5_in.wav' |
+    'Pause Sounds/sfx_sounds_pause5_out.wav' |
+    'Pause Sounds/sfx_sounds_pause6_in.wav' |
+    'Pause Sounds/sfx_sounds_pause6_out.wav' |
+    'Pause Sounds/sfx_sounds_pause7_in.wav' |
+    'Pause Sounds/sfx_sounds_pause7_out.wav' |
+    
+    'Positive Sounds/sfx_sounds_powerup1.wav' |
+    'Positive Sounds/sfx_sounds_powerup10.wav' |
+    'Positive Sounds/sfx_sounds_powerup11.wav' |
+    'Positive Sounds/sfx_sounds_powerup12.wav' |
+    'Positive Sounds/sfx_sounds_powerup13.wav' |
+    'Positive Sounds/sfx_sounds_powerup14.wav' |
+    'Positive Sounds/sfx_sounds_powerup15.wav' |
+    'Positive Sounds/sfx_sounds_powerup16.wav' |
+    'Positive Sounds/sfx_sounds_powerup17.wav' |
+    'Positive Sounds/sfx_sounds_powerup18.wav' |
+    'Positive Sounds/sfx_sounds_powerup2.wav' |
+    'Positive Sounds/sfx_sounds_powerup3.wav' |
+    'Positive Sounds/sfx_sounds_powerup4.wav' |
+    'Positive Sounds/sfx_sounds_powerup5.wav' |
+    'Positive Sounds/sfx_sounds_powerup6.wav' |
+    'Positive Sounds/sfx_sounds_powerup7.wav' |
+    'Positive Sounds/sfx_sounds_powerup8.wav' |
+    'Positive Sounds/sfx_sounds_powerup9.wav' |
+    
+    'Simple Bleeps/sfx_sounds_Blip1.wav' |
+    'Simple Bleeps/sfx_sounds_Blip10.wav' |
+    'Simple Bleeps/sfx_sounds_Blip11.wav' |
+    'Simple Bleeps/sfx_sounds_Blip2.wav' |
+    'Simple Bleeps/sfx_sounds_Blip3.wav' |
+    'Simple Bleeps/sfx_sounds_Blip4.wav' |
+    'Simple Bleeps/sfx_sounds_Blip5.wav' |
+    'Simple Bleeps/sfx_sounds_Blip6.wav' |
+    'Simple Bleeps/sfx_sounds_Blip7.wav' |
+    'Simple Bleeps/sfx_sounds_Blip8.wav' |
+    'Simple Bleeps/sfx_sounds_Blip9.wav' |
+    
+    'Simple Damage Sounds/sfx_damage_hit1.wav' |
+    'Simple Damage Sounds/sfx_damage_hit10.wav' |
+    'Simple Damage Sounds/sfx_damage_hit2.wav' |
+    'Simple Damage Sounds/sfx_damage_hit3.wav' |
+    'Simple Damage Sounds/sfx_damage_hit4.wav' |
+    'Simple Damage Sounds/sfx_damage_hit5.wav' |
+    'Simple Damage Sounds/sfx_damage_hit6.wav' |
+    'Simple Damage Sounds/sfx_damage_hit7.wav' |
+    'Simple Damage Sounds/sfx_damage_hit8.wav' |
+    'Simple Damage Sounds/sfx_damage_hit9.wav' |
+    
+    'Weird Sounds/sfx_sound_bling.wav' |
+    'Weird Sounds/sfx_sound_depressurizing.wav' |
+    'Weird Sounds/sfx_sound_mechanicalnoise1.wav' |
+    'Weird Sounds/sfx_sound_mechanicalnoise2.wav' |
+    'Weird Sounds/sfx_sound_mechanicalnoise3.wav' |
+    'Weird Sounds/sfx_sound_mechanicalnoise4.wav' |
+    'Weird Sounds/sfx_sound_mechanicalnoise5.wav' |
+    'Weird Sounds/sfx_sound_mechanicalnoise6.wav' |
+    'Weird Sounds/sfx_sound_nagger1.wav' |
+    'Weird Sounds/sfx_sound_nagger2.wav' |
+    'Weird Sounds/sfx_sound_noise.wav' |
+    'Weird Sounds/sfx_sound_poweron.wav' |
+    'Weird Sounds/sfx_sound_refereewhistle.wav' |
+    'Weird Sounds/sfx_sound_shutdown1.wav' |
+    'Weird Sounds/sfx_sound_shutdown2.wav' |
+    'Weird Sounds/sfx_sound_vaporizing.wav' |
+    
+    'Climbing Ladder/sfx_movement_ladder1a.wav' |
+    'Climbing Ladder/sfx_movement_ladder1b.wav' |
+    'Climbing Ladder/sfx_movement_ladder1loop.wav' |
+    'Climbing Ladder/sfx_movement_ladder2a.wav' |
+    'Climbing Ladder/sfx_movement_ladder2b.wav' |
+    'Climbing Ladder/sfx_movement_ladder2loop.wav' |
+    'Climbing Ladder/sfx_movement_ladder3a.wav' |
+    'Climbing Ladder/sfx_movement_ladder3b.wav' |
+    'Climbing Ladder/sfx_movement_ladder3loop.wav' |
+    'Climbing Ladder/sfx_movement_ladder4a.wav' |
+    'Climbing Ladder/sfx_movement_ladder4b.wav' |
+    'Climbing Ladder/sfx_movement_ladder4loop.wav' |
+    'Climbing Ladder/sfx_movement_ladder5a.wav' |
+    'Climbing Ladder/sfx_movement_ladder5b.wav' |
+    'Climbing Ladder/sfx_movement_ladder5loop.wav' |
+    'Climbing Ladder/sfx_movement_ladder6a.wav' |
+    'Climbing Ladder/sfx_movement_ladder6b.wav' |
+    'Climbing Ladder/sfx_movement_ladder6loop.wav' |
+    
+    'Climbing Stairs/sfx_movement_stairs1a.wav' |
+    'Climbing Stairs/sfx_movement_stairs1b.wav' |
+    'Climbing Stairs/sfx_movement_stairs1loop.wav' |
+    'Climbing Stairs/sfx_movement_stairs2a.wav' |
+    'Climbing Stairs/sfx_movement_stairs2b.wav' |
+    'Climbing Stairs/sfx_movement_stairs2loop.wav' |
+    'Climbing Stairs/sfx_movement_stairs3a.wav' |
+    'Climbing Stairs/sfx_movement_stairs3b.wav' |
+    'Climbing Stairs/sfx_movement_stairs3loop.wav' |
+    'Climbing Stairs/sfx_movement_stairs4a.wav' |
+    'Climbing Stairs/sfx_movement_stairs4b.wav' |
+    'Climbing Stairs/sfx_movement_stairs4loop.wav' |
+    'Climbing Stairs/sfx_movement_stairs5a.wav' |
+    'Climbing Stairs/sfx_movement_stairs5b.wav' |
+    'Climbing Stairs/sfx_movement_stairs5loop.wav' |
+    'Climbing Stairs/sfx_movement_stairs6a.wav' |
+    'Climbing Stairs/sfx_movement_stairs6b.wav' |
+    'Climbing Stairs/sfx_movement_stairs6loop.wav' |
+    
+    'Falling Sounds/sfx_sounds_falling1.wav' |
+    'Falling Sounds/sfx_sounds_falling10.wav' |
+    'Falling Sounds/sfx_sounds_falling11.wav' |
+    'Falling Sounds/sfx_sounds_falling12.wav' |
+    'Falling Sounds/sfx_sounds_falling2.wav' |
+    'Falling Sounds/sfx_sounds_falling3.wav' |
+    'Falling Sounds/sfx_sounds_falling4.wav' |
+    'Falling Sounds/sfx_sounds_falling5.wav' |
+    'Falling Sounds/sfx_sounds_falling6.wav' |
+    'Falling Sounds/sfx_sounds_falling7.wav' |
+    'Falling Sounds/sfx_sounds_falling8.wav' |
+    'Falling Sounds/sfx_sounds_falling9.wav' |
+    
+    'Footsteps/sfx_movement_footsteps1a.wav' |
+    'Footsteps/sfx_movement_footsteps1b.wav' |
+    'Footsteps/sfx_movement_footsteps5.wav' |
+    'Footsteps/sfx_movement_footstepsloop3_fast.wav' |
+    'Footsteps/sfx_movement_footstepsloop3_slow.wav' |
+    'Footsteps/sfx_movement_footstepsloop4_fast.wav' |
+    'Footsteps/sfx_movement_footstepsloop4_slow.wav' |
+    
+    'Jumping and Landing/sfx_movement_jump1.wav' |
+    'Jumping and Landing/sfx_movement_jump10.wav' |
+    'Jumping and Landing/sfx_movement_jump10_landing.wav' |
+    'Jumping and Landing/sfx_movement_jump11.wav' |
+    'Jumping and Landing/sfx_movement_jump11_landing.wav' |
+    'Jumping and Landing/sfx_movement_jump12.wav' |
+    'Jumping and Landing/sfx_movement_jump12_landing.wav' |
+    'Jumping and Landing/sfx_movement_jump13.wav' |
+    'Jumping and Landing/sfx_movement_jump13_landing.wav' |
+    'Jumping and Landing/sfx_movement_jump14.wav' |
+    'Jumping and Landing/sfx_movement_jump14_landing.wav' |
+    'Jumping and Landing/sfx_movement_jump15.wav' |
+    'Jumping and Landing/sfx_movement_jump15_landing.wav' |
+    'Jumping and Landing/sfx_movement_jump16.wav' |
+    'Jumping and Landing/sfx_movement_jump16_landing.wav' |
+    'Jumping and Landing/sfx_movement_jump17.wav' |
+    'Jumping and Landing/sfx_movement_jump17_landing.wav' |
+    'Jumping and Landing/sfx_movement_jump18.wav' |
+    'Jumping and Landing/sfx_movement_jump18_landing.wav' |
+    'Jumping and Landing/sfx_movement_jump19.wav' |
+    'Jumping and Landing/sfx_movement_jump19_landing.wav' |
+    'Jumping and Landing/sfx_movement_jump2.wav' |
+    'Jumping and Landing/sfx_movement_jump20.wav' |
+    'Jumping and Landing/sfx_movement_jump3.wav' |
+    'Jumping and Landing/sfx_movement_jump4.wav' |
+    'Jumping and Landing/sfx_movement_jump5.wav' |
+    'Jumping and Landing/sfx_movement_jump6.wav' |
+    'Jumping and Landing/sfx_movement_jump7.wav' |
+    'Jumping and Landing/sfx_movement_jump8.wav' |
+    'Jumping and Landing/sfx_movement_jump9.wav' |
+    'Jumping and Landing/sfx_movement_jump9_landing.wav' |
+    
+    'Opening Doors/sfx_movement_dooropen1.wav' |
+    'Opening Doors/sfx_movement_dooropen2.wav' |
+    'Opening Doors/sfx_movement_dooropen3.wav' |
+    'Opening Doors/sfx_movement_dooropen4.wav' |
+    
+    'Portals and Transitions/sfx_movement_portal1.wav' |
+    'Portals and Transitions/sfx_movement_portal2.wav' |
+    'Portals and Transitions/sfx_movement_portal3.wav' |
+    'Portals and Transitions/sfx_movement_portal4.wav' |
+    'Portals and Transitions/sfx_movement_portal5.wav' |
+    'Portals and Transitions/sfx_movement_portal6.wav' |
+    
+    'Vehicles/sfx_vehicle_breaks.wav' |
+    'Vehicles/sfx_vehicle_carloop1.wav' |
+    'Vehicles/sfx_vehicle_carloop2.wav' |
+    'Vehicles/sfx_vehicle_engineloop.wav' |
+    'Vehicles/sfx_vehicle_helicopterloop1.wav' |
+    'Vehicles/sfx_vehicle_helicopterloop2.wav' |
+    'Vehicles/sfx_vehicle_helicopterloop3.wav' |
+    'Vehicles/sfx_vehicle_helicopterloop4.wav' |
+    'Vehicles/sfx_vehicle_plainloop.wav' |
+    
+    'Cannon/sfx_wpn_cannon1.wav' |
+    'Cannon/sfx_wpn_cannon2.wav' |
+    'Cannon/sfx_wpn_cannon3.wav' |
+    'Cannon/sfx_wpn_cannon4.wav' |
+    'Cannon/sfx_wpn_cannon5.wav' |
+    'Cannon/sfx_wpn_cannon6.wav' |
+    
+    'Grenade Whistles/sfx_wpn_grenadewhistle1.wav' |
+    'Grenade Whistles/sfx_wpn_grenadewhistle2.wav' |
+    'Grenade Whistles/sfx_wpn_missilelaunch.wav' |
+    
+    'Lasers/sfx_wpn_laser 10.wav' |
+    'Lasers/sfx_wpn_laser1.wav' |
+    'Lasers/sfx_wpn_laser10.wav' |
+    'Lasers/sfx_wpn_laser11.wav' |
+    'Lasers/sfx_wpn_laser12.wav' |
+    'Lasers/sfx_wpn_laser2.wav' |
+    'Lasers/sfx_wpn_laser3.wav' |
+    'Lasers/sfx_wpn_laser4.wav' |
+    'Lasers/sfx_wpn_laser5.wav' |
+    'Lasers/sfx_wpn_laser6.wav' |
+    'Lasers/sfx_wpn_laser7.wav' |
+    'Lasers/sfx_wpn_laser8.wav' |
+    'Lasers/sfx_wpn_laser9.wav' |
+    
+    'Machinegun/sfx_wpn_machinegun_loop1.wav' |
+    'Machinegun/sfx_wpn_machinegun_loop2.wav' |
+    'Machinegun/sfx_wpn_machinegun_loop3.wav' |
+    'Machinegun/sfx_wpn_machinegun_loop4.wav' |
+    'Machinegun/sfx_wpn_machinegun_loop5.wav' |
+    'Machinegun/sfx_wpn_machinegun_loop6.wav' |
+    'Machinegun/sfx_wpn_machinegun_loop7.wav' |
+    'Machinegun/sfx_wpn_machinegun_loop8.wav' |
+    'Machinegun/sfx_wpn_machinegun_loop9.wav' |
+    
+    'Melee/sfx_wpn_dagger.wav' |
+    'Melee/sfx_wpn_punch1.wav' |
+    'Melee/sfx_wpn_punch2.wav' |
+    'Melee/sfx_wpn_punch3.wav' |
+    'Melee/sfx_wpn_punch4.wav' |
+    'Melee/sfx_wpn_sword1.wav' |
+    'Melee/sfx_wpn_sword2.wav' |
+    'Melee/sfx_wpn_sword3.wav' |
+    
+    'Out of Ammo/sfx_wpn_noammo1.wav' |
+    'Out of Ammo/sfx_wpn_noammo2.wav' |
+    'Out of Ammo/sfx_wpn_noammo3.wav' |
+    'Out of Ammo/sfx_wpn_reload.wav' |
+    
+    'Shotgun/sfx_weapon_shotgun1.wav' |
+    'Shotgun/sfx_weapon_shotgun2.wav' |
+    'Shotgun/sfx_weapon_shotgun3.wav' |
+    
+    'Single Shot Sounds/sfx_weapon_singleshot1.wav' |
+    'Single Shot Sounds/sfx_weapon_singleshot10.wav' |
+    'Single Shot Sounds/sfx_weapon_singleshot11.wav' |
+    'Single Shot Sounds/sfx_weapon_singleshot12.wav' |
+    'Single Shot Sounds/sfx_weapon_singleshot13.wav' |
+    'Single Shot Sounds/sfx_weapon_singleshot14.wav' |
+    'Single Shot Sounds/sfx_weapon_singleshot15.wav' |
+    'Single Shot Sounds/sfx_weapon_singleshot16.wav' |
+    'Single Shot Sounds/sfx_weapon_singleshot17.wav' |
+    'Single Shot Sounds/sfx_weapon_singleshot18.wav' |
+    'Single Shot Sounds/sfx_weapon_singleshot19.wav' |
+    'Single Shot Sounds/sfx_weapon_singleshot2.wav' |
+    'Single Shot Sounds/sfx_weapon_singleshot20.wav' |
+    'Single Shot Sounds/sfx_weapon_singleshot21.wav' |
+    'Single Shot Sounds/sfx_weapon_singleshot22.wav' |
+    'Single Shot Sounds/sfx_weapon_singleshot3.wav' |
+    'Single Shot Sounds/sfx_weapon_singleshot4.wav' |
+    'Single Shot Sounds/sfx_weapon_singleshot5.wav' |
+    'Single Shot Sounds/sfx_weapon_singleshot6.wav' |
+    'Single Shot Sounds/sfx_weapon_singleshot7.wav' |
+    'Single Shot Sounds/sfx_weapon_singleshot8.wav' |
+    'Single Shot Sounds/sfx_weapon_singleshot9.wav' 
+    
 
 
 
@@ -565,6 +1122,8 @@ export type SpaceIcon =
  visPropCalc: Object; 
 
  //// methods 
+ /** Add transformations to this element. */
+ addTransform(el:GeometryElement,transform:Transformation|Transformation[]): GeometryElement,
  /** Removes all ticks from a line or curve. */
  removeAllTicks(): Object,
  /** Get value of a parameter. If the parameter is a function, call the function and return its value. In that case, the function is called with the GeometryElement as (only) parameter. For label elements (i.e. if the attribute  */
@@ -583,8 +1142,6 @@ export type SpaceIcon =
  addRotation(angle:number):void,
  /** Adds ticks to this line or curve. Ticks can be added to a curve or any kind of line: line, arrow, and axis. */
  addTicks(ticks:Ticks):string,
- /** Add transformations to this element. */
- addTransform(el:GeometryElement,transform:Transformation|Transformation[]):GeometryElement,
  /** Animates properties for that object like stroke or fill color, opacity and maybe even more later. */
  animate(hash:Object,time:number,options?:Object): GeometryElement,
  /** Dimensions of the smallest rectangle enclosing the element. */
@@ -599,7 +1156,7 @@ export type SpaceIcon =
  formatNumberLocale(value:number,digits?:number):string,
  /** Array of strings containing the polynomials defining the element. Used for determining geometric loci the groebner way. */
  generatePolynomial(): number[],
- /** Get the value of the property &lt;tt&gt;key&lt;/tt&gt;. */
+ /** Get the value of the property **key**. */
  getAttribute(key:string):Object,
  /** Retrieve a copy of the current visProp. */
  getAttributes():Object,
@@ -708,8 +1265,11 @@ export type SpaceIcon =
  moveAlong(where:number[][]|Function,time?:number,options?:Object):void,
  /** ES6 version of {@link JXG.CoordsElement#moveAlong} using a promise. */
  moveAlongES6(where:number[][]|Function,time?:number,options?:Object):Promise<any>,
- /** Starts an animated point movement towards the given coordinates &lt;tt&gt;where&lt;/tt&gt;. The animation is done after &lt;tt&gt;time&lt;/tt&gt; milliseconds. If the second parameter is not given or is equal to 0, setPosition() is called, see {@link JXG.CoordsElement#setPosition}, i.e. the coordinates are changed without animation. */
- moveTo(where:number[]|Function,time?:number,options?:MoveToOptions):void,
+ /** Starts an animated point movement towards the given coordinates **where**. The animation is done after **time** milliseconds. If the second parameter is not given or is equal to 0, setPosition() is called, see {@link JXG.CoordsElement#setPosition}, i.e. the coordinates are changed without animation.
+    ~~~js
+    pt.moveTo([5,()=>a.X()], 2000) // 2 seconds
+    ~~~ */
+ moveTo(where:pointAddr,time?:number,options?:MoveToOptions):void,
  /** ES6 version of {@link JXG.CoordsElement#moveTo} using a promise. */
  moveToES6(where:number[]|Function,time?:number,options?:MoveToOptions):Promise<any>,
  /** Remove the last slideObject. If there are more than one elements the point is bound to, the second last element is the new active slideObject. */
@@ -728,7 +1288,7 @@ export type SpaceIcon =
  snapToPoints(force:Boolean):CoordsElement,
  /** Applies the transformations of the element to {@link JXG.Point#baseElement}. Point transformations are relative to a base element.  */
  updateTransform(fromParent:Boolean):void,
- /** Starts an animated point movement towards the given coordinates &lt;tt&gt;where&lt;/tt&gt;. After arriving at &lt;tt&gt;where&lt;/tt&gt; the point moves back to where it started. The animation is done after &lt;tt&gt;time&lt;/tt&gt; milliseconds. */
+ /** Starts an animated point movement towards the given coordinates **where**. After arriving at **where** the point moves back to where it started. The animation is done after **time** milliseconds. */
  visit(where:number[],time:number,options?:VisitAttributes):CoordsElement,
  /** ES6 version of {@link JXG.CoordsElement#moveVisit} using a promise. */
  visitES6(where:number[],time:number,options?:VisitAttributes):Promise<any>,
@@ -1395,6 +1955,8 @@ Exception: for type=7 size is ignoredhighlightSize: 6, // size of the arrow head
  ticks: number[]; 
 
  //// methods 
+ /** Return the points of the curve as array of length-three-arrays [z, x, y], i.e. return an array of homogeneous coordinates. The returned coordinates are in user coordinates. */
+ getCoords():number[][],
  /** Add transformations to this curve. */
  addTransform(transform:Transformation|Transformation[]):GeometryElement,
  /** Allocate points in the Coords array this.points */
@@ -1421,7 +1983,7 @@ Exception: for type=7 size is ignoredhighlightSize: 6, // size of the arrow head
  updateDataArray(): void,
  /** Updates the visual contents of the curve. */
  updateRenderer() : Curve,
- /** Applies the transformations of the curve to the given point &lt;tt&gt;p&lt;/tt&gt;. Before using it, {@link JXG.Curve#updateTransformMatrix} has to be called. */
+ /** Applies the transformations of the curve to the given point **p**. Before using it, {@link JXG.Curve#updateTransformMatrix} has to be called. */
  updateTransform(p:Point):GeometryElement,
  /** The parametric function which defines the x-coordinate of the curve. */
  X(t:number,suspendUpdate?:Boolean): number,
@@ -1481,13 +2043,13 @@ Exception: for type=7 size is ignoredhighlightSize: 6, // size of the arrow head
  minimizeObject(instance:Object,s:Object): Dump,
  /** Prepare the attributes object for an element to be dumped as JavaScript or JessieCode code. */
  prepareAttributes(board:Board,obj:GeometryElement): Object,
- /** Stringifies a string, i.e. puts some quotation marks around &lt;tt&gt;s&lt;/tt&gt; if it is of type string. */
+ /** Stringifies a string, i.e. puts some quotation marks around **s** if it is of type string. */
  str(s:string): string,
- /** Saves the construction in &lt;tt&gt;board&lt;/tt&gt; to JavaScript. */
+ /** Saves the construction in **board** to JavaScript. */
  toJavaScript(board:Board): string,
  /** Converts a JavaScript object into a JCAN (JessieCode Attribute Notation) string. */
  toJCAN(obj:Object): string,
- /** Saves the construction in &lt;tt&gt;board&lt;/tt&gt; to JessieCode. */
+ /** Saves the construction in **board** to JessieCode. */
  toJessie(board:Board): string,
 /** sets an arbitrary number of attributes for this Dump element*/  // inserted in writewrapper()
                         setAttribute(attrs: DumpAttributes):void,
@@ -1583,7 +2145,7 @@ Exception: for type=7 size is ignoredhighlightSize: 6, // size of the arrow head
  /** Defines the CSS class used by the image when highlighted. CSS attributes defined in this class will overwrite the corresponding JSXGraph attributes, e.g. highlightFillOpacity. The default CSS class is defined in jsxgraph.css. */
   highlightCssClass?: string
  /** Image rotation in degrees. */
-  rotate?: number
+  rotate?: number| Function
  /** Defines together with Image#snapSizeY the grid the image snaps on to. The image will only snap on user coordinates which are integer multiples to snapSizeX in x and snapSizeY in y direction. If this value is equal to or less than 0, it will use the grid displayed by the major ticks of the default ticks of the default x axes of the currentBoard. */
   snapSizeX?: number
  /** Defines together with Image#snapSizeX the grid the image snaps on to. The image will only snap on integer multiples to snapSizeX in x and snapSizeY in y direction. If this value is equal to or less than 0, it will use the grid displayed by the major ticks of the default ticks of the default y axes of the currentBoard. */
@@ -1608,6 +2170,14 @@ Exception: for type=7 size is ignoredhighlightSize: 6, // size of the arrow head
  setSize(width:number,height:number):void,
  /** Returns the width of the image in user coordinates. */
  W(): number,
+ /** Starts an animated point movement towards the given coordinates **where**. The animation is done after **time** milliseconds. If the second parameter is not given or is equal to 0, setPosition() is called, see {@link JXG.CoordsElement#setPosition}, i.e. the coordinates are changed without animation. */
+ moveTo(where:pointAddr,time?:number,options?:MoveToOptions):void,
+ /** ES6 version of {@link JXG.CoordsElement#moveTo} using a promise. */
+ moveToES6(where:number[]|Function,time?:number,options?:MoveToOptions):Promise<any>,
+ /** Move along a path defined by an array of coordinates  */
+ moveAlong(traversePath?:number[][],time?:number,options?:Object):CoordsElement,
+ /** ES6 version of {@link JXG.CoordsElement#moveAlong} using a promise. */
+ moveAlongES6(where:number[][]|Function,time?:number,options?:Object):Promise<any>,
 /** sets an arbitrary number of attributes for this Image element*/  // inserted in writewrapper()
                         setAttribute(attrs: ImageAttributes):void,
  }
@@ -1817,7 +2387,7 @@ Exception: for type=7 size is ignoredhighlightSize: 6, // size of the arrow head
 ```js
 P.moveTo([A.X(), A.Y()], 5000)
 ``` */
- moveTo(where:number[]|Function,time?:number,options?:MoveToOptions):Promise<any>,
+ moveTo(where:pointAddr,time?:number,options?:MoveToOptions):Promise<any>,
 /** sets an arbitrary number of attributes for this Point3D element*/  // inserted in writewrapper()
                         setAttribute(attrs: Point3DAttributes):void,
  }
@@ -2085,7 +2655,7 @@ P.moveTo([A.X(), A.Y()], 5000)
  fixedTicks: number[]; 
  /** Used to ensure the uniqueness of label ids this counter is used. */
  labelCounter: number; 
- /** Array where the labels are saved. There is an array element for every tick, even for minor ticks which don&#039;t have labels. In this case the array element contains just &lt;tt&gt;null&lt;/tt&gt;. */
+ /** Array where the labels are saved. There is an array element for every tick, even for minor ticks which don&#039;t have labels. In this case the array element contains just **null**. */
  labels: number[]; 
  /** A list of labels which have to be displayed in updateRenderer. */
  labelsData: number[]; 
@@ -4166,8 +4736,6 @@ Statistics :{
 
 
 
-
-
 /** This wraps the JSX library and the constructor is equivalent to the `initBoard()` method.
 
  * ```js
@@ -4188,11 +4756,17 @@ export class TSXBoard {
 
 
 
+    private xAxis: Object = null!    // used for 'removeAxis()' which is not in JSXGraph
+
+    private yAxis: Object = null!
+
+
+
     /** This contains the default options of the board and of all geometry elements.  See JSXGraph.Options.js for details.  Example: TSX.JXGOptions.elements.tabindex = -1 */
 
     JXGOptions: any   // no documentation on this, just make it available to TypeScript as any
 
-;
+        ;
 
 
 
@@ -4292,6 +4866,8 @@ export class TSXBoard {
 
             name: '',
 
+            withLabel: true,
+
             showinfobox: false,
 
             pan: { enabled: false },
@@ -4330,8 +4906,6 @@ export class TSXBoard {
 
 
 
-
-
         //create the 3D view
 
         this._jView3d = (this._jBoard as any).create('view3d',
@@ -4345,6 +4919,8 @@ export class TSXBoard {
             [[bounding[0], bounding[2]], [bounding[3], bounding[1]], [bounding[0], bounding[2]]]],  // just guessing at z axis
 
             {
+
+                axes3d: 'none',
 
                 projection: 'central',
 
@@ -4364,9 +4940,15 @@ export class TSXBoard {
 
                 depthOrderPoints: true,
 
+                xPlaneFront: { visible: false },
+
+                yPlaneFront: { visible: false },
+
+                zPlaneFront: { visible: false },
+
                 xPlaneRear: { visible: false },
 
-                yPlaneRear: { visible: false }, //fillOpacity: 0.2, fillColor: 'blue' },
+                yPlaneRear: { visible: false },
 
                 zPlaneRear: { visible: false },
 
@@ -4506,67 +5088,51 @@ export class TSXBoard {
 
         let top = bbox[1] - (2 * lineHeight) - (this.printLineNumber * lineHeight)  // align y to top border
 
+        let first = true
 
 
-        let helper = (stringText: string, item: any): string => {
 
-            if (typeof item == null) {
+        let stringify = (value: unknown): string => {
 
-                stringText += 'null, ';
+            let trimmer = (val: string) => {
 
-            } else if (item == undefined) {
+                let maxLength = args.length == 1 ? 60 : 30;  // longer if only a single param
 
-                stringText += 'undefined';
-
-            } else if (typeof item == 'string') {
-
-                stringText += '\'' + item + '\'';
-
-            } else if (typeof item == 'number') {
-
-                stringText += Number.isInteger(item) ? item.toString() : item.toFixed(2);
-
-            } else if (typeof item == 'boolean') {
-
-                stringText += item ? 'true' : 'false';
-
-            } else if (Array.isArray(item)) {
-
-                stringText += '['
-
-                stringText = item.reduce((acc, curr) => acc + helper('', curr), stringText)
-
-                stringText += ']'
-
-            } else if (typeof item == 'object') {
-
-                stringText += '{'
-
-                if ('elType' in item) {
-
-                    stringText += item.elType
-
-                } else if ('elV2Math' in item) {
-
-                    stringText += [item.X(), item.Y()]
-
-                }
-
-                stringText += '}'
-
-            } else {
-
-                stringText += 'UNKNOWN';
+                return val.length <= maxLength ? val : val.slice(0, maxLength) + "..."
 
             }
 
-            stringText += ', '
+            if (value === undefined) { return "undefined" }
 
-            return stringText
+            if (value === null || Array.isArray(value) || typeof value === 'object' || typeof value === 'boolean') {
+
+                return trimmer(JSON.stringify(value))
+
+            }
+
+            if (typeof value === 'function') {
+
+                return trimmer(value + value.toString());
+
+            }
+
+            if (typeof value === "string") return trimmer(value);
+
+
+
+            if (Number.isNaN(value as number)) return "NaN";
+
+            if (value === Infinity || value === -Infinity) return 'Infinity'
+
+            if (typeof value === "number") return trimmer(value.toFixed(2));
+
+
+
+            if (typeof value === 'symbol' || typeof value === 'bigint') return trimmer(value.toString())
+
+            return 'unknown ' + typeof value + trimmer(value.toString())
 
         }
-
-
 
 
 
@@ -4574,7 +5140,11 @@ export class TSXBoard {
 
         args.forEach((argn) => {
 
-            stringText = helper(stringText, argn)
+            if (!first) stringText += ',     '
+
+            stringText += stringify(argn).replaceAll(' ', '&nbsp;')   // JSXGraph will trim leading spaces, we don't want that
+
+            first = false
 
         });
 
@@ -4583,6 +5153,20 @@ export class TSXBoard {
         (this._jBoard as any).create('text', [left, top, stringText], { fontSize: 10, strokeColor: 'blue', fontUnits: 'EM' })
 
         this.printLineNumber += 1
+
+    }
+
+
+
+    /** The circle that is the intersection of two elements (plane3d or sphere3d) in 3D. */
+
+    Audio(url: Sounds): HTMLAudioElement
+
+    Audio(url: string): HTMLAudioElement
+
+    Audio(a: any) {
+
+        return (new Audio('sounds/'+a))  // prefix into correct directory
 
     }
 
@@ -4650,9 +5234,9 @@ export class TSXBoard {
 
     addAxis() {        // using _jsxBoard ensures board is created if necessary
 
-        (this._jBoard as any).create('axis', [[0, 0], [1, 0]]);
+        this.xAxis = (this._jBoard as any).create('axis', [[0, 0], [1, 0]]);
 
-        (this._jBoard as any).create('axis', [[0, 0], [0, 1]]);
+        this.yAxis = (this._jBoard as any).create('axis', [[0, 0], [0, 1]]);
 
     }
 
@@ -4808,25 +5392,21 @@ export class TSXBoard {
 
     */
 
-   on(event: string, handler: (e: Event) => void, context?: unknown): void{
+    on(event: string, handler: (e: Event) => void, context?: unknown): void {
 
-       console.log('adding keyboard event')
+        // JSXGraph doesn't share keyboard events, but I want them
 
-       // JSXGraph doesn't share keyboard events, but I want them
+        if (event == 'keypress' || event == 'keydown' || event == 'keyup') {
 
-       if(event == 'keypress' || event == 'keydown' || event == 'keyup'){
+            (window as any).document.addEventListener(event, handler)
 
-           (window as any).document.addEventListener(event, handler)
-
-        }else{
+        } else {
 
             (this._jBoard as any).on(event, handler, context)
 
         }
 
     }
-
-    // on(event: string, handler: Function) { (this._jBoard as any).on(event, handler) }
 
 
 
@@ -4958,7 +5538,7 @@ export class TSXBoard {
 
     /** Creates a new geometric element of type elementType.*/   // NOTE: UPPER CASE Create  !!
 
-    create(elementType: string, parents: any[], attributes: Object={}): any { return (this._jBoard as any).create(elementType, parents, attributes) }
+    create(elementType: string, parents: any[], attributes: Object = {}): any { return (this._jBoard as any).create(elementType, parents, attributes) }
 
 
 
@@ -5940,9 +6520,10 @@ If you want to move the image, just tie the image to a point, maybe at the cente
             For more flexibility, see TSX.Rotate() and TSX.Translate().  Also, you can fade the image with opacity.
             
 *```js
-            TSX.Image('icons/earth.png', [0, 0],[2,2])
-            let p1 = TSX.Point([3, 2], { opacity: .1 })
-            TSX.Image('icons/moon-full-moon.png', [()=>p1.X(),()=>p1.Y()])
+let img = TSX.Image('icons/earth.png', [0, 0],[2,2])
+img.moveTo([-3,-3],2000) // two second move
+let p1 = TSX.Point([3, 2], { opacity: .1 })
+TSX.Image('icons/moon-full-moon.png', [()=>p1.X(),()=>p1.Y()])
             
 *``` 
  *``` 
@@ -5958,9 +6539,10 @@ If you want to move the image, just tie the image to a point, maybe at the cente
             For more flexibility, see TSX.Rotate() and TSX.Translate().  Also, you can fade the image with opacity.
             
 *```js
-            TSX.Image('icons/earth.png', [0, 0],[2,2])
-            let p1 = TSX.Point([3, 2], { opacity: .1 })
-            TSX.Image('icons/moon-full-moon.png', [()=>p1.X(),()=>p1.Y()])
+let img = TSX.Image('icons/earth.png', [0, 0],[2,2])
+img.moveTo([-3,-3],2000) // two second move
+let p1 = TSX.Point([3, 2], { opacity: .1 })
+TSX.Image('icons/moon-full-moon.png', [()=>p1.X(),()=>p1.Y()])
             
 *``` 
  *``` 
