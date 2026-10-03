@@ -85,8 +85,8 @@ function htmlHeader()
 
     <link rel='stylesheet' href='node_modules/katex/dist/katex.min.css' />
     <script type='text/javascript' src='node_modules/katex/dist/katex.min.js'></script>
-    <link rel='stylesheet' type='text/css' href='node_modules/jsxgraph/distrib/jsxgraph.css' />
-    <script type='text/javascript' src='node_modules/jsxgraph/distrib/jsxgraphcore.js'></script>
+    <link rel='stylesheet' type='text/css' href='lib/jsxgraph.css' />
+    <script type='text/javascript' src='lib/jsxgraphcore.js'></script>
     <script defer src='node_modules/webfontloader/webfontloader.js'></script>
 
 

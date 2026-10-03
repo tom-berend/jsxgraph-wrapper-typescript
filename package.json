@@ -16,8 +16,6 @@
         "watch": "tsc -w"
     },
     "dependencies": {
-        "@moonshine-ai/moonshine-wasm": "^0.1.5",
-        "jsxgraph": "^1.13.1",
         "katex": "^0.18.1",
         "typescript": "^7.0.1",
         "webfontloader": "^1.6.28"

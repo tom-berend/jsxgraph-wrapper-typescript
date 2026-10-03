@@ -5,7 +5,7 @@
             "ESNext",
             "dom"
         ],
-        "declaration": false,   // true if you want d.ts files for your constructions
+        "declaration": false, // true if you want d.ts files for your constructions
         "outDir": "dist",
         "strict": true,
         "removeComments": false,
@@ -17,6 +17,8 @@
         "src/**/*"
     ],
     "watchOptions": {
-        "excludeFiles": ["dist/**/*"]
+        "excludeFiles": [
+            "dist/**/*"
+        ]
     }
 }

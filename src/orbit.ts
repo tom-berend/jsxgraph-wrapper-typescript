@@ -4,12 +4,13 @@ import { TSXBoard, JsxMath } from "../lib/tsxgraph.js"    // note: we need the '
 let TSX = new TSXBoard('jxgbox', { boundingBox: [-1, 5, 5, -1] })
 orbit()
 
+TSX.Text([-.7, -.7], "Example of working with Katex and different line attributes.")
 
 
 function orbit() {
     TSX.useKatex()    // going to use Katex for all labels
 
-    let origin = TSX.Point([0, 0])
+    let origin = TSX.Point([0, 0], {})
 
     // use ()=> to lock the axis points to the origin, even if the origin moved
     let xAxisPt = TSX.Point([() => origin.X(), () => origin.Y() + 4], { name: 'y', opacity: 0 })
@@ -35,7 +36,7 @@ function orbit() {
         {
             withLabel: true,
             name: '\\vec{V}_T=r \\omega',
-            label: { position: 'top', fontSize: 20,useKatex:true },
+            label: { position: 'top', fontSize: 20, useKatex: true },
             strokeWidth: 3,
             lastArrow: { type: 2, size: 8 }
         }

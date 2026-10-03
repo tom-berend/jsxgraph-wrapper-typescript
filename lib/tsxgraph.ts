@@ -21,13 +21,13 @@
         //    DEALINGS IN THE SOFTWARE.
         //
         /////////////////////////////////////////////////////////////////////////////
-        //   Generated on August 31, 2026, 9:16 pm
+        //   Generated on October 2, 2026, 9:47 pm
 
      // match JSXGraph definition for JXG_Point3D, etc
         type NumberFunction = Number | Function
 
         /** A 'point' has a position in space.  The only characteristic that distinguishes one point from another is its position. */
-        type pointAddr = NumberFunction[] | [number, number] | [number, Function] | [Function, number] | [Function | Function] // allow tuples or arrays
+        type pointAddr = NumberFunction[] | [number, number] | [number, Function] | [Function, number] | [Function | Function] | Function // allow tuples or arrays
         type pointAddr3D =  NumberFunction[] // | [number | Function, number | Function, number | Function]  // either tuple or array
 
         type vertices3D = {    [key:string]:number[]|Point3D|string };
@@ -52,6 +52,118 @@ type matAny = arrayNumber2[]
 
 // eventType accepts any string, but will suggest a few
 type eventType = 'down' | 'up' | 'drag' | 'keydrag' | 'mousedown' | 'mousedrag' | 'mousemove' | 'mouseout' | 'mouseover' | 'mouseup' | 'move' | 'out' | 'over' | 'pendown' | 'pendrag' | 'penup' | 'touchdown' | 'touchdrag' | 'touchup' | 'up' | string
+
+
+
+type groupMoveParams = {
+    translation?: number[],
+    rotation?: number,
+    scale?: number,
+}
+/** object to track progress of Group ES6 moves */
+type groupMovesInProgress = {
+    currentInterval: number,
+    initialPosition: number[],
+    initialRotation: number
+    currentRotation: number
+    initialScale: number,
+    translatePoint: Point,
+    rotatePoint: Point,
+    scalerPoint: Point,
+}
+
+/////////////////////////////  GROUP MoveToES6() function
+
+/** version of moveES6 for groups */
+function groupMoveToES6(jBoard: any, group: any, params: groupMoveParams, msec: number = 0) {
+    if (msec > 0 && msec < 60) console.warn('Group move time is MSEC.'); // common error  
+
+    let setup = (): groupMovesInProgress => {   // factory to set up m object
+        // set up the grouppu object for the length of the move
+        let temp: groupMovesInProgress;
+        if (!Object.hasOwn(group, "moveES6params")) {   // was not previously moved
+            temp = {
+                currentInterval: 0,   // initialize it
+                initialPosition: [0, 0],
+                initialRotation: 0,
+                initialScale: 1,
+                currentRotation: 0,
+                translatePoint: jBoard.create('point', [0, 0], { visible: false }),
+                rotatePoint: jBoard.create('point', [0, 1], { visible: false }),
+                scalerPoint: jBoard.create('point', [1, 0], { visible: false }),
+            };
+            (group as any)['moveES6params'] = temp;   // add it to group object for persistance
+
+            // set up the basic tranform points
+            group.addPoints([temp.translatePoint, temp.rotatePoint, temp.scalerPoint])
+            group.setTranslationPoints(temp.translatePoint)
+            group.setRotationCenter(temp.translatePoint)
+            group.setRotationPoints(temp.rotatePoint);
+            group.setScaleCenter(temp.translatePoint)
+            group.setScalePoints(temp.scalerPoint);
+            return temp
+        } else {
+            // retrieve current params left over from last move
+            temp = (group as any)['moveES6params'] as groupMovesInProgress;
+            temp.currentInterval = 0;   // re-initialize it
+            
+            // console.log('tr',temp.translatePoint.X(),'sc',temp.scalerPoint.X())
+            // temp.initialScale = temp.scalerPoint.X()  ;
+        }
+        return temp;
+    }
+    
+    let m = setup();   // create and initialize the 'movesInProgess' object
+    
+    let nIntervals = Math.ceil(msec / 50); // break into 50 ms intervals
+    nIntervals = Math.max(nIntervals, 1);  // run at least once
+        
+    
+    return new Promise((resolve) => {     // define the process that will update the screen over time
+        let processMoves = () => {
+            
+            if (m.currentInterval < nIntervals) {
+                let fraction = m.currentInterval / nIntervals
+                
+                // last move should be exactly to end
+                if (m.currentInterval == nIntervals - 1) fraction = 1
+
+                if (Object.hasOwn(params, "rotation")) {
+                    let dAng = m.initialRotation + (params.rotation! / nIntervals)
+                    m.rotatePoint.moveTo([m.translatePoint.X() + Math.sin(dAng), m.translatePoint.Y() + Math.cos(dAng)])
+                    m.initialRotation = dAng
+                }
+                
+                if (Object.hasOwn(params, "translation")) {
+                    let dx = params.translation![0] - m.initialPosition[0]
+                    let dy = params.translation![1] - m.initialPosition[1]
+                    m.translatePoint.moveTo([m.initialPosition[0] + dx * fraction, m.initialPosition[1] + dy * fraction])
+                }
+                
+                if (Object.hasOwn(params, "scale")) {
+                    let newScale = m.initialScale + ((params.scale! - m.initialScale) * fraction)
+                    m.scalerPoint.moveTo([m.translatePoint.X() + newScale, m.translatePoint.Y()])
+                }
+                m.currentInterval += 1;
+                requestAnimationFrame(processMoves)
+                
+            } else {
+                m.initialPosition = params.translation! // set up for next time
+                // initialRotation is updated continuously
+                m.initialScale = params.scale!
+                
+                resolve(true);
+            }
+        };
+        // and start the animation
+        processMoves()
+    });
+    
+};
+
+
+
+
 
 interface Events {
     /** event handlers, eventType is a STRING
@@ -391,14 +503,14 @@ export type SpaceIcon =
 
 
 
-    export type Sounds = 
+export type Sounds =
     'Alien/sfx_deathscream_alien1.wav' |
     'Alien/sfx_deathscream_alien2.wav' |
     'Alien/sfx_deathscream_alien3.wav' |
     'Alien/sfx_deathscream_alien4.wav' |
     'Alien/sfx_deathscream_alien5.wav' |
     'Alien/sfx_deathscream_alien6.wav' |
-    
+
     'Android/sfx_deathscream_android1.wav' |
     'Android/sfx_deathscream_android2.wav' |
     'Android/sfx_deathscream_android3.wav' |
@@ -407,7 +519,7 @@ export type SpaceIcon =
     'Android/sfx_deathscream_android6.wav' |
     'Android/sfx_deathscream_android7.wav' |
     'Android/sfx_deathscream_android8.wav' |
-    
+
     'Human/sfx_deathscream_human1.wav' |
     'Human/sfx_deathscream_human10.wav' |
     'Human/sfx_deathscream_human11.wav' |
@@ -422,12 +534,12 @@ export type SpaceIcon =
     'Human/sfx_deathscream_human7.wav' |
     'Human/sfx_deathscream_human8.wav' |
     'Human/sfx_deathscream_human9.wav' |
-    
+
     'Robot/sfx_deathscream_robot1.wav' |
     'Robot/sfx_deathscream_robot2.wav' |
     'Robot/sfx_deathscream_robot3.wav' |
     'Robot/sfx_deathscream_robot4.wav' |
-    
+
     'Clusters/sfx_exp_cluster1.wav' |
     'Clusters/sfx_exp_cluster10.wav' |
     'Clusters/sfx_exp_cluster11.wav' |
@@ -439,18 +551,18 @@ export type SpaceIcon =
     'Clusters/sfx_exp_cluster7.wav' |
     'Clusters/sfx_exp_cluster8.wav' |
     'Clusters/sfx_exp_cluster9.wav' |
-    
+
     'Double/sfx_exp_double1.wav' |
     'Double/sfx_exp_double2.wav' |
     'Double/sfx_exp_double3.wav' |
-    
+
     'Long/sfx_exp_long1.wav' |
     'Long/sfx_exp_long2.wav' |
     'Long/sfx_exp_long3.wav' |
     'Long/sfx_exp_long4.wav' |
     'Long/sfx_exp_long5.wav' |
     'Long/sfx_exp_long6.wav' |
-    
+
     'Medium Length/sfx_exp_medium1.wav' |
     'Medium Length/sfx_exp_medium10.wav' |
     'Medium Length/sfx_exp_medium11.wav' |
@@ -464,7 +576,7 @@ export type SpaceIcon =
     'Medium Length/sfx_exp_medium7.wav' |
     'Medium Length/sfx_exp_medium8.wav' |
     'Medium Length/sfx_exp_medium9.wav' |
-    
+
     'Odd/sfx_exp_odd1.wav' |
     'Odd/sfx_exp_odd2.wav' |
     'Odd/sfx_exp_odd3.wav' |
@@ -472,7 +584,7 @@ export type SpaceIcon =
     'Odd/sfx_exp_odd5.wav' |
     'Odd/sfx_exp_odd6.wav' |
     'Odd/sfx_exp_odd7.wav' |
-    
+
     'Short/sfx_exp_short_hard1.wav' |
     'Short/sfx_exp_short_hard10.wav' |
     'Short/sfx_exp_short_hard11.wav' |
@@ -502,7 +614,7 @@ export type SpaceIcon =
     'Short/sfx_exp_short_soft7.wav' |
     'Short/sfx_exp_short_soft8.wav' |
     'Short/sfx_exp_short_soft9.wav' |
-    
+
     'Shortest/sfx_exp_shortest_hard1.wav' |
     'Shortest/sfx_exp_shortest_hard10.wav' |
     'Shortest/sfx_exp_shortest_hard2.wav' |
@@ -522,7 +634,7 @@ export type SpaceIcon =
     'Shortest/sfx_exp_shortest_soft7.wav' |
     'Shortest/sfx_exp_shortest_soft8.wav' |
     'Shortest/sfx_exp_shortest_soft9.wav' |
-    
+
     'Various/sfx_exp_various1.wav' |
     'Various/sfx_exp_various2.wav' |
     'Various/sfx_exp_various3.wav' |
@@ -530,24 +642,24 @@ export type SpaceIcon =
     'Various/sfx_exp_various5.wav' |
     'Various/sfx_exp_various6.wav' |
     'Various/sfx_exp_various7.wav' |
-    
-    'Alarms/Alarms/sfx_alarm_loop1.wav' |
-    'Alarms/Alarms/sfx_alarm_loop2.wav' |
-    'Alarms/Alarms/sfx_alarm_loop3.wav' |
-    'Alarms/Alarms/sfx_alarm_loop4.wav' |
-    'Alarms/Alarms/sfx_alarm_loop5.wav' |
-    'Alarms/Alarms/sfx_alarm_loop6.wav' |
-    'Alarms/Alarms/sfx_alarm_loop7.wav' |
-    'Alarms/Alarms/sfx_alarm_loop8.wav' |
-    
-    'Alarms/Lowhealth/sfx_lowhealth_alarmloop1.wav' |
-    'Alarms/Lowhealth/sfx_lowhealth_alarmloop2.wav' |
-    'Alarms/Lowhealth/sfx_lowhealth_alarmloop3.wav' |
-    'Alarms/Lowhealth/sfx_lowhealth_alarmloop4.wav' |
-    'Alarms/Lowhealth/sfx_lowhealth_alarmloop5.wav' |
-    'Alarms/Lowhealth/sfx_lowhealth_alarmloop6.wav' |
-    'Alarms/Lowhealth/sfx_lowhealth_alarmloop7.wav' |
-    
+
+    'Alarms/sfx_alarm_loop1.wav' |
+    'Alarms/sfx_alarm_loop2.wav' |
+    'Alarms/sfx_alarm_loop3.wav' |
+    'Alarms/sfx_alarm_loop4.wav' |
+    'Alarms/sfx_alarm_loop5.wav' |
+    'Alarms/sfx_alarm_loop6.wav' |
+    'Alarms/sfx_alarm_loop7.wav' |
+    'Alarms/sfx_alarm_loop8.wav' |
+
+    'Lowhealth/sfx_lowhealth_alarmloop1.wav' |
+    'Lowhealth/sfx_lowhealth_alarmloop2.wav' |
+    'Lowhealth/sfx_lowhealth_alarmloop3.wav' |
+    'Lowhealth/sfx_lowhealth_alarmloop4.wav' |
+    'Lowhealth/sfx_lowhealth_alarmloop5.wav' |
+    'Lowhealth/sfx_lowhealth_alarmloop6.wav' |
+    'Lowhealth/sfx_lowhealth_alarmloop7.wav' |
+
     'Buttons/sfx_sounds_button1.wav' |
     'Buttons/sfx_sounds_button10.wav' |
     'Buttons/sfx_sounds_button11.wav' |
@@ -562,7 +674,7 @@ export type SpaceIcon =
     'Buttons/sfx_sounds_button7.wav' |
     'Buttons/sfx_sounds_button8.wav' |
     'Buttons/sfx_sounds_button9.wav' |
-    
+
     'Coins/sfx_coin_cluster1.wav' |
     'Coins/sfx_coin_cluster2.wav' |
     'Coins/sfx_coin_cluster3.wav' |
@@ -585,11 +697,11 @@ export type SpaceIcon =
     'Coins/sfx_coin_single4.wav' |
     'Coins/sfx_coin_single5.wav' |
     'Coins/sfx_coin_single6.wav' |
-    
+
     'Fanfares/sfx_sounds_fanfare1.wav' |
     'Fanfares/sfx_sounds_fanfare2.wav' |
     'Fanfares/sfx_sounds_fanfare3.wav' |
-    
+
     'High Pitched Sounds/sfx_sounds_high1.wav' |
     'High Pitched Sounds/sfx_sounds_high2.wav' |
     'High Pitched Sounds/sfx_sounds_high3.wav' |
@@ -597,7 +709,7 @@ export type SpaceIcon =
     'High Pitched Sounds/sfx_sounds_high5.wav' |
     'High Pitched Sounds/sfx_sounds_high6.wav' |
     'High Pitched Sounds/sfx_sounds_high7.wav' |
-    
+
     'Impacts/sfx_sounds_impact1.wav' |
     'Impacts/sfx_sounds_impact10.wav' |
     'Impacts/sfx_sounds_impact11.wav' |
@@ -613,7 +725,7 @@ export type SpaceIcon =
     'Impacts/sfx_sounds_impact7.wav' |
     'Impacts/sfx_sounds_impact8.wav' |
     'Impacts/sfx_sounds_impact9.wav' |
-    
+
     'Interactions/sfx_sounds_interaction1.wav' |
     'Interactions/sfx_sounds_interaction10.wav' |
     'Interactions/sfx_sounds_interaction11.wav' |
@@ -640,7 +752,7 @@ export type SpaceIcon =
     'Interactions/sfx_sounds_interaction7.wav' |
     'Interactions/sfx_sounds_interaction8.wav' |
     'Interactions/sfx_sounds_interaction9.wav' |
-    
+
     'Menu Sounds/sfx_menu_move1.wav' |
     'Menu Sounds/sfx_menu_move2.wav' |
     'Menu Sounds/sfx_menu_move3.wav' |
@@ -651,7 +763,7 @@ export type SpaceIcon =
     'Menu Sounds/sfx_menu_select3.wav' |
     'Menu Sounds/sfx_menu_select4.wav' |
     'Menu Sounds/sfx_menu_select5.wav' |
-    
+
     'Negative Sounds/sfx_sounds_damage1.wav' |
     'Negative Sounds/sfx_sounds_damage2.wav' |
     'Negative Sounds/sfx_sounds_damage3.wav' |
@@ -672,7 +784,7 @@ export type SpaceIcon =
     'Negative Sounds/sfx_sounds_error9.wav' |
     'Negative Sounds/sfx_sounds_negative1.wav' |
     'Negative Sounds/sfx_sounds_negative2.wav' |
-    
+
     'Neutral Sounds/sfx_sound_neutral1.wav' |
     'Neutral Sounds/sfx_sound_neutral10.wav' |
     'Neutral Sounds/sfx_sound_neutral11.wav' |
@@ -684,7 +796,7 @@ export type SpaceIcon =
     'Neutral Sounds/sfx_sound_neutral7.wav' |
     'Neutral Sounds/sfx_sound_neutral8.wav' |
     'Neutral Sounds/sfx_sound_neutral9.wav' |
-    
+
     'Pause Sounds/sfx_sounds_pause1_in.wav' |
     'Pause Sounds/sfx_sounds_pause1_out.wav' |
     'Pause Sounds/sfx_sounds_pause2_in.wav' |
@@ -699,7 +811,7 @@ export type SpaceIcon =
     'Pause Sounds/sfx_sounds_pause6_out.wav' |
     'Pause Sounds/sfx_sounds_pause7_in.wav' |
     'Pause Sounds/sfx_sounds_pause7_out.wav' |
-    
+
     'Positive Sounds/sfx_sounds_powerup1.wav' |
     'Positive Sounds/sfx_sounds_powerup10.wav' |
     'Positive Sounds/sfx_sounds_powerup11.wav' |
@@ -718,7 +830,7 @@ export type SpaceIcon =
     'Positive Sounds/sfx_sounds_powerup7.wav' |
     'Positive Sounds/sfx_sounds_powerup8.wav' |
     'Positive Sounds/sfx_sounds_powerup9.wav' |
-    
+
     'Simple Bleeps/sfx_sounds_Blip1.wav' |
     'Simple Bleeps/sfx_sounds_Blip10.wav' |
     'Simple Bleeps/sfx_sounds_Blip11.wav' |
@@ -730,7 +842,7 @@ export type SpaceIcon =
     'Simple Bleeps/sfx_sounds_Blip7.wav' |
     'Simple Bleeps/sfx_sounds_Blip8.wav' |
     'Simple Bleeps/sfx_sounds_Blip9.wav' |
-    
+
     'Simple Damage Sounds/sfx_damage_hit1.wav' |
     'Simple Damage Sounds/sfx_damage_hit10.wav' |
     'Simple Damage Sounds/sfx_damage_hit2.wav' |
@@ -741,7 +853,7 @@ export type SpaceIcon =
     'Simple Damage Sounds/sfx_damage_hit7.wav' |
     'Simple Damage Sounds/sfx_damage_hit8.wav' |
     'Simple Damage Sounds/sfx_damage_hit9.wav' |
-    
+
     'Weird Sounds/sfx_sound_bling.wav' |
     'Weird Sounds/sfx_sound_depressurizing.wav' |
     'Weird Sounds/sfx_sound_mechanicalnoise1.wav' |
@@ -758,7 +870,7 @@ export type SpaceIcon =
     'Weird Sounds/sfx_sound_shutdown1.wav' |
     'Weird Sounds/sfx_sound_shutdown2.wav' |
     'Weird Sounds/sfx_sound_vaporizing.wav' |
-    
+
     'Climbing Ladder/sfx_movement_ladder1a.wav' |
     'Climbing Ladder/sfx_movement_ladder1b.wav' |
     'Climbing Ladder/sfx_movement_ladder1loop.wav' |
@@ -777,7 +889,7 @@ export type SpaceIcon =
     'Climbing Ladder/sfx_movement_ladder6a.wav' |
     'Climbing Ladder/sfx_movement_ladder6b.wav' |
     'Climbing Ladder/sfx_movement_ladder6loop.wav' |
-    
+
     'Climbing Stairs/sfx_movement_stairs1a.wav' |
     'Climbing Stairs/sfx_movement_stairs1b.wav' |
     'Climbing Stairs/sfx_movement_stairs1loop.wav' |
@@ -796,7 +908,7 @@ export type SpaceIcon =
     'Climbing Stairs/sfx_movement_stairs6a.wav' |
     'Climbing Stairs/sfx_movement_stairs6b.wav' |
     'Climbing Stairs/sfx_movement_stairs6loop.wav' |
-    
+
     'Falling Sounds/sfx_sounds_falling1.wav' |
     'Falling Sounds/sfx_sounds_falling10.wav' |
     'Falling Sounds/sfx_sounds_falling11.wav' |
@@ -809,7 +921,7 @@ export type SpaceIcon =
     'Falling Sounds/sfx_sounds_falling7.wav' |
     'Falling Sounds/sfx_sounds_falling8.wav' |
     'Falling Sounds/sfx_sounds_falling9.wav' |
-    
+
     'Footsteps/sfx_movement_footsteps1a.wav' |
     'Footsteps/sfx_movement_footsteps1b.wav' |
     'Footsteps/sfx_movement_footsteps5.wav' |
@@ -817,7 +929,7 @@ export type SpaceIcon =
     'Footsteps/sfx_movement_footstepsloop3_slow.wav' |
     'Footsteps/sfx_movement_footstepsloop4_fast.wav' |
     'Footsteps/sfx_movement_footstepsloop4_slow.wav' |
-    
+
     'Jumping and Landing/sfx_movement_jump1.wav' |
     'Jumping and Landing/sfx_movement_jump10.wav' |
     'Jumping and Landing/sfx_movement_jump10_landing.wav' |
@@ -849,19 +961,19 @@ export type SpaceIcon =
     'Jumping and Landing/sfx_movement_jump8.wav' |
     'Jumping and Landing/sfx_movement_jump9.wav' |
     'Jumping and Landing/sfx_movement_jump9_landing.wav' |
-    
+
     'Opening Doors/sfx_movement_dooropen1.wav' |
     'Opening Doors/sfx_movement_dooropen2.wav' |
     'Opening Doors/sfx_movement_dooropen3.wav' |
     'Opening Doors/sfx_movement_dooropen4.wav' |
-    
+
     'Portals and Transitions/sfx_movement_portal1.wav' |
     'Portals and Transitions/sfx_movement_portal2.wav' |
     'Portals and Transitions/sfx_movement_portal3.wav' |
     'Portals and Transitions/sfx_movement_portal4.wav' |
     'Portals and Transitions/sfx_movement_portal5.wav' |
     'Portals and Transitions/sfx_movement_portal6.wav' |
-    
+
     'Vehicles/sfx_vehicle_breaks.wav' |
     'Vehicles/sfx_vehicle_carloop1.wav' |
     'Vehicles/sfx_vehicle_carloop2.wav' |
@@ -871,18 +983,18 @@ export type SpaceIcon =
     'Vehicles/sfx_vehicle_helicopterloop3.wav' |
     'Vehicles/sfx_vehicle_helicopterloop4.wav' |
     'Vehicles/sfx_vehicle_plainloop.wav' |
-    
+
     'Cannon/sfx_wpn_cannon1.wav' |
     'Cannon/sfx_wpn_cannon2.wav' |
     'Cannon/sfx_wpn_cannon3.wav' |
     'Cannon/sfx_wpn_cannon4.wav' |
     'Cannon/sfx_wpn_cannon5.wav' |
     'Cannon/sfx_wpn_cannon6.wav' |
-    
+
     'Grenade Whistles/sfx_wpn_grenadewhistle1.wav' |
     'Grenade Whistles/sfx_wpn_grenadewhistle2.wav' |
     'Grenade Whistles/sfx_wpn_missilelaunch.wav' |
-    
+
     'Lasers/sfx_wpn_laser 10.wav' |
     'Lasers/sfx_wpn_laser1.wav' |
     'Lasers/sfx_wpn_laser10.wav' |
@@ -896,7 +1008,7 @@ export type SpaceIcon =
     'Lasers/sfx_wpn_laser7.wav' |
     'Lasers/sfx_wpn_laser8.wav' |
     'Lasers/sfx_wpn_laser9.wav' |
-    
+
     'Machinegun/sfx_wpn_machinegun_loop1.wav' |
     'Machinegun/sfx_wpn_machinegun_loop2.wav' |
     'Machinegun/sfx_wpn_machinegun_loop3.wav' |
@@ -906,7 +1018,7 @@ export type SpaceIcon =
     'Machinegun/sfx_wpn_machinegun_loop7.wav' |
     'Machinegun/sfx_wpn_machinegun_loop8.wav' |
     'Machinegun/sfx_wpn_machinegun_loop9.wav' |
-    
+
     'Melee/sfx_wpn_dagger.wav' |
     'Melee/sfx_wpn_punch1.wav' |
     'Melee/sfx_wpn_punch2.wav' |
@@ -915,16 +1027,16 @@ export type SpaceIcon =
     'Melee/sfx_wpn_sword1.wav' |
     'Melee/sfx_wpn_sword2.wav' |
     'Melee/sfx_wpn_sword3.wav' |
-    
+
     'Out of Ammo/sfx_wpn_noammo1.wav' |
     'Out of Ammo/sfx_wpn_noammo2.wav' |
     'Out of Ammo/sfx_wpn_noammo3.wav' |
     'Out of Ammo/sfx_wpn_reload.wav' |
-    
+
     'Shotgun/sfx_weapon_shotgun1.wav' |
     'Shotgun/sfx_weapon_shotgun2.wav' |
     'Shotgun/sfx_weapon_shotgun3.wav' |
-    
+
     'Single Shot Sounds/sfx_weapon_singleshot1.wav' |
     'Single Shot Sounds/sfx_weapon_singleshot10.wav' |
     'Single Shot Sounds/sfx_weapon_singleshot11.wav' |
@@ -946,8 +1058,8 @@ export type SpaceIcon =
     'Single Shot Sounds/sfx_weapon_singleshot6.wav' |
     'Single Shot Sounds/sfx_weapon_singleshot7.wav' |
     'Single Shot Sounds/sfx_weapon_singleshot8.wav' |
-    'Single Shot Sounds/sfx_weapon_singleshot9.wav' 
-    
+    'Single Shot Sounds/sfx_weapon_singleshot9.wav'
+
 
 
 
@@ -1123,7 +1235,7 @@ export type SpaceIcon =
 
  //// methods 
  /** Add transformations to this element. */
- addTransform(el:GeometryElement,transform:Transformation|Transformation[]): GeometryElement,
+ addTransform(transform:Transformation|Transformation[]): GeometryElement,
  /** Removes all ticks from a line or curve. */
  removeAllTicks(): Object,
  /** Get value of a parameter. If the parameter is a function, call the function and return its value. In that case, the function is called with the GeometryElement as (only) parameter. For label elements (i.e. if the attribute  */
@@ -1142,6 +1254,8 @@ export type SpaceIcon =
  addRotation(angle:number):void,
  /** Adds ticks to this line or curve. Ticks can be added to a curve or any kind of line: line, arrow, and axis. */
  addTicks(ticks:Ticks):string,
+ /** Add transformations to this element. */
+ addTransform(t:Transformation|Transformation[]):GeometryElement,
  /** Animates properties for that object like stroke or fill color, opacity and maybe even more later. */
  animate(hash:Object,time:number,options?:Object): GeometryElement,
  /** Dimensions of the smallest rectangle enclosing the element. */
@@ -1245,8 +1359,6 @@ export type SpaceIcon =
  //// methods 
  /** Convert the point to CAS point and call update(). */
  addConstraint(terms:any[]): CoordsElement,
- /** Add transformations to this element. */
- addTransform(el:GeometryElement,transform:Transformation|Transformation[]):GeometryElement,
  /** Getter method for coordinates x, y and (optional) z. */
  Coords(digits:number,withZ:Boolean):number[],
  /** Generic method to create point, text or image. Determines the type of the construction, i.e. free, or constrained by function, transformation or of glider type.  */
@@ -2095,6 +2207,16 @@ Exception: for type=7 size is ignoredhighlightSize: 6, // size of the arrow head
  coords: Object; 
 
  //// methods 
+ /** Async/Await Move a group through rotation, translation, scale.
+~~~js
+await g1.moveToES6({
+    translation: [2, 2],
+    rotation: Math.PI,
+    scale: 2,
+}, 5000)   // 5 seconds
+
+~~~ */
+ moveToES6(params:groupMoveParams, msec?: number): Promise<boolean>,
  /** Adds all points in a group to this group. */
  addGroup(group:Group): Group,
  /** Adds ids of elements to the array this.parents. This is a copy of {@link Element.addParents}. */
@@ -2122,7 +2244,7 @@ Exception: for type=7 size is ignoredhighlightSize: 6, // size of the arrow head
  /** Sets ids of elements to the array this.parents. This is a copy of {@link Element.setParents} First, this.parents is cleared. See {@link Group#addParents}. */
  setParents(parents:any[]): Object,
  /** Sets the center of rotation for the group. This is either a point or the centroid of the group. */
- setRotationCenter(object:Point|pointAddr|Function): Group,
+ setRotationCenter(object:Point|pointAddr): Group,
  /** Sets the rotation points of the group. Dragging at one of these points results into a rotation of the whole group around the rotation center of the group {@see JXG.Group#setRotationCenter}. */
  setRotationPoints(objects:Point|Point[]|pointAddr[]): Group,
  /** Sets the center of scaling for the group. This is either a point or the centroid of the group. */
@@ -3185,7 +3307,7 @@ It is sufficient to supply the first three characters of the unit, e.g. 'len'.
 
  //// methods 
  /** Add transformations to this line. */
- addTransform(el:GeometryElement,transform:Transformation|Transformation[]):GeometryElement,
+ addTransform(el:ParametricSurface3D,transform:Transformation|Transformation[]):GeometryElement,
 /** sets an arbitrary number of attributes for this ParametricSurface3D element*/  // inserted in writewrapper()
                         setAttribute(attrs: ParametricSurface3DAttributes):void,
  }
@@ -4732,7 +4854,7 @@ Statistics :{
 
 //////////////////////////////////////////////////////////////
 
-
+/** param types for call to Group.moveES6() */
 
 
 
@@ -4878,6 +5000,8 @@ export class TSXBoard {
 
 
 
+        
+
         // create the board
 
         this._jBoard = (window as any).JXG.JSXGraph.initBoard(canvas, attributes)
@@ -4906,506 +5030,522 @@ export class TSXBoard {
 
 
 
-        //create the 3D view
+        if (!Object.hasOwn(attributes, '2DONLY')) {   // a little hack for speed
 
-        this._jView3d = (this._jBoard as any).create('view3d',
+            //create the 3D view
 
-            [[bounding[0], bounding[3]],
+            this._jView3d = (this._jBoard as any).create('view3d',
 
-            [Math.abs(bounding[2] - bounding[0]), Math.abs(bounding[3] - bounding[1])],
+                [[bounding[0], bounding[3]],
 
-            // [box, box, box]] same size of the bounding box
+                [Math.abs(bounding[2] - bounding[0]), Math.abs(bounding[3] - bounding[1])],
 
-            [[bounding[0], bounding[2]], [bounding[3], bounding[1]], [bounding[0], bounding[2]]]],  // just guessing at z axis
+                // [box, box, box]] same size of the bounding box
 
-            {
+                [[bounding[0], bounding[2]], [bounding[3], bounding[1]], [bounding[0], bounding[2]]]],  // just guessing at z axis
 
-                axes3d: 'none',
+                {
 
-                projection: 'central',
+                    axes3d: 'none',
 
-                // projection: 'parallel',
+                    projection: 'central',
 
-                pan: { enabled: false },
+                    // projection: 'parallel',
 
-                trackball: { enabled: true },
+                    pan: { enabled: false },
 
-                axesPosition: ap,
+                    trackball: { enabled: true },
 
-                depthOrder: {
+                    axesPosition: ap,
 
-                    enabled: true,
+                    depthOrder: {
 
-                },
+                        enabled: true,
 
-                depthOrderPoints: true,
+                    },
 
-                xPlaneFront: { visible: false },
+                    depthOrderPoints: true,
 
-                yPlaneFront: { visible: false },
+                    xPlaneFront: { visible: false },
 
-                zPlaneFront: { visible: false },
+                    yPlaneFront: { visible: false },
 
-                xPlaneRear: { visible: false },
+                    zPlaneFront: { visible: false },
 
-                yPlaneRear: { visible: false },
+                    xPlaneRear: { visible: false },
 
-                zPlaneRear: { visible: false },
+                    yPlaneRear: { visible: false },
 
-                // note: keyboard requires jxgbox div to contain tabindex='0' directive
+                    zPlaneRear: { visible: false },
 
-                az: { pointer: { enabled: false }, keyboard: { enabled: true, key: 'none' } },
+                    // note: keyboard requires jxgbox div to contain tabindex='0' directive
 
-                el: { pointer: { enabled: false }, keyboard: { enabled: true, key: 'none' } },
+                    az: { pointer: { enabled: false }, keyboard: { enabled: true, key: 'none' } },
 
+                    el: { pointer: { enabled: false }, keyboard: { enabled: true, key: 'none' } },
 
 
-            });
 
+                });
 
+            }else{
 
-        // (this._jView3d as any).setView(Math.PI, Math.PI / 2, 0);
-
-
-
-
-
-        // /** set Katex as default for board (names, labels, everything).  useKatex() need only be set ONCE, no way to unset. the text element has a 'useKatex' attribute that lets you turn Katex on and off for individual text fields.
-
-        // * ```js
-
-        // *     TSX.useKatex()
-
-        // * ```
-
-        // */
-
-        // static useKatex(){
-
-        //     (window as any).JXG.Options.text.useKatex = true;
-
-        // }
-
-
-
-    }
-
-
-
-
-
-
-
-    /** test for empty object {} */
-
-    isEmptyObject(obj: Object): Boolean {
-
-        for (let _var in obj) return false;  // if there is a property, it is not empty (doesn't work for dates, etc)
-
-        return true;
-
-    }
-
-
-
-
-
-
-
-    // utility to appy default attributes
-
-    defaultAttributes(attrs: Object = {}) {
-
-
-
-        for (const property in this.defaultAttrs) {
-
-            if (!attrs.hasOwnProperty(property)) {   // if the user has not specified a value for this property
-
-                (attrs as any)[property] = (this.defaultAttrs as any)[property]
+                this._jView3d = {};
 
             }
 
-        }
-
-        return attrs
-
-    }
+        
 
 
 
-    // utility to determine if last parameter is the attributes
-
-    isAttribute(last: any): Boolean {
-
-        return ((typeof last == 'object') &&     // must be an object
-
-            (!Array.isArray(last)) &&     // not an array (typeof treats arrays as objects)
-
-            (last !== null) &&     // null returns type 'object' - javascript bug
-
-            ('elType' in last === false))              // if has elType then a JSXGraph object
-
-    }
+    // (this._jView3d as any).setView(Math.PI, Math.PI / 2, 0);
 
 
 
 
 
+    // /** set Katex as default for board (names, labels, everything).  useKatex() need only be set ONCE, no way to unset. the text element has a 'useKatex' attribute that lets you turn Katex on and off for individual text fields.
 
+    // * ```js
 
+    // *     TSX.useKatex()
 
+    // * ```
 
+    // */
 
+    // static useKatex(){
 
-
-
-    // /** legacy create for 2D and 3D elements.  Always TSX.create() */
-
-    // create(element: string, params: any[], attributes: Object = {}) {
-
-    //     if (element.toLowerCase().includes('3d'))    // 3D";
-
-    //         return (this._jView3d as any).create(element, params, attributes);
-
-    //     else
-
-    //         return (this._jBoard as any).create(element, params, attributes);
+    //     (window as any).JXG.Options.text.useKatex = true;
 
     // }
 
 
 
-
-
-    Print(...args: any[]) {
-
-        let bbox = (this._jBoard as any).getBoundingBox()   // get every time, in case setBoundingBox()
-
-        let left = bbox[0] // align x to left border
-
-        let lineHeight = (bbox[1] - bbox[3]) / 20  //
-
-        let top = bbox[1] - (2 * lineHeight) - (this.printLineNumber * lineHeight)  // align y to top border
-
-        let first = true
+}
 
 
 
-        let stringify = (value: unknown): string => {
-
-            let trimmer = (val: string) => {
-
-                let maxLength = args.length == 1 ? 60 : 30;  // longer if only a single param
-
-                return val.length <= maxLength ? val : val.slice(0, maxLength) + "..."
-
-            }
-
-            if (value === undefined) { return "undefined" }
-
-            if (value === null || Array.isArray(value) || typeof value === 'object' || typeof value === 'boolean') {
-
-                return trimmer(JSON.stringify(value))
-
-            }
-
-            if (typeof value === 'function') {
-
-                return trimmer(value + value.toString());
-
-            }
-
-            if (typeof value === "string") return trimmer(value);
 
 
 
-            if (Number.isNaN(value as number)) return "NaN";
 
-            if (value === Infinity || value === -Infinity) return 'Infinity'
+/** test for empty object {} */
 
-            if (typeof value === "number") return trimmer(value.toFixed(2));
+isEmptyObject(obj: Object): Boolean {
+
+    for (let _var in obj) return false;  // if there is a property, it is not empty (doesn't work for dates, etc)
+
+    return true;
+
+}
 
 
 
-            if (typeof value === 'symbol' || typeof value === 'bigint') return trimmer(value.toString())
 
-            return 'unknown ' + typeof value + trimmer(value.toString())
+
+
+
+// utility to appy default attributes
+
+defaultAttributes(attrs: Object = {}) {
+
+
+
+    for (const property in this.defaultAttrs) {
+
+        if (!attrs.hasOwnProperty(property)) {   // if the user has not specified a value for this property
+
+            (attrs as any)[property] = (this.defaultAttrs as any)[property]
 
         }
 
-
-
-        let stringText = ''
-
-        args.forEach((argn) => {
-
-            if (!first) stringText += ',     '
-
-            stringText += stringify(argn).replaceAll(' ', '&nbsp;')   // JSXGraph will trim leading spaces, we don't want that
-
-            first = false
-
-        });
-
-
-
-        (this._jBoard as any).create('text', [left, top, stringText], { fontSize: 10, strokeColor: 'blue', fontUnits: 'EM' })
-
-        this.printLineNumber += 1
-
     }
 
+    return attrs
 
+}
 
-    /** The circle that is the intersection of two elements (plane3d or sphere3d) in 3D. */
 
-    Audio(url: Sounds): HTMLAudioElement
 
-    Audio(url: string): HTMLAudioElement
+// utility to determine if last parameter is the attributes
 
-    Audio(a: any) {
+isAttribute(last: any): Boolean {
 
-        return (new Audio('sounds/'+a))  // prefix into correct directory
+    return ((typeof last == 'object') &&     // must be an object
 
-    }
+        (!Array.isArray(last)) &&     // not an array (typeof treats arrays as objects)
 
+        (last !== null) &&     // null returns type 'object' - javascript bug
 
+        ('elType' in last === false))              // if has elType then a JSXGraph object
 
+}
 
 
 
 
 
 
-    /** Set the bounding box of the board.  Returns the board.
 
-    ```js
 
-    TSX.board.setBoundingBox([-8, 8, 8, -8])
 
-    ```*/
 
 
 
 
+// /** legacy create for 2D and 3D elements.  Always TSX.create() */
 
-    /** Use MathJax by default. PUT THIS AT THE VERY TOP OF YOUR PROGRAM.  See: {@link https://math.meta.stackexchange.com/questions/5020/mathjax-basic-tutorial-and-quick-reference}
+// create(element: string, params: any[], attributes: Object = {}) {
 
-     * ```js
+//     if (element.toLowerCase().includes('3d'))    // 3D";
 
-     * TSX.board.useMathJax()  // only needed once
+//         return (this._jView3d as any).create(element, params, attributes);
 
-     * let a = TSX.point([-3, 3], { size: 4, color: 'blue', name: '\\(\\overrightarrow{a}\\)', fixed: true, label: { fontSize: 20 } });
+//     else
 
-     *```
+//         return (this._jBoard as any).create(element, params, attributes);
 
-     */
+// }
 
-    useMathJax() { (window as any).JXG.Options.text.useMathJax = true } // by default MathJax is true
 
 
 
 
+Print(...args: any[]) {
 
-    /** sets the projection to parallel or perspective.  Possible values are 'centeral' or 'parallel'. */
+    let bbox = (this._jBoard as any).getBoundingBox()   // get every time, in case setBoundingBox()
 
-    projection3D(setting: 'parallel' | 'central') { (this._jView3d as any).setAttribute({ 'projection': setting }) }
+    let left = bbox[0] // align x to left border
 
+    let lineHeight = (bbox[1] - bbox[3]) / 20  //
 
+    let top = bbox[1] - (2 * lineHeight) - (this.printLineNumber * lineHeight)  // align y to top border
 
-    // /** Adds an animation.*/
+    let first = true
 
-    // addAnimation(element:GeometryElement) => (this._jBoard as any).addAnimation(element),
 
 
+    let stringify = (value: unknown): string => {
 
-    /** Add the default x- and y-axis and grid to the construction,, equivalent to using the code below.
+        let trimmer = (val: string) => {
 
-     * ```js
+            let maxLength = args.length == 1 ? 60 : 30;  // longer if only a single param
 
-     * TSX.axis([0,0],[1,0]);
-
-     * TSX.axis([0,0],[0,1]);
-
-     * ```
-
-     */
-
-    addAxis() {        // using _jsxBoard ensures board is created if necessary
-
-        this.xAxis = (this._jBoard as any).create('axis', [[0, 0], [1, 0]]);
-
-        this.yAxis = (this._jBoard as any).create('axis', [[0, 0], [0, 1]]);
-
-    }
-
-
-
-    /**  Set infobox visible / invisible. */
-
-    displayInfobox(val: Boolean) { (this._jBoard as any).displayInfobox(val) }
-
-
-
-
-
-
-
-    // animateAzimuth:()=> (this._jView3d as any).animateAzimuth(),
-
-
-
-    // worldToFocal(pWorld, homog)
-
-    // Map world coordinates to focal coordinates.
-
-
-
-
-
-    /** Sets an arbitrary number of attributes.  Use an object with key-value pairs.
-
-     * ```js
-
-     * TSX.board.setAttribute({axis:true});    // turn on the default axis
-
-     * ```
-
-     */
-
-    // setAttribute(attr: BoardAttributes) => {
-
-    //     initBoard();
-
-    //     _jsxBoard().setAttribute(attr);
-
-    //     _jsxBoard().update()
-
-    // },
-
-
-
-    /** Zooms into the board by the factors board.attr.zoom.factorX and board.attr.zoom.factorY
-
-     * and applies the zoom. The zoom operation is centered at x, y. */
-
-    zoomIn(x: number, y: number) { return (this._jBoard as any).zoomIn(x, y) }
-
-
-
-    /** Zooms out of the board by the factors board.attr.zoom.factorX and board.attr.zoom.factorY and applies the zoom.*/
-
-    zoomOut(x: number, y: number): any { return (this._jBoard as any).zoomOut(x, y) }
-
-
-
-    /** Sets the zoom level to fX resp fY.*/
-
-    setZoom(fX: number, fY: number): any { return (this._jBoard as any).setZoom(fX, fY) }
-
-
-
-    /** Reset the zoom level to the original zoom level from initBoard(); Additionally, if the board as been initialized with a boundingBox(which is the default ), restore the viewport to the original viewport during initialization.*/
-
-    zoom100(): any { return (this._jBoard as any).zoom100() }
-
-
-
-
-
-
-
-    ///////////////////////////////
-
-    //////////////////////////////
-
-    // bring in remainder from header3.txt
-
-    ///////////////////////////////
-
-    //////////////////////////////
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-    // these are on the JXG object, but we keep them here for simplicity
-
-
-
-    /** Set the bounding box of the board. */
-
-    setBoundingBox(box: number[], keepAspectRatio: Boolean = false, setZoom?: 'reset' | 'keep' | 'update'): Object { return (this._jBoard as any).setBoundingBox(box, keepAspectRatio, setZoom) }
-
-
-
-    /** Get the bounding box of the board. */
-
-    getBoundingBox(): number[] { return (this._jBoard as any).getBoundingBox() }
-
-
-
-    /** set Katex as default for board (names, labels, everything).  useKatex() need only be set ONCE, no way to unset. the text element has a 'useKatex' attribute that lets you turn Katex on and off for individual text fields. */
-
-    useKatex() { (window as any).JXG.Options.text.useKatex = true }
-
-
-
-    /** Add all possible event handlers to the board object that move objects, i.e. */
-
-    addEventHandlers(): any { return (this._jBoard as any).addEventHandlers() }
-
-
-
-    /**    Register keyboard event handlers. */
-
-    addKeyboardEventHandlers(): any { return (this._jBoard as any).addKeyboardEventHandlers() }
-
-
-
-    /** Adds a grid to the board according to the settings given in board.options. For more control, use the TSX.grid object.*/
-
-    addGrid(): any { return (this._jBoard as any).addGrid() }
-
-
-
-    /** Event handlers for the board (rather than for individual elements).
-
-    *```js
-
-    *    TSX.board.on('pointerdown',pointerDown)
-
-    *    //equivalent to:   addEventListener("pointerdown", pointerDown)
-
-    *```
-
-    */
-
-    on(event: string, handler: (e: Event) => void, context?: unknown): void {
-
-        // JSXGraph doesn't share keyboard events, but I want them
-
-        if (event == 'keypress' || event == 'keydown' || event == 'keyup') {
-
-            (window as any).document.addEventListener(event, handler)
-
-        } else {
-
-            (this._jBoard as any).on(event, handler, context)
+            return val.length <= maxLength ? val : val.slice(0, maxLength) + "..."
 
         }
 
+        if (value === undefined) { return "undefined" }
+
+        if (value === null || Array.isArray(value) || typeof value === 'object' || typeof value === 'boolean') {
+
+            return trimmer(JSON.stringify(value))
+
+        }
+
+        if (typeof value === 'function') {
+
+            return trimmer(value + value.toString());
+
+        }
+
+        if (typeof value === "string") return trimmer(value);
+
+
+
+        if (Number.isNaN(value as number)) return "NaN";
+
+        if (value === Infinity || value === -Infinity) return 'Infinity'
+
+        if (typeof value === "number") return trimmer(value.toFixed(2));
+
+
+
+        if (typeof value === 'symbol' || typeof value === 'bigint') return trimmer(value.toString())
+
+        return 'unknown ' + typeof value + trimmer(value.toString())
+
+    }
+
+
+
+    let stringText = ''
+
+    args.forEach((argn) => {
+
+        if (!first) stringText += ',     '
+
+        stringText += stringify(argn).replaceAll(' ', '&nbsp;')   // JSXGraph will trim leading spaces, we don't want that
+
+        first = false
+
+    });
+
+
+
+    (this._jBoard as any).create('text', [left, top, stringText], { fontSize: 10, strokeColor: 'blue', fontUnits: 'EM' })
+
+    this.printLineNumber += 1
+
+}
+
+
+
+/** The circle that is the intersection of two elements (plane3d or sphere3d) in 3D. */
+
+Audio(url: Sounds): HTMLAudioElement
+
+Audio(url: string): HTMLAudioElement
+
+Audio(a: any) {
+
+    return (new Audio('sounds/' + a))  // prefix into correct directory
+
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+/** Set the bounding box of the board.  Returns the board.
+
+```js
+
+TSX.board.setBoundingBox([-8, 8, 8, -8])
+
+```*/
+
+
+
+
+
+/** Use MathJax by default. PUT THIS AT THE VERY TOP OF YOUR PROGRAM.  See: {@link https://math.meta.stackexchange.com/questions/5020/mathjax-basic-tutorial-and-quick-reference}
+
+ * ```js
+
+ * TSX.board.useMathJax()  // only needed once
+
+ * let a = TSX.point([-3, 3], { size: 4, color: 'blue', name: '\\(\\overrightarrow{a}\\)', fixed: true, label: { fontSize: 20 } });
+
+ *```
+
+ */
+
+useMathJax() { (window as any).JXG.Options.text.useMathJax = true } // by default MathJax is true
+
+
+
+
+
+/** sets the projection to parallel or perspective.  Possible values are 'centeral' or 'parallel'. */
+
+projection3D(setting: 'parallel' | 'central') { (this._jView3d as any).setAttribute({ 'projection': setting }) }
+
+
+
+// /** Adds an animation.*/
+
+// addAnimation(element:GeometryElement) => (this._jBoard as any).addAnimation(element),
+
+
+
+/** Add the default x- and y-axis and grid to the construction,, equivalent to using the code below.
+
+ * ```js
+
+ * TSX.axis([0,0],[1,0]);
+
+ * TSX.axis([0,0],[0,1]);
+
+ * ```
+
+ */
+
+addAxis() {        // using _jsxBoard ensures board is created if necessary
+
+    this.xAxis = (this._jBoard as any).create('axis', [[0, 0], [1, 0]]);
+
+    this.yAxis = (this._jBoard as any).create('axis', [[0, 0], [0, 1]]);
+
+}
+
+
+
+/**  Set infobox visible / invisible. */
+
+displayInfobox(val: Boolean) { (this._jBoard as any).displayInfobox(val) }
+
+
+
+
+
+
+
+// animateAzimuth:()=> (this._jView3d as any).animateAzimuth(),
+
+
+
+// worldToFocal(pWorld, homog)
+
+// Map world coordinates to focal coordinates.
+
+
+
+
+
+/** Sets an arbitrary number of attributes.  Use an object with key-value pairs.
+
+ * ```js
+
+ * TSX.board.setAttribute({axis:true});    // turn on the default axis
+
+ * ```
+
+ */
+
+// setAttribute(attr: BoardAttributes) => {
+
+//     initBoard();
+
+//     _jsxBoard().setAttribute(attr);
+
+//     _jsxBoard().update()
+
+// },
+
+
+
+/** Zooms into the board by the factors board.attr.zoom.factorX and board.attr.zoom.factorY
+
+ * and applies the zoom. The zoom operation is centered at x, y. */
+
+zoomIn(x: number, y: number) { return (this._jBoard as any).zoomIn(x, y) }
+
+
+
+/** Zooms out of the board by the factors board.attr.zoom.factorX and board.attr.zoom.factorY and applies the zoom.*/
+
+zoomOut(x: number, y: number): any { return (this._jBoard as any).zoomOut(x, y) }
+
+
+
+/** Sets the zoom level to fX resp fY.*/
+
+setZoom(fX: number, fY: number): any { return (this._jBoard as any).setZoom(fX, fY) }
+
+
+
+/** Reset the zoom level to the original zoom level from initBoard(); Additionally, if the board as been initialized with a boundingBox(which is the default ), restore the viewport to the original viewport during initialization.*/
+
+zoom100(): any { return (this._jBoard as any).zoom100() }
+
+
+
+
+
+
+
+///////////////////////////////
+
+//////////////////////////////
+
+// bring in remainder from header3.txt
+
+///////////////////////////////
+
+//////////////////////////////
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+// these are on the JXG object, but we keep them here for simplicity
+
+
+
+/** Set the bounding box of the board. */
+
+setBoundingBox(box: number[], keepAspectRatio: Boolean = false, setZoom ?: 'reset' | 'keep' | 'update'): Object { return (this._jBoard as any).setBoundingBox(box, keepAspectRatio, setZoom) }
+
+
+
+/** Get the bounding box of the board. */
+
+getBoundingBox(): number[] { return (this._jBoard as any).getBoundingBox() }
+
+
+
+/** set Katex as default for board (names, labels, everything).  useKatex() need only be set ONCE, no way to unset. the text element has a 'useKatex' attribute that lets you turn Katex on and off for individual text fields. */
+
+useKatex() { (window as any).JXG.Options.text.useKatex = true }
+
+
+
+/** Add all possible event handlers to the board object that move objects, i.e. */
+
+addEventHandlers(): any { return (this._jBoard as any).addEventHandlers() }
+
+
+
+/**    Register keyboard event handlers. */
+
+addKeyboardEventHandlers(): any { return (this._jBoard as any).addKeyboardEventHandlers() }
+
+
+
+/** Adds a grid to the board according to the settings given in board.options. For more control, use the TSX.grid object.*/
+
+addGrid(): any { return (this._jBoard as any).addGrid() }
+
+
+
+/** Event handlers for the board (rather than for individual elements).
+
+*```js
+
+*    TSX.board.on('pointerdown',pointerDown)
+
+*    //equivalent to:   addEventListener("pointerdown", pointerDown)
+
+*```
+
+*/
+
+on(event: string, handler: (e: Event) => void, context ?: unknown): void {
+
+    // JSXGraph doesn't share keyboard events, but I want them
+
+    if(event == 'keypress' || event == 'keydown' || event == 'keyup') {
+
+    (window as any).document.addEventListener(event, handler)
+
+} else {
+
+    (this._jBoard as any).on(event, handler, context)
+
+}
+
     }
 
 
@@ -5414,25 +5554,25 @@ export class TSXBoard {
 
 
 
-    /** given a PointerEvent (eg: TSX.on('down', (e:Event) ... ), returns the mouse coordinates [x,y] in JSXGraph coordinates.  */
+/** given a PointerEvent (eg: TSX.on('down', (e:Event) ... ), returns the mouse coordinates [x,y] in JSXGraph coordinates.  */
 
-    getMouseCoords(e: Event): number[] {
+getMouseCoords(e: Event): number[] {
 
-        let cPos = (this._jBoard as any).getCoordsTopLeftCorner(e)
+    let cPos = (this._jBoard as any).getCoordsTopLeftCorner(e)
 
-        let absPos = (window as any).JXG.getPosition(e)
+    let absPos = (window as any).JXG.getPosition(e)
 
-        let dx = absPos[0] - cPos[0]
+    let dx = absPos[0] - cPos[0]
 
-        let dy = absPos[1] - cPos[1]
+    let dy = absPos[1] - cPos[1]
 
 
 
-        let coords = new (window as any).JXG.Coords(2, [dx, dy], (this._jBoard as any));
+    let coords = new (window as any).JXG.Coords(2, [dx, dy], (this._jBoard as any));
 
-        return [coords.usrCoords[1], coords.usrCoords[2]]
+    return [coords.usrCoords[1], coords.usrCoords[2]]
 
-    }
+}
 
 
 
@@ -5446,651 +5586,651 @@ export class TSXBoard {
 
 
 
-    /** Add fullscreen events which update the CSS transformation matrix to correct the mouse/ touch / pointer positions in case of CSS transformations..*/
+/** Add fullscreen events which update the CSS transformation matrix to correct the mouse/ touch / pointer positions in case of CSS transformations..*/
 
-    addFullscreenEventHandlers(): any { return (this._jBoard as any).addFullscreenEventHandlers() }
+addFullscreenEventHandlers(): any { return (this._jBoard as any).addFullscreenEventHandlers() }
 
 
 
-    /** Add user activity to the array 'board.userLog'.*/
+/** Add user activity to the array 'board.userLog'.*/
 
-    addLogEntry(type: string, obj: Object, pos: number): any { return (this._jBoard as any).addLogEntry(type, obj, pos) }
+addLogEntry(type: string, obj: Object, pos: number): any { return (this._jBoard as any).addLogEntry(type, obj, pos) }
 
 
 
-    /** Registers mouse move, down and wheel event handlers.*/
+/** Registers mouse move, down and wheel event handlers.*/
 
-    addMouseEventHandlers(): any { return (this._jBoard as any).addMouseEventHandlers() }
+addMouseEventHandlers(): any { return (this._jBoard as any).addMouseEventHandlers() }
 
 
 
-    /** Registers pointer event handlers.*/
+/** Registers pointer event handlers.*/
 
-    addPointerEventHandlers(): any { return (this._jBoard as any).addPointerEventHandlers() }
+addPointerEventHandlers(): any { return (this._jBoard as any).addPointerEventHandlers() }
 
 
 
-    /** Add resize related event handlers*/
+/** Add resize related event handlers*/
 
-    addResizeEventHandlers(): any { return (this._jBoard as any).addResizeEventHandlers() }
+addResizeEventHandlers(): any { return (this._jBoard as any).addResizeEventHandlers() }
 
 
 
-    /** Register touch start and move and gesture start and change event handlers.*/
+/** Register touch start and move and gesture start and change event handlers.*/
 
-    addTouchEventHandlers(): any { return (this._jBoard as any).addTouchEventHandlers() }
+addTouchEventHandlers(): any { return (this._jBoard as any).addTouchEventHandlers() }
 
 
 
-    /** Registers pointer event handlers.*/
+/** Registers pointer event handlers.*/
 
-    addWheelEventHandlers(): any { return (this._jBoard as any).addWheelEventHandlers() }
+addWheelEventHandlers(): any { return (this._jBoard as any).addWheelEventHandlers() }
 
 
 
-    /** General purpose animation function.*/
+/** General purpose animation function.*/
 
-    animate(): any { return (this._jBoard as any).animate() }
+animate(): any { return (this._jBoard as any).animate() }
 
 
 
-    /** Apply update on all objects with the new zoom - factors.*/
+/** Apply update on all objects with the new zoom - factors.*/
 
-    applyZoom(): any { return (this._jBoard as any).applyZoom() }
+applyZoom(): any { return (this._jBoard as any).applyZoom() }
 
 
 
-    /** Calculates adequate snap sizes.*/
+/** Calculates adequate snap sizes.*/
 
-    calculateSnapSizes(): any { return (this._jBoard as any).calculateSnapSizes() }
+calculateSnapSizes(): any { return (this._jBoard as any).calculateSnapSizes() }
 
 
 
-    /** Delete the elements drawn as part of a trace of an element.*/
+/** Delete the elements drawn as part of a trace of an element.*/
 
-    clearTraces(): any { return (this._jBoard as any).clearTraces() }
+clearTraces(): any { return (this._jBoard as any).clearTraces() }
 
 
 
-    /** Handler for click on down arrow in the navigation bar*/
+/** Handler for click on down arrow in the navigation bar*/
 
-    clickDownArrow(): any { return (this._jBoard as any).clickDownArrow() }
+clickDownArrow(): any { return (this._jBoard as any).clickDownArrow() }
 
 
 
-    /** Handler for click on left arrow in the navigation bar*/
+/** Handler for click on left arrow in the navigation bar*/
 
-    clickLeftArrow(): any { return (this._jBoard as any).clickLeftArrow() }
+clickLeftArrow(): any { return (this._jBoard as any).clickLeftArrow() }
 
 
 
-    /** Handler for click on right arrow in the navigation bar*/
+/** Handler for click on right arrow in the navigation bar*/
 
-    clickRightArrow(): any { return (this._jBoard as any).clickRightArrow() }
+clickRightArrow(): any { return (this._jBoard as any).clickRightArrow() }
 
 
 
-    /** Handler for click on up arrow in the navigation bar*/
+/** Handler for click on up arrow in the navigation bar*/
 
-    clickUpArrow(): any { return (this._jBoard as any).clickUpArrow() }
+clickUpArrow(): any { return (this._jBoard as any).clickUpArrow() }
 
 
 
-    /** Creates a new geometric element of type elementType.*/   // NOTE: UPPER CASE Create  !!
+/** Creates a new geometric element of type elementType.*/   // NOTE: UPPER CASE Create  !!
 
-    create(elementType: string, parents: any[], attributes: Object = {}): any { return (this._jBoard as any).create(elementType, parents, attributes) }
+create(elementType: string, parents: any[], attributes: Object = {}): any { return (this._jBoard as any).create(elementType, parents, attributes) }
 
 
 
-    /** Deprecated name for JXG.Board.create.*/
+/** Deprecated name for JXG.Board.create.*/
 
-    createElement(): any { return (this._jBoard as any).createElement() }
+createElement(): any { return (this._jBoard as any).createElement() }
 
 
 
-    /** Function to animate a curve rolling on another curve.*/
+/** Function to animate a curve rolling on another curve.*/
 
-    createRoulette(c1: Object, c2: Object, start_c1: number, stepsize: number, direction: number, time: number, pointlist: Object[]): any { return (this._jBoard as any).createRoulette(c1, c2, start_c1, stepsize, direction, time, pointlist) }
+createRoulette(c1: Object, c2: Object, start_c1: number, stepsize: number, direction: number, time: number, pointlist: Object[]): any { return (this._jBoard as any).createRoulette(c1, c2, start_c1, stepsize, direction, time, pointlist) }
 
 
 
-    /** Remove highlighting of all elements.*/
+/** Remove highlighting of all elements.*/
 
-    dehighlightAll(): any { return (this._jBoard as any).dehighlightAll() }
+dehighlightAll(): any { return (this._jBoard as any).dehighlightAll() }
 
 
 
-    /** Initializes color blindness simulation.*/
+/** Initializes color blindness simulation.*/
 
-    emulateColorblindness(deficiency: string): any { return (this._jBoard as any).emulateColorblindness(deficiency) }
+emulateColorblindness(deficiency: string): any { return (this._jBoard as any).emulateColorblindness(deficiency) }
 
 
 
-    /** After construction of the object the visibility is set and the label is constructed if necessary.*/
+/** After construction of the object the visibility is set and the label is constructed if necessary.*/
 
-    finalizeAdding(obj: Object): any { return (this._jBoard as any).finalizeAdding(obj) }
+finalizeAdding(obj: Object): any { return (this._jBoard as any).finalizeAdding(obj) }
 
 
 
-    /** If fullscreen mode is toggled, the possible CSS transformations which are applied to the JSXGraph canvas have to be reread.*/
+/** If fullscreen mode is toggled, the possible CSS transformations which are applied to the JSXGraph canvas have to be reread.*/
 
-    fullscreenListener(evt: Event): any { return (this._jBoard as any).fullscreenListener(evt) }
+fullscreenListener(evt: Event): any { return (this._jBoard as any).fullscreenListener(evt) }
 
 
 
-    /** Runs through all elements and calls their update() method and update the conditions.*/
+/** Runs through all elements and calls their update() method and update the conditions.*/
 
-    fullUpdate(): any { return (this._jBoard as any).fullUpdate() }
+fullUpdate(): any { return (this._jBoard as any).fullUpdate() }
 
 
 
-    /** Generates unique id for a board.*/
+/** Generates unique id for a board.*/
 
-    generateId(): any { return (this._jBoard as any).generateId() }
+generateId(): any { return (this._jBoard as any).generateId() }
 
 
 
-    /** Generates an unique name for the given object.*/
+/** Generates an unique name for the given object.*/
 
-    generateName(object: Object): any { return (this._jBoard as any).generateName(object) }
+generateName(object: Object): any { return (this._jBoard as any).generateName(object) }
 
 
 
-    /** Triggered on iOS / Safari while the user inputs a gesture(e.g.*/
+/** Triggered on iOS / Safari while the user inputs a gesture(e.g.*/
 
-    gestureChangeListener(evt: Event): any { return (this._jBoard as any).gestureChangeListener(evt) }
+gestureChangeListener(evt: Event): any { return (this._jBoard as any).gestureChangeListener(evt) }
 
 
 
-    /** Called by iOS / Safari as soon as the user starts a gesture.*/
+/** Called by iOS / Safari as soon as the user starts a gesture.*/
 
-    gestureStartListener(evt: Event): any { return (this._jBoard as any).gestureStartListener(evt) }
+gestureStartListener(evt: Event): any { return (this._jBoard as any).gestureStartListener(evt) }
 
 
 
-    /** Collects all elements under current mouse position.*/
+/** Collects all elements under current mouse position.*/
 
-    getAllObjectsUnderMouse(evt: Event): any { return (this._jBoard as any).getAllObjectsUnderMouse(evt) }
+getAllObjectsUnderMouse(evt: Event): any { return (this._jBoard as any).getAllObjectsUnderMouse(evt) }
 
 
 
-    /** Collects all elements under current mouse position plus current user coordinates of mouse cursor.*/
+/** Collects all elements under current mouse position plus current user coordinates of mouse cursor.*/
 
-    getAllUnderMouse(evt: Event): any { return (this._jBoard as any).getAllUnderMouse(evt) }
+getAllUnderMouse(evt: Event): any { return (this._jBoard as any).getAllUnderMouse(evt) }
 
 
 
-    /** Calculates mouse coordinates relative to the boards container.*/
+/** Calculates mouse coordinates relative to the boards container.*/
 
-    getCoordsTopLeftCorner(): any { return (this._jBoard as any).getCoordsTopLeftCorner() }
+getCoordsTopLeftCorner(): any { return (this._jBoard as any).getCoordsTopLeftCorner() }
 
 
 
-    /** Get the position of the pointing device in screen coordinates, relative to the upper left corner of the host tag.*/
+/** Get the position of the pointing device in screen coordinates, relative to the upper left corner of the host tag.*/
 
-    getMousePosition(e: Event, i: number): any { return (this._jBoard as any).getMousePosition(e, i) }
+getMousePosition(e: Event, i: number): any { return (this._jBoard as any).getMousePosition(e, i) }
 
 
 
-    /** This method calculates the user coords of the current mouse coordinates.*/
+/** This method calculates the user coords of the current mouse coordinates.*/
 
-    getUsrCoordsOfMouse(evt: Event): any { return (this._jBoard as any).getUsrCoordsOfMouse(evt) }
+getUsrCoordsOfMouse(evt: Event): any { return (this._jBoard as any).getUsrCoordsOfMouse(evt) }
 
 
 
-    /** Checks if the given point is inside the boundingbox.*/
+/** Checks if the given point is inside the boundingbox.*/
 
-    hasPoint(x: number, y: number): any { return (this._jBoard as any).hasPoint(x, y) }
+hasPoint(x: number, y: number): any { return (this._jBoard as any).hasPoint(x, y) }
 
 
 
-    /** Changes the text of the info box to what is provided via text.*/
+/** Changes the text of the info box to what is provided via text.*/
 
-    highlightCustomInfobox(text: string, el: Object): any { return (this._jBoard as any).highlightCustomInfobox(text, el) }
+highlightCustomInfobox(text: string, el: Object): any { return (this._jBoard as any).highlightCustomInfobox(text, el) }
 
 
 
-    /** Changes the text of the info box to show the given coordinates.*/
+/** Changes the text of the info box to show the given coordinates.*/
 
-    highlightInfobox(x: number, y: number, el?: Object): any { return (this._jBoard as any).highlightInfobox(x, y, el) }
+highlightInfobox(x: number, y: number, el ?: Object): any { return (this._jBoard as any).highlightInfobox(x, y, el) }
 
 
 
-    /** Initialize some objects which are contained in every GEONExT construction by default, but are not contained in the gxt files.*/
+/** Initialize some objects which are contained in every GEONExT construction by default, but are not contained in the gxt files.*/
 
-    initGeonextBoard(): any { return (this._jBoard as any).initGeonextBoard() }
+initGeonextBoard(): any { return (this._jBoard as any).initGeonextBoard() }
 
 
 
-    /** Initialize the info box object which is used to display the coordinates of points near the mouse pointer,*/
+/** Initialize the info box object which is used to display the coordinates of points near the mouse pointer,*/
 
-    initInfobox(attributes: Object): any { return (this._jBoard as any).initInfobox(attributes) }
+initInfobox(attributes: Object): any { return (this._jBoard as any).initInfobox(attributes) }
 
 
 
-    /** Collects all elements below the current mouse pointer and fulfilling the following constraints: isDraggable, visible, not fixed, not frozen*/
+/** Collects all elements below the current mouse pointer and fulfilling the following constraints: isDraggable, visible, not fixed, not frozen*/
 
-    initMoveObject(x: number, y: number, evt: Event, type: string): any { return (this._jBoard as any).initMoveObject(x, y, evt, type) }
+initMoveObject(x: number, y: number, evt: Event, type: string): any { return (this._jBoard as any).initMoveObject(x, y, evt, type) }
 
 
 
-    /** Initiate moving the origin.. This is used in mouseDown and touchStart listeners. */
+/** Initiate moving the origin.. This is used in mouseDown and touchStart listeners. */
 
-    initMoveOrigin(x: number, y: number): any { return (this._jBoard as any).initMoveOrigin(x, y) }
+initMoveOrigin(x: number, y: number): any { return (this._jBoard as any).initMoveOrigin(x, y) }
 
 
 
-    /** Allow moving of JSXGraph elements with arrow keys.*/
+/** Allow moving of JSXGraph elements with arrow keys.*/
 
-    keyDownListener(evt: Event): any { return (this._jBoard as any).keyDownListener(evt) }
+keyDownListener(evt: Event): any { return (this._jBoard as any).keyDownListener(evt) }
 
 
 
-    /** Event listener for SVG elements getting focus.*/
+/** Event listener for SVG elements getting focus.*/
 
-    keyFocusInListener(evt: Event): any { return (this._jBoard as any).keyFocusInListener(evt) }
+keyFocusInListener(evt: Event): any { return (this._jBoard as any).keyFocusInListener(evt) }
 
 
 
-    /** Event listener for SVG elements losing focus.*/
+/** Event listener for SVG elements losing focus.*/
 
-    keyFocusOutListener(evt: Event): any { return (this._jBoard as any).keyFocusOutListener(evt) }
+keyFocusOutListener(evt: Event): any { return (this._jBoard as any).keyFocusOutListener(evt) }
 
 
 
-    /** Migrate the dependency properties of the point src to the point dest and delete the point src.*/
+/** Migrate the dependency properties of the point src to the point dest and delete the point src.*/
 
-    migratePoint(src: Object, dest: Object, copyName: string): any { return (this._jBoard as any).migratePoint(src, dest, copyName) }
+migratePoint(src: Object, dest: Object, copyName: string): any { return (this._jBoard as any).migratePoint(src, dest, copyName) }
 
 
 
-    /** This method is called by the browser when the mouse device clicks on the screen.*/
+/** This method is called by the browser when the mouse device clicks on the screen.*/
 
-    mouseClickListener(evt: Event): any { return (this._jBoard as any).mouseClickListener(evt) }
+mouseClickListener(evt: Event): any { return (this._jBoard as any).mouseClickListener(evt) }
 
 
 
-    /** This method is called by the browser when the mouse device double clicks on the screen.*/
+/** This method is called by the browser when the mouse device double clicks on the screen.*/
 
-    mouseDblClickListener(evt: Event): any { return (this._jBoard as any).mouseDblClickListener(evt) }
+mouseDblClickListener(evt: Event): any { return (this._jBoard as any).mouseDblClickListener(evt) }
 
 
 
-    /** This method is called by the browser when the mouse button is clicked.*/
+/** This method is called by the browser when the mouse button is clicked.*/
 
-    mouseDownListener(evt: Event): any { return (this._jBoard as any).mouseDownListener(evt) }
+mouseDownListener(evt: Event): any { return (this._jBoard as any).mouseDownListener(evt) }
 
 
 
-    /** This method is called by the browser when the mouse is moved.*/
+/** This method is called by the browser when the mouse is moved.*/
 
-    mouseMoveListener(evt: Event): any { return (this._jBoard as any).mouseMoveListener(evt) }
+mouseMoveListener(evt: Event): any { return (this._jBoard as any).mouseMoveListener(evt) }
 
 
 
-    /** This method is called by the browser when the mouse button is released.*/
+/** This method is called by the browser when the mouse button is released.*/
 
-    mouseUpListener(evt: Event): any { return (this._jBoard as any).mouseUpListener(evt) }
+mouseUpListener(evt: Event): any { return (this._jBoard as any).mouseUpListener(evt) }
 
 
 
-    /** Handler for mouse wheel events.*/
+/** Handler for mouse wheel events.*/
 
-    mouseWheelListener(evt: Event): any { return (this._jBoard as any).mouseWheelListener(evt) }
+mouseWheelListener(evt: Event): any { return (this._jBoard as any).mouseWheelListener(evt) }
 
 
 
-    /** Moves an object.*/
+/** Moves an object.*/
 
-    moveObject(x: number, y: number, o: Object, evt: Event, type: string): any { return (this._jBoard as any).moveObject(x, y, o, evt, type) }
+moveObject(x: number, y: number, o: Object, evt: Event, type: string): any { return (this._jBoard as any).moveObject(x, y, o, evt, type) }
 
 
 
-    /** Moves the origin and initializes an update of all elements.*/
+/** Moves the origin and initializes an update of all elements.*/
 
-    moveOrigin(x: number, y: number): any { return (this._jBoard as any).moveOrigin(x, y) }
+moveOrigin(x: number, y: number): any { return (this._jBoard as any).moveOrigin(x, y) }
 
 
 
-    /** This method is called by the browser when a pointer device clicks on the screen. */
+/** This method is called by the browser when a pointer device clicks on the screen. */
 
-    pointerClickListener(evt: Event): any { return (this._jBoard as any).pointerClickListener(evt) }
+pointerClickListener(evt: Event): any { return (this._jBoard as any).pointerClickListener(evt) }
 
 
 
-    /**     This method is called by the browser when a pointer device double clicks on the screen.*/
+/**     This method is called by the browser when a pointer device double clicks on the screen.*/
 
-    pointerDblClickListener(evt: Event): any { return (this._jBoard as any).pointerDblClickListener(evt) }
+pointerDblClickListener(evt: Event): any { return (this._jBoard as any).pointerDblClickListener(evt) }
 
 
 
-    /** This method is called by the browser when a pointing device is pressed on the screen.*/
+/** This method is called by the browser when a pointing device is pressed on the screen.*/
 
-    pointerDownListener(evt: Event, object: Object, allowDefaultEventHandling: Boolean): any { return (this._jBoard as any).pointerDownListener(evt, object, allowDefaultEventHandling) }
+pointerDownListener(evt: Event, object: Object, allowDefaultEventHandling: Boolean): any { return (this._jBoard as any).pointerDownListener(evt, object, allowDefaultEventHandling) }
 
 
 
-    /** Triggered by the pointerleave event.*/
+/** Triggered by the pointerleave event.*/
 
-    pointerLeaveListener(evt: Event): any { return (this._jBoard as any).pointerLeaveListener(evt) }
+pointerLeaveListener(evt: Event): any { return (this._jBoard as any).pointerLeaveListener(evt) }
 
 
 
-    /** Called periodically by the browser while the user moves a pointing device across the screen.*/
+/** Called periodically by the browser while the user moves a pointing device across the screen.*/
 
-    pointerMoveListener(evt: Event): any { return (this._jBoard as any).pointerMoveListener(evt) }
+pointerMoveListener(evt: Event): any { return (this._jBoard as any).pointerMoveListener(evt) }
 
 
 
-    /** Triggered as soon as the user stops touching the device with at least one finger.*/
+/** Triggered as soon as the user stops touching the device with at least one finger.*/
 
-    pointerUpListener(evt: Event): any { return (this._jBoard as any).pointerUpListener(evt) }
+pointerUpListener(evt: Event): any { return (this._jBoard as any).pointerUpListener(evt) }
 
 
 
-    /** Sets for all objects the needsUpdate flag to 'true'.*/
+/** Sets for all objects the needsUpdate flag to 'true'.*/
 
-    prepareUpdate(drag: Object): any { return (this._jBoard as any).prepareUpdate(drag) }
+prepareUpdate(drag: Object): any { return (this._jBoard as any).prepareUpdate(drag) }
 
 
 
-    /** Update the container before and after printing.*/
+/** Update the container before and after printing.*/
 
-    printListener(evt: Event): any { return (this._jBoard as any).printListener(evt) }
+printListener(evt: Event): any { return (this._jBoard as any).printListener(evt) }
 
 
 
-    /** Wrapper for printListener to be used in mediaQuery matches.*/
+/** Wrapper for printListener to be used in mediaQuery matches.*/
 
-    printListenerMatch(mql: any): any { return (this._jBoard as any).printListenerMatch(mql) }
+printListenerMatch(mql: any): any { return (this._jBoard as any).printListenerMatch(mql) }
 
 
 
-    /** Removes the ancestors of an object an the object itself from board and renderer.*/
+/** Removes the ancestors of an object an the object itself from board and renderer.*/
 
-    removeAncestors(object: Object): any { return (this._jBoard as any).removeAncestors(object) }
+removeAncestors(object: Object): any { return (this._jBoard as any).removeAncestors(object) }
 
 
 
-    /** Deletes a board from the list of dependent boards.*/
+/** Deletes a board from the list of dependent boards.*/
 
-    removeChild(): any { return (this._jBoard as any).removeChild(this._jBoard) }
+removeChild(): any { return (this._jBoard as any).removeChild(this._jBoard) }
 
 
 
-    /** Remove all event handlers from the board object*/
+/** Remove all event handlers from the board object*/
 
-    removeEventHandlers(): any { return (this._jBoard as any).removeEventHandlers() }
+removeEventHandlers(): any { return (this._jBoard as any).removeEventHandlers() }
 
 
 
-    /** Remove all registered event handlers regarding fullscreen mode.*/
+/** Remove all registered event handlers regarding fullscreen mode.*/
 
-    removeFullscreenEventHandlers(): any { return (this._jBoard as any).removeFullscreenEventHandlers() }
+removeFullscreenEventHandlers(): any { return (this._jBoard as any).removeFullscreenEventHandlers() }
 
 
 
-    /** Removes all grids assigned to this board.*/
+/** Removes all grids assigned to this board.*/
 
-    removeGrids(): any { return (this._jBoard as any).removeGrids() }
+removeGrids(): any { return (this._jBoard as any).removeGrids() }
 
 
 
-    /** Please use JXG.Board.off instead.*/
+/** Please use JXG.Board.off instead.*/
 
-    removeHook(id: string): any { return (this._jBoard as any).removeHook(id) }
+removeHook(id: string): any { return (this._jBoard as any).removeHook(id) }
 
 
 
-    /** Remove all registered touch event handlers.*/
+/** Remove all registered touch event handlers.*/
 
-    removeKeyboardEventHandlers(): any { return (this._jBoard as any).removeKeyboardEventHandlers() }
+removeKeyboardEventHandlers(): any { return (this._jBoard as any).removeKeyboardEventHandlers() }
 
 
 
-    /** De - register mouse event handlers.*/
+/** De - register mouse event handlers.*/
 
-    removeMouseEventHandlers(): any { return (this._jBoard as any).removeMouseEventHandlers() }
+removeMouseEventHandlers(): any { return (this._jBoard as any).removeMouseEventHandlers() }
 
 
 
-    /** Removes object from board and renderer.*/
+/** Removes object from board and renderer.*/
 
-    removeObject(object: any | any[], saveMethod?: Boolean): any { return (this._jBoard as any).removeObject(object, saveMethod) }
+removeObject(object: any | any[], saveMethod ?: Boolean): any { return (this._jBoard as any).removeObject(object, saveMethod) }
 
 
 
-    /** Remove MSPointer * Event handlers.*/
+/** Remove MSPointer * Event handlers.*/
 
-    removePointerEventHandlers(): any { return (this._jBoard as any).removePointerEventHandlers() }
+removePointerEventHandlers(): any { return (this._jBoard as any).removePointerEventHandlers() }
 
 
 
-    /** Remove resize related event handlers*/
+/** Remove resize related event handlers*/
 
-    removeResizeEventHandlers(): any { return (this._jBoard as any).removeResizeEventHandlers() }
+removeResizeEventHandlers(): any { return (this._jBoard as any).removeResizeEventHandlers() }
 
 
 
-    /** Remove all registered touch event handlers.*/
+/** Remove all registered touch event handlers.*/
 
-    removeTouchEventHandlers(): any { return (this._jBoard as any).removeTouchEventHandlers() }
+removeTouchEventHandlers(): any { return (this._jBoard as any).removeTouchEventHandlers() }
 
 
 
-    /** Change the height and width of the board's container.*/
+/** Change the height and width of the board's container.*/
 
-    resizeContainer(canvasWidth: number, canvasHeight: number, dontset: Boolean, dontSetBoundingBox: Boolean): any { return (this._jBoard as any).resizeContainer(canvasWidth, canvasHeight, dontset, dontSetBoundingBox) }
+resizeContainer(canvasWidth: number, canvasHeight: number, dontset: Boolean, dontSetBoundingBox: Boolean): any { return (this._jBoard as any).resizeContainer(canvasWidth, canvasHeight, dontset, dontSetBoundingBox) }
 
 
 
-    /** Fallback solutions if there is no resizeObserver available in the browser.*/
+/** Fallback solutions if there is no resizeObserver available in the browser.*/
 
-    resizeListener(): any { return (this._jBoard as any).resizeListener() }
+resizeListener(): any { return (this._jBoard as any).resizeListener() }
 
 
 
-    /** Listener to watch for scroll events.*/
+/** Listener to watch for scroll events.*/
 
-    scrollListener(evt: Event): any { return (this._jBoard as any).scrollListener(evt) }
+scrollListener(evt: Event): any { return (this._jBoard as any).scrollListener(evt) }
 
 
 
-    /** Select a single or multiple elements at once.*/
+/** Select a single or multiple elements at once.*/
 
-    select(str: string, onlyByIdOrName: Boolean): any { return (this._jBoard as any).select(str, onlyByIdOrName) }
+select(str: string, onlyByIdOrName: Boolean): any { return (this._jBoard as any).select(str, onlyByIdOrName) }
 
 
 
-    /** Sets an arbitrary number of attributes.*/
+/** Sets an arbitrary number of attributes.*/
 
-    setAttribute(attributes: BoardAttributes): any { return (this._jBoard as any).setAttribute(attributes) }
+setAttribute(attributes: BoardAttributes): any { return (this._jBoard as any).setAttribute(attributes) }
 
 
 
-    /** Composes an id for an element.*/
+/** Composes an id for an element.*/
 
-    setId(obj: Object, type: number): any { return (this._jBoard as any).setId(obj, type) }
+setId(obj: Object, type: number): any { return (this._jBoard as any).setId(obj, type) }
 
 
 
-    /** Lists the dependencies graph in a new HTML - window.*/
+/** Lists the dependencies graph in a new HTML - window.*/
 
-    showDependencies(): any { return (this._jBoard as any).showDependencies() }
+showDependencies(): any { return (this._jBoard as any).showDependencies() }
 
 
 
-    /** Lists the XML code of the construction in a new HTML - window.*/
+/** Lists the XML code of the construction in a new HTML - window.*/
 
-    showXML(): any { return (this._jBoard as any).showXML() }
+showXML(): any { return (this._jBoard as any).showXML() }
 
 
 
-    /** Watch for changes of the visibility of the JSXGraph container element.*/
+/** Watch for changes of the visibility of the JSXGraph container element.*/
 
-    startIntersectionObserver(): any { return (this._jBoard as any).startIntersectionObserver() }
+startIntersectionObserver(): any { return (this._jBoard as any).startIntersectionObserver() }
 
 
 
-    /** Start observer which reacts to size changes of the JSXGraph container div element.*/
+/** Start observer which reacts to size changes of the JSXGraph container div element.*/
 
-    startResizeObserver(): any { return (this._jBoard as any).startResizeObserver() }
+startResizeObserver(): any { return (this._jBoard as any).startResizeObserver() }
 
 
 
-    /** Start selection mode.*/
+/** Start selection mode.*/
 
-    startSelectionMode(): any { return (this._jBoard as any).startSelectionMode() }
+startSelectionMode(): any { return (this._jBoard as any).startSelectionMode() }
 
 
 
-    /** Cancels all running animations.*/
+/** Cancels all running animations.*/
 
-    stopAllAnimation(): any { return (this._jBoard as any).stopAllAnimation() }
+stopAllAnimation(): any { return (this._jBoard as any).stopAllAnimation() }
 
 
 
-    /** Stop the intersection observer*/
+/** Stop the intersection observer*/
 
-    stopIntersectionObserver(): any { return (this._jBoard as any).stopIntersectionObserver() }
+stopIntersectionObserver(): any { return (this._jBoard as any).stopIntersectionObserver() }
 
 
 
-    /** Stops the resize observer.*/
+/** Stops the resize observer.*/
 
-    stopResizeObserver(): any { return (this._jBoard as any).stopResizeObserver() }
+stopResizeObserver(): any { return (this._jBoard as any).stopResizeObserver() }
 
 
 
-    /** Finalize the selection: disable selection mode and return (this._jBoard as any). the coordinates of the selection rectangle.*/
+/** Finalize the selection: disable selection mode and return (this._jBoard as any). the coordinates of the selection rectangle.*/
 
-    stopSelectionMode(): any { return (this._jBoard as any).stopSelectionMode() }
+stopSelectionMode(): any { return (this._jBoard as any).stopSelectionMode() }
 
 
 
-    /** Suppresses the default event handling.*/
+/** Suppresses the default event handling.*/
 
-    suppressDefault(e: Event): any { return (this._jBoard as any).suppressDefault(e) }
+suppressDefault(e: Event): any { return (this._jBoard as any).suppressDefault(e) }
 
 
 
-    /** Stop updates of the board.*/
+/** Stop updates of the board.*/
 
-    suspendUpdate(): any { return (this._jBoard as any).suspendUpdate() }
+suspendUpdate(): any { return (this._jBoard as any).suspendUpdate() }
 
 
 
-    /** Expand the JSXGraph construction to fullscreen.*/
+/** Expand the JSXGraph construction to fullscreen.*/
 
-    toFullscreen(id: string): any { return (this._jBoard as any).toFullscreen(id) }
+toFullscreen(id: string): any { return (this._jBoard as any).toFullscreen(id) }
 
 
 
-    /** Triggered as soon as the user stops touching the device with at least one finger.*/
+/** Triggered as soon as the user stops touching the device with at least one finger.*/
 
-    touchEndListener(evt: Event): any { return (this._jBoard as any).touchEndListener(evt) }
+touchEndListener(evt: Event): any { return (this._jBoard as any).touchEndListener(evt) }
 
 
 
-    /** Called periodically by the browser while the user moves his fingers across the device.*/
+/** Called periodically by the browser while the user moves his fingers across the device.*/
 
-    touchMoveListener(evt: Event): any { return (this._jBoard as any).touchMoveListener(evt) }
+touchMoveListener(evt: Event): any { return (this._jBoard as any).touchMoveListener(evt) }
 
 
 
-    /** This method is called by the browser when a finger touches the surface of the touch - device.*/
+/** This method is called by the browser when a finger touches the surface of the touch - device.*/
 
-    touchStartListener(evt: Event): any { return (this._jBoard as any).touchStartListener(evt) }
+touchStartListener(evt: Event): any { return (this._jBoard as any).touchStartListener(evt) }
 
 
 
-    /** Moves elements in multitouch mode.*/
+/** Moves elements in multitouch mode.*/
 
-    twoFingerMove(p1: number[], p2: number[], o: Object, evt: Event): any { return (this._jBoard as any).twoFingerMove(p1, p2, o, evt) }
+twoFingerMove(p1: number[], p2: number[], o: Object, evt: Event): any { return (this._jBoard as any).twoFingerMove(p1, p2, o, evt) }
 
 
 
-    /** Moves, rotates and scales a line or polygon with two fingers.*/
+/** Moves, rotates and scales a line or polygon with two fingers.*/
 
-    twoFingerTouchObject(tar: number[], drag: Object, id: string): any { return (this._jBoard as any).twoFingerTouchObject(tar, drag, id) }
+twoFingerTouchObject(tar: number[], drag: Object, id: string): any { return (this._jBoard as any).twoFingerTouchObject(tar, drag, id) }
 
 
 
-    /** Enable updates of the board.*/
+/** Enable updates of the board.*/
 
-    unsuspendUpdate(): any { return (this._jBoard as any).unsuspendUpdate() }
+unsuspendUpdate(): any { return (this._jBoard as any).unsuspendUpdate() }
 
 
 
-    /** Runs through most elements and calls their update() method and update the conditions.*/
+/** Runs through most elements and calls their update() method and update the conditions.*/
 
-    update(drag?: Object): any { return (this._jBoard as any).update(drag) }
+update(drag ?: Object): any { return (this._jBoard as any).update(drag) }
 
 
 
-    /** updates conditions*/
+/** updates conditions*/
 
-    updateConditions(): any { return (this._jBoard as any).updateConditions() }
+updateConditions(): any { return (this._jBoard as any).updateConditions() }
 
-    /** Update the width and height of the JSXGraph container div element.*/
+/** Update the width and height of the JSXGraph container div element.*/
 
-    updateContainerDims(width: number, height: number): any { return (this._jBoard as any).updateContainerDims(width, height) }
+updateContainerDims(width: number, height: number): any { return (this._jBoard as any).updateContainerDims(width, height) }
 
 
 
-    /** Update the coords object of all elements which possess this property.*/
+/** Update the coords object of all elements which possess this property.*/
 
-    updateCoords(): any { return (this._jBoard as any).updateCoords() }
+updateCoords(): any { return (this._jBoard as any).updateCoords() }
 
 
 
-    /** Update CSS transformations of type scaling.*/
+/** Update CSS transformations of type scaling.*/
 
-    updateCSSTransforms(): any { return (this._jBoard as any).updateCSSTransforms() }
+updateCSSTransforms(): any { return (this._jBoard as any).updateCSSTransforms() }
 
 
 
-    /** Runs through all elements and calls their update() method.*/
+/** Runs through all elements and calls their update() method.*/
 
-    updateElements(drag?: Object): any { return (this._jBoard as any).updateElements(drag) }
+updateElements(drag ?: Object): any { return (this._jBoard as any).updateElements(drag) }
 
 
 
-    /** Runs through all hooked functions and calls them.*/
+/** Runs through all hooked functions and calls them.*/
 
-    updateHooks(m: any): any { return (this._jBoard as any).updateHooks(m) }
+updateHooks(m: any): any { return (this._jBoard as any).updateHooks(m) }
 
 
 
-    /** Updates and displays a little info box to show coordinates of current selected points.*/
+/** Updates and displays a little info box to show coordinates of current selected points.*/
 
-    updateInfobox(el: Object): any { return (this._jBoard as any).updateInfobox(el) }
+updateInfobox(el: Object): any { return (this._jBoard as any).updateInfobox(el) }
 
 
 
-    /** Runs through all elements and calls their update() method.*/
+/** Runs through all elements and calls their update() method.*/
 
-    updateRenderer(): any { return (this._jBoard as any).updateRenderer() }
+updateRenderer(): any { return (this._jBoard as any).updateRenderer() }
 
 
 
-    /** Runs through all elements and calls their update() method.*/
+/** Runs through all elements and calls their update() method.*/
 
-    updateRendererCanvas(): any { return (this._jBoard as any).updateRendererCanvas() }
+updateRendererCanvas(): any { return (this._jBoard as any).updateRendererCanvas() }
 
 
 
 
 
-    /** Zooms the board so every visible point is shown.*/
+/** Zooms the board so every visible point is shown.*/
 
-    zoomAllPoints(): any { return (this._jBoard as any).zoomAllPoints() }
+zoomAllPoints(): any { return (this._jBoard as any).zoomAllPoints() }
 
 
 
-    /** Reset the bounding box and the zoom level to 100 % such that a given set of elements is within the board's viewport.*/
+/** Reset the bounding box and the zoom level to 100 % such that a given set of elements is within the board's viewport.*/
 
-    zoomElements(elements: any): any { return (this._jBoard as any).zoomElements(elements) }
+zoomElements(elements: any): any { return (this._jBoard as any).zoomElements(elements) }
 
 
 
@@ -6102,11 +6242,11 @@ export class TSXBoard {
 
 
 
-    /////////////////////////////////////////////////
+/////////////////////////////////////////////////
 
-    //////////// view3d methods  ////////////////////
+//////////// view3d methods  ////////////////////
 
-    /////////////////////////////////////////////////
+/////////////////////////////////////////////////
 
 
 
@@ -6114,81 +6254,79 @@ export class TSXBoard {
 
 
 
-    // intersectionLineCube(p, dir, r)
+// intersectionLineCube(p, dir, r)
 
-    // Intersect a ray with the bounding cube of the 3D view.
+// Intersect a ray with the bounding cube of the 3D view.
 
 
 
-    // intersectionPlanePlane(plane1, plane2, d)
+// intersectionPlanePlane(plane1, plane2, d)
 
 
 
-    // isInCube(p, polyhedron)
+// isInCube(p, polyhedron)
 
-    // Test if coordinates are inside of the bounding cube.
+// Test if coordinates are inside of the bounding cube.
 
 
 
-    // previousView()
+// previousView()
 
-    // Changes view to the previous view stored in the attribute `values`.
+// Changes view to the previous view stored in the attribute `values`.
 
 
 
-    // project2DTo3DPlane(point2d, normal, foot)
+// project2DTo3DPlane(point2d, normal, foot)
 
-    // Project a 2D coordinate to the plane defined by point "foot" and the normal vector `normal`.
+// Project a 2D coordinate to the plane defined by point "foot" and the normal vector `normal`.
 
 
 
-    // project2DTo3DVertical(point2d, base_c3d)
+// project2DTo3DVertical(point2d, base_c3d)
 
-    // Project a 2D coordinate to a new 3D position by keeping the 3D x, y coordinates and changing only the z coordinate.
+// Project a 2D coordinate to a new 3D position by keeping the 3D x, y coordinates and changing only the z coordinate.
 
 
 
-    // project3DTo2D(x, y, z)
+// project3DTo2D(x, y, z)
 
-    // Project 3D coordinates to 2D board coordinates The 3D coordinates are provides as three numbers x, y, z or one array of length 3.
+// Project 3D coordinates to 2D board coordinates The 3D coordinates are provides as three numbers x, y, z or one array of length 3.
 
 
 
-    // project3DToCube(c3d)
+// project3DToCube(c3d)
 
-    // Limit 3D coordinates to the bounding cube.
+// Limit 3D coordinates to the bounding cube.
 
 
 
-    // projectScreenToSegment(pScr, end0, end1)
+// projectScreenToSegment(pScr, end0, end1)
 
-    // Project a point on the screen to the nearest point, in screen distance, on a line segment in 3d space.
+// Project a point on the screen to the nearest point, in screen distance, on a line segment in 3d space.
 
 
 
-    // select(str, onlyByIdOrName)
+// select(str, onlyByIdOrName)
 
-    // Select a single or multiple elements at once.
+// Select a single or multiple elements at once.
 
 
 
-    // setCurrentView(n)
+// setCurrentView(n)
 
-    // Changes view to the determined view stored in the attribute `values`.
+// Changes view to the determined view stored in the attribute `values`.
 
 
 
-    /** Sets camera view to the given values. */
+/** Sets camera view to the given values. */
 
-    /** Sets camera view to the given values. */
+/** Sets camera view to the given values. */
 
-    setView(az: number, el: number, r?: number) {
+setView(az: number, el: number, r ?: number) {
 
-        return (this._jView3d as any).setView(az, el, r)
+    return (this._jView3d as any).setView(az, el, r)
 
-    }
-
-
+}
 
 
 
@@ -6306,7 +6444,7 @@ Also see: Circumcircle is a circle described by three points.  An Arc is a segme
  *``` 
 *``` 
   */
- Circle( centerPoint:Point|pointAddr|Function,remotePoint:Point|pointAddr|Line|number|Function|Circle,attributes?:CircleAttributes) : Circle
+ Circle( centerPoint:Point|pointAddr,remotePoint:Point|pointAddr|Line|number|Function|Circle,attributes?:CircleAttributes) : Circle
  /** A circle can be constructed by providing a center and a point on the circle,
                 or a center and a radius (given as a number, function, line, or circle).
                 If the radius is a negative value, its absolute values is taken.
@@ -6502,11 +6640,16 @@ TSX.ForeignObject(
 
 
  /** Array of Points */
- Group (pointArray:Point[]|Polygon, attributes: GroupAttributes ={} ):Group {
- if (Array.isArray(pointArray))
-                    return (this._jBoard as any).create('group', pointArray, this.defaultAttributes(attributes))
+ Group (pointArray:(Point|Image|Polygon)[], attributes: GroupAttributes ={} ):Group {
+ 
+                let temp // group that we will modify
+                if (Array.isArray(pointArray))
+                    temp =  (this._jBoard as any).create('group', pointArray, this.defaultAttributes(attributes))
                 else
-                    return (this._jBoard as any).create('group', [pointArray], this.defaultAttributes(attributes))
+                    temp =  (this._jBoard as any).create('group', [pointArray], this.defaultAttributes(attributes))
+
+                temp['moveToES6'] = (params:any, msec:any) => groupMoveToES6(this._jBoard,temp,params,msec);
+                return temp
                 
 }
 
@@ -8020,7 +8163,7 @@ let g2 = TSX.Glider(c1,[0,0])  // includes initial point
 
 
  /** Reflect a point, line, circle, curve, polygon across a given point. */
- MirrorElement (element:Point|Line|Circle|Curve|Polygon, acrossPoint:Point|pointAddr, attributes: MirrorElementAttributes ={} ):MirrorElement {
+ MirrorElement (element:Point|Line|Circle|Curve|Polygon, acrossPoint:Point, attributes: MirrorElementAttributes ={} ):MirrorElement {
    return (this._jBoard as any).create('mirrorelement', [element,acrossPoint,], this.defaultAttributes(attributes))  as MirrorElement
 }
 
@@ -8034,7 +8177,7 @@ let g2 = TSX.Glider(c1,[0,0])  // includes initial point
 
 
  /** A non-reflex angle is the instance of an angle that is at most 180°. It is defined by a center, one point that defines the radius, and a third point that defines the angle of the sector. */
- NonReflexAngle (point1:Point, point2:Point, point3:Point, attributes: NonReflexAngleAttributes ={} ):NonReflexAngle {
+ NonReflexAngle (point1:Point|pointAddr, point2:Point|pointAddr, point3:Point|pointAddr, attributes: NonReflexAngleAttributes ={} ):NonReflexAngle {
    return (this._jBoard as any).create('nonreflexangle', [point1,point2,point3,], this.defaultAttributes(attributes))  as NonReflexAngle
 }
 
@@ -8043,7 +8186,7 @@ let g2 = TSX.Glider(c1,[0,0])  // includes initial point
  *``` 
 *``` 
   */
- Normal( object:Line|Circle|Curve,point:Point,attributes?:NormalAttributes) : Normal
+ Normal( object:Line|Circle|Curve,point:Point|pointAddr,attributes?:NormalAttributes) : Normal
  /** A line through a given point on an element of type line, circle, curve, or turtle and orthogonal (at right angle) to that object. 
  *``` 
 *``` 
@@ -8099,7 +8242,7 @@ TSX.OrthogonalProjection(p3, s1)
 
  /** Given a set of intersection points, this is another ("other") intersection point, */
  OtherIntersection (element1:Line|Circle, element2:Line|Circle, firstIntersection:Point, attributes: OtherIntersectionAttributes ={} ):Point {
-  return (this._jBoard as any).create('otherintersection', [element1,element2,firstIntersection], attributes)
+  return (this._jBoard as any).create('otherintersection', [element1,element2,firstIntersection], this.defaultAttributes(attributes))
 }
 
 
@@ -8318,7 +8461,7 @@ let faceArray = [  // each triangular face connects three vertex points
 
 
  /** A reflex angle is the instance of an angle that is larger than 180°. It is defined by a center, one point that defines the radius, and a third point that defines the angle of the sector. */
- ReflexAngle (point1:Point, point2:Point, point3:Point, attributes: ReflexAngleAttributes ={} ):ReflexAngle {
+ ReflexAngle (point1:Point|pointAddr, point2:Point|pointAddr, point3:Point|pointAddr, attributes: ReflexAngleAttributes ={} ):ReflexAngle {
    return (this._jBoard as any).create('reflexangle', [point1,point2,point3,], this.defaultAttributes(attributes))  as ReflexAngle
 }
 
@@ -8528,7 +8671,7 @@ let  curve = TSX.Stepfunction([0,1,2,3,4,5], [1,3,0,2,2,1]);
 
 
  /** Construct the tangent line through a point to a conic or a circle. There will be either two, one or no such tangent, depending if the point is outside of the conic, on the conic, or inside of the conic. Similar to the intersection of a line with a circle, the specific tangent can be chosen with a third (optional) parameter number. */
- TangentTo (conic:Conic|Circle, point:Point|pointAddr, N:number=0, attributes: TangentToAttributes ={} ):TangentTo {
+ TangentTo (conic:Conic|Circle, point:Point|pointAddr, N:number, attributes: TangentToAttributes ={} ):TangentTo {
    return (this._jBoard as any).create('tangentto', [conic,point,N,], this.defaultAttributes(attributes))  as TangentTo
 }
 
@@ -8646,7 +8789,12 @@ let  curve = TSX.Stepfunction([0,1,2,3,4,5], [1,3,0,2,2,1]);
  }
 
 
- /** Create a Transformation object with Translate properties. */
+ /** Create a Transformation object with Translate properties.
+~~~js            
+let p0 = TSX.Point([0, 3], { name: 'A' })
+let t = TSX.Translate(() => p0.X(), 1) // adds [p0.X(), 1]
+let t1 = TSX.TransformPoint(p0, [t])   // so x is twice p0 
+~~~ */
  Translate (dx:number|Function, dy:number|Function, attributes: TranslateAttributes ={} ):Transformation {
  return (this._jBoard as any).create('transform', [dx,dy], {type:'translate'}) as Transformation
 }
